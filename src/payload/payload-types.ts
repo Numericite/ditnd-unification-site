@@ -131,6 +131,8 @@ export interface UserAuthOperations {
 export interface User {
   id: number;
   firstName?: string | null;
+  lastName?: string | null;
+  role: 'admin' | 'editor';
   updatedAt: string;
   createdAt: string;
   email: string;
@@ -312,6 +314,8 @@ export interface PayloadMigration {
  */
 export interface UsersSelect<T extends boolean = true> {
   firstName?: T;
+  lastName?: T;
+  role?: T;
   updatedAt?: T;
   createdAt?: T;
   email?: T;
