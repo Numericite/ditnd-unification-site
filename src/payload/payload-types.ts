@@ -68,7 +68,11 @@ export interface Config {
   blocks: {};
   collections: {
     users: User;
-    media: Media;
+    persona: Persona;
+    condition: Condition;
+    courses: Course;
+    'practical-guide': PracticalGuide;
+    theme: Theme;
     'payload-kv': PayloadKv;
     'payload-locked-documents': PayloadLockedDocument;
     'payload-preferences': PayloadPreference;
@@ -77,7 +81,11 @@ export interface Config {
   collectionsJoins: {};
   collectionsSelect: {
     users: UsersSelect<false> | UsersSelect<true>;
-    media: MediaSelect<false> | MediaSelect<true>;
+    persona: PersonaSelect<false> | PersonaSelect<true>;
+    condition: ConditionSelect<false> | ConditionSelect<true>;
+    courses: CoursesSelect<false> | CoursesSelect<true>;
+    'practical-guide': PracticalGuideSelect<false> | PracticalGuideSelect<true>;
+    theme: ThemeSelect<false> | ThemeSelect<true>;
     'payload-kv': PayloadKvSelect<false> | PayloadKvSelect<true>;
     'payload-locked-documents': PayloadLockedDocumentsSelect<false> | PayloadLockedDocumentsSelect<true>;
     'payload-preferences': PayloadPreferencesSelect<false> | PayloadPreferencesSelect<true>;
@@ -122,6 +130,7 @@ export interface UserAuthOperations {
  */
 export interface User {
   id: number;
+  firstName?: string | null;
   updatedAt: string;
   createdAt: string;
   email: string;
@@ -142,22 +151,70 @@ export interface User {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "media".
+ * via the `definition` "persona".
  */
-export interface Media {
+export interface Persona {
   id: number;
-  alt: string;
+  name: string;
+  description: string;
+  slug: string;
   updatedAt: string;
   createdAt: string;
-  url?: string | null;
-  thumbnailURL?: string | null;
-  filename?: string | null;
-  mimeType?: string | null;
-  filesize?: number | null;
-  width?: number | null;
-  height?: number | null;
-  focalX?: number | null;
-  focalY?: number | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "condition".
+ */
+export interface Condition {
+  id: number;
+  name: string;
+  description: string;
+  acronym: string;
+  slug: string;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "courses".
+ */
+export interface Course {
+  id: number;
+  title: string;
+  link: string;
+  theme: number | Theme;
+  persona: number | Theme;
+  condition: number | Condition;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "theme".
+ */
+export interface Theme {
+  id: number;
+  name: string;
+  description: string;
+  slug: string;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "practical-guide".
+ */
+export interface PracticalGuide {
+  id: number;
+  title: string;
+  condition?: (number | null) | Condition;
+  content: string;
+  persona: number | Persona;
+  theme: number | Theme;
+  'practical-guide'?: (number | null) | PracticalGuide;
+  courses?: (number | null) | Course;
+  updatedAt: string;
+  createdAt: string;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -188,8 +245,24 @@ export interface PayloadLockedDocument {
         value: number | User;
       } | null)
     | ({
-        relationTo: 'media';
-        value: number | Media;
+        relationTo: 'persona';
+        value: number | Persona;
+      } | null)
+    | ({
+        relationTo: 'condition';
+        value: number | Condition;
+      } | null)
+    | ({
+        relationTo: 'courses';
+        value: number | Course;
+      } | null)
+    | ({
+        relationTo: 'practical-guide';
+        value: number | PracticalGuide;
+      } | null)
+    | ({
+        relationTo: 'theme';
+        value: number | Theme;
       } | null);
   globalSlug?: string | null;
   user: {
@@ -238,6 +311,7 @@ export interface PayloadMigration {
  * via the `definition` "users_select".
  */
 export interface UsersSelect<T extends boolean = true> {
+  firstName?: T;
   updatedAt?: T;
   createdAt?: T;
   email?: T;
@@ -257,21 +331,65 @@ export interface UsersSelect<T extends boolean = true> {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "media_select".
+ * via the `definition` "persona_select".
  */
-export interface MediaSelect<T extends boolean = true> {
-  alt?: T;
+export interface PersonaSelect<T extends boolean = true> {
+  name?: T;
+  description?: T;
+  slug?: T;
   updatedAt?: T;
   createdAt?: T;
-  url?: T;
-  thumbnailURL?: T;
-  filename?: T;
-  mimeType?: T;
-  filesize?: T;
-  width?: T;
-  height?: T;
-  focalX?: T;
-  focalY?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "condition_select".
+ */
+export interface ConditionSelect<T extends boolean = true> {
+  name?: T;
+  description?: T;
+  acronym?: T;
+  slug?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "courses_select".
+ */
+export interface CoursesSelect<T extends boolean = true> {
+  title?: T;
+  link?: T;
+  theme?: T;
+  persona?: T;
+  condition?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "practical-guide_select".
+ */
+export interface PracticalGuideSelect<T extends boolean = true> {
+  title?: T;
+  condition?: T;
+  content?: T;
+  persona?: T;
+  theme?: T;
+  'practical-guide'?: T;
+  courses?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "theme_select".
+ */
+export interface ThemeSelect<T extends boolean = true> {
+  name?: T;
+  description?: T;
+  slug?: T;
+  updatedAt?: T;
+  createdAt?: T;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
