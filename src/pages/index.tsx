@@ -62,7 +62,6 @@ export default function Home() {
                 width: "100%",
                 alignItems: "stretch",
                 marginLeft: 0,
-                marginRight: 0,
               }}
             >
               {tiles.map((tile, index) => (

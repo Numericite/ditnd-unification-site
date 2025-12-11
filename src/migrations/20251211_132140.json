@@ -106,6 +106,20 @@
           "primaryKey": false,
           "notNull": false
         },
+        "last_name": {
+          "name": "last_name",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "role": {
+          "name": "role",
+          "type": "enum_users_role",
+          "typeSchema": "public",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "'editor'"
+        },
         "updated_at": {
           "name": "updated_at",
           "type": "timestamp(3) with time zone",
@@ -621,9 +635,15 @@
         },
         "content": {
           "name": "content",
-          "type": "varchar",
+          "type": "jsonb",
           "primaryKey": false,
           "notNull": true
+        },
+        "html": {
+          "name": "html",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
         },
         "persona_id": {
           "name": "persona_id",
@@ -1673,7 +1693,16 @@
       "isRLSEnabled": false
     }
   },
-  "enums": {},
+  "enums": {
+    "public.enum_users_role": {
+      "name": "enum_users_role",
+      "schema": "public",
+      "values": [
+        "admin",
+        "editor"
+      ]
+    }
+  },
   "schemas": {},
   "sequences": {},
   "roles": {},
@@ -1684,6 +1713,6 @@
     "tables": {},
     "columns": {}
   },
-  "id": "9af95995-7d58-417d-9c68-512928569f24",
+  "id": "6d35f6a0-dc8b-42c7-9199-2e484f3ecc47",
   "prevId": "00000000-0000-0000-0000-000000000000"
 }

@@ -209,8 +209,24 @@ export interface Theme {
 export interface PracticalGuide {
   id: number;
   title: string;
+  description: string;
   condition?: (number | null) | Condition;
-  content: string;
+  content: {
+    root: {
+      type: string;
+      children: {
+        type: any;
+        version: number;
+        [k: string]: unknown;
+      }[];
+      direction: ('ltr' | 'rtl') | null;
+      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+      indent: number;
+      version: number;
+    };
+    [k: string]: unknown;
+  };
+  html?: string | null;
   persona: number | Persona;
   theme: number | Theme;
   'practical-guide'?: (number | null) | PracticalGuide;
@@ -375,8 +391,10 @@ export interface CoursesSelect<T extends boolean = true> {
  */
 export interface PracticalGuideSelect<T extends boolean = true> {
   title?: T;
+  description?: T;
   condition?: T;
   content?: T;
+  html?: T;
   persona?: T;
   theme?: T;
   'practical-guide'?: T;
