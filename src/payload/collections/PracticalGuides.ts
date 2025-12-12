@@ -2,11 +2,10 @@ import type { CollectionConfig } from "payload";
 import {
   lexicalEditor,
   FixedToolbarFeature,
-  OrderedListFeature,
 } from "@payloadcms/richtext-lexical";
 import { convertLexicalToHTML } from "@payloadcms/richtext-lexical/html";
 
-export const PracticalGuide: CollectionConfig = {
+export const PracticalGuides: CollectionConfig = {
   slug: "practical-guide",
   admin: {
     useAsTitle: "title",

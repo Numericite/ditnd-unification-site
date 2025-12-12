@@ -7,11 +7,12 @@ import { fileURLToPath } from "url";
 import sharp from "sharp";
 
 import { Users } from "./collections/Users";
-import { Persona } from "./collections/Personas";
-import { Condition } from "./collections/Conditions";
+import { Personas } from "./collections/Personas";
+import { Conditions } from "./collections/Conditions";
 import { Courses } from "./collections/Courses";
-import { PracticalGuide } from "./collections/PracticalGuides";
-import { Theme } from "./collections/Themes";
+import { PracticalGuides } from "./collections/PracticalGuides";
+import { Themes } from "./collections/Themes";
+import { Journeys } from "./collections/Journeys";
 
 const filename = fileURLToPath(import.meta.url);
 const dirname = path.dirname(filename);
@@ -23,7 +24,15 @@ export default buildConfig({
       baseDir: path.resolve(dirname),
     },
   },
-  collections: [Users, Persona, Condition, Courses, PracticalGuide, Theme],
+  collections: [
+    Users,
+    Personas,
+    Conditions,
+    Courses,
+    PracticalGuides,
+    Themes,
+    Journeys,
+  ],
   editor: lexicalEditor(),
   secret: process.env.PAYLOAD_SECRET || "",
   typescript: {

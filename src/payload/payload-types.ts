@@ -73,6 +73,7 @@ export interface Config {
     courses: Course;
     'practical-guide': PracticalGuide;
     theme: Theme;
+    journey: Journey;
     'payload-kv': PayloadKv;
     'payload-locked-documents': PayloadLockedDocument;
     'payload-preferences': PayloadPreference;
@@ -86,6 +87,7 @@ export interface Config {
     courses: CoursesSelect<false> | CoursesSelect<true>;
     'practical-guide': PracticalGuideSelect<false> | PracticalGuideSelect<true>;
     theme: ThemeSelect<false> | ThemeSelect<true>;
+    journey: JourneySelect<false> | JourneySelect<true>;
     'payload-kv': PayloadKvSelect<false> | PayloadKvSelect<true>;
     'payload-locked-documents': PayloadLockedDocumentsSelect<false> | PayloadLockedDocumentsSelect<true>;
     'payload-preferences': PayloadPreferencesSelect<false> | PayloadPreferencesSelect<true>;
@@ -236,6 +238,29 @@ export interface PracticalGuide {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "journey".
+ */
+export interface Journey {
+  id: number;
+  journey_name: string;
+  persona?: {
+    persona?: (number | null) | Persona;
+    chapter?:
+      | {
+          'chapter-name': string;
+          'practical-guide-list': {
+            'practical-guide'?: (number | null) | PracticalGuide;
+            id?: string | null;
+          }[];
+          id?: string | null;
+        }[]
+      | null;
+  };
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "payload-kv".
  */
 export interface PayloadKv {
@@ -281,6 +306,10 @@ export interface PayloadLockedDocument {
     | ({
         relationTo: 'theme';
         value: number | Theme;
+      } | null)
+    | ({
+        relationTo: 'journey';
+        value: number | Journey;
       } | null);
   globalSlug?: string | null;
   user: {
@@ -410,6 +439,32 @@ export interface ThemeSelect<T extends boolean = true> {
   name?: T;
   description?: T;
   slug?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "journey_select".
+ */
+export interface JourneySelect<T extends boolean = true> {
+  journey_name?: T;
+  persona?:
+    | T
+    | {
+        persona?: T;
+        chapter?:
+          | T
+          | {
+              'chapter-name'?: T;
+              'practical-guide-list'?:
+                | T
+                | {
+                    'practical-guide'?: T;
+                    id?: T;
+                  };
+              id?: T;
+            };
+      };
   updatedAt?: T;
   createdAt?: T;
 }

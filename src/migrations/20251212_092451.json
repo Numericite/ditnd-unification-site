@@ -627,6 +627,12 @@
           "primaryKey": false,
           "notNull": true
         },
+        "description": {
+          "name": "description",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": true
+        },
         "condition_id": {
           "name": "condition_id",
           "type": "integer",
@@ -961,6 +967,303 @@
       "checkConstraints": {},
       "isRLSEnabled": false
     },
+    "public.journey_persona_chapter_practical_guide_list": {
+      "name": "journey_persona_chapter_practical_guide_list",
+      "schema": "",
+      "columns": {
+        "_order": {
+          "name": "_order",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "_parent_id": {
+          "name": "_parent_id",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "id": {
+          "name": "id",
+          "type": "varchar",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "practical_guide_id": {
+          "name": "practical_guide_id",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        }
+      },
+      "indexes": {
+        "journey_persona_chapter_practical_guide_list_order_idx": {
+          "name": "journey_persona_chapter_practical_guide_list_order_idx",
+          "columns": [
+            {
+              "expression": "_order",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        },
+        "journey_persona_chapter_practical_guide_list_parent_id_idx": {
+          "name": "journey_persona_chapter_practical_guide_list_parent_id_idx",
+          "columns": [
+            {
+              "expression": "_parent_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        },
+        "journey_persona_chapter_practical_guide_list_practical_g_idx": {
+          "name": "journey_persona_chapter_practical_guide_list_practical_g_idx",
+          "columns": [
+            {
+              "expression": "practical_guide_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        }
+      },
+      "foreignKeys": {
+        "journey_persona_chapter_practical_guide_list_practical_guide_id_practical_guide_id_fk": {
+          "name": "journey_persona_chapter_practical_guide_list_practical_guide_id_practical_guide_id_fk",
+          "tableFrom": "journey_persona_chapter_practical_guide_list",
+          "tableTo": "practical_guide",
+          "columnsFrom": [
+            "practical_guide_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "set null",
+          "onUpdate": "no action"
+        },
+        "journey_persona_chapter_practical_guide_list_parent_id_fk": {
+          "name": "journey_persona_chapter_practical_guide_list_parent_id_fk",
+          "tableFrom": "journey_persona_chapter_practical_guide_list",
+          "tableTo": "journey_persona_chapter",
+          "columnsFrom": [
+            "_parent_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
+    "public.journey_persona_chapter": {
+      "name": "journey_persona_chapter",
+      "schema": "",
+      "columns": {
+        "_order": {
+          "name": "_order",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "_parent_id": {
+          "name": "_parent_id",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "id": {
+          "name": "id",
+          "type": "varchar",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "chapter_name": {
+          "name": "chapter_name",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": true
+        }
+      },
+      "indexes": {
+        "journey_persona_chapter_order_idx": {
+          "name": "journey_persona_chapter_order_idx",
+          "columns": [
+            {
+              "expression": "_order",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        },
+        "journey_persona_chapter_parent_id_idx": {
+          "name": "journey_persona_chapter_parent_id_idx",
+          "columns": [
+            {
+              "expression": "_parent_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        }
+      },
+      "foreignKeys": {
+        "journey_persona_chapter_parent_id_fk": {
+          "name": "journey_persona_chapter_parent_id_fk",
+          "tableFrom": "journey_persona_chapter",
+          "tableTo": "journey",
+          "columnsFrom": [
+            "_parent_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
+    "public.journey": {
+      "name": "journey",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "serial",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "journey_name": {
+          "name": "journey_name",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "persona_persona_id": {
+          "name": "persona_persona_id",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "updated_at": {
+          "name": "updated_at",
+          "type": "timestamp(3) with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp(3) with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        }
+      },
+      "indexes": {
+        "journey_persona_persona_persona_idx": {
+          "name": "journey_persona_persona_persona_idx",
+          "columns": [
+            {
+              "expression": "persona_persona_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        },
+        "journey_updated_at_idx": {
+          "name": "journey_updated_at_idx",
+          "columns": [
+            {
+              "expression": "updated_at",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        },
+        "journey_created_at_idx": {
+          "name": "journey_created_at_idx",
+          "columns": [
+            {
+              "expression": "created_at",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        }
+      },
+      "foreignKeys": {
+        "journey_persona_persona_id_persona_id_fk": {
+          "name": "journey_persona_persona_id_persona_id_fk",
+          "tableFrom": "journey",
+          "tableTo": "persona",
+          "columnsFrom": [
+            "persona_persona_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "set null",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
     "public.payload_kv": {
       "name": "payload_kv",
       "schema": "",
@@ -1156,6 +1459,12 @@
           "type": "integer",
           "primaryKey": false,
           "notNull": false
+        },
+        "journey_id": {
+          "name": "journey_id",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
         }
       },
       "indexes": {
@@ -1293,6 +1602,21 @@
           "concurrently": false,
           "method": "btree",
           "with": {}
+        },
+        "payload_locked_documents_rels_journey_id_idx": {
+          "name": "payload_locked_documents_rels_journey_id_idx",
+          "columns": [
+            {
+              "expression": "journey_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
         }
       },
       "foreignKeys": {
@@ -1380,6 +1704,19 @@
           "tableTo": "theme",
           "columnsFrom": [
             "theme_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        },
+        "payload_locked_documents_rels_journey_fk": {
+          "name": "payload_locked_documents_rels_journey_fk",
+          "tableFrom": "payload_locked_documents_rels",
+          "tableTo": "journey",
+          "columnsFrom": [
+            "journey_id"
           ],
           "columnsTo": [
             "id"
@@ -1713,6 +2050,6 @@
     "tables": {},
     "columns": {}
   },
-  "id": "6d35f6a0-dc8b-42c7-9199-2e484f3ecc47",
+  "id": "85150305-2381-4220-ab60-d473f52aaf80",
   "prevId": "00000000-0000-0000-0000-000000000000"
 }
