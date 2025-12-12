@@ -1,6 +1,7 @@
 import { z } from "zod";
 import { getPayload } from "payload";
 import payloadConfig from "~/payload/payload.config";
+
 const payload = await getPayload({ config: payloadConfig });
 
 import {
