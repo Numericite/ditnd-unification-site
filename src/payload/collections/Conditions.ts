@@ -1,6 +1,6 @@
 import type { CollectionConfig } from "payload";
 
-export const Condition: CollectionConfig = {
+export const Conditions: CollectionConfig = {
   slug: "condition",
   admin: {
     useAsTitle: "acronym",

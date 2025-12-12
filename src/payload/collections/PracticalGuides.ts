@@ -1,6 +1,11 @@
 import type { CollectionConfig } from "payload";
+import {
+  lexicalEditor,
+  FixedToolbarFeature,
+} from "@payloadcms/richtext-lexical";
+import { convertLexicalToHTML } from "@payloadcms/richtext-lexical/html";
 
-export const PracticalGuide: CollectionConfig = {
+export const PracticalGuides: CollectionConfig = {
   slug: "practical-guide",
   admin: {
     useAsTitle: "title",
@@ -12,6 +17,11 @@ export const PracticalGuide: CollectionConfig = {
       required: true,
     },
     {
+      name: "description",
+      type: "text",
+      required: true,
+    },
+    {
       name: "condition",
       type: "relationship",
       required: false,
@@ -19,8 +29,34 @@ export const PracticalGuide: CollectionConfig = {
     },
     {
       name: "content",
-      type: "text",
+      type: "richText",
       required: true,
+      editor: lexicalEditor({
+        admin: {
+          placeholder: "Content of the practical guide",
+          hideGutter: false,
+        },
+
+        features: ({ defaultFeatures }) => [
+          ...defaultFeatures,
+          FixedToolbarFeature(),
+        ],
+      }),
+    },
+    {
+      name: "html",
+      type: "text",
+      admin: {
+        readOnly: true,
+      },
+      hooks: {
+        beforeChange: [
+          async ({ siblingData }) => {
+            if (!siblingData?.content) return "";
+            return convertLexicalToHTML({ data: siblingData.content });
+          },
+        ],
+      },
     },
     {
       name: "persona",

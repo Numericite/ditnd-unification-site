@@ -73,6 +73,7 @@ export interface Config {
     courses: Course;
     'practical-guide': PracticalGuide;
     theme: Theme;
+    journey: Journey;
     'payload-kv': PayloadKv;
     'payload-locked-documents': PayloadLockedDocument;
     'payload-preferences': PayloadPreference;
@@ -86,6 +87,7 @@ export interface Config {
     courses: CoursesSelect<false> | CoursesSelect<true>;
     'practical-guide': PracticalGuideSelect<false> | PracticalGuideSelect<true>;
     theme: ThemeSelect<false> | ThemeSelect<true>;
+    journey: JourneySelect<false> | JourneySelect<true>;
     'payload-kv': PayloadKvSelect<false> | PayloadKvSelect<true>;
     'payload-locked-documents': PayloadLockedDocumentsSelect<false> | PayloadLockedDocumentsSelect<true>;
     'payload-preferences': PayloadPreferencesSelect<false> | PayloadPreferencesSelect<true>;
@@ -209,12 +211,51 @@ export interface Theme {
 export interface PracticalGuide {
   id: number;
   title: string;
+  description: string;
   condition?: (number | null) | Condition;
-  content: string;
+  content: {
+    root: {
+      type: string;
+      children: {
+        type: any;
+        version: number;
+        [k: string]: unknown;
+      }[];
+      direction: ('ltr' | 'rtl') | null;
+      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+      indent: number;
+      version: number;
+    };
+    [k: string]: unknown;
+  };
+  html?: string | null;
   persona: number | Persona;
   theme: number | Theme;
   'practical-guide'?: (number | null) | PracticalGuide;
   courses?: (number | null) | Course;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "journey".
+ */
+export interface Journey {
+  id: number;
+  journey_name: string;
+  persona?: {
+    persona?: (number | null) | Persona;
+    chapter?:
+      | {
+          'chapter-name': string;
+          'practical-guide-list': {
+            'practical-guide'?: (number | null) | PracticalGuide;
+            id?: string | null;
+          }[];
+          id?: string | null;
+        }[]
+      | null;
+  };
   updatedAt: string;
   createdAt: string;
 }
@@ -265,6 +306,10 @@ export interface PayloadLockedDocument {
     | ({
         relationTo: 'theme';
         value: number | Theme;
+      } | null)
+    | ({
+        relationTo: 'journey';
+        value: number | Journey;
       } | null);
   globalSlug?: string | null;
   user: {
@@ -375,8 +420,10 @@ export interface CoursesSelect<T extends boolean = true> {
  */
 export interface PracticalGuideSelect<T extends boolean = true> {
   title?: T;
+  description?: T;
   condition?: T;
   content?: T;
+  html?: T;
   persona?: T;
   theme?: T;
   'practical-guide'?: T;
@@ -392,6 +439,32 @@ export interface ThemeSelect<T extends boolean = true> {
   name?: T;
   description?: T;
   slug?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "journey_select".
+ */
+export interface JourneySelect<T extends boolean = true> {
+  journey_name?: T;
+  persona?:
+    | T
+    | {
+        persona?: T;
+        chapter?:
+          | T
+          | {
+              'chapter-name'?: T;
+              'practical-guide-list'?:
+                | T
+                | {
+                    'practical-guide'?: T;
+                    id?: T;
+                  };
+              id?: T;
+            };
+      };
   updatedAt?: T;
   createdAt?: T;
 }
