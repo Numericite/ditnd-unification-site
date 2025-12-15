@@ -2,7 +2,7 @@ import type { CollectionConfig } from "payload";
 import { relationship } from "payload/shared";
 
 export const Journeys: CollectionConfig = {
-  slug: "journey",
+  slug: "journeys",
   admin: {
     useAsTitle: "journey_name",
   },
@@ -22,7 +22,8 @@ export const Journeys: CollectionConfig = {
             {
               name: "persona",
               type: "relationship",
-              relationTo: "persona",
+              relationTo: "personas",
+              required: true,
             },
             {
               name: "chapter",
@@ -41,7 +42,7 @@ export const Journeys: CollectionConfig = {
                     {
                       name: "practical-guide",
                       type: "relationship",
-                      relationTo: "practical-guide",
+                      relationTo: "practical-guides",
                     },
                   ],
                 },

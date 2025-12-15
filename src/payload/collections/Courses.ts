@@ -12,6 +12,11 @@ export const Courses: CollectionConfig = {
       required: true,
     },
     {
+      name: "description",
+      type: "text",
+      required: true,
+    },
+    {
       name: "link",
       type: "text",
       required: true,
@@ -20,19 +25,19 @@ export const Courses: CollectionConfig = {
       name: "theme",
       type: "relationship",
       required: true,
-      relationTo: "theme",
+      relationTo: "themes",
     },
     {
       name: "persona",
       type: "relationship",
       required: true,
-      relationTo: "theme",
+      relationTo: "personas",
     },
     {
-      name: "condition",
+      name: "conditions",
       type: "relationship",
       required: true,
-      relationTo: "condition",
+      relationTo: "conditions",
     },
   ],
 };

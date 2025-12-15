@@ -68,12 +68,12 @@ export interface Config {
   blocks: {};
   collections: {
     users: User;
-    persona: Persona;
-    condition: Condition;
+    personas: Persona;
+    conditions: Condition;
     courses: Course;
-    'practical-guide': PracticalGuide;
-    theme: Theme;
-    journey: Journey;
+    'practical-guides': PracticalGuide;
+    themes: Theme;
+    journeys: Journey;
     'payload-kv': PayloadKv;
     'payload-locked-documents': PayloadLockedDocument;
     'payload-preferences': PayloadPreference;
@@ -82,12 +82,12 @@ export interface Config {
   collectionsJoins: {};
   collectionsSelect: {
     users: UsersSelect<false> | UsersSelect<true>;
-    persona: PersonaSelect<false> | PersonaSelect<true>;
-    condition: ConditionSelect<false> | ConditionSelect<true>;
+    personas: PersonasSelect<false> | PersonasSelect<true>;
+    conditions: ConditionsSelect<false> | ConditionsSelect<true>;
     courses: CoursesSelect<false> | CoursesSelect<true>;
-    'practical-guide': PracticalGuideSelect<false> | PracticalGuideSelect<true>;
-    theme: ThemeSelect<false> | ThemeSelect<true>;
-    journey: JourneySelect<false> | JourneySelect<true>;
+    'practical-guides': PracticalGuidesSelect<false> | PracticalGuidesSelect<true>;
+    themes: ThemesSelect<false> | ThemesSelect<true>;
+    journeys: JourneysSelect<false> | JourneysSelect<true>;
     'payload-kv': PayloadKvSelect<false> | PayloadKvSelect<true>;
     'payload-locked-documents': PayloadLockedDocumentsSelect<false> | PayloadLockedDocumentsSelect<true>;
     'payload-preferences': PayloadPreferencesSelect<false> | PayloadPreferencesSelect<true>;
@@ -155,7 +155,7 @@ export interface User {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "persona".
+ * via the `definition` "personas".
  */
 export interface Persona {
   id: number;
@@ -167,7 +167,7 @@ export interface Persona {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "condition".
+ * via the `definition` "conditions".
  */
 export interface Condition {
   id: number;
@@ -185,16 +185,17 @@ export interface Condition {
 export interface Course {
   id: number;
   title: string;
+  description: string;
   link: string;
   theme: number | Theme;
-  persona: number | Theme;
-  condition: number | Condition;
+  persona: number | Persona;
+  conditions: number | Condition;
   updatedAt: string;
   createdAt: string;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "theme".
+ * via the `definition` "themes".
  */
 export interface Theme {
   id: number;
@@ -206,13 +207,13 @@ export interface Theme {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "practical-guide".
+ * via the `definition` "practical-guides".
  */
 export interface PracticalGuide {
   id: number;
   title: string;
   description: string;
-  condition?: (number | null) | Condition;
+  conditions?: (number | null) | Condition;
   content: {
     root: {
       type: string;
@@ -231,20 +232,20 @@ export interface PracticalGuide {
   html?: string | null;
   persona: number | Persona;
   theme: number | Theme;
-  'practical-guide'?: (number | null) | PracticalGuide;
+  'practical-guides'?: (number | null) | PracticalGuide;
   courses?: (number | null) | Course;
   updatedAt: string;
   createdAt: string;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "journey".
+ * via the `definition` "journeys".
  */
 export interface Journey {
   id: number;
   journey_name: string;
-  persona?: {
-    persona?: (number | null) | Persona;
+  persona: {
+    persona: number | Persona;
     chapter?:
       | {
           'chapter-name': string;
@@ -288,11 +289,11 @@ export interface PayloadLockedDocument {
         value: number | User;
       } | null)
     | ({
-        relationTo: 'persona';
+        relationTo: 'personas';
         value: number | Persona;
       } | null)
     | ({
-        relationTo: 'condition';
+        relationTo: 'conditions';
         value: number | Condition;
       } | null)
     | ({
@@ -300,15 +301,15 @@ export interface PayloadLockedDocument {
         value: number | Course;
       } | null)
     | ({
-        relationTo: 'practical-guide';
+        relationTo: 'practical-guides';
         value: number | PracticalGuide;
       } | null)
     | ({
-        relationTo: 'theme';
+        relationTo: 'themes';
         value: number | Theme;
       } | null)
     | ({
-        relationTo: 'journey';
+        relationTo: 'journeys';
         value: number | Journey;
       } | null);
   globalSlug?: string | null;
@@ -380,9 +381,9 @@ export interface UsersSelect<T extends boolean = true> {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "persona_select".
+ * via the `definition` "personas_select".
  */
-export interface PersonaSelect<T extends boolean = true> {
+export interface PersonasSelect<T extends boolean = true> {
   name?: T;
   description?: T;
   slug?: T;
@@ -391,9 +392,9 @@ export interface PersonaSelect<T extends boolean = true> {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "condition_select".
+ * via the `definition` "conditions_select".
  */
-export interface ConditionSelect<T extends boolean = true> {
+export interface ConditionsSelect<T extends boolean = true> {
   name?: T;
   description?: T;
   acronym?: T;
@@ -407,35 +408,36 @@ export interface ConditionSelect<T extends boolean = true> {
  */
 export interface CoursesSelect<T extends boolean = true> {
   title?: T;
+  description?: T;
   link?: T;
   theme?: T;
   persona?: T;
-  condition?: T;
+  conditions?: T;
   updatedAt?: T;
   createdAt?: T;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "practical-guide_select".
+ * via the `definition` "practical-guides_select".
  */
-export interface PracticalGuideSelect<T extends boolean = true> {
+export interface PracticalGuidesSelect<T extends boolean = true> {
   title?: T;
   description?: T;
-  condition?: T;
+  conditions?: T;
   content?: T;
   html?: T;
   persona?: T;
   theme?: T;
-  'practical-guide'?: T;
+  'practical-guides'?: T;
   courses?: T;
   updatedAt?: T;
   createdAt?: T;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "theme_select".
+ * via the `definition` "themes_select".
  */
-export interface ThemeSelect<T extends boolean = true> {
+export interface ThemesSelect<T extends boolean = true> {
   name?: T;
   description?: T;
   slug?: T;
@@ -444,9 +446,9 @@ export interface ThemeSelect<T extends boolean = true> {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "journey_select".
+ * via the `definition` "journeys_select".
  */
-export interface JourneySelect<T extends boolean = true> {
+export interface JourneysSelect<T extends boolean = true> {
   journey_name?: T;
   persona?:
     | T
