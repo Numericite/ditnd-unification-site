@@ -34,7 +34,7 @@ export const Courses: CollectionConfig = {
       relationTo: "personas",
     },
     {
-      name: "conditions",
+      name: "condition",
       type: "relationship",
       required: true,
       relationTo: "conditions",

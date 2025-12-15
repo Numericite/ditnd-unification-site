@@ -189,7 +189,7 @@ export interface Course {
   link: string;
   theme: number | Theme;
   persona: number | Persona;
-  conditions: number | Condition;
+  condition: number | Condition;
   updatedAt: string;
   createdAt: string;
 }
@@ -412,7 +412,7 @@ export interface CoursesSelect<T extends boolean = true> {
   link?: T;
   theme?: T;
   persona?: T;
-  conditions?: T;
+  condition?: T;
   updatedAt?: T;
   createdAt?: T;
 }
