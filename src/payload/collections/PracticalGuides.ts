@@ -6,7 +6,7 @@ import {
 import { convertLexicalToHTML } from "@payloadcms/richtext-lexical/html";
 
 export const PracticalGuides: CollectionConfig = {
-  slug: "practical-guide",
+  slug: "practical-guides",
   admin: {
     useAsTitle: "title",
   },
@@ -22,10 +22,10 @@ export const PracticalGuides: CollectionConfig = {
       required: true,
     },
     {
-      name: "condition",
+      name: "conditions",
       type: "relationship",
       required: false,
-      relationTo: "condition",
+      relationTo: "conditions",
     },
     {
       name: "content",
@@ -62,19 +62,19 @@ export const PracticalGuides: CollectionConfig = {
       name: "persona",
       type: "relationship",
       required: true,
-      relationTo: "persona",
+      relationTo: "personas",
     },
     {
       name: "theme",
       type: "relationship",
       required: true,
-      relationTo: "theme",
+      relationTo: "themes",
     },
     {
-      name: "practical-guide",
+      name: "practical-guides",
       type: "relationship",
       required: false,
-      relationTo: "practical-guide",
+      relationTo: "practical-guides",
     },
     {
       name: "courses",

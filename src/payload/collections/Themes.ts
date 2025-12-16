@@ -1,7 +1,7 @@
 import type { CollectionConfig } from "payload";
 
 export const Themes: CollectionConfig = {
-  slug: "theme",
+  slug: "themes",
   admin: {
     useAsTitle: "name",
   },
