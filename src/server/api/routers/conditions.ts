@@ -13,7 +13,11 @@ import {
 export const conditionRouter = createTRPCRouter({
   all: publicProcedure.query(async () => {
     const result = await payload.find({
-      collection: "condition",
+      collection: "conditions",
+      select: {
+        updatedAt: false,
+        createdAt: false,
+      },
     });
 
     return result.docs;

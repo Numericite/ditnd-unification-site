@@ -1,5 +1,4 @@
 import type { CollectionConfig } from "payload";
-import { relationship } from "payload/shared";
 
 export const Journeys: CollectionConfig = {
   slug: "journeys",

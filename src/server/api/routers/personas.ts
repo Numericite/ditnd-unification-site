@@ -1,5 +1,5 @@
 import { getPayload } from "payload";
-import type { PersonaTile } from "~/components/Accueil/PersonaTiles";
+import type { PersonaTile } from "~/components/HomePage/PersonaTiles";
 import payloadConfig from "~/payload/payload.config";
 import { createTRPCRouter, publicProcedure } from "~/server/api/trpc";
 
