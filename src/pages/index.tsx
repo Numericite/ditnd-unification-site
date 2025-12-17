@@ -6,7 +6,6 @@ import { api } from "~/utils/api";
 import { type PersonaTile } from "~/components/HomePage/PersonaTiles";
 import { tdhStore } from "~/state/store";
 import { PracticalGuides } from "~/components/HomePage/PracticalGuides";
-import Image from "next/image";
 
 export default function Home() {
   const { classes } = useStyles();
@@ -27,7 +26,7 @@ export default function Home() {
       name: "Je suis un parent proche",
       description: "Description type",
       slug: "pp",
-      display: "parent",
+      display: "person",
     },
     {
       name: "Je suis un professionnel",
@@ -39,7 +38,7 @@ export default function Home() {
       name: "Autres",
       description: "Description type",
       slug: "gp",
-      display: "other",
+      display: "person",
     },
   ];
 
