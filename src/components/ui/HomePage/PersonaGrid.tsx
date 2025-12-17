@@ -1,13 +1,17 @@
 import { Tile } from "@codegouvfr/react-dsfr/Tile";
 import { fr } from "@codegouvfr/react-dsfr";
-import { type PersonaTile } from "../../HomePage/PersonaTiles";
+import { type PersonaTile, type TagItem } from "../../HomePage/PersonaTiles";
 import { type PersonaTypes } from "../../HomePage/PersonaTiles";
+import type { Dispatch, SetStateAction } from "react";
+
 export const PersonaGrid = ({
   tiles,
   onClick,
+  setTags,
 }: {
   tiles: PersonaTile[];
   onClick: Record<PersonaTypes, () => void>;
+  setTags: Dispatch<SetStateAction<TagItem[]>>;
 }) => (
   <>
     {tiles.map((tile, index) => (
@@ -19,11 +23,25 @@ export const PersonaGrid = ({
           "fr-col-md-4",
           "fr-col-lg-3"
         )}
+        style={{
+          alignItems: "stretch",
+          marginLeft: 0,
+        }}
       >
         <Tile
           enlargeLinkOrButton
           buttonProps={{
-            onClick: onClick[tile.display],
+            onClick: () => {
+              onClick[tile.display]();
+              setTags((prev) => [
+                ...prev,
+                {
+                  label: tile.name,
+                  slug: tile.slug,
+                  display: "default",
+                },
+              ]);
+            },
           }}
           orientation="vertical"
           title={tile.name}

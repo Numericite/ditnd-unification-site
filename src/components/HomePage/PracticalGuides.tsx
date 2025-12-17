@@ -7,7 +7,7 @@ export const PracticalGuides = () => {
       <div
         className="container"
         style={{
-          width: 360,
+          width: 380,
         }}
       >
         <Card

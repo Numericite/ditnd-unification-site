@@ -3,14 +3,18 @@ import { fr } from "@codegouvfr/react-dsfr";
 import {
   type PersonaTile,
   type PersonaTypes,
+  type TagItem,
 } from "../../HomePage/PersonaTiles";
+import type { Dispatch, SetStateAction } from "react";
 
 export const ProfessionnalGrid = ({
   tiles,
   onClick,
+  setTags,
 }: {
   tiles: PersonaTile[];
   onClick: Record<PersonaTypes, () => void>;
+  setTags: Dispatch<SetStateAction<TagItem[]>>;
 }) => (
   <>
     {tiles.map((tile, index) => (
@@ -26,7 +30,17 @@ export const ProfessionnalGrid = ({
         <Tile
           enlargeLinkOrButton
           buttonProps={{
-            onClick: onClick[tile.display],
+            onClick: () => {
+              onClick[tile.display]();
+              setTags((prev) => [
+                ...prev,
+                {
+                  label: tile.name,
+                  slug: tile.slug,
+                  display: "professionnal",
+                },
+              ]);
+            },
           }}
           orientation="vertical"
           title={tile.name}
