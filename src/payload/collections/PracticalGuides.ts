@@ -10,6 +10,10 @@ export const PracticalGuides: CollectionConfig = {
   admin: {
     useAsTitle: "title",
   },
+  labels: {
+    singular: "Fiche pratique",
+    plural: "Fiches pratiques",
+  },
   fields: [
     {
       name: "title",

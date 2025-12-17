@@ -5,6 +5,10 @@ export const Conditions: CollectionConfig = {
   admin: {
     useAsTitle: "acronym",
   },
+  labels: {
+    singular: "Trouble du neurodéveloppement",
+    plural: "Troubles du neurodéveloppement",
+  },
   fields: [
     {
       name: "name",

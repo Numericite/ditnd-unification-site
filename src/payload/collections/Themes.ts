@@ -5,7 +5,10 @@ export const Themes: CollectionConfig = {
   admin: {
     useAsTitle: "name",
   },
-
+  labels: {
+    singular: "Thème",
+    plural: "Thèmes",
+  },
   fields: [
     {
       name: "name",

@@ -5,6 +5,10 @@ export const Journeys: CollectionConfig = {
   admin: {
     useAsTitle: "journey_name",
   },
+  labels: {
+    singular: "Parcours",
+    plural: "Parcours",
+  },
   fields: [
     {
       name: "journey_name",

@@ -5,6 +5,10 @@ export const Courses: CollectionConfig = {
   admin: {
     useAsTitle: "title",
   },
+  labels: {
+    singular: "Formation",
+    plural: "Formations",
+  },
   fields: [
     {
       name: "title",

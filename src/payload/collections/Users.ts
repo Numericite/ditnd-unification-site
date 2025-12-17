@@ -6,6 +6,10 @@ export const Users: CollectionConfig = {
   admin: {
     useAsTitle: "email",
   },
+  labels: {
+    singular: "Utilisateur",
+    plural: "Utilisateurs",
+  },
   access: {
     read: isAdmin,
     update: isAdmin,
