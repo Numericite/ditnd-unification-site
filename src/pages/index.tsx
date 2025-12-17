@@ -1,40 +1,45 @@
 import Head from "next/head";
 import { tss } from "tss-react";
 import { fr } from "@codegouvfr/react-dsfr";
-import { PersonaTiles } from "~/components/Accueil/PersonaTiles";
+import { PersonaTiles } from "~/components/HomePage/PersonaTiles";
 import { api } from "~/utils/api";
-
-type TDH = {
-  id: number;
-  name: string;
-  description: string;
-  acronym: string;
-  slug: string;
-  updatedAt: string;
-  createdAt: string;
-};
+import { type PersonaTile } from "~/components/HomePage/PersonaTiles";
+import { tdhStore } from "~/state/store";
+import { PracticalGuides } from "~/components/HomePage/PracticalGuides";
+import Image from "next/image";
 
 export default function Home() {
   const { classes } = useStyles();
+
   const { data: conditions, isLoading: isLoadingHomePage } =
     api.condition.all.useQuery();
-  console.log(conditions);
-  const tiles = [
+
+  tdhStore.set(conditions);
+
+  const tiles: PersonaTile[] = [
     {
-      title: "Je suis une personne concernée",
+      name: "Je suis une personne concernée",
       description: "Description type",
+      slug: "pe",
+      display: "person",
     },
     {
-      title: "Je suis un parent proche",
+      name: "Je suis un parent proche",
       description: "Description type",
+      slug: "pp",
+      display: "parent",
     },
     {
-      title: "Je suis un professionnel",
+      name: "Je suis un professionnel",
       description: "Description type",
+      slug: "professionnal",
+      display: "professionnal",
     },
     {
-      title: "Autres",
+      name: "Autres",
       description: "Description type",
+      slug: "gp",
+      display: "other",
     },
   ];
 
@@ -59,7 +64,7 @@ export default function Home() {
               </div>
             </div>
           </div>
-          <div className={fr.cx("fr-pt-4w", "fr-pb-4w")}>
+          <div className={fr.cx("fr-py-4w")}>
             <div className={fr.cx("fr-grid-row", "fr-grid-row--gutters")}>
               <div className={fr.cx("fr-col-12", "fr-col-lg-12")}>
                 <h2>Qui êtes vous</h2>
@@ -68,25 +73,10 @@ export default function Home() {
                   par un trouble du neurodéveloppement
                 </div>
               </div>
-              <div
-                className={fr.cx(
-                  "fr-grid-row",
-                  "fr-grid-row--gutters",
-                  "fr-grid-row--middle"
-                )}
-                style={{
-                  width: "100%",
-                  alignItems: "stretch",
-                  marginLeft: 0,
-                }}
-              >
-                {tiles.map((tile, index) => (
-                  <PersonaTiles key={index} tile={tile} />
-                ))}
-              </div>
+              <PersonaTiles tiles={tiles} />
             </div>
           </div>
-          <div className={fr.cx("fr-pt-4w", "fr-pb-4w")}>
+          <div className={fr.cx("fr-py-4w")}>
             <div className={fr.cx("fr-grid-row", "fr-grid-row--gutters")}>
               <div className={fr.cx("fr-col-12", "fr-col-lg-12")}>
                 <h2>Fiches pratiques les plus lues</h2>
@@ -96,6 +86,7 @@ export default function Home() {
                 </div>
               </div>
             </div>
+            <PracticalGuides />
           </div>
         </div>
       )}
