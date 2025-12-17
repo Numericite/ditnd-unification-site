@@ -72,7 +72,7 @@ const userNavigationItems: MainNavigationProps.Item[] = [
     ],
     text: "Je suis",
   },
-  { text: "Fiches pratiques", linkProps: { href: "/fiches" } },
+  { text: "Fiches pratiques", linkProps: { href: "/guides" } },
   {
     menuLinks: [
       {
