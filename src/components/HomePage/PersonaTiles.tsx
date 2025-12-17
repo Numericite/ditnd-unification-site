@@ -8,12 +8,8 @@ import { PersonaGrid } from "../ui/HomePage/PersonaGrid";
 import { api } from "~/utils/api";
 import Tag from "@codegouvfr/react-dsfr/Tag";
 
-export type PersonaTypes =
-  | "person"
-  | "parent"
-  | "professionnal"
-  | "afterProfessionnal"
-  | "other";
+export type PersonaTypes = "person" | "professionnal" | "afterProfessionnal";
+
 export type DisplayType =
   | "default"
   | "person"
@@ -56,37 +52,31 @@ export const PersonaTiles = ({ tiles }: { tiles: PersonaTile[] }) => {
     setTDHTiles(tilesWithUnknown);
   }, []);
 
-  const handlePerson = () => {
-    setDisplay("person");
-  };
-
-  const handleProfessionnal = () => {
-    setDisplay("professionnal");
-  };
-
-  const handleAfterProfessionnal = () => {
-    setDisplay("afterProfessional");
-  };
-
   const tileDispatchTable: Record<PersonaTypes, () => void> = {
-    person: handlePerson,
-    parent: handlePerson,
-    professionnal: handleProfessionnal,
-    afterProfessionnal: handleAfterProfessionnal,
-    other: handlePerson,
+    person: () => {
+      setDisplay("person");
+    },
+    professionnal: () => {
+      setDisplay("professionnal");
+    },
+    afterProfessionnal: () => {
+      setDisplay("afterProfessional");
+    },
   };
 
   const renderContent = () => {
-    if (!tdhTiles || isLoadingPro || !professionalPersonas) {
-      return <div>Loading...</div>;
-    }
     switch (display) {
       case "person":
+        if (!tdhTiles) return <div>Loading...</div>;
         return (
-          <TDHGrid tiles={tdhTiles} onClick={() => setDisplay("default")} /> //onclick placeholder so we do an api call after
+          <TDHGrid tiles={tdhTiles} onClick={() => setDisplay("default")} />
         );
 
       case "professionnal":
+        if (isLoadingPro) return <div>Loading...</div>;
+        if (!professionalPersonas)
+          return <div>No professional persona found</div>;
+
         return (
           <ProfessionnalGrid
             tiles={professionalPersonas}
@@ -97,7 +87,7 @@ export const PersonaTiles = ({ tiles }: { tiles: PersonaTile[] }) => {
 
       case "afterProfessional":
         return (
-          <TDHGrid tiles={tdh.get()} onClick={() => setDisplay("default")} /> //onclick placeholder so we do an api call after
+          <TDHGrid tiles={tdh.get()} onClick={() => setDisplay("default")} />
         );
 
       default:
