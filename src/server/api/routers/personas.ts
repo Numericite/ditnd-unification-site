@@ -6,6 +6,17 @@ import { createTRPCRouter, publicProcedure } from "~/server/api/trpc";
 const payload = await getPayload({ config: payloadConfig });
 
 export const personaRouter = createTRPCRouter({
+  all: publicProcedure.query(async () => {
+    const result = await payload.find({
+      collection: "personas",
+      select: {
+        updatedAt: false,
+        createdAt: false,
+      },
+    });
+    return result.docs;
+  }),
+
   professionals: publicProcedure.query(async () => {
     const result = await payload.find({
       collection: "personas",

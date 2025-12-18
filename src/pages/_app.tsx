@@ -12,6 +12,7 @@ import { api } from "~/utils/api";
 import { fr } from "@codegouvfr/react-dsfr";
 import { Button } from "@codegouvfr/react-dsfr/Button";
 import { Breadcrumb } from "@codegouvfr/react-dsfr/Breadcrumb";
+import { tdhStore } from "~/state/store";
 
 declare module "@codegouvfr/react-dsfr/next-pagesdir" {
   interface RegisterLink {
@@ -107,6 +108,11 @@ function App({ Component, pageProps }: AppProps) {
     isActive: router.asPath === item?.linkProps?.href,
   }));
 
+  const { data: conditions, isLoading: isLoadingHomePage } =
+    api.condition.all.useQuery();
+
+  tdhStore.set(conditions);
+
   return (
     <>
       <Head>
@@ -163,7 +169,11 @@ function App({ Component, pageProps }: AppProps) {
             }}
             segments={[]}
           />
-          <Component {...pageProps} />
+          {isLoadingHomePage ? (
+            <div className="">...Loading</div>
+          ) : (
+            <Component {...pageProps} />
+          )}
         </main>
         <Footer
           accessibility="non compliant"
