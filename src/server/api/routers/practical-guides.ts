@@ -9,9 +9,17 @@ import {
   protectedProcedure,
   publicProcedure,
 } from "~/server/api/trpc";
+import type { GuidesItems } from "~/components/PracticalGuides/PracticalGuidesDisplay";
+
+function getFirstRelation<T>(value: unknown): T | undefined {
+  if (!Array.isArray(value)) return undefined;
+
+  const first = value[0];
+  return typeof first === "object" && first !== null ? (first as T) : undefined;
+}
 
 export const practicalGuidesRouter = createTRPCRouter({
-  display: publicProcedure.query(async () => {
+  display: publicProcedure.query(async (): Promise<GuidesItems[]> => {
     const result = await payload.find({
       collection: "practical-guides",
       depth: 1,
@@ -28,9 +36,9 @@ export const practicalGuidesRouter = createTRPCRouter({
       id: doc.id,
       title: doc.title,
       description: doc.description,
-      condition: doc.conditions?.[0] ?? null,
-      persona: doc.persona?.[0] ?? null,
-      theme: doc.theme?.[0] ?? null,
+      condition: getFirstRelation(doc.conditions),
+      persona: getFirstRelation(doc.persona),
+      theme: getFirstRelation(doc.theme),
     }));
   }),
 });
