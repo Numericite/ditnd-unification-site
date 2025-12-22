@@ -213,7 +213,7 @@ export interface PracticalGuide {
   id: number;
   title: string;
   description: string;
-  conditions?: (number | null) | Condition;
+  conditions?: (number | Condition)[] | null;
   content: {
     root: {
       type: string;
@@ -230,10 +230,10 @@ export interface PracticalGuide {
     [k: string]: unknown;
   };
   html?: string | null;
-  persona: number | Persona;
-  theme: number | Theme;
-  'practical-guides'?: (number | null) | PracticalGuide;
-  courses?: (number | null) | Course;
+  persona: (number | Persona)[];
+  theme: (number | Theme)[];
+  'practical-guides'?: (number | PracticalGuide)[] | null;
+  courses?: (number | Course)[] | null;
   updatedAt: string;
   createdAt: string;
 }

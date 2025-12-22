@@ -30,6 +30,7 @@ export const PracticalGuides: CollectionConfig = {
       type: "relationship",
       required: false,
       relationTo: "conditions",
+      hasMany: true,
     },
     {
       name: "content",
@@ -67,24 +68,28 @@ export const PracticalGuides: CollectionConfig = {
       type: "relationship",
       required: true,
       relationTo: "personas",
+      hasMany: true,
     },
     {
       name: "theme",
       type: "relationship",
       required: true,
       relationTo: "themes",
+      hasMany: true,
     },
     {
       name: "practical-guides",
       type: "relationship",
       required: false,
       relationTo: "practical-guides",
+      hasMany: true,
     },
     {
       name: "courses",
       type: "relationship",
       required: false,
       relationTo: "courses",
+      hasMany: true,
     },
   ],
 };

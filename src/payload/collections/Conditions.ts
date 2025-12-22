@@ -3,7 +3,7 @@ import type { CollectionConfig } from "payload";
 export const Conditions: CollectionConfig = {
   slug: "conditions",
   admin: {
-    useAsTitle: "acronym",
+    useAsTitle: "name",
   },
   labels: {
     singular: "Trouble du neurodéveloppement",
