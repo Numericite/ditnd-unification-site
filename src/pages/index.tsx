@@ -3,7 +3,7 @@ import { tss } from "tss-react";
 import { fr } from "@codegouvfr/react-dsfr";
 import { PersonaTiles } from "~/components/HomePage/PersonaTiles";
 import { type PersonaTile } from "~/components/HomePage/PersonaTiles";
-import { PracticalGuides } from "~/components/ui/PracticalGuides/PracticalGuides";
+import { PracticalGuide } from "~/components/ui/PracticalGuides/PracticalGuide";
 
 export default function Home() {
   const { classes } = useStyles();
@@ -76,7 +76,6 @@ export default function Home() {
               </div>
             </div>
           </div>
-          <PracticalGuides />
         </div>
       </div>
     </>

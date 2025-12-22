@@ -1,28 +1,33 @@
 import { Card } from "@codegouvfr/react-dsfr/Card";
 import { Badge } from "@codegouvfr/react-dsfr/Badge";
 
-export const PracticalGuides = () => {
+export const PracticalGuide = ({
+  title,
+  description,
+  badge,
+  condition,
+}: {
+  title: string;
+  description: string;
+  badge: string;
+  condition: string;
+}) => {
   return (
     <>
-      <div
-        className="container"
-        style={{
-          width: 380,
-        }}
-      >
+      <div className="container">
         <Card
           border
           start={
             <ul className="fr-badges-group">
               <li>
-                <Badge>Autisme</Badge>
+                <Badge>{condition}</Badge>
               </li>
               <li>
-                <Badge noIcon={true}>Définition</Badge>
+                <Badge noIcon={true}>{badge}</Badge>
               </li>
             </ul>
           }
-          desc="Lorem ipsum dolor sit amet, consectetur adipiscing, incididunt, ut labore et dolore magna aliqua. Vitae sapien pellentesque habitant morbi tristique senectus et"
+          desc={description}
           footer={
             <a
               className="fr-link fr-icon-arrow-right-line fr-link--icon-right"
@@ -32,7 +37,7 @@ export const PracticalGuides = () => {
             </a>
           }
           size="medium"
-          title="Qu'est ce que l'autisme"
+          title={title}
           titleAs="h3"
         />
       </div>
