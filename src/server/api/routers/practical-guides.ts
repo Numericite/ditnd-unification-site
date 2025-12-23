@@ -21,38 +21,15 @@ function getFirstRelation<T>(value: unknown): T | undefined {
 }
 
 export const practicalGuidesRouter = createTRPCRouter({
-  display: publicProcedure.query(async (): Promise<GuidesItems[]> => {
-    const result = await payload.find({
-      collection: "practical-guides",
-      depth: 1,
-      select: {
-        updatedAt: false,
-        createdAt: false,
-        html: false,
-        content: false,
-        courses: false,
-      },
-    });
-
-    return result.docs.map((doc) => ({
-      id: doc.id,
-      title: doc.title,
-      description: doc.description,
-      condition: getFirstRelation(doc.conditions),
-      persona: getFirstRelation(doc.persona),
-      theme: getFirstRelation(doc.theme),
-    }));
-  }),
-
   getByFilters: publicProcedure
     .input(
       z.object({
         conditions: z.array(z.string()).optional(),
-        themes: z.array(z.string()).optional(),
-        personas: z.array(z.string()).optional(),
+        themes: z.array(z.string()),
+        personas: z.array(z.string()),
       })
     )
-    .query(async ({ input }) => {
+    .query(async ({ input }): Promise<GuidesItems[]> => {
       const where: Record<string, any> = {};
 
       if (input.conditions?.length) {
@@ -60,12 +37,12 @@ export const practicalGuidesRouter = createTRPCRouter({
           in: input.conditions,
         };
       }
-      if (input.themes?.length) {
+      if (input.themes.length) {
         where["theme.slug"] = {
           in: input.themes,
         };
       }
-      if (input.personas?.length) {
+      if (input.personas.length) {
         where["persona.slug"] = {
           in: input.personas,
         };
@@ -84,6 +61,13 @@ export const practicalGuidesRouter = createTRPCRouter({
         },
         where,
       });
-      return result.docs;
+      return result.docs.map((doc) => ({
+        id: doc.id,
+        title: doc.title,
+        description: doc.description,
+        condition: getFirstRelation(doc.conditions),
+        persona: getFirstRelation(doc.persona),
+        theme: getFirstRelation(doc.theme),
+      }));
     }),
 });
