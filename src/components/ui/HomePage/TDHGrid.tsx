@@ -9,9 +9,9 @@ type Props = {
 
 export const TDHGrid = ({ tiles, onClick }: Props) => (
   <>
-    {tiles.map((tdh) => (
+    {tiles.map((tdh, index) => (
       <div
-        key={tdh.id}
+        key={index}
         className={fr.cx(
           "fr-col-12",
           "fr-col-sm-6",
@@ -20,7 +20,7 @@ export const TDHGrid = ({ tiles, onClick }: Props) => (
         )}
       >
         <Tile
-          key={tdh.id}
+          key={index}
           enlargeLinkOrButton
           buttonProps={{
             onClick: onClick,

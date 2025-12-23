@@ -1,6 +1,7 @@
 import { z } from "zod";
 import { getPayload } from "payload";
 import payloadConfig from "~/payload/payload.config";
+import type { GuidesItems } from "~/components/PracticalGuides/PracticalGuidesDisplay";
 
 const payload = await getPayload({ config: payloadConfig });
 
@@ -9,13 +10,14 @@ import {
   protectedProcedure,
   publicProcedure,
 } from "~/server/api/trpc";
-import type { GuidesItems } from "~/components/PracticalGuides/PracticalGuidesDisplay";
 
 function getFirstRelation<T>(value: unknown): T | undefined {
   if (!Array.isArray(value)) return undefined;
 
-  const first = value[0];
-  return typeof first === "object" && first !== null ? (first as T) : undefined;
+  const firstValue = value[0];
+  return typeof firstValue === "object" && firstValue !== null
+    ? (firstValue as T)
+    : undefined;
 }
 
 export const practicalGuidesRouter = createTRPCRouter({
@@ -41,4 +43,47 @@ export const practicalGuidesRouter = createTRPCRouter({
       theme: getFirstRelation(doc.theme),
     }));
   }),
+
+  getByFilters: publicProcedure
+    .input(
+      z.object({
+        conditions: z.array(z.string()).optional(),
+        themes: z.array(z.string()).optional(),
+        personas: z.array(z.string()).optional(),
+      })
+    )
+    .query(async ({ input }) => {
+      const where: Record<string, any> = {};
+
+      if (input.conditions?.length) {
+        where["conditions.slug"] = {
+          in: input.conditions,
+        };
+      }
+      if (input.themes?.length) {
+        where["theme.slug"] = {
+          in: input.themes,
+        };
+      }
+      if (input.personas?.length) {
+        where["persona.slug"] = {
+          in: input.personas,
+        };
+      }
+      console.log(input);
+
+      const result = await payload.find({
+        collection: "practical-guides",
+        depth: 1,
+        select: {
+          updatedAt: false,
+          createdAt: false,
+          html: false,
+          content: false,
+          courses: false,
+        },
+        where,
+      });
+      return result.docs;
+    }),
 });
