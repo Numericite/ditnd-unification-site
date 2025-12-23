@@ -71,17 +71,17 @@ const guides = [
     title: "L'autisme expliqué aux familles",
     description:
       "Un éclairage sur ce qu'est l'autisme, adapté aux parents et proches, pour mieux comprendre les besoins de leur enfant.",
-    condition: 1,
-    persona: 1,
-    theme: 1,
+    condition: [1],
+    persona: [1],
+    theme: [1],
   },
   {
     title: "Manifestations possibles selon l'âge",
     description:
       "Comment l'autisme peut apparaître différemment chez un jeune enfant, un adolescnent ou un adulte.",
-    condition: 1,
-    persona: 1,
-    theme: 2,
+    condition: [1],
+    persona: [1],
+    theme: [2],
   },
 ];
 
@@ -90,13 +90,13 @@ async function createPracticalGuide(
   data: {
     title: string;
     description: string;
-    condition?: number;
+    conditions?: number[];
     content: DefaultTypedEditorState;
     html?: string;
-    persona: number;
-    theme: number;
+    persona: number[];
+    theme: number[];
     practicalGuide?: number;
-    courses?: Course;
+    courses?: Course[];
   }
 ): Promise<void> {
   try {

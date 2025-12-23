@@ -22,6 +22,26 @@ const theme = [
     description: "Pédagogie",
     slug: "pg",
   },
+  {
+    name: "Définition",
+    description: "Définition",
+    slug: "def",
+  },
+  {
+    name: "Diagnostic",
+    description: "Diagnostic",
+    slug: "diag",
+  },
+  {
+    name: "Droit",
+    description: "Droit",
+    slug: "dr",
+  },
+  {
+    name: "Scolarité",
+    description: "Scolarité",
+    slug: "sco",
+  },
 ];
 
 async function createTheme(
