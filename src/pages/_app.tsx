@@ -162,13 +162,6 @@ function App({ Component, pageProps }: AppProps) {
         />
 
         <main className={fr.cx("fr-container")} style={{ flex: 1 }}>
-          <Breadcrumb
-            currentPageLabel=""
-            homeLinkProps={{
-              href: "/",
-            }}
-            segments={[]}
-          />
           {isLoadingHomePage ? (
             <div className="">...Loading</div>
           ) : (

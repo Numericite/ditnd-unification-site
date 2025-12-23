@@ -4,6 +4,7 @@ import { fr } from "@codegouvfr/react-dsfr";
 import { PersonaTiles } from "~/components/HomePage/PersonaTiles";
 import { type PersonaTile } from "~/components/HomePage/PersonaTiles";
 import { PracticalGuide } from "~/components/ui/PracticalGuides/PracticalGuide";
+import Breadcrumb from "@codegouvfr/react-dsfr/Breadcrumb";
 
 export default function Home() {
   const { classes } = useStyles();
@@ -37,6 +38,13 @@ export default function Home() {
 
   return (
     <>
+      <Breadcrumb
+        currentPageLabel=""
+        homeLinkProps={{
+          href: "/",
+        }}
+        segments={[]}
+      />
       <Head>
         <title>DITND - Accueil</title>
       </Head>
