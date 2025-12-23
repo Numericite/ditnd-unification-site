@@ -2,13 +2,12 @@ import { Tile } from "@codegouvfr/react-dsfr/Tile";
 import { fr } from "@codegouvfr/react-dsfr";
 import { type TDH } from "~/state/store";
 
-export const TDHGrid = ({
-  tiles,
-  onClick,
-}: {
+type Props = {
   tiles: TDH[];
   onClick: () => void;
-}) => (
+};
+
+export const TDHGrid = ({ tiles, onClick }: Props) => (
   <>
     {tiles.map((tdh) => (
       <div

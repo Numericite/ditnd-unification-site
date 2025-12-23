@@ -7,15 +7,13 @@ import {
 } from "../../HomePage/PersonaTiles";
 import type { Dispatch, SetStateAction } from "react";
 
-export const ProfessionnalGrid = ({
-  tiles,
-  onClick,
-  setTags,
-}: {
+type Props = {
   tiles: PersonaTile[];
   onClick: Record<PersonaTypes, () => void>;
   setTags: Dispatch<SetStateAction<TagItem[]>>;
-}) => (
+};
+
+export const ProfessionnalGrid = ({ tiles, onClick, setTags }: Props) => (
   <>
     {tiles.map((tile, index) => (
       <div

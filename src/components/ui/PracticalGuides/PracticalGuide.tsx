@@ -1,17 +1,19 @@
 import { Card } from "@codegouvfr/react-dsfr/Card";
 import { Badge } from "@codegouvfr/react-dsfr/Badge";
 
+type Props = {
+  title: string;
+  description: string;
+  badge: string;
+  condition: string;
+};
+
 export const PracticalGuide = ({
   title,
   description,
   badge,
   condition,
-}: {
-  title: string;
-  description: string;
-  badge: string;
-  condition: string;
-}) => {
+}: Props) => {
   return (
     <>
       <div className="container">

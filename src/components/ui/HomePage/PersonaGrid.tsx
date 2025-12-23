@@ -4,15 +4,13 @@ import { type PersonaTile, type TagItem } from "../../HomePage/PersonaTiles";
 import { type PersonaTypes } from "../../HomePage/PersonaTiles";
 import type { Dispatch, SetStateAction } from "react";
 
-export const PersonaGrid = ({
-  tiles,
-  onClick,
-  setTags,
-}: {
+type Props = {
   tiles: PersonaTile[];
   onClick: Record<PersonaTypes, () => void>;
   setTags: Dispatch<SetStateAction<TagItem[]>>;
-}) => (
+};
+
+export const PersonaGrid = ({ tiles, onClick, setTags }: Props) => (
   <>
     {tiles.map((tile, index) => (
       <div
