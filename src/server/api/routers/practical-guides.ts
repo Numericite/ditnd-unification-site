@@ -10,14 +10,36 @@ import {
   protectedProcedure,
   publicProcedure,
 } from "~/server/api/trpc";
+import type { FiltersQuery } from "~/components/PracticalGuides/FiltersDisplay";
 
-function getFirstRelation<T>(value: unknown): T | undefined {
+type PracticalGuidePayload = {
+  id: number;
+  title: string;
+  description: string;
+  conditions?: (number | FiltersQuery)[] | null;
+  persona: (number | FiltersQuery)[];
+  theme: (number | FiltersQuery)[];
+};
+
+function getFirstRelation<T extends { id: number; name: string; slug: string }>(
+  value: unknown
+): T | undefined {
   if (!Array.isArray(value)) return undefined;
 
-  const firstValue = value[0];
-  return typeof firstValue === "object" && firstValue !== null
-    ? (firstValue as T)
-    : undefined;
+  const first = value.find((v): v is T => typeof v === "object" && v !== null);
+
+  return first;
+}
+
+function mappingResults(docs: PracticalGuidePayload[]): GuidesItems[] {
+  return docs.map((doc) => ({
+    id: doc.id,
+    title: doc.title,
+    description: doc.description,
+    conditions: getFirstRelation(doc.conditions),
+    persona: getFirstRelation(doc.persona),
+    theme: getFirstRelation(doc.theme),
+  }));
 }
 
 export const practicalGuidesRouter = createTRPCRouter({
@@ -47,7 +69,6 @@ export const practicalGuidesRouter = createTRPCRouter({
           in: input.personas,
         };
       }
-      console.log(input);
 
       const result = await payload.find({
         collection: "practical-guides",
@@ -61,13 +82,26 @@ export const practicalGuidesRouter = createTRPCRouter({
         },
         where,
       });
-      return result.docs.map((doc) => ({
-        id: doc.id,
-        title: doc.title,
-        description: doc.description,
-        condition: getFirstRelation(doc.conditions),
-        persona: getFirstRelation(doc.persona),
-        theme: getFirstRelation(doc.theme),
-      }));
+
+      return mappingResults(result.docs as PracticalGuidePayload[]);
+    }),
+
+  getByInput: publicProcedure
+    .input(z.object({ text: z.string() }))
+    .query(async ({ input }) => {
+      const result = await payload.find({
+        collection: "practical-guides",
+        depth: 1,
+        select: {
+          updatedAt: false,
+          createdAt: false,
+          html: false,
+          content: false,
+          courses: false,
+        },
+        where: {},
+      });
+
+      return mappingResults(result.docs as PracticalGuidePayload[]);
     }),
 });
