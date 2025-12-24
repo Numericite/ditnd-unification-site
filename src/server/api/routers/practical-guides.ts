@@ -36,7 +36,7 @@ function mappingResults(docs: PracticalGuidePayload[]): GuidesItems[] {
     id: doc.id,
     title: doc.title,
     description: doc.description,
-    conditions: getFirstRelation(doc.conditions),
+    condition: getFirstRelation(doc.conditions),
     persona: getFirstRelation(doc.persona),
     theme: getFirstRelation(doc.theme),
   }));
