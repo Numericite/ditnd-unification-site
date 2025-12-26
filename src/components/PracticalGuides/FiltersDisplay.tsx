@@ -1,5 +1,6 @@
 import { Filter } from "../ui/PracticalGuides/Filter";
 import { useObservable } from "@legendapp/state/react";
+import type { Dispatch, SetStateAction } from "react";
 import { tdhStore } from "~/state/store";
 import { api } from "~/utils/api";
 
@@ -8,7 +9,17 @@ export type FilterItem = {
   label: string;
 };
 
-export const FiltersDisplay = () => {
+export type FiltersQuery = {
+  conditions: string[];
+  themes: string[];
+  personas: string[];
+};
+
+export const FiltersDisplay = ({
+  setFilters,
+}: {
+  setFilters: Dispatch<SetStateAction<FiltersQuery>>;
+}) => {
   const tdh = useObservable(tdhStore).get();
 
   const { data: personasData, isLoading: isLoadingPersonas } =
@@ -34,25 +45,30 @@ export const FiltersDisplay = () => {
       label: theme.name,
     })) ?? [];
 
-  const filters = [
-    { label: "Troubles", value: tdhItems },
-    { label: "Thématiques", value: themeItems },
-    { label: "À destination de", value: personaItems },
+  const filters: {
+    label: string;
+    collection: keyof FiltersQuery;
+    value: FilterItem[];
+  }[] = [
+    { label: "Troubles", collection: "conditions", value: tdhItems },
+    { label: "Thématiques", collection: "themes", value: themeItems },
+    { label: "À destination de", collection: "personas", value: personaItems },
   ];
 
   return (
     <>
-      {!isLoadingPersonas && !isLoadingThemes && !tdh ? (
-        <></>
-      ) : (
+      {!isLoadingPersonas &&
+        !isLoadingThemes &&
+        tdh &&
         filters.map((filter, index) => (
           <Filter
             key={"filter" + index}
             label={filter.label}
+            collection={filter.collection}
             value={filter.value}
+            setFilters={setFilters}
           />
-        ))
-      )}
+        ))}
     </>
   );
 };

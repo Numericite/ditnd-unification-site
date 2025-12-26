@@ -1,6 +1,10 @@
 import { api } from "~/utils/api";
 import { PracticalGuide } from "../ui/PracticalGuides/PracticalGuide";
 import { fr } from "@codegouvfr/react-dsfr";
+import SearchBar from "@codegouvfr/react-dsfr/SearchBar";
+import type { FiltersQuery } from "./FiltersDisplay";
+import { useState } from "react";
+import { SearchBarUI } from "../ui/PracticalGuides/SearchBarUI";
 
 export type DisplayItem = {
   id: number;
@@ -17,31 +21,36 @@ export type GuidesItems = {
   theme?: DisplayItem;
 };
 
-export const PracticalGuidesDisplay = () => {
+export const PracticalGuidesDisplay = ({
+  filters,
+}: {
+  filters: FiltersQuery;
+}) => {
   const { data: practicalGuideData, isLoading: isLoadingGuides } =
-    api.practicalGuide.display.useQuery();
-  const { data: filteredPracticalGuides, isLoading: isLoadingFiltered } =
-    api.practicalGuide.getByFilters.useQuery({ text: "aaaa" });
+    api.practicalGuide.getByFilters.useQuery(filters);
 
   return (
     <>
+      <SearchBarUI />
       {isLoadingGuides ? (
         <div className="">...Loading</div>
       ) : (
-        practicalGuideData?.map((guide) => (
-          <div
-            key={guide.id}
-            className={fr.cx("fr-col-12", "fr-col-md-6")}
-            style={{ display: "flex" }}
-          >
-            <PracticalGuide
-              title={guide.title}
-              badge={guide.theme?.name ?? ""}
-              description={guide.description}
-              condition={guide.condition?.slug ?? ""}
-            />
-          </div>
-        ))
+        <div className={fr.cx("fr-grid-row", "fr-grid-row--gutters")}>
+          {practicalGuideData?.map((guide) => (
+            <div
+              key={guide.id}
+              className={fr.cx("fr-col-12", "fr-col-md-6")}
+              style={{ display: "flex" }}
+            >
+              <PracticalGuide
+                title={guide.title}
+                badge={guide.theme?.name ?? ""}
+                description={guide.description}
+                condition={guide.condition?.slug ?? ""}
+              />
+            </div>
+          ))}
+        </div>
       )}
     </>
   );

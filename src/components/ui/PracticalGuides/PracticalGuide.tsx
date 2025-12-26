@@ -1,5 +1,8 @@
 import { Card } from "@codegouvfr/react-dsfr/Card";
 import { Badge } from "@codegouvfr/react-dsfr/Badge";
+import { tss } from "tss-react";
+import { fr } from "@codegouvfr/react-dsfr";
+import { cx } from "@codegouvfr/react-dsfr/fr/cx";
 
 type Props = {
   title: string;
@@ -14,6 +17,8 @@ export const PracticalGuide = ({
   badge,
   condition,
 }: Props) => {
+  const { classes } = useStyles();
+
   return (
     <>
       <div className="container">
@@ -46,3 +51,9 @@ export const PracticalGuide = ({
     </>
   );
 };
+
+const useStyles = tss.withName(PracticalGuide.name).create({
+  BadgeColor: {
+    color: "Background",
+  },
+});
