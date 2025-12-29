@@ -1,17 +1,16 @@
 import { fr } from "@codegouvfr/react-dsfr";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useObservable } from "@legendapp/state/react";
 import { tdhStore, type TDH } from "~/state/store";
-import { TDHGrid } from "../ui/HomePage/TDHGrid";
-import { ProfessionnalGrid } from "../ui/HomePage/ProfessionnalGrid";
 import { PersonaGrid } from "../ui/HomePage/PersonaGrid";
 import { api } from "~/utils/api";
 import Tag from "@codegouvfr/react-dsfr/Tag";
 
 export type PersonaTypes =
   | "person"
-  | "professionnal"
+  | "professional"
   | "afterProfessional"
+  | "condition"
   | "default";
 
 export type PersonaTile = {
@@ -33,11 +32,11 @@ const unknownTile: TDH = {
   description: "Diagnostic rapide de vos symptômes pour mieux vous comprendre",
   acronym: "unknown",
   slug: "unknown",
+  display: "condition",
 };
 
 export const PersonaTiles = ({ tiles }: { tiles: PersonaTile[] }) => {
   const [display, setDisplay] = useState<PersonaTypes>("default");
-  const [tdhTiles, setTDHTiles] = useState<TDH[]>();
   const [tags, setTags] = useState<TagItem[]>([]);
 
   const { data: professionalPersonas, isLoading: isLoadingPro } =
@@ -45,20 +44,22 @@ export const PersonaTiles = ({ tiles }: { tiles: PersonaTile[] }) => {
 
   const tdh = useObservable(tdhStore).get();
 
-  useEffect(() => {
-    const tilesWithUnknown: TDH[] = [unknownTile, ...tdh.get()];
-    setTDHTiles(tilesWithUnknown);
-  }, []);
+  const tdhTiles = [unknownTile, ...tdh.get()];
 
   const tileDispatchTable: Record<PersonaTypes, () => void> = {
     person: () => {
       setDisplay("person");
     },
-    professionnal: () => {
-      setDisplay("professionnal");
+    professional: () => {
+      setDisplay("professional");
     },
     afterProfessional: () => {
       setDisplay("afterProfessional");
+    },
+    condition: () => {
+      console.log(tags);
+      setTags([]);
+      setDisplay("default");
     },
     default: () => {
       setDisplay("default");
@@ -70,36 +71,33 @@ export const PersonaTiles = ({ tiles }: { tiles: PersonaTile[] }) => {
       case "person":
         if (!tdhTiles) return <div>Loading...</div>;
         return (
-          <TDHGrid
-            tiles={tdhTiles}
-            onClick={() => {
-              setDisplay("default");
-              setTags([]);
-            }}
+          <PersonaGrid
+            tiles={tdh.get()}
+            onClick={tileDispatchTable}
+            currentDisplay="professional"
           />
         );
 
-      case "professionnal":
+      case "professional":
         if (isLoadingPro) return <div>Loading...</div>;
         if (!professionalPersonas)
           return <div>No professional persona found</div>;
 
         return (
-          <ProfessionnalGrid
+          <PersonaGrid
             tiles={professionalPersonas}
             onClick={tileDispatchTable}
             setTags={setTags}
+            currentDisplay="professional"
           />
         );
 
       case "afterProfessional":
         return (
-          <TDHGrid
+          <PersonaGrid
             tiles={tdh.get()}
-            onClick={() => {
-              setDisplay("default");
-              setTags([]);
-            }}
+            onClick={tileDispatchTable}
+            currentDisplay="professional"
           />
         );
 
@@ -109,6 +107,7 @@ export const PersonaTiles = ({ tiles }: { tiles: PersonaTile[] }) => {
             tiles={tiles}
             onClick={tileDispatchTable}
             setTags={setTags}
+            currentDisplay="default"
           />
         );
     }
@@ -130,7 +129,7 @@ export const PersonaTiles = ({ tiles }: { tiles: PersonaTile[] }) => {
               dismissible
               nativeButtonProps={{
                 onClick: function deleteTag() {
-                  tileDispatchTable[tag.display]();
+                  setDisplay(tag.display);
                   tag.display === "default"
                     ? setTags([])
                     : setTags([...tags].filter((t) => t.slug !== tag.slug));

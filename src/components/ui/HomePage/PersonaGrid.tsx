@@ -6,11 +6,17 @@ import type { Dispatch, SetStateAction } from "react";
 
 type Props = {
   tiles: PersonaTile[];
+  currentDisplay: PersonaTypes;
   onClick: Record<PersonaTypes, () => void>;
-  setTags: Dispatch<SetStateAction<TagItem[]>>;
+  setTags?: Dispatch<SetStateAction<TagItem[]>> | undefined;
 };
 
-export const PersonaGrid = ({ tiles, onClick, setTags }: Props) => (
+export const PersonaGrid = ({
+  tiles,
+  onClick,
+  currentDisplay,
+  setTags,
+}: Props) => (
   <>
     {tiles.map((tile, index) => (
       <div
@@ -31,14 +37,15 @@ export const PersonaGrid = ({ tiles, onClick, setTags }: Props) => (
           buttonProps={{
             onClick: () => {
               onClick[tile.display]();
-              setTags((prev) => [
-                ...prev,
-                {
-                  label: tile.name,
-                  slug: tile.slug,
-                  display: "default",
-                },
-              ]);
+              if (setTags)
+                setTags((prev) => [
+                  ...prev,
+                  {
+                    label: tile.name,
+                    slug: tile.slug,
+                    display: currentDisplay,
+                  },
+                ]);
             },
           }}
           orientation="vertical"

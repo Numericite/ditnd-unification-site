@@ -3,7 +3,6 @@ import { tss } from "tss-react";
 import { fr } from "@codegouvfr/react-dsfr";
 import { PersonaTiles } from "~/components/HomePage/PersonaTiles";
 import { type PersonaTile } from "~/components/HomePage/PersonaTiles";
-import { PracticalGuide } from "~/components/ui/PracticalGuides/PracticalGuide";
 import Breadcrumb from "@codegouvfr/react-dsfr/Breadcrumb";
 
 export default function Home() {
@@ -25,8 +24,8 @@ export default function Home() {
     {
       name: "Je suis un professionnel",
       description: "Description type",
-      slug: "professionnal",
-      display: "professionnal",
+      slug: "professional",
+      display: "professional",
     },
     {
       name: "Autres",

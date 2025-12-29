@@ -1,4 +1,3 @@
-import { z } from "zod";
 import { getPayload } from "payload";
 import payloadConfig from "~/payload/payload.config";
 
@@ -9,6 +8,7 @@ import {
   protectedProcedure,
   publicProcedure,
 } from "~/server/api/trpc";
+import type { PersonaTile } from "~/components/HomePage/PersonaTiles";
 
 export const conditionRouter = createTRPCRouter({
   all: publicProcedure.query(async () => {
@@ -20,6 +20,12 @@ export const conditionRouter = createTRPCRouter({
       },
     });
 
-    return result.docs;
+    const res = result.docs.map(
+      (condition): PersonaTile => ({
+        ...condition,
+        display: "condition",
+      })
+    );
+    return res;
   }),
 });
