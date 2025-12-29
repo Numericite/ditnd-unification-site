@@ -33,7 +33,7 @@ export const personaRouter = createTRPCRouter({
     const res = result.docs.map(
       (persona): PersonaTile => ({
         ...persona,
-        display: "afterProfessionnal",
+        display: "afterProfessional",
       })
     );
     return res;

@@ -8,13 +8,11 @@ import { PersonaGrid } from "../ui/HomePage/PersonaGrid";
 import { api } from "~/utils/api";
 import Tag from "@codegouvfr/react-dsfr/Tag";
 
-export type PersonaTypes = "person" | "professionnal" | "afterProfessionnal";
-
-export type DisplayType =
-  | "default"
+export type PersonaTypes =
   | "person"
   | "professionnal"
-  | "afterProfessional";
+  | "afterProfessional"
+  | "default";
 
 export type PersonaTile = {
   id?: number;
@@ -26,7 +24,7 @@ export type PersonaTile = {
 
 export type TagItem = {
   label: string;
-  display: DisplayType;
+  display: PersonaTypes;
   slug: string;
 };
 
@@ -38,7 +36,7 @@ const unknownTile: TDH = {
 };
 
 export const PersonaTiles = ({ tiles }: { tiles: PersonaTile[] }) => {
-  const [display, setDisplay] = useState<DisplayType>("default");
+  const [display, setDisplay] = useState<PersonaTypes>("default");
   const [tdhTiles, setTDHTiles] = useState<TDH[]>();
   const [tags, setTags] = useState<TagItem[]>([]);
 
@@ -59,8 +57,11 @@ export const PersonaTiles = ({ tiles }: { tiles: PersonaTile[] }) => {
     professionnal: () => {
       setDisplay("professionnal");
     },
-    afterProfessionnal: () => {
+    afterProfessional: () => {
       setDisplay("afterProfessional");
+    },
+    default: () => {
+      setDisplay("default");
     },
   };
 
@@ -69,7 +70,13 @@ export const PersonaTiles = ({ tiles }: { tiles: PersonaTile[] }) => {
       case "person":
         if (!tdhTiles) return <div>Loading...</div>;
         return (
-          <TDHGrid tiles={tdhTiles} onClick={() => setDisplay("default")} />
+          <TDHGrid
+            tiles={tdhTiles}
+            onClick={() => {
+              setDisplay("default");
+              setTags([]);
+            }}
+          />
         );
 
       case "professionnal":
@@ -87,7 +94,13 @@ export const PersonaTiles = ({ tiles }: { tiles: PersonaTile[] }) => {
 
       case "afterProfessional":
         return (
-          <TDHGrid tiles={tdh.get()} onClick={() => setDisplay("default")} />
+          <TDHGrid
+            tiles={tdh.get()}
+            onClick={() => {
+              setDisplay("default");
+              setTags([]);
+            }}
+          />
         );
 
       default:
@@ -117,8 +130,10 @@ export const PersonaTiles = ({ tiles }: { tiles: PersonaTile[] }) => {
               dismissible
               nativeButtonProps={{
                 onClick: function deleteTag() {
-                  setDisplay(tag.display);
-                  setTags([...tags].filter((t) => t.slug !== tag.slug));
+                  tileDispatchTable[tag.display]();
+                  tag.display === "default"
+                    ? setTags([])
+                    : setTags([...tags].filter((t) => t.slug !== tag.slug));
                 },
               }}
             >

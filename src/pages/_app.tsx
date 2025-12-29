@@ -11,8 +11,9 @@ import { createEmotionSsrAdvancedApproach } from "tss-react/next/pagesDir";
 import { api } from "~/utils/api";
 import { fr } from "@codegouvfr/react-dsfr";
 import { Button } from "@codegouvfr/react-dsfr/Button";
-import { Breadcrumb } from "@codegouvfr/react-dsfr/Breadcrumb";
 import { tdhStore } from "~/state/store";
+import { PersonaMenuLink } from "~/components/ui/HomePage/PersonaMenuLink";
+import type { MenuProps } from "@codegouvfr/react-dsfr/MainNavigation/Menu";
 
 declare module "@codegouvfr/react-dsfr/next-pagesdir" {
   interface RegisterLink {
@@ -42,35 +43,48 @@ const { withDsfr, dsfrDocumentApi } = createNextDsfrIntegrationApi({
 
 export { augmentDocumentWithEmotionCache, dsfrDocumentApi };
 
+const personaMenu = [
+  {
+    title: "Une personne concernée par",
+    description: "Description personne concernée",
+    href: "#",
+    icon: "fr-icon-user-line",
+  },
+  {
+    title: "Un parent ou un proche intéressé par",
+    description: "Description parent ou un proche",
+    href: "#",
+    icon: "fr-icon-parent-line",
+  },
+  {
+    title: "Un professionnel intéressé par",
+    description: "Description professionnel",
+    href: "#",
+    icon: "fr-icon-briefcase-line",
+  },
+  {
+    title: "Autres",
+    description: "Autres Description",
+    href: "#",
+    icon: "fr-icon-team-line",
+  },
+];
+
+const personaMenuLinks: MenuProps.Link[] = personaMenu.map((persona) => ({
+  linkProps: { href: persona.href },
+  text: (
+    <PersonaMenuLink
+      title={persona.title}
+      description={persona.description}
+      icon={persona.icon}
+    />
+  ),
+}));
+
 const userNavigationItems: MainNavigationProps.Item[] = [
   { text: "Accueil", linkProps: { href: "/" } },
   {
-    menuLinks: [
-      {
-        linkProps: {
-          href: "#",
-        },
-        text: "Une personne concernée",
-      },
-      {
-        linkProps: {
-          href: "#",
-        },
-        text: "Un parent",
-      },
-      {
-        linkProps: {
-          href: "#",
-        },
-        text: "Un professionnel",
-      },
-      {
-        linkProps: {
-          href: "#",
-        },
-        text: "Autres",
-      },
-    ],
+    menuLinks: personaMenuLinks,
     text: "Je suis",
   },
   { text: "Fiches pratiques", linkProps: { href: "/guides" } },
