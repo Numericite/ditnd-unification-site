@@ -14,6 +14,7 @@ import { Button } from "@codegouvfr/react-dsfr/Button";
 import { tdhStore } from "~/state/store";
 import { PersonaMenuLink } from "~/components/ui/HomePage/PersonaMenuLink";
 import type { MenuProps } from "@codegouvfr/react-dsfr/MainNavigation/Menu";
+import { PersonaMenu } from "~/components/HomePage/PersonaMenu";
 
 declare module "@codegouvfr/react-dsfr/next-pagesdir" {
   interface RegisterLink {
@@ -43,49 +44,11 @@ const { withDsfr, dsfrDocumentApi } = createNextDsfrIntegrationApi({
 
 export { augmentDocumentWithEmotionCache, dsfrDocumentApi };
 
-const personaMenu = [
-  {
-    title: "Une personne concernée par",
-    description: "Description personne concernée",
-    href: "#",
-    icon: "fr-icon-user-line",
-  },
-  {
-    title: "Un parent ou un proche intéressé par",
-    description: "Description parent ou un proche",
-    href: "#",
-    icon: "fr-icon-parent-line",
-  },
-  {
-    title: "Un professionnel intéressé par",
-    description: "Description professionnel",
-    href: "#",
-    icon: "fr-icon-briefcase-line",
-  },
-  {
-    title: "Autres",
-    description: "Autres Description",
-    href: "#",
-    icon: "fr-icon-team-line",
-  },
-];
-
-const personaMenuLinks: MenuProps.Link[] = personaMenu.map((persona) => ({
-  linkProps: { href: persona.href },
-  text: (
-    <PersonaMenuLink
-      title={persona.title}
-      description={persona.description}
-      icon={persona.icon}
-    />
-  ),
-}));
-
 const userNavigationItems: MainNavigationProps.Item[] = [
   { text: "Accueil", linkProps: { href: "/" } },
   {
-    menuLinks: personaMenuLinks,
     text: "Je suis",
+    menuLinks: PersonaMenu,
   },
   { text: "Fiches pratiques", linkProps: { href: "/guides" } },
   {

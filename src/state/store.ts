@@ -6,9 +6,9 @@ export type TDH = {
   id?: number;
   name: string;
   description: string;
-  display: PersonaTypes;
   acronym: string;
   slug: string;
+  display: PersonaTypes;
 };
 
 export const tdhStore = observable<TDH[]>([]);

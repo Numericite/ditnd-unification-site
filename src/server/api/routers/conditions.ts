@@ -1,14 +1,13 @@
 import { getPayload } from "payload";
 import payloadConfig from "~/payload/payload.config";
-
-const payload = await getPayload({ config: payloadConfig });
-
 import {
   createTRPCRouter,
   protectedProcedure,
   publicProcedure,
 } from "~/server/api/trpc";
-import type { PersonaTile } from "~/components/HomePage/PersonaTiles";
+import type { TDH } from "~/state/store";
+
+const payload = await getPayload({ config: payloadConfig });
 
 export const conditionRouter = createTRPCRouter({
   all: publicProcedure.query(async () => {
@@ -21,7 +20,7 @@ export const conditionRouter = createTRPCRouter({
     });
 
     const res = result.docs.map(
-      (condition): PersonaTile => ({
+      (condition): TDH => ({
         ...condition,
         display: "condition",
       })
