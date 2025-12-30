@@ -12,8 +12,6 @@ import { api } from "~/utils/api";
 import { fr } from "@codegouvfr/react-dsfr";
 import { Button } from "@codegouvfr/react-dsfr/Button";
 import { tdhStore } from "~/state/store";
-import { PersonaMenuLink } from "~/components/ui/HomePage/PersonaMenuLink";
-import type { MenuProps } from "@codegouvfr/react-dsfr/MainNavigation/Menu";
 import { PersonaMenu } from "~/components/HomePage/PersonaMenu";
 
 declare module "@codegouvfr/react-dsfr/next-pagesdir" {
