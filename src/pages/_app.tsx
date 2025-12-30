@@ -12,7 +12,7 @@ import { api } from "~/utils/api";
 import { fr } from "@codegouvfr/react-dsfr";
 import { Button } from "@codegouvfr/react-dsfr/Button";
 import { tdhStore } from "~/state/store";
-import { PersonaMenu } from "~/components/HomePage/PersonaMenu";
+import { PersonaMenu } from "~/components/HomePage/PersonaHeaderMenu";
 
 declare module "@codegouvfr/react-dsfr/next-pagesdir" {
   interface RegisterLink {
