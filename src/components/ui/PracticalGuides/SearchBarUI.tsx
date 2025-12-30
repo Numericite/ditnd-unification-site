@@ -25,7 +25,10 @@ export const SearchBarUI = ({ onClick }: Props) => {
               placeholder={placeholder}
               type={type}
               value={search}
-              onChange={(event) => onSearchChange(event.currentTarget.value)}
+              onChange={(event) => {
+                if (event.currentTarget.value === "") onClick("");
+                onSearchChange(event.currentTarget.value);
+              }}
             />
           )}
         />

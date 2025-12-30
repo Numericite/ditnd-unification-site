@@ -64,6 +64,66 @@ const content: DefaultTypedEditorState[] = [
       direction: null,
     },
   },
+  {
+    root: {
+      type: "root",
+      format: "",
+      indent: 0,
+      version: 1,
+      children: [
+        {
+          type: "heading",
+          tag: "h1",
+          format: "",
+          indent: 0,
+          version: 1,
+          children: [
+            {
+              type: "text",
+              text: "Le lycée constitue une étape cruciale pour l'élève avec un TDAH puisqu'il définit ses goûts et ses aptitudes et commence à tracer son parcours étudiant et professionnel. Quels sont les dispositifs existants pour lui permettre...",
+              detail: 0,
+              format: 0,
+              mode: "normal",
+              style: "",
+              version: 1,
+            },
+          ],
+          direction: null,
+        },
+      ],
+      direction: null,
+    },
+  },
+  {
+    root: {
+      type: "root",
+      format: "",
+      indent: 0,
+      version: 1,
+      children: [
+        {
+          type: "heading",
+          tag: "h1",
+          format: "",
+          indent: 0,
+          version: 1,
+          children: [
+            {
+              type: "text",
+              text: "Le lycée constitue une étape cruciale pour l'élève avec un TDAH puisqu'il définit ses goûts et ses aptitudes et commence à tracer son parcours étudiant et professionnel. Quels sont les dispositifs existants pour lui permettre...",
+              detail: 0,
+              format: 0,
+              mode: "normal",
+              style: "",
+              version: 1,
+            },
+          ],
+          direction: null,
+        },
+      ],
+      direction: null,
+    },
+  },
 ];
 
 const guides = [
@@ -71,17 +131,33 @@ const guides = [
     title: "L'autisme expliqué aux familles",
     description:
       "Un éclairage sur ce qu'est l'autisme, adapté aux parents et proches, pour mieux comprendre les besoins de leur enfant.",
-    conditions: [1],
+    conditions: [6],
     persona: [1],
     theme: [1],
   },
   {
     title: "Manifestations possibles selon l'âge",
     description:
-      "Comment l'autisme peut apparaître différemment chez un jeune enfant, un adolescnent ou un adulte.",
-    conditions: [1],
+      "Comment l'autisme peut apparaître différemment chez un jeune enfant, un adolescent ou un adulte.",
+    conditions: [6],
     persona: [1],
     theme: [2],
+  },
+  {
+    title: "Aller au lycée quand on a un TDAH",
+    description:
+      "Le lycée constitue une étape cruciale pour l'élève avec un TDAH puisqu'il définit ses goûts et ses aptitudes et commence à tracer son parcours étudiant et professionnel. Quels sont les dispositifs existants pour lui permettre...",
+    conditions: [4],
+    persona: [2],
+    theme: [8],
+  },
+  {
+    title: "Parcours de diagnostic DYS",
+    description:
+      "Comment entamer un parcours de diagnostic d'un trouble DYS ? Vous vous posez des questions sur le développement de votre enfant ? En tant qu'adulte vous n'arrivez pas expliquer certaines de vos difficultés et ...",
+    conditions: [7],
+    persona: [2],
+    theme: [6],
   },
 ];
 

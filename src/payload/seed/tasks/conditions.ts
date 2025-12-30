@@ -40,6 +40,13 @@ const conditions = [
     acronym: "TSA",
     slug: "tsa",
   },
+  {
+    name: "DYS",
+    description:
+      "Troubles cognitifs spécifiques qui affectent certaines fonctions humaines",
+    acronym: "dys",
+    slug: "dys",
+  },
 ];
 
 async function createConditions(
