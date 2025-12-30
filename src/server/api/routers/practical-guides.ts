@@ -99,7 +99,25 @@ export const practicalGuidesRouter = createTRPCRouter({
           content: false,
           courses: false,
         },
-        where: {},
+        where: {
+          or: [
+            {
+              title: {
+                contains: input.text,
+              },
+            },
+            {
+              description: {
+                contains: input.text,
+              },
+            },
+            {
+              html: {
+                contains: input.text,
+              },
+            },
+          ],
+        },
       });
 
       return mappingResults(result.docs as PracticalGuidePayload[]);
