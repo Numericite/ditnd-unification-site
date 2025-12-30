@@ -1,7 +1,6 @@
 import { api } from "~/utils/api";
 import { PracticalGuide } from "../ui/PracticalGuides/PracticalGuide";
 import { fr } from "@codegouvfr/react-dsfr";
-import SearchBar from "@codegouvfr/react-dsfr/SearchBar";
 import type { FiltersQuery } from "./FiltersDisplay";
 import { useState } from "react";
 import { SearchBarUI } from "../ui/PracticalGuides/SearchBarUI";
@@ -26,17 +25,32 @@ export const PracticalGuidesDisplay = ({
 }: {
   filters: FiltersQuery;
 }) => {
+  const [query, setQuery] = useState<string>("");
+
   const { data: practicalGuideData, isLoading: isLoadingGuides } =
     api.practicalGuide.getByFilters.useQuery(filters);
 
+  const { data: inputSearchData, isLoading: isLoadingData } =
+    api.practicalGuide.getByInput.useQuery(
+      { text: query },
+      { enabled: !!query }
+    );
+
+  const guidesToDisplay =
+    query && inputSearchData ? inputSearchData : practicalGuideData;
+
   return (
     <>
-      <SearchBarUI />
+      <SearchBarUI
+        onClick={(query) => {
+          setQuery(query);
+        }}
+      />
       {isLoadingGuides ? (
         <div className="">...Loading</div>
       ) : (
         <div className={fr.cx("fr-grid-row", "fr-grid-row--gutters")}>
-          {practicalGuideData?.map((guide) => (
+          {guidesToDisplay?.map((guide) => (
             <div
               key={guide.id}
               className={fr.cx("fr-col-12", "fr-col-md-6")}
