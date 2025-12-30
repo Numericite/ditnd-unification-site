@@ -72,7 +72,7 @@ export const PersonaTiles = ({ tiles }: { tiles: PersonaTile[] }) => {
         if (!tdhTiles) return <div>Loading...</div>;
         return (
           <PersonaGrid
-            tiles={tdh.get()}
+            tiles={tdhTiles}
             onClick={tileDispatchTable}
             currentDisplay="professional"
           />
