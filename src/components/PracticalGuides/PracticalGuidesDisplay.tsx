@@ -28,16 +28,7 @@ export const PracticalGuidesDisplay = ({
   const [query, setQuery] = useState<string>("");
 
   const { data: practicalGuideData, isLoading: isLoadingGuides } =
-    api.practicalGuide.getByFilters.useQuery(filters);
-
-  const { data: inputSearchData, isLoading: isLoadingData } =
-    api.practicalGuide.getByInput.useQuery(
-      { text: query },
-      { enabled: !!query }
-    );
-
-  const guidesToDisplay =
-    query && inputSearchData ? inputSearchData : practicalGuideData;
+    api.practicalGuide.getByFilters.useQuery({ ...filters, text: query });
 
   return (
     <>
@@ -50,7 +41,7 @@ export const PracticalGuidesDisplay = ({
         <div className="">...Loading</div>
       ) : (
         <div className={fr.cx("fr-grid-row", "fr-grid-row--gutters")}>
-          {guidesToDisplay?.map((guide) => (
+          {practicalGuideData?.map((guide) => (
             <div
               key={guide.id}
               className={fr.cx("fr-col-12", "fr-col-md-6")}
