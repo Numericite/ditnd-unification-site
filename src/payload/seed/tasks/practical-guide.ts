@@ -129,6 +129,7 @@ const content: DefaultTypedEditorState[] = [
 const guides = [
   {
     title: "L'autisme expliqué aux familles",
+    slug: "autisme_explique_aux_familles",
     description:
       "Un éclairage sur ce qu'est l'autisme, adapté aux parents et proches, pour mieux comprendre les besoins de leur enfant.",
     conditions: [6],
@@ -137,6 +138,7 @@ const guides = [
   },
   {
     title: "Manifestations possibles selon l'âge",
+    slug: "manifestations_possibles_selon_lage",
     description:
       "Comment l'autisme peut apparaître différemment chez un jeune enfant, un adolescent ou un adulte.",
     conditions: [6],
@@ -145,6 +147,7 @@ const guides = [
   },
   {
     title: "Aller au lycée quand on a un TDAH",
+    slug: "aller_au_lycee_quand_on_a_un_tdah",
     description:
       "Le lycée constitue une étape cruciale pour l'élève avec un TDAH puisqu'il définit ses goûts et ses aptitudes et commence à tracer son parcours étudiant et professionnel. Quels sont les dispositifs existants pour lui permettre...",
     conditions: [4],
@@ -153,6 +156,7 @@ const guides = [
   },
   {
     title: "Parcours de diagnostic DYS",
+    slug: "parcours_de_diagnostic_dys",
     description:
       "Comment entamer un parcours de diagnostic d'un trouble DYS ? Vous vous posez des questions sur le développement de votre enfant ? En tant qu'adulte vous n'arrivez pas expliquer certaines de vos difficultés et ...",
     conditions: [7],
@@ -165,6 +169,7 @@ async function createPracticalGuide(
   payload: Payload,
   data: {
     title: string;
+    slug: string;
     description: string;
     conditions?: number[];
     content: DefaultTypedEditorState;

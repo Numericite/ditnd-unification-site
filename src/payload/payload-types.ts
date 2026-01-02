@@ -220,6 +220,7 @@ export interface Theme {
 export interface PracticalGuide {
   id: number;
   title: string;
+  slug: string;
   description: string;
   conditions?: (number | Condition)[] | null;
   content: {
@@ -432,6 +433,7 @@ export interface CoursesSelect<T extends boolean = true> {
  */
 export interface PracticalGuidesSelect<T extends boolean = true> {
   title?: T;
+  slug?: T;
   description?: T;
   conditions?: T;
   content?: T;

@@ -15,6 +15,7 @@ import type { FiltersQuery } from "~/components/PracticalGuides/FiltersDisplay";
 type PracticalGuidePayload = {
   id: number;
   title: string;
+  slug: string;
   description: string;
   conditions?: (number | FiltersQuery)[] | null;
   persona: (number | FiltersQuery)[];
@@ -35,6 +36,7 @@ function mappingResults(docs: PracticalGuidePayload[]): GuidesItems[] {
   return docs.map((doc) => ({
     id: doc.id,
     title: doc.title,
+    slug: doc.slug,
     description: doc.description,
     condition: getFirstRelation(doc.conditions),
     persona: getFirstRelation(doc.persona),
@@ -43,6 +45,21 @@ function mappingResults(docs: PracticalGuidePayload[]): GuidesItems[] {
 }
 
 export const practicalGuidesRouter = createTRPCRouter({
+  getBySlug: publicProcedure
+    .input(z.object({ slug: z.string() }))
+    .query(async ({ input }) => {
+      const result = await payload.find({
+        collection: "practical-guides",
+        where: {
+          slug: {
+            equals: input.slug,
+          },
+        },
+      });
+
+      return result.docs;
+    }),
+
   getByFilters: publicProcedure
     .input(
       z.object({

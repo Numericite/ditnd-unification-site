@@ -21,6 +21,12 @@ export const PracticalGuides: CollectionConfig = {
       required: true,
     },
     {
+      name: "slug",
+      type: "text",
+      unique: true,
+      required: true,
+    },
+    {
       name: "description",
       type: "text",
       required: true,
