@@ -175,6 +175,14 @@ export interface Condition {
   description: string;
   acronym: string;
   slug: string;
+  /**
+   * Choose a text color for the text
+   */
+  textColor: string;
+  /**
+   * Choose a background color for the text
+   */
+  backgroundColor: string;
   updatedAt: string;
   createdAt: string;
 }
@@ -399,6 +407,8 @@ export interface ConditionsSelect<T extends boolean = true> {
   description?: T;
   acronym?: T;
   slug?: T;
+  textColor?: T;
+  backgroundColor?: T;
   updatedAt?: T;
   createdAt?: T;
 }

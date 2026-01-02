@@ -7,24 +7,32 @@ const conditions = [
     description: "Difficultés à comprendre ou produire le langage oral.",
     acronym: "TL",
     slug: "tl",
+    textColor: "#161616",
+    backgroundColor: "#F6F6F6",
   },
   {
     name: "Trouble du développement de la coordination",
     description: "Difficultés motrices impactant la coordination des gestes.",
     acronym: "TDC",
     slug: "tdc",
+    textColor: "#161616",
+    backgroundColor: "#F6F6F6",
   },
   {
     name: "Troubles spécifiques des apprentissages",
     description: "Difficultés ciblées de lecture, écriture ou mathématiques.",
     acronym: "TSAp",
     slug: "tsap",
+    textColor: "#161616",
+    backgroundColor: "#F6F6F6",
   },
   {
     name: "Trouble du déficit de l’attention avec ou sans hyperactivité",
     description: "Difficultés d’attention, impulsivité et agitation.",
     acronym: "TDAH",
     slug: "tdah",
+    textColor: "#161616",
+    backgroundColor: "#F6F6F6",
   },
   {
     name: "Trouble du développement intellectuel",
@@ -32,6 +40,8 @@ const conditions = [
       "Limitations des capacités intellectuelles et du fonctionnement adaptatif.",
     acronym: "TDI",
     slug: "tdi",
+    textColor: "#161616",
+    backgroundColor: "#F6F6F6",
   },
   {
     name: "Autisme",
@@ -39,6 +49,8 @@ const conditions = [
       "Trouble du neurodéveloppement affectant la communication et les interactions sociales.",
     acronym: "TSA",
     slug: "tsa",
+    textColor: "#161616",
+    backgroundColor: "#F6F6F6",
   },
   {
     name: "DYS",
@@ -46,12 +58,21 @@ const conditions = [
       "Troubles cognitifs spécifiques qui affectent certaines fonctions humaines",
     acronym: "dys",
     slug: "dys",
+    textColor: "#161616",
+    backgroundColor: "#F6F6F6",
   },
 ];
 
 async function createConditions(
   payload: Payload,
-  data: { name: string; description: string; acronym: string; slug: string }
+  data: {
+    name: string;
+    description: string;
+    acronym: string;
+    slug: string;
+    textColor: string;
+    backgroundColor: string;
+  }
 ): Promise<void> {
   try {
     await payload.create({
