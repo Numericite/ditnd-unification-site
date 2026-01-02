@@ -8,7 +8,9 @@ type Props = {
   title: string;
   description: string;
   badge: string;
-  condition: string;
+  condition?: string;
+  textColor: string;
+  backgroundColor: string;
 };
 
 export const PracticalGuide = ({
@@ -16,6 +18,8 @@ export const PracticalGuide = ({
   description,
   badge,
   condition,
+  textColor,
+  backgroundColor,
 }: Props) => {
   const { classes } = useStyles();
 
@@ -26,9 +30,18 @@ export const PracticalGuide = ({
           border
           start={
             <ul className="fr-badges-group">
-              <li>
-                <Badge>{condition}</Badge>
-              </li>
+              {condition && (
+                <li>
+                  <Badge
+                    style={{
+                      color: textColor,
+                      backgroundColor: backgroundColor,
+                    }}
+                  >
+                    {condition}
+                  </Badge>
+                </li>
+              )}
               <li>
                 <Badge noIcon={true}>{badge}</Badge>
               </li>
@@ -53,7 +66,8 @@ export const PracticalGuide = ({
 };
 
 const useStyles = tss.withName(PracticalGuide.name).create({
-  BadgeColor: {
-    color: "Background",
+  badgeColor: {
+    color: "white",
+    backgroundColor: "black",
   },
 });

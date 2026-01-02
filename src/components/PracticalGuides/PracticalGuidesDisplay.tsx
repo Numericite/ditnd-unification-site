@@ -9,6 +9,8 @@ export type DisplayItem = {
   id: number;
   name: string;
   slug: string;
+  textColor: string;
+  backgroundColor: string;
 };
 
 export type GuidesItems = {
@@ -52,6 +54,8 @@ export const PracticalGuidesDisplay = ({
                 badge={guide.theme?.name ?? ""}
                 description={guide.description}
                 condition={guide.condition?.slug ?? ""}
+                textColor={guide.condition?.textColor ?? ""}
+                backgroundColor={guide.condition?.backgroundColor ?? ""}
               />
             </div>
           ))}
