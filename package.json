@@ -21,7 +21,6 @@
     "@emotion/react": "11.14.0",
     "@emotion/server": "11.11.0",
     "@emotion/styled": "11.14.1",
-    "@innovixx/payload-color-picker-field": "^2.0.4",
     "@legendapp/state": "^2.1.15",
     "@mui/material": "7.3.6",
     "@payloadcms/db-postgres": "3.67.0",
