@@ -37,7 +37,7 @@ export const Conditions: CollectionConfig = {
       required: true,
     },
     {
-      name: "slug",
+      name: "backgroundColor",
       type: "text",
       required: true,
     },
