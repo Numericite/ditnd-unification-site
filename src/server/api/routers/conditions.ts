@@ -1,5 +1,3 @@
-import { getPayload } from "payload";
-import payloadConfig from "~/payload/payload.config";
 import {
   createTRPCRouter,
   protectedProcedure,
@@ -7,12 +5,11 @@ import {
 } from "~/server/api/trpc";
 import type { TDH } from "~/state/store";
 
-const payload = await getPayload({ config: payloadConfig });
-
 export const conditionRouter = createTRPCRouter({
-  all: publicProcedure.query(async () => {
-    const result = await payload.find({
+  all: publicProcedure.query(async ({ ctx }) => {
+    const result = await ctx.payload.find({
       collection: "conditions",
+      limit: 0,
       select: {
         updatedAt: false,
         createdAt: false,

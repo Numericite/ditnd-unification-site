@@ -1,9 +1,5 @@
 import { z } from "zod";
-import { getPayload } from "payload";
-import payloadConfig from "~/payload/payload.config";
 import type { GuidesItems } from "~/components/PracticalGuides/PracticalGuidesDisplay";
-
-const payload = await getPayload({ config: payloadConfig });
 
 import {
   createTRPCRouter,
@@ -47,9 +43,10 @@ function mappingResults(docs: PracticalGuidePayload[]): GuidesItems[] {
 export const practicalGuidesRouter = createTRPCRouter({
   getBySlug: publicProcedure
     .input(z.object({ slug: z.string() }))
-    .query(async ({ input }) => {
-      const result = await payload.find({
+    .query(async ({ input, ctx }) => {
+      const result = await ctx.payload.find({
         collection: "practical-guides",
+        limit: 0,
         where: {
           slug: {
             equals: input.slug,
@@ -69,7 +66,7 @@ export const practicalGuidesRouter = createTRPCRouter({
         text: z.string().optional(),
       })
     )
-    .query(async ({ input }): Promise<GuidesItems[]> => {
+    .query(async ({ input, ctx }): Promise<GuidesItems[]> => {
       const whereConditions: Record<string, any>[] = [];
 
       if (input.conditions?.length) {
@@ -102,9 +99,11 @@ export const practicalGuidesRouter = createTRPCRouter({
         });
       }
 
-      const result = await payload.find({
+      const result = await ctx.payload.find({
         collection: "practical-guides",
         depth: 1,
+        limit: 0,
+
         select: {
           updatedAt: false,
           createdAt: false,

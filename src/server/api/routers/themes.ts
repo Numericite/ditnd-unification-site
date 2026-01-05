@@ -1,9 +1,3 @@
-import { z } from "zod";
-import { getPayload } from "payload";
-import payloadConfig from "~/payload/payload.config";
-
-const payload = await getPayload({ config: payloadConfig });
-
 import {
   createTRPCRouter,
   protectedProcedure,
@@ -11,9 +5,10 @@ import {
 } from "~/server/api/trpc";
 
 export const themeRouter = createTRPCRouter({
-  all: publicProcedure.query(async () => {
-    const result = await payload.find({
+  all: publicProcedure.query(async ({ ctx }) => {
+    const result = await ctx.payload.find({
       collection: "themes",
+      limit: 0,
       select: {
         updatedAt: false,
         createdAt: false,

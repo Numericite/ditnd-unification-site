@@ -1,18 +1,14 @@
 import { Card } from "@codegouvfr/react-dsfr/Card";
 import { Badge } from "@codegouvfr/react-dsfr/Badge";
 import { tss } from "tss-react";
-import { fr } from "@codegouvfr/react-dsfr";
-import { cx } from "@codegouvfr/react-dsfr/fr/cx";
+import type { PracticalGuide as PracticalGuideType } from "~/payload/payload-types";
 
-type Props = {
-  title: string;
-  description: string;
+interface Props extends PracticalGuideType {
   badge: string;
-  slug: string;
   condition?: string;
   textColor: string;
   backgroundColor: string;
-};
+}
 
 export const PracticalGuide = ({
   title,

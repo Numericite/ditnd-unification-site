@@ -8,6 +8,9 @@
  */
 import { initTRPC, TRPCError } from "@trpc/server";
 import { type CreateNextContextOptions } from "@trpc/server/adapters/next";
+import { getPayload, type Payload } from "payload";
+import payloadConfig from "~/payload/payload.config";
+
 // import {  } from "next-auth";
 import superjson from "superjson";
 import { ZodError } from "zod";
@@ -25,6 +28,7 @@ import { type Session } from "~/server/better-auth/config";
 
 interface CreateContextOptions {
   session: Session | null;
+  payload: Payload;
 }
 
 /**
@@ -37,9 +41,10 @@ interface CreateContextOptions {
  *
  * @see https://create.t3.gg/en/usage/trpc#-serverapitrpcts
  */
-const createInnerTRPCContext = ({ session }: CreateContextOptions) => {
+const createInnerTRPCContext = ({ payload, session }: CreateContextOptions) => {
   return {
     session,
+    payload,
   };
 };
 
@@ -51,6 +56,7 @@ const createInnerTRPCContext = ({ session }: CreateContextOptions) => {
  */
 export const createTRPCContext = async ({ req }: CreateNextContextOptions) => {
   // Convert IncomingHttpHeaders to Headers object
+  const payload = await getPayload({ config: payloadConfig });
   const headers = new Headers();
   for (const [key, value] of Object.entries(req.headers)) {
     if (Array.isArray(value)) {
@@ -64,6 +70,7 @@ export const createTRPCContext = async ({ req }: CreateNextContextOptions) => {
     headers,
   });
   return createInnerTRPCContext({
+    payload,
     session,
   });
 };
