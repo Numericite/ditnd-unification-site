@@ -16,6 +16,7 @@ export type DisplayItem = {
 export type GuidesItems = {
   id: number;
   title: string;
+  slug: string;
   description: string;
   condition?: DisplayItem;
   persona?: DisplayItem;
@@ -51,6 +52,7 @@ export const PracticalGuidesDisplay = ({
             >
               <PracticalGuide
                 title={guide.title}
+                slug={guide.slug}
                 badge={guide.theme?.name ?? ""}
                 description={guide.description}
                 condition={guide.condition?.slug ?? ""}

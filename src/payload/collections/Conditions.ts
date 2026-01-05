@@ -1,6 +1,6 @@
 import type { CollectionConfig } from "payload";
 
-import { colorPickerField } from "@innovixx/payload-color-picker-field";
+// import { colorPickerField } from "@innovixx/payload-color-picker-field";
 
 export const Conditions: CollectionConfig = {
   slug: "conditions",
@@ -33,24 +33,34 @@ export const Conditions: CollectionConfig = {
       required: true,
       unique: true,
     },
-
-    colorPickerField({
+    {
       name: "textColor",
-      label: "Couleur du texte",
+      type: "text",
       required: true,
-      admin: {
-        description: "Choose a text color for the text",
-      },
-      defaultValue: "#161616",
-    }),
-    colorPickerField({
-      name: "backgroundColor",
-      label: "Couleur du fond",
+    },
+    {
+      name: "slug",
+      type: "text",
       required: true,
-      admin: {
-        description: "Choose a background color for the text",
-      },
-      defaultValue: "#F6F6F6",
-    }),
+    },
+
+    // colorPickerField({
+    //   name: "textColor",
+    //   label: "Couleur du texte",
+    //   required: true,
+    //   admin: {
+    //     description: "Choose a text color for the text",
+    //   },
+    //   defaultValue: "#161616",
+    // }),
+    // colorPickerField({
+    //   name: "backgroundColor",
+    //   label: "Couleur du fond",
+    //   required: true,
+    //   admin: {
+    //     description: "Choose a background color for the text",
+    //   },
+    //   defaultValue: "#F6F6F6",
+    // }),
   ],
 };

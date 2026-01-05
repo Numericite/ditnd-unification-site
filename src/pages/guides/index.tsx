@@ -28,7 +28,7 @@ export default function PracticalGuides() {
         <title>DITND - Fiches Pratiques</title>
       </Head>
 
-      <div className={fr.cx("fr-container", "fr-my-6w")}>
+      <div>
         <h1 className={fr.cx("fr-mb-4w")}>Fiches pratiques</h1>
 
         <div className={fr.cx("fr-grid-row", "fr-grid-row--gutters")}>

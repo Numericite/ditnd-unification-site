@@ -8,6 +8,7 @@ type Props = {
   title: string;
   description: string;
   badge: string;
+  slug: string;
   condition?: string;
   textColor: string;
   backgroundColor: string;
@@ -16,6 +17,7 @@ type Props = {
 export const PracticalGuide = ({
   title,
   description,
+  slug,
   badge,
   condition,
   textColor,
@@ -51,7 +53,7 @@ export const PracticalGuide = ({
           footer={
             <a
               className="fr-link fr-icon-arrow-right-line fr-link--icon-right"
-              href="#"
+              href={`/guides/${slug}`}
             >
               Voir la fiche
             </a>
