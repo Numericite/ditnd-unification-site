@@ -8,6 +8,7 @@ import Head from "next/head";
 import { tss } from "tss-react";
 import Button from "@codegouvfr/react-dsfr/Button";
 import type { FrIconClassName } from "@codegouvfr/react-dsfr/fr/generatedFromCss/classNames";
+import sanitizeHtml from "sanitize-html";
 
 const socials: { icon: FrIconClassName; onClick: () => void }[] = [
 	{
@@ -117,7 +118,7 @@ export default function PracticalGuidePage() {
 							{guide.html && (
 								<div
 									className={cx(classes.wysiwig)}
-									dangerouslySetInnerHTML={{ __html: guide.html }}
+									dangerouslySetInnerHTML={{ __html: sanitizeHtml(guide.html) }}
 								></div>
 							)}
 							<div className={cx(classes.footerContent)}>

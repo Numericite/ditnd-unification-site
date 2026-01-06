@@ -36,6 +36,9 @@
         "noArrayIndexKey": { "level": "off" },
         "noExplicitAny": { "level": "off" }
       },
+      "security": {
+        "noDangerouslySetInnerHtml": "off"
+      },
       "recommended": true
     }
   }
