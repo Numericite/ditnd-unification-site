@@ -232,7 +232,7 @@ export interface PracticalGuide {
     };
     [k: string]: unknown;
   };
-  html?: string | null;
+  html: string;
   persona: (number | Persona)[];
   theme: (number | Theme)[];
   'practical-guides'?: (number | PracticalGuide)[] | null;
