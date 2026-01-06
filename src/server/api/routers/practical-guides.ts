@@ -3,6 +3,7 @@ import type { GuidesItems } from "~/components/PracticalGuides/PracticalGuidesDi
 
 import { createTRPCRouter, publicProcedure } from "~/server/api/trpc";
 import type { FiltersQuery } from "~/components/PracticalGuides/FiltersDisplay";
+import type { Where } from "payload";
 
 type PracticalGuidePayload = {
 	id: number;
@@ -63,27 +64,29 @@ export const practicalGuidesRouter = createTRPCRouter({
 			}),
 		)
 		.query(async ({ input, ctx }): Promise<GuidesItems[]> => {
-			const whereConditions: Record<string, any>[] = [];
+			const whereConditions: Where[] = [];
 
-			if (input.conditions?.length) {
+			const { conditions, themes, personas, text } = input;
+
+			if (conditions?.length) {
 				whereConditions.push({
-					"conditions.slug": { in: input.conditions },
+					"conditions.slug": { in: conditions },
 				});
 			}
 
-			if (input.themes?.length) {
+			if (themes?.length) {
 				whereConditions.push({
-					"theme.slug": { in: input.themes },
+					"theme.slug": { in: themes },
 				});
 			}
 
-			if (input.personas?.length) {
+			if (personas?.length) {
 				whereConditions.push({
-					"persona.slug": { in: input.personas },
+					"persona.slug": { in: personas },
 				});
 			}
 
-			const trimmedText = input.text?.trim();
+			const trimmedText = text?.trim();
 
 			if (trimmedText) {
 				whereConditions.push({
