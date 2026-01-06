@@ -4,7 +4,6 @@
       font-family: "Marianne", arial, sans-serif;
     }
     background-color: white;
-    color: #3a3a3a;
 
     h1,
     h2,
@@ -12,6 +11,8 @@
       color: #000091;
       font-weight: 700;
       margin: 1.5rem 0;
+      font-size: 1.75rem;
+      line-height: 2.25rem;
     }
 
     h2 {
@@ -19,14 +20,23 @@
       line-height: 2.5rem !important;
     }
 
+    h5 {
+      margin: 0 0 1.5rem;
+      color: #161616;
+    }
+
     p {
       margin: 0 0 1.5rem;
+      color: #3a3a3a;
+    }
+    ul,
+    li {
       color: #3a3a3a;
     }
 
     a {
       text-decoration: underline;
-      color: #3a3a3a;
+      color: #1212FF;
     }
   }
 

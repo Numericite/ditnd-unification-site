@@ -1,14 +1,23 @@
-import { getPayload } from "payload";
 import type { PersonaTile } from "~/components/HomePage/PersonaTiles";
-import payloadConfig from "~/payload/payload.config";
 import { createTRPCRouter, publicProcedure } from "~/server/api/trpc";
 
-const payload = await getPayload({ config: payloadConfig });
-
 export const personaRouter = createTRPCRouter({
-  professionals: publicProcedure.query(async () => {
-    const result = await payload.find({
+  all: publicProcedure.query(async ({ ctx }) => {
+    const result = await ctx.payload.find({
       collection: "personas",
+      limit: 0,
+      select: {
+        updatedAt: false,
+        createdAt: false,
+      },
+    });
+    return result.docs;
+  }),
+
+  professionals: publicProcedure.query(async ({ ctx }) => {
+    const result = await ctx.payload.find({
+      collection: "personas",
+      limit: 0,
       where: {
         slug: {
           like: "pro%",
@@ -22,7 +31,7 @@ export const personaRouter = createTRPCRouter({
     const res = result.docs.map(
       (persona): PersonaTile => ({
         ...persona,
-        display: "afterProfessionnal",
+        display: "afterProfessional",
       })
     );
     return res;

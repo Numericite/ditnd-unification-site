@@ -6,14 +6,14 @@
  * TL;DR - This is where all the tRPC server stuff is created and plugged in. The pieces you will
  * need to use are documented accordingly near the end.
  */
-import { initTRPC, TRPCError } from "@trpc/server";
-import { type CreateNextContextOptions } from "@trpc/server/adapters/next";
+import { initTRPC } from "@trpc/server";
+
+import { getPayload, type Payload } from "payload";
+import payloadConfig from "~/payload/payload.config";
+
 // import {  } from "next-auth";
 import superjson from "superjson";
 import { ZodError } from "zod";
-
-import { auth } from "~/server/better-auth";
-import { type Session } from "~/server/better-auth/config";
 
 /**
  * 1. CONTEXT
@@ -24,7 +24,7 @@ import { type Session } from "~/server/better-auth/config";
  */
 
 interface CreateContextOptions {
-  session: Session | null;
+	payload: Payload;
 }
 
 /**
@@ -37,10 +37,10 @@ interface CreateContextOptions {
  *
  * @see https://create.t3.gg/en/usage/trpc#-serverapitrpcts
  */
-const createInnerTRPCContext = ({ session }: CreateContextOptions) => {
-  return {
-    session,
-  };
+const createInnerTRPCContext = ({ payload }: CreateContextOptions) => {
+	return {
+		payload,
+	};
 };
 
 /**
@@ -49,23 +49,12 @@ const createInnerTRPCContext = ({ session }: CreateContextOptions) => {
  *
  * @see https://trpc.io/docs/context
  */
-export const createTRPCContext = async ({ req }: CreateNextContextOptions) => {
-  // Convert IncomingHttpHeaders to Headers object
-  const headers = new Headers();
-  for (const [key, value] of Object.entries(req.headers)) {
-    if (Array.isArray(value)) {
-      value.forEach((v) => headers.append(key, v));
-    } else if (value) {
-      headers.append(key, value);
-    }
-  }
-
-  const session = await auth.api.getSession({
-    headers,
-  });
-  return createInnerTRPCContext({
-    session,
-  });
+export const createTRPCContext = async () => {
+	// Convert IncomingHttpHeaders to Headers object
+	const payload = await getPayload({ config: payloadConfig });
+	return createInnerTRPCContext({
+		payload,
+	});
 };
 
 /**
@@ -77,17 +66,17 @@ export const createTRPCContext = async ({ req }: CreateNextContextOptions) => {
  */
 
 const t = initTRPC.context<typeof createTRPCContext>().create({
-  transformer: superjson,
-  errorFormatter({ shape, error }) {
-    return {
-      ...shape,
-      data: {
-        ...shape.data,
-        zodError:
-          error.cause instanceof ZodError ? error.cause.flatten() : null,
-      },
-    };
-  },
+	transformer: superjson,
+	errorFormatter({ shape, error }) {
+		return {
+			...shape,
+			data: {
+				...shape.data,
+				zodError:
+					error.cause instanceof ZodError ? error.cause.flatten() : null,
+			},
+		};
+	},
 });
 
 /**
@@ -112,55 +101,10 @@ export const createCallerFactory = t.createCallerFactory;
 export const createTRPCRouter = t.router;
 
 /**
- * Middleware for timing procedure execution and adding an artificial delay in development.
- *
- * You can remove this if you don't like it, but it can help catch unwanted waterfalls by simulating
- * network latency that would occur in production but not in local development.
- */
-const timingMiddleware = t.middleware(async ({ next, path }) => {
-  const start = Date.now();
-
-  if (t._config.isDev) {
-    // artificial delay in dev
-    const waitMs = Math.floor(Math.random() * 400) + 100;
-    await new Promise((resolve) => setTimeout(resolve, waitMs));
-  }
-
-  const result = await next();
-
-  const end = Date.now();
-  console.log(`[TRPC] ${path} took ${end - start}ms to execute`);
-
-  return result;
-});
-
-/**
  * Public (unauthenticated) procedure
  *
  * This is the base piece you use to build new queries and mutations on your tRPC API. It does not
  * guarantee that a user querying is authorized, but you can still access user session data if they
  * are logged in.
  */
-export const publicProcedure = t.procedure.use(timingMiddleware);
-
-/**
- * Protected (authenticated) procedure
- *
- * If you want a query or mutation to ONLY be accessible to logged in users, use this. It verifies
- * the session is valid and guarantees `ctx.session.user` is not null.
- *
- * @see https://trpc.io/docs/procedures
- */
-export const protectedProcedure = t.procedure
-  .use(timingMiddleware)
-  .use(({ ctx, next }) => {
-    if (!ctx.session?.user) {
-      throw new TRPCError({ code: "UNAUTHORIZED" });
-    }
-    return next({
-      ctx: {
-        // infers the `session` as non-nullable
-        session: { ...ctx.session, user: ctx.session.user },
-      },
-    });
-  });
+export const publicProcedure = t.procedure;

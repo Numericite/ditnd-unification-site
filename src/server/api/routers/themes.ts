@@ -1,10 +1,9 @@
 import { createTRPCRouter, publicProcedure } from "~/server/api/trpc";
-import type { TDH } from "~/state/store";
 
-export const conditionRouter = createTRPCRouter({
+export const themeRouter = createTRPCRouter({
 	all: publicProcedure.query(async ({ ctx }) => {
 		const result = await ctx.payload.find({
-			collection: "conditions",
+			collection: "themes",
 			limit: 0,
 			select: {
 				updatedAt: false,
@@ -12,12 +11,6 @@ export const conditionRouter = createTRPCRouter({
 			},
 		});
 
-		const res = result.docs.map(
-			(condition): TDH => ({
-				...condition,
-				display: "condition",
-			}),
-		);
-		return res;
+		return result.docs;
 	}),
 });

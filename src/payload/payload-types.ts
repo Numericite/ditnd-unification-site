@@ -175,6 +175,8 @@ export interface Condition {
   description: string;
   acronym: string;
   slug: string;
+  textColor: string;
+  backgroundColor: string;
   updatedAt: string;
   createdAt: string;
 }
@@ -212,8 +214,9 @@ export interface Theme {
 export interface PracticalGuide {
   id: number;
   title: string;
+  slug: string;
   description: string;
-  conditions?: (number | null) | Condition;
+  conditions?: (number | Condition)[] | null;
   content: {
     root: {
       type: string;
@@ -230,10 +233,10 @@ export interface PracticalGuide {
     [k: string]: unknown;
   };
   html?: string | null;
-  persona: number | Persona;
-  theme: number | Theme;
-  'practical-guides'?: (number | null) | PracticalGuide;
-  courses?: (number | null) | Course;
+  persona: (number | Persona)[];
+  theme: (number | Theme)[];
+  'practical-guides'?: (number | PracticalGuide)[] | null;
+  courses?: (number | Course)[] | null;
   updatedAt: string;
   createdAt: string;
 }
@@ -399,6 +402,8 @@ export interface ConditionsSelect<T extends boolean = true> {
   description?: T;
   acronym?: T;
   slug?: T;
+  textColor?: T;
+  backgroundColor?: T;
   updatedAt?: T;
   createdAt?: T;
 }
@@ -422,6 +427,7 @@ export interface CoursesSelect<T extends boolean = true> {
  */
 export interface PracticalGuidesSelect<T extends boolean = true> {
   title?: T;
+  slug?: T;
   description?: T;
   conditions?: T;
   content?: T;

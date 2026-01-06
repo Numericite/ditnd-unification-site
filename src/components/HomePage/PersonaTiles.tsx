@@ -1,24 +1,17 @@
 import { fr } from "@codegouvfr/react-dsfr";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useObservable } from "@legendapp/state/react";
 import { tdhStore, type TDH } from "~/state/store";
-import { TDHGrid } from "../ui/HomePage/TDHGrid";
-import { ProfessionnalGrid } from "../ui/HomePage/ProfessionnalGrid";
 import { PersonaGrid } from "../ui/HomePage/PersonaGrid";
 import { api } from "~/utils/api";
 import Tag from "@codegouvfr/react-dsfr/Tag";
 
 export type PersonaTypes =
   | "person"
-  | "parent"
-  | "professionnal"
-  | "afterProfessionnal"
-  | "other";
-export type DisplayType =
-  | "default"
-  | "person"
-  | "professionnal"
-  | "afterProfessional";
+  | "professional"
+  | "afterProfessional"
+  | "condition"
+  | "default";
 
 export type PersonaTile = {
   id?: number;
@@ -30,7 +23,7 @@ export type PersonaTile = {
 
 export type TagItem = {
   label: string;
-  display: DisplayType;
+  display: PersonaTypes;
   slug: string;
 };
 
@@ -39,11 +32,11 @@ const unknownTile: TDH = {
   description: "Diagnostic rapide de vos symptômes pour mieux vous comprendre",
   acronym: "unknown",
   slug: "unknown",
+  display: "condition",
 };
 
 export const PersonaTiles = ({ tiles }: { tiles: PersonaTile[] }) => {
-  const [display, setDisplay] = useState<DisplayType>("default");
-  const [tdhTiles, setTDHTiles] = useState<TDH[]>();
+  const [display, setDisplay] = useState<PersonaTypes>("default");
   const [tags, setTags] = useState<TagItem[]>([]);
 
   const { data: professionalPersonas, isLoading: isLoadingPro } =
@@ -51,53 +44,61 @@ export const PersonaTiles = ({ tiles }: { tiles: PersonaTile[] }) => {
 
   const tdh = useObservable(tdhStore).get();
 
-  useEffect(() => {
-    const tilesWithUnknown: TDH[] = [unknownTile, ...tdh.get()];
-    setTDHTiles(tilesWithUnknown);
-  }, []);
-
-  const handlePerson = () => {
-    setDisplay("person");
-  };
-
-  const handleProfessionnal = () => {
-    setDisplay("professionnal");
-  };
-
-  const handleAfterProfessionnal = () => {
-    setDisplay("afterProfessional");
-  };
+  const tdhTiles = [unknownTile, ...tdh.get()];
 
   const tileDispatchTable: Record<PersonaTypes, () => void> = {
-    person: handlePerson,
-    parent: handlePerson,
-    professionnal: handleProfessionnal,
-    afterProfessionnal: handleAfterProfessionnal,
-    other: handlePerson,
+    person: () => {
+      setDisplay("person");
+    },
+    professional: () => {
+      setDisplay("professional");
+    },
+    afterProfessional: () => {
+      setDisplay("afterProfessional");
+    },
+    condition: () => {
+      console.log(tags);
+      setTags([]);
+      setDisplay("default");
+    },
+    default: () => {
+      setDisplay("default");
+    },
   };
 
   const renderContent = () => {
-    if (!tdhTiles || isLoadingPro || !professionalPersonas) {
-      return <div>Loading...</div>;
-    }
     switch (display) {
       case "person":
+        if (!tdhTiles) return <div>Loading...</div>;
         return (
-          <TDHGrid tiles={tdhTiles} onClick={() => setDisplay("default")} /> //onclick placeholder so we do an api call after
+          <PersonaGrid
+            tiles={tdhTiles}
+            onClick={tileDispatchTable}
+            currentDisplay="professional"
+          />
         );
 
-      case "professionnal":
+      case "professional":
+        if (isLoadingPro) return <div>Loading...</div>;
+        if (!professionalPersonas)
+          return <div>No professional persona found</div>;
+
         return (
-          <ProfessionnalGrid
+          <PersonaGrid
             tiles={professionalPersonas}
             onClick={tileDispatchTable}
             setTags={setTags}
+            currentDisplay="professional"
           />
         );
 
       case "afterProfessional":
         return (
-          <TDHGrid tiles={tdh.get()} onClick={() => setDisplay("default")} /> //onclick placeholder so we do an api call after
+          <PersonaGrid
+            tiles={tdh.get()}
+            onClick={tileDispatchTable}
+            currentDisplay="professional"
+          />
         );
 
       default:
@@ -106,6 +107,7 @@ export const PersonaTiles = ({ tiles }: { tiles: PersonaTile[] }) => {
             tiles={tiles}
             onClick={tileDispatchTable}
             setTags={setTags}
+            currentDisplay="default"
           />
         );
     }
@@ -128,7 +130,9 @@ export const PersonaTiles = ({ tiles }: { tiles: PersonaTile[] }) => {
               nativeButtonProps={{
                 onClick: function deleteTag() {
                   setDisplay(tag.display);
-                  setTags([...tags].filter((t) => t.slug !== tag.slug));
+                  tag.display === "default"
+                    ? setTags([])
+                    : setTags([...tags].filter((t) => t.slug !== tag.slug));
                 },
               }}
             >
