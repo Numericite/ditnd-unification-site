@@ -24,11 +24,12 @@ export default function generateSummary(html: string): Link[] {
 	});
 
 	const matches = [...sanitizedHTML.matchAll(/<h5>(.*?)<\/h5>/gi)];
+	const h5Titles = matches.map((match) => match.pop());
 
 	const res = [
-		...matches.map((match) => ({
-			linkProps: { href: `#${slugify(match[1])}` },
-			text: match[1],
+		...h5Titles.map((title) => ({
+			linkProps: { href: `#${slugify(title)}` },
+			text: title,
 		})),
 		{
 			linkProps: { href: "#fiches-pratiques" },
