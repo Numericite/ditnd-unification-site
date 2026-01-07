@@ -39,6 +39,9 @@
       "security": {
         "noDangerouslySetInnerHtml": "off"
       },
+      "complexity": {
+        "noBannedTypes": "off"
+      },
       "recommended": true
     }
   }

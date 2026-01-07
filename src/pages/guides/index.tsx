@@ -4,7 +4,7 @@ import {
 	FiltersDisplay,
 	type FiltersQuery,
 } from "~/components/PracticalGuides/FiltersDisplay";
-import { PracticalGuidesDisplay } from "~/components/PracticalGuides/SearchGuidesDisplay";
+import { SearchGuidesDisplay } from "~/components/PracticalGuides/SearchGuidesDisplay";
 import { useState } from "react";
 import Breadcrumb from "@codegouvfr/react-dsfr/Breadcrumb";
 
@@ -47,7 +47,7 @@ export default function PracticalGuides() {
 					</aside>
 
 					<main className={fr.cx("fr-col-12", "fr-col-md-8")}>
-						<PracticalGuidesDisplay filters={filters} />
+						<SearchGuidesDisplay filters={filters} />
 					</main>
 				</div>
 			</div>

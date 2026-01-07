@@ -3,7 +3,7 @@ import { PracticalGuide } from "../ui/PracticalGuides/PracticalGuide";
 import { fr } from "@codegouvfr/react-dsfr";
 import type { FiltersQuery } from "./FiltersDisplay";
 import { useState } from "react";
-import { SearchBarUI } from "../ui/PracticalGuides/SearchBarUI";
+import { SearchBarUI } from "../ui/SearchPage/SearchBarUI";
 import { Loader } from "../ui/Loader";
 
 export type DisplayItem = {
@@ -24,11 +24,7 @@ export type GuidesItems = {
 	theme?: DisplayItem;
 };
 
-export const PracticalGuidesDisplay = ({
-	filters,
-}: {
-	filters: FiltersQuery;
-}) => {
+export const SearchGuidesDisplay = ({ filters }: { filters: FiltersQuery }) => {
 	const [query, setQuery] = useState<string>("");
 
 	const { data: practicalGuideData, isLoading: isLoadingGuides } =

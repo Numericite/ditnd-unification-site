@@ -1,4 +1,4 @@
-import { Filter } from "../ui/PracticalGuides/Filter";
+import { Filter } from "../ui/SearchPage/Filter";
 import { useObservable } from "@legendapp/state/react";
 import type { Dispatch, SetStateAction } from "react";
 import { tdhStore } from "~/state/store";
