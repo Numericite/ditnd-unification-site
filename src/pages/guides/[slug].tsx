@@ -1,22 +1,15 @@
 import { useRouter } from "next/router";
 import { api } from "~/utils/api";
 import { fr } from "@codegouvfr/react-dsfr";
-import { Summary } from "@codegouvfr/react-dsfr/Summary";
 import Breadcrumb from "@codegouvfr/react-dsfr/Breadcrumb";
 import Head from "next/head";
 import { tss } from "tss-react";
 import sanitizeHtml from "sanitize-html";
-import generateSummary, { slugify } from "~/components/utils/generateSummary";
 import { Loader } from "~/components/ui/Loader";
 import { PracticalGuide } from "~/components/ui/PracticalGuides/PracticalGuide";
 import ShareSocials from "~/components/ui/PracticalGuides/ShareSocials";
-
-function addAnchors(html: string) {
-	return html.replace(/<h5([^>]*)>(.*?)<\/h5>/gi, (_, attrs, title) => {
-		const id = slugify(title);
-		return `<h5${attrs} id="${id}">${title}</h5>`;
-	});
-}
+import { addAnchors } from "~/components/utils/addAnchor";
+import GuideSummary from "~/components/ui/PracticalGuides/GuideSummary";
 
 export default function PracticalGuidePage() {
 	const router = useRouter();
@@ -38,12 +31,12 @@ export default function PracticalGuidePage() {
 			{!guide ? (
 				<Loader />
 			) : (
-				<div style={{ scrollBehavior: "smooth" }}>
+				<div>
 					<Head>
 						<title>DITND - {guide.title}</title>
 					</Head>
 					<Breadcrumb
-						currentPageLabel={guideData[0]?.title}
+						currentPageLabel={guide.title}
 						homeLinkProps={{
 							href: "/",
 						}}
@@ -57,25 +50,7 @@ export default function PracticalGuidePage() {
 						]}
 					/>
 					<div className={fr.cx("fr-grid-row")}>
-						<div
-							className={fr.cx(
-								"fr-pr-3v",
-								"fr-col-12",
-								"fr-col-lg-3",
-								"fr-col-md-6",
-								"fr-col-sm-6",
-								"fr-mb-2w",
-							)}
-						>
-							<Summary
-								className={cx(classes.summarySticky)}
-								links={generateSummary(guide.html).map((link) => ({
-									linkProps: link.linkProps,
-									text: link.text,
-								}))}
-								title="Sommaire"
-							/>
-						</div>
+						<GuideSummary html={guide.html} />
 						<div className={fr.cx("fr-col-12", "fr-col-lg-9")}>
 							<h4>Fiches pratiques</h4>
 							<div
@@ -91,7 +66,7 @@ export default function PracticalGuidePage() {
 								</div>
 							</div>
 							<div className={cx(classes.footerContent)}>
-								{guide["practical-guides"] && (
+								{guide["practical-guides"]?.length !== 0 && (
 									<div className={fr.cx("fr-mt-2w")}>
 										<h5 id="fiches-pratiques">
 											Ces fiches pratiques qui pourraient vous intéresser{" "}
@@ -99,7 +74,7 @@ export default function PracticalGuidePage() {
 										<div
 											className={fr.cx("fr-grid-row", "fr-grid-row--gutters")}
 										>
-											{guide["practical-guides"].map((g, index) => {
+											{guide["practical-guides"]?.map((g, index) => {
 												if (typeof g === "number") {
 													return undefined;
 												}
@@ -153,13 +128,6 @@ export default function PracticalGuidePage() {
 }
 
 const useStyles = tss.withName(PracticalGuidePage.name).create(() => ({
-	summarySticky: {
-		position: "sticky",
-		top: "20px",
-		".fr-summary__link:before": {
-			visibility: "hidden",
-		},
-	},
 	footerContent: {
 		borderTop: "2px solid var(--border-default-grey)",
 		marginBottom: fr.spacing("3w"),

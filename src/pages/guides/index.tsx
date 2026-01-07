@@ -4,7 +4,7 @@ import {
 	FiltersDisplay,
 	type FiltersQuery,
 } from "~/components/PracticalGuides/FiltersDisplay";
-import { PracticalGuidesDisplay } from "~/components/PracticalGuides/PracticalGuidesDisplay";
+import { PracticalGuidesDisplay } from "~/components/PracticalGuides/SearchGuidesDisplay";
 import { useState } from "react";
 import Breadcrumb from "@codegouvfr/react-dsfr/Breadcrumb";
 

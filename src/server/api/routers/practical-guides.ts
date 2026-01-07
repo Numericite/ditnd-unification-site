@@ -1,5 +1,5 @@
 import { z } from "zod";
-import type { GuidesItems } from "~/components/PracticalGuides/PracticalGuidesDisplay";
+import type { GuidesItems } from "~/components/PracticalGuides/SearchGuidesDisplay";
 
 import { createTRPCRouter, publicProcedure } from "~/server/api/trpc";
 import type { FiltersQuery } from "~/components/PracticalGuides/FiltersDisplay";
