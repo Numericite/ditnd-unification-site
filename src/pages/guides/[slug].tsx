@@ -2,56 +2,16 @@ import { useRouter } from "next/router";
 import { api } from "~/utils/api";
 import { fr } from "@codegouvfr/react-dsfr";
 import { Summary } from "@codegouvfr/react-dsfr/Summary";
-
 import Breadcrumb from "@codegouvfr/react-dsfr/Breadcrumb";
 import Head from "next/head";
 import { tss } from "tss-react";
-import Button from "@codegouvfr/react-dsfr/Button";
-import type { FrIconClassName } from "@codegouvfr/react-dsfr/fr/generatedFromCss/classNames";
 import sanitizeHtml from "sanitize-html";
 import generateSummary, { slugify } from "~/components/utils/generateSummary";
 import { Loader } from "~/components/ui/Loader";
+import { PracticalGuide } from "~/components/ui/PracticalGuides/PracticalGuide";
+import ShareSocials from "~/components/ui/PracticalGuides/ShareSocials";
 
-type SocialProps = {
-	icon: FrIconClassName;
-	onClick: () => void;
-	title: string;
-};
-
-const socials: SocialProps[] = [
-	{
-		icon: "fr-icon-facebook-circle-line",
-		onClick: () => {},
-		title: "Lien Facebook",
-	},
-	{
-		icon: "fr-icon-twitter-x-line",
-		onClick: () => {},
-		title: "Lien X",
-	},
-	{
-		icon: "fr-icon-linkedin-box-line",
-		onClick: () => {},
-		title: "Lien LinkedIn",
-	},
-	{
-		icon: "fr-icon-mail-line",
-		onClick: () => {
-			location.href = "mailto:";
-		},
-		title: "Lien Outlook",
-	},
-	{
-		icon: "fr-icon-links-line",
-		onClick: () => {
-			navigator.clipboard.writeText(location.href.replace(/#.*$/, ""));
-			alert("Adresse copié dans le presse papier");
-		},
-		title: "Copier le lien",
-	},
-];
-
-export function addAnchors(html: string) {
+function addAnchors(html: string) {
 	return html.replace(/<h5([^>]*)>(.*?)<\/h5>/gi, (_, attrs, title) => {
 		const id = slugify(title);
 		return `<h5${attrs} id="${id}">${title}</h5>`;
@@ -100,8 +60,10 @@ export default function PracticalGuidePage() {
 						<div
 							className={fr.cx(
 								"fr-pr-3v",
+								"fr-col-12",
 								"fr-col-lg-3",
-								"fr-col-sm-12",
+								"fr-col-md-6",
+								"fr-col-sm-6",
 								"fr-mb-2w",
 							)}
 						>
@@ -125,26 +87,60 @@ export default function PracticalGuidePage() {
 							<div className={cx(classes.footerContent)}>
 								<div className={fr.cx("fr-mt-2w")}>
 									<p className={fr.cx("fr-text--md")}>Partager la page</p>
-									{socials.map((social, index) => (
-										<Button
-											key={index}
-											iconId={social.icon}
-											onClick={social.onClick}
-											priority="tertiary"
-											title={social.title}
-										/>
-									))}
+									<ShareSocials />
 								</div>
 							</div>
 							<div className={cx(classes.footerContent)}>
-								<div className={fr.cx("fr-mt-2w")}>
-									<h5 id="fiches-pratiques">
-										Ces fiches pratiques qui pourraient vous intéresser{" "}
-									</h5>
-								</div>
+								{guide["practical-guides"] && (
+									<div className={fr.cx("fr-mt-2w")}>
+										<h5 id="fiches-pratiques">
+											Ces fiches pratiques qui pourraient vous intéresser{" "}
+										</h5>
+										<div
+											className={fr.cx("fr-grid-row", "fr-grid-row--gutters")}
+										>
+											{guide["practical-guides"].map((g, index) => {
+												if (typeof g === "number") {
+													return undefined;
+												}
+												const condition0 = g.conditions?.[0];
+												const theme0 = g.theme?.[0];
+
+												const populatedCondition =
+													typeof condition0 === "number"
+														? undefined
+														: condition0;
+
+												const populatedTheme =
+													typeof theme0 === "number" ? undefined : theme0;
+
+												return (
+													<div
+														key={`guide${index}`}
+														className={fr.cx("fr-col-12", "fr-col-sm-6")}
+														style={{ display: "flex" }}
+													>
+														<PracticalGuide
+															key={g.slug}
+															title={g.title}
+															slug={g.slug}
+															badge={populatedTheme?.name}
+															description={g.description}
+															condition={populatedCondition?.slug}
+															textColor={populatedCondition?.textColor}
+															backgroundColor={
+																populatedCondition?.backgroundColor
+															}
+														/>
+													</div>
+												);
+											})}
+										</div>
+									</div>
+								)}
 								<div className={fr.cx("fr-mt-2w")}>
 									<h5 id="formations">
-										Ces fiches formations qui pourraient vous intéresser{" "}
+										Ces formations qui pourraient vous intéresser{" "}
 									</h5>
 								</div>
 							</div>
@@ -169,7 +165,7 @@ const useStyles = tss.withName(PracticalGuidePage.name).create(() => ({
 		marginBottom: fr.spacing("3w"),
 	},
 	wysiwig: {
-		h3: {
+		"h1,h2,h3": {
 			color: fr.colors.decisions.text.active.blueFrance.default,
 		},
 		ul: {

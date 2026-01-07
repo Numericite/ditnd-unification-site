@@ -5,10 +5,10 @@ type Props = {
 	title: string;
 	description: string;
 	slug: string;
-	badge: string;
+	badge?: string;
 	condition?: string;
-	textColor: string;
-	backgroundColor: string;
+	textColor?: string;
+	backgroundColor?: string;
 };
 
 export const PracticalGuide = ({
@@ -38,9 +38,7 @@ export const PracticalGuide = ({
 								</Badge>
 							</li>
 						)}
-						<li>
-							<Badge noIcon={true}>{badge}</Badge>
-						</li>
+						<li>{badge && <Badge noIcon={true}>{badge}</Badge>}</li>
 					</ul>
 				}
 				desc={description}
