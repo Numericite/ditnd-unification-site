@@ -12,8 +12,8 @@ export default function GuideSummary({ html }: { html: string }) {
 				"fr-pr-3v",
 				"fr-col-12",
 				"fr-col-lg-3",
-				"fr-col-md-6",
-				"fr-col-sm-6",
+				"fr-col-md-12",
+				"fr-col-sm-12",
 				"fr-mb-2w",
 			)}
 		>

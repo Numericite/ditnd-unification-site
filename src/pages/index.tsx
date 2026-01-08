@@ -4,6 +4,8 @@ import { fr } from "@codegouvfr/react-dsfr";
 import { PersonaTiles } from "~/components/HomePage/PersonaTiles";
 import type { PersonaTile } from "~/components/HomePage/PersonaTiles";
 import Breadcrumb from "@codegouvfr/react-dsfr/Breadcrumb";
+import Image from "next/image";
+import SearchBar from "@codegouvfr/react-dsfr/SearchBar";
 
 export default function Home() {
 	const { classes } = useStyles();
@@ -48,9 +50,12 @@ export default function Home() {
 				<title>DITND - Accueil</title>
 			</Head>
 
-			<div>
+			<div style={{ width: "100%" }}>
 				<div className={fr.cx("fr-py-4w")}>
-					<div className={fr.cx("fr-grid-row", "fr-grid-row--gutters")}>
+					<div
+						className={fr.cx("fr-grid-row", "fr-grid-row--gutters")}
+						style={{ alignItems: "stretch" }}
+					>
 						<div className={fr.cx("fr-col-12", "fr-col-lg-6")}>
 							<h1>Autisme et troubles du neuro-développement</h1>
 							<p>
@@ -58,6 +63,16 @@ export default function Home() {
 								un trouble du neurodéveloppement, les parents, et les
 								professionnels.
 							</p>
+							<SearchBar big onButtonClick={function noRefCheck() {}} />
+						</div>
+						<div className={fr.cx("fr-col-12", "fr-col-lg-6")}>
+							<img
+								className={fr.cx("fr-responsive-img")}
+								alt=""
+								src={
+									"https://www.systeme-de-design.gouv.fr/v1.14/storybook/img/placeholder.16x9.png"
+								}
+							/>
 						</div>
 					</div>
 				</div>
