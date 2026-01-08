@@ -4,7 +4,6 @@ import { fr } from "@codegouvfr/react-dsfr";
 import { PersonaTiles } from "~/components/HomePage/PersonaTiles";
 import type { PersonaTile } from "~/components/HomePage/PersonaTiles";
 import Breadcrumb from "@codegouvfr/react-dsfr/Breadcrumb";
-import Image from "next/image";
 import SearchBar from "@codegouvfr/react-dsfr/SearchBar";
 
 export default function Home() {
