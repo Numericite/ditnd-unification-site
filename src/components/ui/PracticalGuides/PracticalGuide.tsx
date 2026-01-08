@@ -1,14 +1,14 @@
 import { Card } from "@codegouvfr/react-dsfr/Card";
-import { Badge } from "@codegouvfr/react-dsfr/Badge";
+import Tag from "@codegouvfr/react-dsfr/Tag";
 
 type Props = {
 	title: string;
 	description: string;
 	slug: string;
-	badge: string;
+	badge?: string;
 	condition?: string;
-	textColor: string;
-	backgroundColor: string;
+	textColor?: string;
+	backgroundColor?: string;
 };
 
 export const PracticalGuide = ({
@@ -25,22 +25,26 @@ export const PracticalGuide = ({
 			<Card
 				border
 				start={
-					<ul className="fr-badges-group">
+					<ul className="fr-tags-group">
 						{condition && (
 							<li>
-								<Badge
+								<Tag
 									style={{
 										color: textColor,
 										backgroundColor: backgroundColor,
 									}}
 								>
-									{condition}
-								</Badge>
+									<strong>{condition.toUpperCase()}</strong>
+								</Tag>
 							</li>
 						)}
-						<li>
-							<Badge noIcon={true}>{badge}</Badge>
-						</li>
+						{badge && (
+							<li>
+								<Tag>
+									<strong>{badge}</strong>
+								</Tag>
+							</li>
+						)}
 					</ul>
 				}
 				desc={description}

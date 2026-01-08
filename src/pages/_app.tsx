@@ -79,9 +79,19 @@ const userNavigationItems: MainNavigationProps.Item[] = [
 function App({ Component, pageProps }: AppProps) {
 	const router = useRouter();
 
+	function isRouteActive(item: MainNavigationProps.Item, path: string) {
+		const href = item.linkProps?.href;
+
+		if (!href) return false;
+
+		if (href === "/guides") return path.startsWith("/guides");
+
+		return path === href;
+	}
+
 	const navigationItems = userNavigationItems.map((item) => ({
 		...item,
-		isActive: router.asPath === item?.linkProps?.href,
+		isActive: isRouteActive(item, router.asPath),
 	}));
 
 	const { data: conditions, isLoading: isLoadingHomePage } =
