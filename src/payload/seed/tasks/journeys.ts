@@ -6,6 +6,7 @@ const journeys = [
 		journey_name: "Trouble du langage",
 		persona: {
 			persona: 1,
+			condition: 2,
 			chapter: [
 				{
 					"chapter-name": "Comprendre l'autisme chez mon enfant / proche",
@@ -25,6 +26,7 @@ const journeys = [
 		journey_name: "L'autisme",
 		persona: {
 			persona: 2,
+			condition: 3,
 			chapter: [
 				{
 					"chapter-name": "Repérage, diagnostic et parcours de soins",
@@ -41,6 +43,7 @@ async function createJourneys(
 		journey_name: string;
 		persona: {
 			persona: number;
+			condition: number;
 			chapter: Array<{
 				"chapter-name": string;
 				"practical-guide-list": Array<{

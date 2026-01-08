@@ -4,6 +4,7 @@ import {
 	FixedToolbarFeature,
 } from "@payloadcms/richtext-lexical";
 import { convertLexicalToHTML } from "@payloadcms/richtext-lexical/html";
+import { slugify } from "~/utils/tools";
 
 export const PracticalGuides: CollectionConfig = {
 	slug: "practical-guides",
@@ -25,6 +26,17 @@ export const PracticalGuides: CollectionConfig = {
 			type: "text",
 			unique: true,
 			required: true,
+			admin: {
+				readOnly: true,
+			},
+			hooks: {
+				beforeChange: [
+					async ({ siblingData }) => {
+						if (!siblingData?.title) return "";
+						return slugify(siblingData.title);
+					},
+				],
+			},
 		},
 		{
 			name: "description",

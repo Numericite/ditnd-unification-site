@@ -249,11 +249,12 @@ export interface Journey {
   journey_name: string;
   persona: {
     persona: number | Persona;
+    condition: number | Condition;
     chapter?:
       | {
           'chapter-name': string;
           'practical-guide-list': {
-            'practical-guide'?: (number | null) | PracticalGuide;
+            'practical-guide': number | PracticalGuide;
             id?: string | null;
           }[];
           id?: string | null;
@@ -460,6 +461,7 @@ export interface JourneysSelect<T extends boolean = true> {
     | T
     | {
         persona?: T;
+        condition?: T;
         chapter?:
           | T
           | {
