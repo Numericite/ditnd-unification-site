@@ -1,7 +1,7 @@
 import { fr } from "@codegouvfr/react-dsfr";
 import Summary from "@codegouvfr/react-dsfr/Summary";
 import { tss } from "tss-react";
-import generateSummary from "~/components/utils/generateSummary";
+import generateSummary from "~/utils/tools";
 
 export default function GuideSummary({ html }: { html: string }) {
 	const { classes, cx } = useStyles();

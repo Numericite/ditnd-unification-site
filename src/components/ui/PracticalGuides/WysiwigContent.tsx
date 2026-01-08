@@ -1,7 +1,7 @@
-import { addAnchors } from "~/components/utils/addAnchor";
 import sanitizeHtml from "sanitize-html";
 import { tss } from "tss-react";
 import { fr } from "@codegouvfr/react-dsfr";
+import { addAnchors } from "~/utils/tools";
 
 export default function WysiwygContent({ html }: { html: string }) {
 	const { classes, cx } = useStyles();
