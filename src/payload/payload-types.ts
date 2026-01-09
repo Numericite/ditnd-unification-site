@@ -247,6 +247,7 @@ export interface PracticalGuide {
 export interface Journey {
   id: number;
   journey_name: string;
+  description: string;
   persona: {
     persona: number | Persona;
     condition: number | Condition;
@@ -457,6 +458,7 @@ export interface ThemesSelect<T extends boolean = true> {
  */
 export interface JourneysSelect<T extends boolean = true> {
   journey_name?: T;
+  description?: T;
   persona?:
     | T
     | {

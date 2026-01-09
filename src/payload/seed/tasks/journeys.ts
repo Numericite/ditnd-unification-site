@@ -3,10 +3,12 @@ import { TRPCError } from "@trpc/server";
 
 const journeys = [
 	{
-		journey_name: "Trouble du langage",
+		journey_name: "Je suis un parent ou un proche intéressé par l'autisme",
+		description:
+			"L’autisme, ou trouble du spectre de l’autisme (TSA), est un trouble du neurodéveloppement qui se manifeste dès l’enfance et qui accompagne la personne tout au long de sa vie. Il se caractérise principalement par des difficultés dans la communication et les interactions sociales, ainsi que par des comportements et intérêts restreints et répétitifs.",
 		persona: {
 			persona: 1,
-			condition: 2,
+			condition: 6,
 			chapter: [
 				{
 					"chapter-name": "Comprendre l'autisme chez mon enfant / proche",
@@ -24,6 +26,7 @@ const journeys = [
 	},
 	{
 		journey_name: "L'autisme",
+		description: "test",
 		persona: {
 			persona: 2,
 			condition: 3,
@@ -41,6 +44,7 @@ async function createJourneys(
 	payload: Payload,
 	data: {
 		journey_name: string;
+		description: string;
 		persona: {
 			persona: number;
 			condition: number;

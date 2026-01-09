@@ -56,12 +56,15 @@ export default function Home() {
 					<div className={fr.cx("fr-py-4w")}>
 						<div
 							className={fr.cx("fr-grid-row", "fr-grid-row--gutters")}
-							style={{ alignItems: "stretch" }}
+							style={{ alignContent: "center" }}
 						>
 							<div className={fr.cx("fr-col-12", "fr-col-lg-6")}>
-								<h1>Autisme et troubles du neuro-développement</h1>
+								<h1>
+									Plateforme nationale de l’autisme et des troubles du
+									neuro-développement
+								</h1>
 								<p>
-									La plateforme nationale au services des personnes concernées
+									La plateforme nationale au service des personnes concernées
 									par un trouble du neurodéveloppement, les parents, et les
 									professionnels.
 								</p>

@@ -16,6 +16,11 @@ export const Journeys: CollectionConfig = {
 			type: "text",
 			required: true,
 		},
+		{
+			name: "description",
+			type: "text",
+			required: true,
+		},
 
 		{
 			type: "tabs",
