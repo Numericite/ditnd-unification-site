@@ -48,7 +48,7 @@ function mappingResults(docs: PracticalGuidePayload[]): GuidesItems[] {
 	}));
 }
 
-export interface AugmentedPracticalGuide extends Omit<PracticalGuide, "theme"> {
+export interface AugmentedPracticalGuide extends Omit<PracticalGuide, ""> {
 	theme: Theme[];
 	conditions: Condition[];
 	"practical-guides": PracticalGuide[];

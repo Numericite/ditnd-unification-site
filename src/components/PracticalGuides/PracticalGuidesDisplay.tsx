@@ -4,12 +4,13 @@ import WysiwygContent from "../ui/PracticalGuides/WysiwigContent";
 import ShareSocials from "../ui/PracticalGuides/ShareSocials";
 import RecommendedGuides from "./RecommendedGuides";
 import { tss } from "tss-react";
-import type { PracticalGuide } from "~/payload/payload-types";
+import RecommendedCourses from "./RecommendedCourses";
+import type { AugmentedPracticalGuide } from "~/server/api/routers/practical-guides";
 
 export default function PracticalGuidesDisplay({
 	guide,
 }: {
-	guide: PracticalGuide;
+	guide: AugmentedPracticalGuide;
 }) {
 	const { classes, cx } = useStyles();
 
@@ -27,13 +28,13 @@ export default function PracticalGuidesDisplay({
 				</div>
 				<div className={cx(classes.footerContent)}>
 					{guide["practical-guides"] && (
-						<RecommendedGuides guides={guide["practical-guides"]} />
+						<RecommendedGuides
+							guides={guide["practical-guides"] as AugmentedPracticalGuide[]}
+						/>
 					)}
-					{guide.courses?.length !== 0 && (
+					{guide.courses && (
 						<div className={cx(classes.marginContent)}>
-							<h5 id="formations">
-								Ces formations qui pourraient vous intéresser{" "}
-							</h5>
+							<RecommendedCourses courses={guide.courses} />
 						</div>
 					)}
 				</div>
