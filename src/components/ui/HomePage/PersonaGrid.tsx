@@ -1,22 +1,14 @@
 import { Tile } from "@codegouvfr/react-dsfr/Tile";
 import { fr } from "@codegouvfr/react-dsfr";
-import type { PersonaTile, TagItem } from "../../HomePage/PersonaTiles";
+import type { PersonaTile } from "../../HomePage/PersonaTiles";
 import type { PersonaTypes } from "../../HomePage/PersonaTiles";
-import type { Dispatch, SetStateAction } from "react";
 
 type Props = {
 	tiles: PersonaTile[];
-	currentDisplay: PersonaTypes;
-	onClick: Record<PersonaTypes, () => void>;
-	setTags?: Dispatch<SetStateAction<TagItem[]>> | undefined;
+	onClick: Record<PersonaTypes, (tile: PersonaTile) => void>;
 };
 
-export const PersonaGrid = ({
-	tiles,
-	onClick,
-	currentDisplay,
-	setTags,
-}: Props) => (
+export const PersonaGrid = ({ tiles, onClick }: Props) => (
 	<>
 		{tiles.map((tile, index) => (
 			<div
@@ -36,16 +28,7 @@ export const PersonaGrid = ({
 					enlargeLinkOrButton
 					buttonProps={{
 						onClick: () => {
-							onClick[tile.display]();
-							if (setTags)
-								setTags((prev) => [
-									...prev,
-									{
-										label: tile.name,
-										slug: tile.slug,
-										display: currentDisplay,
-									},
-								]);
+							onClick[tile.display](tile);
 						},
 					}}
 					orientation="vertical"
