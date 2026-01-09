@@ -16,7 +16,7 @@ export default function PracticalGuides() {
 	});
 
 	return (
-		<>
+		<div className={fr.cx("fr-container")}>
 			<Breadcrumb
 				currentPageLabel="Fiches Pratiques"
 				homeLinkProps={{
@@ -51,6 +51,6 @@ export default function PracticalGuides() {
 					</main>
 				</div>
 			</div>
-		</>
+		</div>
 	);
 }

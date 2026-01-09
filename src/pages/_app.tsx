@@ -9,7 +9,6 @@ import Link from "next/link";
 import { useRouter } from "next/router";
 import { createEmotionSsrAdvancedApproach } from "tss-react/next/pagesDir";
 import { api } from "~/utils/api";
-import { fr } from "@codegouvfr/react-dsfr";
 import { Button } from "@codegouvfr/react-dsfr/Button";
 import { tdhStore } from "~/state/store";
 import { PersonaMenu } from "~/components/HomePage/PersonaHeaderMenu";
@@ -148,7 +147,7 @@ function App({ Component, pageProps }: AppProps) {
 					serviceTagline="Délégation interministérielle pour les troubles du neurodéveloppement"
 				/>
 
-				<main className={fr.cx("fr-container")} style={{ flex: 1 }}>
+				<main>
 					{isLoadingHomePage ? <Loader /> : <Component {...pageProps} />}
 				</main>
 				<Footer

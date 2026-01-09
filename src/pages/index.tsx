@@ -7,7 +7,7 @@ import Breadcrumb from "@codegouvfr/react-dsfr/Breadcrumb";
 import SearchBar from "@codegouvfr/react-dsfr/SearchBar";
 
 export default function Home() {
-	const { classes } = useStyles();
+	const { classes, cx } = useStyles();
 
 	const tiles: PersonaTile[] = [
 		{
@@ -38,62 +38,72 @@ export default function Home() {
 
 	return (
 		<>
-			<Breadcrumb
-				currentPageLabel=""
-				homeLinkProps={{
-					href: "/",
-				}}
-				segments={[]}
-			/>
-			<Head>
-				<title>DITND - Accueil</title>
-			</Head>
+			<div className={fr.cx("fr-container")}>
+				<Breadcrumb
+					currentPageLabel=""
+					homeLinkProps={{
+						href: "/",
+					}}
+					segments={[]}
+				/>
+				<Head>
+					<title>DITND - Accueil</title>
+				</Head>
+			</div>
 
-			<div style={{ width: "100%" }}>
-				<div className={fr.cx("fr-py-4w")}>
-					<div
-						className={fr.cx("fr-grid-row", "fr-grid-row--gutters")}
-						style={{ alignItems: "stretch" }}
-					>
-						<div className={fr.cx("fr-col-12", "fr-col-lg-6")}>
-							<h1>Autisme et troubles du neuro-développement</h1>
-							<p>
-								La plateforme nationale au services des personnes concernées par
-								un trouble du neurodéveloppement, les parents, et les
-								professionnels.
-							</p>
-							<SearchBar big onButtonClick={function noRefCheck() {}} />
-						</div>
-						<div className={fr.cx("fr-col-12", "fr-col-lg-6")}>
-							<img
-								className={fr.cx("fr-responsive-img")}
-								alt=""
-								src={
-									"https://www.systeme-de-design.gouv.fr/v1.14/storybook/img/placeholder.16x9.png"
-								}
-							/>
-						</div>
-					</div>
-				</div>
-				<div className={fr.cx("fr-py-4w")}>
-					<div className={fr.cx("fr-grid-row", "fr-grid-row--gutters")}>
-						<div className={fr.cx("fr-col-12", "fr-col-lg-12")}>
-							<h2>Qui êtes vous</h2>
-							<div className={fr.cx("fr-text--sm")}>
-								La plateforme nationale au services des personnes concernées par
-								un trouble du neurodéveloppement
+			<div>
+				<div className={fr.cx("fr-container")}>
+					<div className={fr.cx("fr-py-4w")}>
+						<div
+							className={fr.cx("fr-grid-row", "fr-grid-row--gutters")}
+							style={{ alignItems: "stretch" }}
+						>
+							<div className={fr.cx("fr-col-12", "fr-col-lg-6")}>
+								<h1>Autisme et troubles du neuro-développement</h1>
+								<p>
+									La plateforme nationale au services des personnes concernées
+									par un trouble du neurodéveloppement, les parents, et les
+									professionnels.
+								</p>
+								<SearchBar big onButtonClick={function noRefCheck() {}} />
+							</div>
+							<div className={fr.cx("fr-col-12", "fr-col-lg-6")}>
+								<img
+									className={fr.cx("fr-responsive-img")}
+									alt=""
+									src={
+										"https://www.systeme-de-design.gouv.fr/v1.14/storybook/img/placeholder.16x9.png"
+									}
+								/>
 							</div>
 						</div>
-						<PersonaTiles tiles={tiles} />
 					</div>
 				</div>
-				<div className={fr.cx("fr-py-4w")}>
-					<div className={fr.cx("fr-grid-row", "fr-grid-row--gutters")}>
-						<div className={fr.cx("fr-col-12", "fr-col-lg-12")}>
-							<h2>Fiches pratiques les plus lues</h2>
-							<div className={fr.cx("fr-text--sm")}>
-								La plateforme nationale au services des personnes concernées par
-								un trouble du neurodéveloppement
+				<div className={cx(classes.tileContainer)}>
+					<div className={fr.cx("fr-container")}>
+						<div className={fr.cx("fr-py-6w")}>
+							<div className={fr.cx("fr-grid-row", "fr-grid-row--gutters")}>
+								<div className={fr.cx("fr-col-12", "fr-col-lg-12")}>
+									<h2>Qui êtes vous</h2>
+									<div className={fr.cx("fr-text--sm")}>
+										La plateforme nationale au services des personnes concernées
+										par un trouble du neurodéveloppement
+									</div>
+								</div>
+								<PersonaTiles tiles={tiles} />
+							</div>
+						</div>
+					</div>
+				</div>
+				<div className={fr.cx("fr-container")}>
+					<div className={fr.cx("fr-py-6w")}>
+						<div className={fr.cx("fr-grid-row", "fr-grid-row--gutters")}>
+							<div className={fr.cx("fr-col-12", "fr-col-lg-12")}>
+								<h2>Fiches pratiques les plus lues</h2>
+								<div className={fr.cx("fr-text--sm")}>
+									La plateforme nationale au services des personnes concernées
+									par un trouble du neurodéveloppement
+								</div>
 							</div>
 						</div>
 					</div>
@@ -105,7 +115,6 @@ export default function Home() {
 
 const useStyles = tss.withName(Home.name).create({
 	tileContainer: {
-		width: "100%",
-		backgroundColor: fr.colors.decisions.background.alt.grey.default,
+		backgroundColor: fr.colors.decisions.background.alt.blueCumulus.default,
 	},
 });
