@@ -18,8 +18,7 @@ export default function PracticalGuidesDisplay({
 		<div className={fr.cx("fr-grid-row", "fr-grid-row--gutters")}>
 			<GuideSummary html={guide.html} />
 			<div className={fr.cx("fr-col-12", "fr-col-lg-9")}>
-				<h1>{guide.title}</h1>
-				<WysiwygContent html={guide.html} />
+				<WysiwygContent title={guide.title} html={guide.html} />
 				<div className={cx(classes.footerContent)}>
 					<div className={cx(classes.marginContent)}>
 						<p className={fr.cx("fr-text--md")}>Partager la page</p>

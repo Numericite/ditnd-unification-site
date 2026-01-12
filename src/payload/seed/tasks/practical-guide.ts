@@ -2,6 +2,7 @@ import type { Payload } from "payload";
 import { TRPCError } from "@trpc/server";
 import type { Course } from "../../payload-types";
 import type { DefaultTypedEditorState } from "@payloadcms/richtext-lexical";
+import { convertLexicalToHTML } from "@payloadcms/richtext-lexical/html";
 
 const content: DefaultTypedEditorState[] = [
 	{
@@ -173,7 +174,7 @@ async function createPracticalGuide(
 		description: string;
 		conditions?: number[];
 		content: DefaultTypedEditorState;
-		html?: string;
+		html: string;
 		persona: number[];
 		theme: number[];
 		practicalGuide?: number;
@@ -209,6 +210,7 @@ export async function seedPracticalGuides(payload: Payload) {
 		await createPracticalGuide(payload, {
 			...guide,
 			content: textContent,
+			html: convertLexicalToHTML({ data: textContent }),
 		});
 	}
 }

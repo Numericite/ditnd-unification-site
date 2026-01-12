@@ -3,16 +3,24 @@ import { tss } from "tss-react";
 import { fr } from "@codegouvfr/react-dsfr";
 import { addAnchors } from "~/utils/tools";
 
-export default function WysiwygContent({ html }: { html: string }) {
+export default function WysiwygContent({
+	title,
+	html,
+}: {
+	title: string;
+	html: string;
+}) {
 	const { classes, cx } = useStyles();
 
 	return (
-		<div
-			className={cx(classes.wysiwig)}
-			dangerouslySetInnerHTML={{
-				__html: addAnchors(sanitizeHtml(html)),
-			}}
-		/>
+		<div className={cx(classes.wysiwig)}>
+			<h1>{title}</h1>
+			<div
+				dangerouslySetInnerHTML={{
+					__html: addAnchors(sanitizeHtml(html)),
+				}}
+			/>
+		</div>
 	);
 }
 
