@@ -82,7 +82,7 @@ export default function Home() {
 						</div>
 					</div>
 				</div>
-				<div className={cx(classes.tileContainer)}>
+				<div className={cx(classes.coloredContainer)}>
 					<div className={fr.cx("fr-container")}>
 						<div className={fr.cx("fr-py-6w")}>
 							<div className={fr.cx("fr-grid-row", "fr-grid-row--gutters")}>
@@ -117,7 +117,7 @@ export default function Home() {
 }
 
 const useStyles = tss.withName(Home.name).create({
-	tileContainer: {
-		backgroundColor: fr.colors.decisions.background.alt.blueCumulus.default,
+	coloredContainer: {
+		backgroundColor: fr.colors.decisions.background.alt.blueFrance.default,
 	},
 });

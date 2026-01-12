@@ -251,16 +251,14 @@ export interface Journey {
   persona: {
     persona: number | Persona;
     condition: number | Condition;
-    chapter?:
-      | {
-          'chapter-name': string;
-          'practical-guide-list': {
-            'practical-guide': number | PracticalGuide;
-            id?: string | null;
-          }[];
-          id?: string | null;
-        }[]
-      | null;
+    chapter: {
+      'chapter-name': string;
+      'practical-guides': {
+        'practical-guide': number | PracticalGuide;
+        id?: string | null;
+      }[];
+      id?: string | null;
+    }[];
   };
   updatedAt: string;
   createdAt: string;
@@ -468,7 +466,7 @@ export interface JourneysSelect<T extends boolean = true> {
           | T
           | {
               'chapter-name'?: T;
-              'practical-guide-list'?:
+              'practical-guides'?:
                 | T
                 | {
                     'practical-guide'?: T;

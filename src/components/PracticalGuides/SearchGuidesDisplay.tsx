@@ -40,7 +40,9 @@ export const SearchGuidesDisplay = ({ filters }: { filters: FiltersQuery }) => {
 			{isLoadingGuides ? (
 				<Loader />
 			) : (
-				<div className={fr.cx("fr-grid-row", "fr-grid-row--gutters")}>
+				<div
+					className={fr.cx("fr-grid-row", "fr-grid-row--gutters", "fr-pt-3w")}
+				>
 					{practicalGuideData?.map((guide) => (
 						<div
 							key={guide.id}

@@ -12,14 +12,14 @@ const journeys = [
 			chapter: [
 				{
 					"chapter-name": "Comprendre l'autisme chez mon enfant / proche",
-					"practical-guide-list": [
+					"practical-guides": [
 						{ "practical-guide": 1 },
 						{ "practical-guide": 2 },
 					],
 				},
 				{
 					"chapter-name": "Repérage, diagnostic et parcours de soins",
-					"practical-guide-list": [{ "practical-guide": 2 }],
+					"practical-guides": [{ "practical-guide": 2 }],
 				},
 			],
 		},
@@ -33,7 +33,7 @@ const journeys = [
 			chapter: [
 				{
 					"chapter-name": "Repérage, diagnostic et parcours de soins",
-					"practical-guide-list": [{ "practical-guide": 2 }],
+					"practical-guides": [{ "practical-guide": 2 }],
 				},
 			],
 		},
@@ -50,7 +50,7 @@ async function createJourneys(
 			condition: number;
 			chapter: Array<{
 				"chapter-name": string;
-				"practical-guide-list": Array<{
+				"practical-guides": Array<{
 					"practical-guide": number;
 				}>;
 			}>;

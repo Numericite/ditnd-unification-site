@@ -43,6 +43,7 @@ export const Journeys: CollectionConfig = {
 						{
 							name: "chapter",
 							type: "array",
+							required: true,
 							fields: [
 								{
 									name: "chapter-name",
@@ -50,7 +51,7 @@ export const Journeys: CollectionConfig = {
 									required: true,
 								},
 								{
-									name: "practical-guide-list",
+									name: "practical-guides",
 									type: "array",
 									required: true,
 									fields: [
