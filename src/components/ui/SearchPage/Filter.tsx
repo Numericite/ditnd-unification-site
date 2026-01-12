@@ -14,14 +14,8 @@ type Props = {
 };
 
 export const Filter = ({ label, collection, value, setFilters }: Props) => {
-	const [expand, setExpand] = useState<boolean>();
-
-	useEffect(() => {
-		if (typeof window === "undefined") return;
-
-		const isMobile = window.matchMedia("(max-width: 48em)").matches;
-		setExpand(!isMobile);
-	}, []);
+	const isMobile = window.matchMedia("(max-width: 48em)").matches;
+	const [expand, setExpand] = useState<boolean>(!isMobile);
 
 	const handleOnChange = (e: React.ChangeEvent<HTMLInputElement>) => {
 		const slug = e.target.value;
