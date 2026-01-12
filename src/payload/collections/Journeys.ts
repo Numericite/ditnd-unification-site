@@ -52,16 +52,10 @@ export const Journeys: CollectionConfig = {
 								},
 								{
 									name: "practical-guides",
-									type: "array",
+									type: "relationship",
+									relationTo: "practical-guides",
 									required: true,
-									fields: [
-										{
-											name: "practical-guide",
-											type: "relationship",
-											relationTo: "practical-guides",
-											required: true,
-										},
-									],
+									hasMany: true,
 								},
 							],
 						},

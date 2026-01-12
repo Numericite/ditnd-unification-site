@@ -253,10 +253,7 @@ export interface Journey {
     condition: number | Condition;
     chapter: {
       'chapter-name': string;
-      'practical-guides': {
-        'practical-guide': number | PracticalGuide;
-        id?: string | null;
-      }[];
+      'practical-guides': (number | PracticalGuide)[];
       id?: string | null;
     }[];
   };
@@ -466,12 +463,7 @@ export interface JourneysSelect<T extends boolean = true> {
           | T
           | {
               'chapter-name'?: T;
-              'practical-guides'?:
-                | T
-                | {
-                    'practical-guide'?: T;
-                    id?: T;
-                  };
+              'practical-guides'?: T;
               id?: T;
             };
       };
