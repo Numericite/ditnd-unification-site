@@ -40,8 +40,7 @@ export const PersonaTiles = ({ tiles }: { tiles: PersonaTile[] }) => {
 	const [display, setDisplay] = useState<PersonaTypes>("default");
 	const [tags, setTags] = useState<TagItem[]>([]);
 
-	const { data: professionalPersonas, isLoading: isLoadingPro } =
-		api.persona.professionals.useQuery();
+	const { data: professionalPersonas } = api.persona.professionals.useQuery();
 
 	const router = useRouter();
 	const tdh = useObservable(tdhStore).get();
