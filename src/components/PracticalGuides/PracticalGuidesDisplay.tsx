@@ -15,10 +15,10 @@ export default function PracticalGuidesDisplay({
 	const { classes, cx } = useStyles();
 
 	return (
-		<div className={fr.cx("fr-grid-row")}>
+		<div className={fr.cx("fr-grid-row", "fr-grid-row--gutters")}>
 			<GuideSummary html={guide.html} />
 			<div className={fr.cx("fr-col-12", "fr-col-lg-9")}>
-				<h4>Fiches pratiques</h4>
+				<h1>{guide.title}</h1>
 				<WysiwygContent html={guide.html} />
 				<div className={cx(classes.footerContent)}>
 					<div className={cx(classes.marginContent)}>

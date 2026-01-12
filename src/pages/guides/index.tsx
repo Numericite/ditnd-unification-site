@@ -16,7 +16,7 @@ export default function PracticalGuides() {
 	});
 
 	return (
-		<div className={fr.cx("fr-container")}>
+		<div className={fr.cx("fr-container", "fr-pb-8w")}>
 			<Breadcrumb
 				currentPageLabel="Fiches Pratiques"
 				homeLinkProps={{

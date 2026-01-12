@@ -247,16 +247,12 @@ export interface PracticalGuide {
 export interface Journey {
   id: number;
   journey_name: string;
-  description: string;
-  persona: {
-    persona: number | Persona;
-    condition: number | Condition;
-    chapter: {
-      'chapter-name': string;
-      'practical-guides': (number | PracticalGuide)[];
-      id?: string | null;
-    }[];
-  };
+  persona: number | Persona;
+  chapter: {
+    'chapter-name': string;
+    'practical-guides': (number | PracticalGuide)[];
+    id?: string | null;
+  }[];
   updatedAt: string;
   createdAt: string;
 }
@@ -453,19 +449,13 @@ export interface ThemesSelect<T extends boolean = true> {
  */
 export interface JourneysSelect<T extends boolean = true> {
   journey_name?: T;
-  description?: T;
-  persona?:
+  persona?: T;
+  chapter?:
     | T
     | {
-        persona?: T;
-        condition?: T;
-        chapter?:
-          | T
-          | {
-              'chapter-name'?: T;
-              'practical-guides'?: T;
-              id?: T;
-            };
+        'chapter-name'?: T;
+        'practical-guides'?: T;
+        id?: T;
       };
   updatedAt?: T;
   createdAt?: T;

@@ -17,49 +17,27 @@ export const Journeys: CollectionConfig = {
 			required: true,
 		},
 		{
-			name: "description",
-			type: "text",
+			name: "persona",
+			type: "relationship",
+			relationTo: "personas",
 			required: true,
 		},
-
 		{
-			type: "tabs",
-			tabs: [
+			name: "chapter",
+			type: "array",
+			required: true,
+			fields: [
 				{
-					name: "persona",
-					fields: [
-						{
-							name: "persona",
-							type: "relationship",
-							relationTo: "personas",
-							required: true,
-						},
-						{
-							name: "condition",
-							type: "relationship",
-							relationTo: "conditions",
-							required: true,
-						},
-						{
-							name: "chapter",
-							type: "array",
-							required: true,
-							fields: [
-								{
-									name: "chapter-name",
-									type: "text",
-									required: true,
-								},
-								{
-									name: "practical-guides",
-									type: "relationship",
-									relationTo: "practical-guides",
-									required: true,
-									hasMany: true,
-								},
-							],
-						},
-					],
+					name: "chapter-name",
+					type: "text",
+					required: true,
+				},
+				{
+					name: "practical-guides",
+					type: "relationship",
+					relationTo: "practical-guides",
+					required: true,
+					hasMany: true,
 				},
 			],
 		},
