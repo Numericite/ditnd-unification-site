@@ -2,41 +2,53 @@ import { Tile } from "@codegouvfr/react-dsfr/Tile";
 import { fr } from "@codegouvfr/react-dsfr";
 import type { PersonaTile } from "../../HomePage/PersonaTiles";
 import type { PersonaTypes } from "../../HomePage/PersonaTiles";
+import { tss } from "tss-react";
 
 type Props = {
 	tiles: PersonaTile[];
 	onClick: Record<PersonaTypes, (tile: PersonaTile) => void>;
 };
 
-export const PersonaGrid = ({ tiles, onClick }: Props) => (
-	<>
-		{tiles.map((tile, index) => (
-			<div
-				key={index}
-				className={fr.cx(
-					"fr-col-12",
-					"fr-col-sm-6",
-					"fr-col-md-4",
-					"fr-col-lg-3",
-				)}
-				style={{
-					alignItems: "stretch",
-					marginLeft: 0,
+export const PersonaGrid = ({ tiles, onClick }: Props) => {
+	const { classes, cx } = useStyles();
+
+	return tiles.map((tile, index) => (
+		<div
+			key={index}
+			className={fr.cx(
+				"fr-col-12",
+				"fr-col-sm-6",
+				"fr-col-md-4",
+				"fr-col-lg-3",
+			)}
+			style={{
+				alignItems: "stretch",
+				marginLeft: 0,
+			}}
+		>
+			<Tile
+				buttonProps={{
+					onClick: () => {
+						onClick[tile.display](tile);
+					},
 				}}
-			>
-				<Tile
-					enlargeLinkOrButton
-					buttonProps={{
-						onClick: () => {
-							onClick[tile.display](tile);
-						},
-					}}
-					orientation="vertical"
-					title={tile.name}
-					detail={tile.description}
-					titleAs="h3"
-				/>
-			</div>
-		))}
-	</>
-);
+				className={cx(classes.noBtn)}
+				orientation="vertical"
+				title={tile.name}
+				detail={tile.description}
+				titleAs="h3"
+			/>
+		</div>
+	));
+};
+
+const useStyles = tss.withName(PersonaGrid.name).create({
+	noBtn: {
+		"button::after": {
+			visibility: "hidden",
+		},
+		".fr-tile__content": {
+			paddingBottom: `${fr.spacing("3v")} !important`,
+		},
+	},
+});
