@@ -12,25 +12,28 @@ export const Journeys: CollectionConfig = {
 	fields: [
 		{
 			name: "journey_name",
-			label: "Name of your journey",
 			type: "text",
 			required: true,
+			label: { fr: "Nom de votre parcours" },
 		},
 		{
 			name: "persona",
 			type: "relationship",
 			relationTo: "personas",
 			required: true,
+			label: { fr: "Persona" },
 		},
 		{
 			name: "chapter",
 			type: "array",
 			required: true,
+			label: { fr: "Chapitres" },
 			fields: [
 				{
 					name: "chapter-name",
 					type: "text",
 					required: true,
+					label: { fr: "Nom du chapitre" },
 				},
 				{
 					name: "practical-guides",
@@ -38,6 +41,7 @@ export const Journeys: CollectionConfig = {
 					relationTo: "practical-guides",
 					required: true,
 					hasMany: true,
+					label: { fr: "Fiches pratiques" },
 				},
 				{
 					name: "courses",
@@ -45,6 +49,7 @@ export const Journeys: CollectionConfig = {
 					relationTo: "courses",
 					required: true,
 					hasMany: true,
+					label: { fr: "Formations" },
 				},
 			],
 		},

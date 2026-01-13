@@ -8,5 +8,5 @@ import type {
 export interface AugmentedCourse extends Omit<Course, ""> {
 	theme: Theme;
 	persona: Persona;
-	conditions: Condition;
+	condition: Condition;
 }

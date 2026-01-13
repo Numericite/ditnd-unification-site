@@ -21,12 +21,14 @@ export const PracticalGuides: CollectionConfig = {
 			name: "title",
 			type: "text",
 			required: true,
+			label: { fr: "Titre" },
 		},
 		{
 			name: "slug",
 			type: "text",
 			unique: true,
 			required: true,
+			label: { fr: "Jeton" },
 			admin: {
 				readOnly: true,
 			},
@@ -43,6 +45,7 @@ export const PracticalGuides: CollectionConfig = {
 			name: "description",
 			type: "text",
 			required: true,
+			label: { fr: "description" },
 		},
 		{
 			name: "conditions",
@@ -50,11 +53,13 @@ export const PracticalGuides: CollectionConfig = {
 			required: false,
 			relationTo: "conditions",
 			hasMany: true,
+			label: { fr: "Troubles du neurodéveloppement" },
 		},
 		{
 			name: "content",
 			type: "richText",
 			required: true,
+			label: { fr: "Contenu" },
 			editor: lexicalEditor({
 				admin: {
 					placeholder: "Content of the practical guide",
@@ -74,6 +79,7 @@ export const PracticalGuides: CollectionConfig = {
 			name: "html",
 			type: "text",
 			required: true,
+			label: { fr: "html" },
 			admin: {
 				readOnly: true,
 			},
@@ -92,6 +98,7 @@ export const PracticalGuides: CollectionConfig = {
 			required: true,
 			relationTo: "personas",
 			hasMany: true,
+			label: { fr: "Persona" },
 		},
 		{
 			name: "theme",
@@ -99,6 +106,7 @@ export const PracticalGuides: CollectionConfig = {
 			required: true,
 			relationTo: "themes",
 			hasMany: true,
+			label: { fr: "Thèmes" },
 		},
 		{
 			name: "practical-guides",
@@ -106,6 +114,7 @@ export const PracticalGuides: CollectionConfig = {
 			required: false,
 			relationTo: "practical-guides",
 			hasMany: true,
+			label: { fr: "Fiches pratiques" },
 		},
 		{
 			name: "courses",
@@ -113,6 +122,7 @@ export const PracticalGuides: CollectionConfig = {
 			required: false,
 			relationTo: "courses",
 			hasMany: true,
+			label: { fr: "Formations" },
 		},
 	],
 };
