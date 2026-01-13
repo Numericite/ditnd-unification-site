@@ -39,6 +39,13 @@ export const Journeys: CollectionConfig = {
 					required: true,
 					hasMany: true,
 				},
+				{
+					name: "courses",
+					type: "relationship",
+					relationTo: "courses",
+					required: true,
+					hasMany: true,
+				},
 			],
 		},
 	],

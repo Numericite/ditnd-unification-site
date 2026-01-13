@@ -251,6 +251,7 @@ export interface Journey {
   chapter: {
     'chapter-name': string;
     'practical-guides': (number | PracticalGuide)[];
+    courses: (number | Course)[];
     id?: string | null;
   }[];
   updatedAt: string;
@@ -455,6 +456,7 @@ export interface JourneysSelect<T extends boolean = true> {
     | {
         'chapter-name'?: T;
         'practical-guides'?: T;
+        courses?: T;
         id?: T;
       };
   updatedAt?: T;

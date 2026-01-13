@@ -4,17 +4,20 @@ import {
 	createTRPCRouter,
 	fetchOrReturnRealValue,
 	publicProcedure,
+	resolveRelations,
 } from "~/server/api/trpc";
 import type { AugmentedPracticalGuide } from "./practical-guides";
+import type { AugmentedCourse } from "./courses";
 
 export interface AugmentedJourney extends Omit<Journey, ""> {
 	persona: Persona;
 	chapter: Chapter[];
 }
 
-interface Chapter {
+export interface Chapter {
 	"chapter-name": string;
 	"practical-guides": AugmentedPracticalGuide[];
+	courses: AugmentedCourse[];
 	id?: string;
 }
 
@@ -43,12 +46,11 @@ export const journeyRouter = createTRPCRouter({
 							journey.chapter.map(async (chap) => ({
 								...chap,
 
-								"practical-guides": await Promise.all(
-									chap["practical-guides"].map(
-										async (pg) =>
-											await fetchOrReturnRealValue(pg, "practical-guides"),
-									),
+								"practical-guides": await resolveRelations(
+									chap["practical-guides"],
+									"practical-guides",
 								),
+								courses: await resolveRelations(chap.courses, "courses"),
 							})),
 						),
 					};
