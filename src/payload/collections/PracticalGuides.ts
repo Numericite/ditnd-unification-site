@@ -2,6 +2,7 @@ import type { CollectionConfig } from "payload";
 import {
 	lexicalEditor,
 	FixedToolbarFeature,
+	HeadingFeature,
 } from "@payloadcms/richtext-lexical";
 import { convertLexicalToHTML } from "@payloadcms/richtext-lexical/html";
 import { slugify } from "~/utils/tools";
@@ -63,6 +64,9 @@ export const PracticalGuides: CollectionConfig = {
 				features: ({ defaultFeatures }) => [
 					...defaultFeatures,
 					FixedToolbarFeature(),
+					HeadingFeature({
+						enabledHeadingSizes: ["h2", "h3", "h4", "h5", "h6"],
+					}),
 				],
 			}),
 		},
