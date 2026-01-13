@@ -58,7 +58,7 @@ export const PracticalGuide = ({
 				}
 				size="medium"
 				title={title}
-				titleAs="h3"
+				titleAs="h4"
 			/>
 		</div>
 	);

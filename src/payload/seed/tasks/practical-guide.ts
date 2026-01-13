@@ -14,7 +14,7 @@ const content: DefaultTypedEditorState[] = [
 			children: [
 				{
 					type: "heading",
-					tag: "h1",
+					tag: "h2",
 					format: "",
 					indent: 0,
 					version: 1,
@@ -44,7 +44,7 @@ const content: DefaultTypedEditorState[] = [
 			children: [
 				{
 					type: "heading",
-					tag: "h1",
+					tag: "h2",
 					format: "",
 					indent: 0,
 					version: 1,
@@ -74,7 +74,7 @@ const content: DefaultTypedEditorState[] = [
 			children: [
 				{
 					type: "heading",
-					tag: "h1",
+					tag: "h2",
 					format: "",
 					indent: 0,
 					version: 1,
@@ -104,7 +104,7 @@ const content: DefaultTypedEditorState[] = [
 			children: [
 				{
 					type: "heading",
-					tag: "h1",
+					tag: "h2",
 					format: "",
 					indent: 0,
 					version: 1,

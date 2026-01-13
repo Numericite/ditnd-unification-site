@@ -34,7 +34,7 @@ export default function Course({ course }: { course: AugmentedCourse }) {
 					</ul>
 				}
 				title={course.title}
-				titleAs="h3"
+				titleAs="h4"
 			/>
 		</div>
 	);

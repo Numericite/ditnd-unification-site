@@ -52,11 +52,11 @@ export const SearchGuidesDisplay = ({ filters }: { filters: FiltersQuery }) => {
 							<PracticalGuide
 								title={guide.title}
 								slug={guide.slug}
-								badge={guide.theme?.name ?? ""}
+								badge={guide.theme?.name}
 								description={guide.description}
-								condition={guide.condition?.slug ?? ""}
-								textColor={guide.condition?.textColor ?? ""}
-								backgroundColor={guide.condition?.backgroundColor ?? ""}
+								condition={guide.condition?.slug}
+								textColor={guide.condition?.textColor}
+								backgroundColor={guide.condition?.backgroundColor}
 							/>
 						</div>
 					))}

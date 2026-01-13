@@ -26,8 +26,12 @@ export default function WysiwygContent({
 
 const useStyles = tss.withName(WysiwygContent.name).create(() => ({
 	wysiwig: {
-		"h1,h2,h3": {
+		h1: {
 			color: fr.colors.decisions.text.active.blueFrance.default,
+		},
+		h2: {
+			fontSize: "1.75rem",
+			lineHeight: "2.25rem",
 		},
 		ul: {
 			paddingInlineStart: "2.5rem",

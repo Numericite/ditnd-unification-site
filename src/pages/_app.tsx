@@ -50,15 +50,8 @@ const userNavigationItems: MainNavigationProps.Item[] = [
 	},
 	{ text: "Fiches pratiques", linkProps: { href: "/guides" } },
 	{
-		menuLinks: [
-			{
-				linkProps: {
-					href: "#",
-				},
-				text: "PH LINK",
-			},
-		],
 		text: "Formations",
+		linkProps: { href: "/formations" },
 	},
 	{ text: "Actualités", linkProps: { href: "/actualite" } },
 	{ text: "Annuaire", linkProps: { href: "/annuaire" } },

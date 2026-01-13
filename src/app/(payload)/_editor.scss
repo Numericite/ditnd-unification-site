@@ -5,24 +5,19 @@
     }
     background-color: white;
 
-    h1,
-    h2,
-    h3 {
-      color: #000091;
-      font-weight: 700;
-      margin: 1.5rem 0;
-      font-size: 1.75rem;
-      line-height: 2.25rem;
+    h2,h3,h4,h5,h6 {
+      color:#161616;
+      margin: 0 0 1.5rem;
     }
 
     h2 {
-      font-size: 2rem !important;
-      line-height: 2.5rem !important;
+      font-size: 1.75rem !important;
+      line-height: 2.25rem !important;
     }
 
-    h5 {
-      margin: 0 0 1.5rem;
-      color: #161616;
+    h3{
+      font-size: 1.5rem !important;
+      line-height: 2rem !important;
     }
 
     p {

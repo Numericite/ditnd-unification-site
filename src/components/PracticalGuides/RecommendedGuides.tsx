@@ -11,9 +11,9 @@ export default function RecommendedGuides({
 		<div>
 			{guides.length !== 0 && (
 				<div className={fr.cx("fr-mt-2w")}>
-					<h5 id="fiches-pratiques">
+					<h3 id="fiches-pratiques">
 						Ces fiches pratiques qui pourraient vous intéresser
-					</h5>
+					</h3>
 					<div className={fr.cx("fr-grid-row", "fr-grid-row--gutters")}>
 						{guides.map((g, index) => {
 							const condition0 = g.conditions?.[0];

@@ -11,9 +11,9 @@ export default function RecommendedCourses({
 		<div>
 			{courses.length !== 0 && (
 				<div className={fr.cx("fr-mt-2w")}>
-					<h5 id="formations">
+					<h3 id="formations">
 						Ces formations qui pourraient vous intéresser{" "}
-					</h5>
+					</h3>
 					<div className={fr.cx("fr-grid-row", "fr-grid-row--gutters")}>
 						{courses?.map((course, index) => {
 							return (
