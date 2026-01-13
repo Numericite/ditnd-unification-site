@@ -61,6 +61,14 @@ const conditions = [
 		textColor: "#161616",
 		backgroundColor: "#F6F6F6",
 	},
+	{
+		name: "Tous les troubles",
+		description: "Tous les troubles concernés",
+		acronym: "ALL",
+		slug: "all",
+		textColor: "#161616",
+		backgroundColor: "#F6F6F6",
+	},
 ];
 
 async function createConditions(
