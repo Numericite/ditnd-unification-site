@@ -14,16 +14,6 @@ export type DisplayItem = {
 	backgroundColor: string;
 };
 
-export type GuidesItems = {
-	id: number;
-	title: string;
-	slug: string;
-	description: string;
-	condition?: DisplayItem;
-	persona?: DisplayItem;
-	theme?: DisplayItem;
-};
-
 export const SearchGuidesDisplay = ({ filters }: { filters: FiltersQuery }) => {
 	const [query, setQuery] = useState<string>("");
 
@@ -52,11 +42,9 @@ export const SearchGuidesDisplay = ({ filters }: { filters: FiltersQuery }) => {
 							<PracticalGuide
 								title={guide.title}
 								slug={guide.slug}
-								badge={guide.theme?.name}
+								badge={guide.theme[0]?.name}
 								description={guide.description}
-								condition={guide.condition?.slug}
-								textColor={guide.condition?.textColor}
-								backgroundColor={guide.condition?.backgroundColor}
+								conditions={guide.conditions}
 							/>
 						</div>
 					))}

@@ -16,7 +16,6 @@ export default function RecommendedGuides({
 					</h3>
 					<div className={fr.cx("fr-grid-row", "fr-grid-row--gutters")}>
 						{guides.map((g, index) => {
-							const condition0 = g.conditions?.[0];
 							const theme0 = g.theme?.[0];
 							return (
 								<div
@@ -30,9 +29,7 @@ export default function RecommendedGuides({
 										slug={g.slug}
 										badge={theme0?.name}
 										description={g.description}
-										condition={condition0?.slug}
-										textColor={condition0?.textColor}
-										backgroundColor={condition0?.backgroundColor}
+										conditions={g.conditions}
 									/>
 								</div>
 							);
