@@ -2,7 +2,7 @@ import type { AugmentedPracticalGuide } from "~/server/api/routers/practical-gui
 import { PracticalGuide } from "../PracticalGuides/PracticalGuide";
 import { fr } from "@codegouvfr/react-dsfr";
 
-export default function PersonaContent({
+export default function PersonaGuidesContent({
 	value,
 	condition,
 }: {
@@ -11,12 +11,10 @@ export default function PersonaContent({
 }) {
 	return value
 		.filter(
-			(g) =>
-				g.conditions[0]?.slug === condition || g.conditions[0]?.slug === "all",
+			(g) => g.conditions[0]?.slug === condition || g.conditions.length === 0,
 		)
 		.map((guide, index) => {
 			const theme = guide.theme[0];
-			const condition = guide.conditions[0];
 
 			return (
 				<div
@@ -30,9 +28,7 @@ export default function PersonaContent({
 						slug={guide.slug}
 						badge={theme?.name}
 						description={guide.description}
-						condition={condition?.slug}
-						textColor={condition?.textColor}
-						backgroundColor={condition?.backgroundColor}
+						conditions={guide.conditions}
 					/>
 				</div>
 			);
