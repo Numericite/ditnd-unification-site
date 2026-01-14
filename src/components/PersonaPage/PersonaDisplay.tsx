@@ -42,7 +42,9 @@ export default function PersonaDisplay({
 					(pg) =>
 						pg.description.toLowerCase().includes(loweredQuery) ||
 						pg.title.toLowerCase().includes(loweredQuery) ||
-						pg.conditions.some((c) => c.slug.toLowerCase() === loweredQuery) ||
+						pg.conditions.some((c) =>
+							c.slug.toLowerCase().includes(loweredQuery),
+						) ||
 						pg.theme[0]?.name.toLowerCase().includes(loweredQuery),
 				),
 			}));

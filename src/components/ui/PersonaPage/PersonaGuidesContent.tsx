@@ -11,7 +11,9 @@ export default function PersonaGuidesContent({
 }) {
 	return value
 		.filter(
-			(g) => g.conditions[0]?.slug === condition || g.conditions.length === 0,
+			(g) =>
+				g.conditions.some((c) => c.slug === condition) ||
+				g.conditions.length === 0,
 		)
 		.map((guide, index) => {
 			const theme = guide.theme[0];
