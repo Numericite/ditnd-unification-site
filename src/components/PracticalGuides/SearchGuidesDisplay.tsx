@@ -6,14 +6,6 @@ import { useState } from "react";
 import { SearchBarUI } from "../ui/SearchPage/SearchBarUI";
 import { Loader } from "../ui/Loader";
 
-export type DisplayItem = {
-	id: number;
-	name: string;
-	slug: string;
-	textColor: string;
-	backgroundColor: string;
-};
-
 export const SearchGuidesDisplay = ({ filters }: { filters: FiltersQuery }) => {
 	const [query, setQuery] = useState<string>("");
 
