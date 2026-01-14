@@ -1,18 +1,25 @@
 import { fr } from "@codegouvfr/react-dsfr";
 import Summary from "@codegouvfr/react-dsfr/Summary";
 import { SearchBarUI } from "../ui/SearchPage/SearchBarUI";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { slugify } from "~/utils/tools";
-import type { AugmentedJourney } from "~/server/api/routers/journeys";
+import type { AugmentedJourney, Chapter } from "~/server/api/routers/journeys";
 import { useRouter } from "next/router";
-import PersonaContent from "../ui/PersonaPage/PersonaContent";
+import PersonaGuidesContent from "../ui/PersonaPage/PersonaGuidesContent";
+import { tss } from "tss-react";
+import PersonaCoursesContent from "../ui/PersonaPage/PersonaCoursesContent";
 
 export default function PersonaDisplay({
 	journey,
+	viewCourses,
 }: {
 	journey: AugmentedJourney;
+	viewCourses: boolean;
 }) {
+	const { classes, cx } = useStyles();
+
 	const [query, setQuery] = useState<string>("");
+	const [chaptersList, setChapterList] = useState<Chapter[]>();
 
 	const router = useRouter();
 	const routerCondition = router.query.condition as string;
@@ -24,7 +31,27 @@ export default function PersonaDisplay({
 		text: chap["chapter-name"],
 	}));
 
-	const chaptersList = journey.chapter;
+	useEffect(() => {
+		if (!query) {
+			setChapterList(journey.chapter);
+		} else {
+			const loweredQuery = query.toLowerCase();
+			const res = chaptersList?.map((chap) => ({
+				...chap,
+				"practical-guides": chap["practical-guides"].filter(
+					(pg) =>
+						pg.description.toLowerCase().includes(loweredQuery) ||
+						pg.title.toLowerCase().includes(loweredQuery) ||
+						pg.conditions.some((c) => c.slug.toLowerCase() === loweredQuery) ||
+						pg.theme[0]?.name.toLowerCase().includes(loweredQuery),
+				),
+			}));
+			setChapterList(res);
+		}
+	}, [query]);
+
+	if (!chaptersList || chaptersList.length === 0)
+		return <div>Parcours introuvable</div>;
 
 	return (
 		<div className={fr.cx("fr-grid-row")}>
@@ -38,7 +65,11 @@ export default function PersonaDisplay({
 					"fr-mb-2w",
 				)}
 			>
-				<Summary links={chapterLinks} title="Thématiques" />
+				<Summary
+					className={cx(classes.summarySticky)}
+					links={chapterLinks}
+					title="Thématiques"
+				/>
 			</div>
 			<div className={fr.cx("fr-col-12", "fr-col-lg-8")}>
 				<SearchBarUI
@@ -54,10 +85,18 @@ export default function PersonaDisplay({
 							key={chap.id}
 							className={fr.cx("fr-grid-row", "fr-grid-row--gutters")}
 						>
-							<PersonaContent
-								value={chap["practical-guides"]}
-								condition={routerCondition}
-							/>
+							{viewCourses ? (
+								<PersonaCoursesContent
+									value={chap.courses}
+									condition={routerCondition}
+									query={query}
+								/>
+							) : (
+								<PersonaGuidesContent
+									value={chap["practical-guides"]}
+									condition={routerCondition}
+								/>
+							)}
 						</div>
 					</div>
 				))}
@@ -65,3 +104,13 @@ export default function PersonaDisplay({
 		</div>
 	);
 }
+
+const useStyles = tss.withName(PersonaDisplay.name).create(() => ({
+	summarySticky: {
+		position: "sticky",
+		top: "20px",
+		".fr-summary__link:before": {
+			visibility: "hidden",
+		},
+	},
+}));
