@@ -2,15 +2,18 @@ import { fr } from "@codegouvfr/react-dsfr";
 import Breadcrumb from "@codegouvfr/react-dsfr/Breadcrumb";
 import Head from "next/head";
 import { useRouter } from "next/router";
+import { useState } from "react";
 import { tss } from "tss-react";
 import PersonaDisplay from "~/components/PersonaPage/PersonaDisplay";
 import { Loader } from "~/components/ui/Loader";
+import InfoOrCoursesButtons from "~/components/ui/PersonaPage/InfoOrCoursesButtons";
 import type { AugmentedJourney } from "~/server/api/routers/journeys";
 import { api } from "~/utils/api";
 
 export default function JourneyPage() {
 	const { classes, cx } = useStyles();
 
+	const [viewCourses, setViewCourses] = useState<boolean>(false);
 	const router = useRouter();
 	const persona = router.query.persona as string;
 
@@ -74,6 +77,10 @@ export default function JourneyPage() {
 				</div>
 			</div>
 			<div className={cx(classes.coloredContainer)}>
+				<InfoOrCoursesButtons
+					viewCourses={viewCourses}
+					setViewCourses={setViewCourses}
+				/>
 				<div className={fr.cx("fr-container", "fr-py-4w")}>
 					<h2>Fiches pratiques</h2>
 					<p className={fr.cx("fr-text--md")}>
@@ -84,7 +91,7 @@ export default function JourneyPage() {
 						droits et accompagnement. Vous y trouverez également des ressources
 						concrètes pour vous aider au quotidien.
 					</p>
-					<PersonaDisplay journey={journey} />
+					<PersonaDisplay journey={journey} viewCourses={viewCourses} />
 				</div>
 			</div>
 		</div>
@@ -101,5 +108,9 @@ const useStyles = tss.withName(JourneyPage.name).create({
 		".fr-summary__link:before": {
 			visibility: "hidden",
 		},
+	},
+	centeredContainer: {
+		textAlign: "center",
+		paddingTop: fr.spacing("4w"),
 	},
 });

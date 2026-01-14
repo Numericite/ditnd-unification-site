@@ -1,12 +1,13 @@
 import { Card } from "@codegouvfr/react-dsfr/Card";
 import Tag from "@codegouvfr/react-dsfr/Tag";
+import type { Condition } from "~/payload/payload-types";
 
 type Props = {
 	title: string;
 	description: string;
 	slug: string;
 	badge?: string;
-	condition?: string;
+	conditions?: Condition[];
 	textColor?: string;
 	backgroundColor?: string;
 };
@@ -16,9 +17,7 @@ export const PracticalGuide = ({
 	description,
 	slug,
 	badge,
-	condition,
-	textColor,
-	backgroundColor,
+	conditions,
 }: Props) => {
 	return (
 		<div className="container">
@@ -26,18 +25,18 @@ export const PracticalGuide = ({
 				border
 				start={
 					<ul className="fr-tags-group">
-						{condition && (
-							<li>
+						{conditions?.map((condition, index) => (
+							<li key={index}>
 								<Tag
 									style={{
-										color: textColor,
-										backgroundColor: backgroundColor,
+										color: condition.textColor,
+										backgroundColor: condition.backgroundColor,
 									}}
 								>
-									<strong>{condition.toUpperCase()}</strong>
+									<strong>{condition.slug.toUpperCase()}</strong>
 								</Tag>
 							</li>
-						)}
+						))}
 						{badge && (
 							<li>
 								<Tag>
