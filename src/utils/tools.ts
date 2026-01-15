@@ -7,6 +7,13 @@ type Link = {
 	subLinks?: Link[];
 };
 
+function extractText(html: string): string {
+	return sanitize(html, {
+		allowedTags: [],
+		allowedAttributes: {},
+	});
+}
+
 export function slugify(text: string | undefined) {
 	if (!text) return;
 	return text
@@ -19,11 +26,11 @@ export function slugify(text: string | undefined) {
 
 export default function generateSummary(html: string): Link[] {
 	const sanitizedHTML = sanitize(html, {
-		allowedTags: ["h5"],
+		allowedTags: ["h2"],
 		allowedAttributes: {},
 	});
 
-	const matches = [...sanitizedHTML.matchAll(/<h5>(.*?)<\/h5>/gi)];
+	const matches = [...sanitizedHTML.matchAll(/<h2>(.*?)<\/h2>/gi)];
 
 	const res = [
 		...matches.map(([, title]) => ({
@@ -44,8 +51,9 @@ export default function generateSummary(html: string): Link[] {
 }
 
 export function addAnchors(html: string) {
-	return html.replace(/<h5([^>]*)>(.*?)<\/h5>/gi, (_, attrs, title) => {
-		const id = slugify(title);
-		return `<h5${attrs} id="${id}">${title}</h5>`;
+	return html.replace(/<h2([^>]*)>(.*?)<\/h2>/gi, (_, attrs, innerHTML) => {
+		const text = extractText(innerHTML);
+		const id = slugify(text);
+		return `<h2${attrs} id="${id}">${innerHTML}</h2>`;
 	});
 }

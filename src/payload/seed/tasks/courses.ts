@@ -12,7 +12,7 @@ const courses = [
 		condition: 1,
 	},
 	{
-		title: "Développement et manifestiations selon l'âge",
+		title: "Développement et manifestations selon l'âge",
 		description:
 			"Comment l'autisme peut apparaître différemment chez un jeu enfant, un adolescent ou un adulte.",
 		link: "https://lien-vers-site.com",

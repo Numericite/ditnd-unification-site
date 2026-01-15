@@ -3,35 +3,28 @@ import { TRPCError } from "@trpc/server";
 
 const journeys = [
 	{
-		journey_name: "Trouble du langage",
-		persona: {
-			persona: 1,
-			chapter: [
-				{
-					"chapter-name": "Comprendre l'autisme chez mon enfant / proche",
-					"practical-guide-list": [
-						{ "practical-guide": 1 },
-						{ "practical-guide": 2 },
-					],
-				},
-				{
-					"chapter-name": "Repérage, diagnostic et parcours de soins",
-					"practical-guide-list": [{ "practical-guide": 2 }],
-				},
-			],
-		},
+		journey_name: "Je suis un parent ou un proche intéressé par l'autisme",
+		persona: 1,
+		chapter: [
+			{
+				"chapter-name": "Comprendre l'autisme chez mon enfant / proche",
+				"practical-guides": [1, 2],
+			},
+			{
+				"chapter-name": "Repérage, diagnostic et parcours de soins",
+				"practical-guides": [2],
+			},
+		],
 	},
 	{
 		journey_name: "L'autisme",
-		persona: {
-			persona: 2,
-			chapter: [
-				{
-					"chapter-name": "Repérage, diagnostic et parcours de soins",
-					"practical-guide-list": [{ "practical-guide": 2 }],
-				},
-			],
-		},
+		persona: 2,
+		chapter: [
+			{
+				"chapter-name": "Repérage, diagnostic et parcours de soins",
+				"practical-guides": [2],
+			},
+		],
 	},
 ];
 
@@ -39,15 +32,11 @@ async function createJourneys(
 	payload: Payload,
 	data: {
 		journey_name: string;
-		persona: {
-			persona: number;
-			chapter: Array<{
-				"chapter-name": string;
-				"practical-guide-list": Array<{
-					"practical-guide": number;
-				}>;
-			}>;
-		};
+		persona: number;
+		chapter: {
+			"chapter-name": string;
+			"practical-guides": number[];
+		}[];
 	},
 ): Promise<void> {
 	try {

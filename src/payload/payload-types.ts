@@ -234,7 +234,7 @@ export interface PracticalGuide {
   };
   html: string;
   persona: (number | Persona)[];
-  theme: (number | Theme)[];
+  themes: (number | Theme)[];
   'practical-guides'?: (number | PracticalGuide)[] | null;
   courses?: (number | Course)[] | null;
   updatedAt: string;
@@ -247,19 +247,13 @@ export interface PracticalGuide {
 export interface Journey {
   id: number;
   journey_name: string;
-  persona: {
-    persona: number | Persona;
-    chapter?:
-      | {
-          'chapter-name': string;
-          'practical-guide-list': {
-            'practical-guide'?: (number | null) | PracticalGuide;
-            id?: string | null;
-          }[];
-          id?: string | null;
-        }[]
-      | null;
-  };
+  persona: number | Persona;
+  chapter: {
+    'chapter-name': string;
+    'practical-guides': (number | PracticalGuide)[];
+    courses: (number | Course)[];
+    id?: string | null;
+  }[];
   updatedAt: string;
   createdAt: string;
 }
@@ -433,7 +427,7 @@ export interface PracticalGuidesSelect<T extends boolean = true> {
   content?: T;
   html?: T;
   persona?: T;
-  theme?: T;
+  themes?: T;
   'practical-guides'?: T;
   courses?: T;
   updatedAt?: T;
@@ -456,22 +450,14 @@ export interface ThemesSelect<T extends boolean = true> {
  */
 export interface JourneysSelect<T extends boolean = true> {
   journey_name?: T;
-  persona?:
+  persona?: T;
+  chapter?:
     | T
     | {
-        persona?: T;
-        chapter?:
-          | T
-          | {
-              'chapter-name'?: T;
-              'practical-guide-list'?:
-                | T
-                | {
-                    'practical-guide'?: T;
-                    id?: T;
-                  };
-              id?: T;
-            };
+        'chapter-name'?: T;
+        'practical-guides'?: T;
+        courses?: T;
+        id?: T;
       };
   updatedAt?: T;
   createdAt?: T;

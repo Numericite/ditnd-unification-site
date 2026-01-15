@@ -5,6 +5,7 @@ import Head from "next/head";
 import { Loader } from "~/components/ui/Loader";
 import PracticalGuidesDisplay from "~/components/PracticalGuides/PracticalGuidesDisplay";
 import type { AugmentedPracticalGuide } from "~/server/api/routers/practical-guides";
+import { fr } from "@codegouvfr/react-dsfr";
 
 export default function PracticalGuidePage() {
 	const router = useRouter();
@@ -24,7 +25,7 @@ export default function PracticalGuidePage() {
 	const guide = guideData[0] as AugmentedPracticalGuide;
 
 	return (
-		<div>
+		<div className={fr.cx("fr-container")}>
 			<Head>
 				<title>DITND - {guide.title}</title>
 			</Head>

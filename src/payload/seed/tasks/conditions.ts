@@ -31,8 +31,8 @@ const conditions = [
 		description: "Difficultés d’attention, impulsivité et agitation.",
 		acronym: "TDAH",
 		slug: "tdah",
-		textColor: "#161616",
-		backgroundColor: "#F6F6F6",
+		textColor: "#6E445A",
+		backgroundColor: "#fef3fd",
 	},
 	{
 		name: "Trouble du développement intellectuel",
@@ -49,8 +49,8 @@ const conditions = [
 			"Trouble du neurodéveloppement affectant la communication et les interactions sociales.",
 		acronym: "TSA",
 		slug: "tsa",
-		textColor: "#161616",
-		backgroundColor: "#F6F6F6",
+		textColor: "#0078f3",
+		backgroundColor: "#f4f6ff",
 	},
 	{
 		name: "DYS",
@@ -58,8 +58,8 @@ const conditions = [
 			"Troubles cognitifs spécifiques qui affectent certaines fonctions humaines",
 		acronym: "dys",
 		slug: "dys",
-		textColor: "#161616",
-		backgroundColor: "#F6F6F6",
+		textColor: "#8D533E",
+		backgroundColor: "#fef4f2",
 	},
 ];
 
