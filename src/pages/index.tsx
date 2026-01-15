@@ -5,9 +5,16 @@ import { PersonaTiles } from "~/components/HomePage/PersonaTiles";
 import type { PersonaTile } from "~/components/HomePage/PersonaTiles";
 import Breadcrumb from "@codegouvfr/react-dsfr/Breadcrumb";
 import SearchBar from "@codegouvfr/react-dsfr/SearchBar";
+import { api } from "~/utils/api";
+import MostViewedGuides from "~/components/HomePage/MostViewedGuides";
+import { Loader } from "~/components/ui/Loader";
 
 export default function Home() {
 	const { classes, cx } = useStyles();
+
+	const { data: mostViewedGuides } = api.practicalGuide.getByViews.useQuery();
+
+	if (!mostViewedGuides) return <Loader />;
 
 	const tiles: PersonaTile[] = [
 		{
@@ -89,8 +96,11 @@ export default function Home() {
 								<div className={fr.cx("fr-col-12", "fr-col-lg-12")}>
 									<h2>Qui êtes vous</h2>
 									<div className={fr.cx("fr-text--sm")}>
-										La plateforme nationale au services des personnes concernées
-										par un trouble du neurodéveloppement
+										Cyncentrism kontrakemi. Perlogi proaktiv. Emsocial
+										transfiering. Medeltism androstik stereomodern
+										beteendedesign. Realogi transdiktisk om än posttyp.
+										Pseudotiv kontradiktisk. Mytofiering FAR det heteropod
+										suprapatologi. Kvasitris agnostigyn absion anamatisk.
 									</div>
 								</div>
 								<PersonaTiles tiles={tiles} />
@@ -99,14 +109,18 @@ export default function Home() {
 					</div>
 				</div>
 				<div className={fr.cx("fr-container")}>
-					<div className={fr.cx("fr-py-6w")}>
+					<div className={fr.cx("fr-py-4w")}>
 						<div className={fr.cx("fr-grid-row", "fr-grid-row--gutters")}>
 							<div className={fr.cx("fr-col-12", "fr-col-lg-12")}>
 								<h2>Fiches pratiques les plus lues</h2>
 								<div className={fr.cx("fr-text--sm")}>
-									La plateforme nationale au services des personnes concernées
-									par un trouble du neurodéveloppement
+									Cyncentrism kontrakemi. Perlogi proaktiv. Emsocial
+									transfiering. Medeltism androstik stereomodern beteendedesign.
+									Realogi transdiktisk om än posttyp. Pseudotiv kontradiktisk.
+									Mytofiering FAR det heteropod suprapatologi. Kvasitris
+									agnostigyn absion anamatisk.
 								</div>
+								<MostViewedGuides guides={mostViewedGuides} />
 							</div>
 						</div>
 					</div>

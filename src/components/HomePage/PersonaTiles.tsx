@@ -108,25 +108,23 @@ export const PersonaTiles = ({ tiles }: { tiles: PersonaTile[] }) => {
 
 	return (
 		<>
-			<div className={fr.cx("fr-col-12")}>
-				{tags.map((tag, index) => (
-					<Tag
-						key={index}
-						className={fr.cx("fr-mr-1w", "fr-mb-1w")}
-						dismissible
-						nativeButtonProps={{
-							onClick: function deleteTag() {
-								setDisplay(tag.display);
-								tag.display === "default"
-									? setTags([])
-									: setTags([...tags].filter((t) => t.slug !== tag.slug));
-							},
-						}}
-					>
-						{tag.label}
-					</Tag>
-				))}
-			</div>
+			{tags.map((tag, index) => (
+				<Tag
+					key={index}
+					className={fr.cx("fr-mr-1w", "fr-mb-1w")}
+					dismissible
+					nativeButtonProps={{
+						onClick: function deleteTag() {
+							setDisplay(tag.display);
+							tag.display === "default"
+								? setTags([])
+								: setTags([...tags].filter((t) => t.slug !== tag.slug));
+						},
+					}}
+				>
+					{tag.label}
+				</Tag>
+			))}
 			<div
 				className={fr.cx(
 					"fr-grid-row",
