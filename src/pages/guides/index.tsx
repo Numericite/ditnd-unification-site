@@ -46,7 +46,7 @@ export default function PracticalGuides() {
 						</div>
 					</aside>
 
-					<div className={fr.cx("fr-col-12", "fr-col-md-8")}>
+					<div className={fr.cx("fr-col-12", "fr-col-md-8", "fr-pl-4w")}>
 						<SearchGuidesDisplay filters={filters} />
 					</div>
 				</div>

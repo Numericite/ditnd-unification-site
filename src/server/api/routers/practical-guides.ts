@@ -36,6 +36,17 @@ export const practicalGuidesRouter = createTRPCRouter({
 				},
 			});
 
+			const guide = result.docs[0];
+			if (!guide) return null;
+
+			await ctx.payload.update({
+				collection: "practical-guides",
+				id: guide.id,
+				data: {
+					viewCount: (guide.viewCount ?? 0) + 1,
+				},
+			});
+
 			const sanitizedResult = (await Promise.all(
 				result.docs.map(async (guide) => {
 					return {
@@ -59,6 +70,35 @@ export const practicalGuidesRouter = createTRPCRouter({
 
 			return sanitizedResult[0];
 		}),
+
+	getByViews: publicProcedure.query(async ({ ctx }) => {
+		const result = await ctx.payload.find({
+			collection: "practical-guides",
+			limit: 6,
+			depth: 1,
+			sort: "-viewCount",
+		});
+
+		const sanitizedResult = (await Promise.all(
+			result.docs.map(async (guide) => {
+				return {
+					...guide,
+					themes: await resolveRelations(guide.themes, "themes"),
+					conditions: await resolveRelations(
+						guide.conditions as Condition[],
+						"conditions",
+					),
+					courses: await resolveRelations(guide.courses as Course[], "courses"),
+					"practical-guides": await resolveRelations(
+						guide["practical-guides"] as PracticalGuide[],
+						"practical-guides",
+					),
+				};
+			}),
+		)) as AugmentedPracticalGuide[];
+
+		return sanitizedResult;
+	}),
 
 	getByFilters: publicProcedure
 		.input(

@@ -108,7 +108,7 @@ export const PersonaTiles = ({ tiles }: { tiles: PersonaTile[] }) => {
 
 	return (
 		<>
-			<div className={fr.cx("fr-col-12", "fr-pb-2w")}>
+			<div className={fr.cx("fr-col-12")}>
 				{tags.map((tag, index) => (
 					<Tag
 						key={index}
