@@ -57,7 +57,7 @@ export const practicalGuidesRouter = createTRPCRouter({
 				}),
 			)) as AugmentedPracticalGuide[];
 
-			return sanitizedResult;
+			return sanitizedResult[0];
 		}),
 
 	getByFilters: publicProcedure
