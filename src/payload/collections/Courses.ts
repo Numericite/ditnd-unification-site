@@ -29,6 +29,13 @@ export const Courses: CollectionConfig = {
 			label: { fr: "Lien externe" },
 		},
 		{
+			name: "type",
+			type: "select",
+			required: true,
+			label: { fr: "Type de ressource" },
+			options: ["MOOC", "Webinaire", "Présentiel"],
+		},
+		{
 			name: "theme",
 			type: "relationship",
 			required: true,

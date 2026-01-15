@@ -189,6 +189,7 @@ export interface Course {
   title: string;
   description: string;
   link: string;
+  type: 'MOOC' | 'Webinaire' | 'Présentiel';
   theme: number | Theme;
   persona: number | Persona;
   condition: number | Condition;
@@ -410,6 +411,7 @@ export interface CoursesSelect<T extends boolean = true> {
   title?: T;
   description?: T;
   link?: T;
+  type?: T;
   theme?: T;
   persona?: T;
   condition?: T;
