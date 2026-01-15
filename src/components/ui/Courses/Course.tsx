@@ -29,7 +29,19 @@ export default function Course({ course }: { course: AugmentedCourse }) {
 				start={
 					<ul className="fr-tags-group">
 						<li>
-							<Tag>{course.theme.name}</Tag>
+							<Tag
+								style={{
+									color: course.condition.textColor,
+									backgroundColor: course.condition.backgroundColor,
+								}}
+							>
+								<strong>{course.condition.acronym}</strong>
+							</Tag>
+						</li>
+						<li>
+							<Tag>
+								<strong>{course.theme.name}</strong>
+							</Tag>
 						</li>
 					</ul>
 				}
