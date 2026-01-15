@@ -136,6 +136,7 @@ const guides = [
 		conditions: [6],
 		persona: [1],
 		themes: [1],
+		viewCount: 0,
 	},
 	{
 		title: "Manifestations possibles selon l'âge",
@@ -145,6 +146,7 @@ const guides = [
 		conditions: [6],
 		persona: [1],
 		themes: [2],
+		viewCount: 0,
 	},
 	{
 		title: "Aller au lycée quand on a un TDAH",
@@ -154,6 +156,7 @@ const guides = [
 		conditions: [4],
 		persona: [2],
 		themes: [8],
+		viewCount: 0,
 	},
 	{
 		title: "Parcours de diagnostic DYS",
@@ -163,6 +166,7 @@ const guides = [
 		conditions: [7],
 		persona: [2],
 		themes: [6],
+		viewCount: 0,
 	},
 ];
 
@@ -179,6 +183,7 @@ async function createPracticalGuide(
 		themes: number[];
 		practicalGuide?: number;
 		courses?: Course[];
+		viewCount: number;
 	},
 ): Promise<void> {
 	try {
