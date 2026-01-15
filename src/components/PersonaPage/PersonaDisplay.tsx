@@ -70,7 +70,7 @@ export default function PersonaDisplay({
 				)}
 			>
 				<Summary
-					className={cx(classes.summarySticky)}
+					className={cx(classes.whiteSummarySticky)}
 					links={chapterLinks}
 					title="Thématiques"
 				/>
@@ -110,11 +110,12 @@ export default function PersonaDisplay({
 }
 
 const useStyles = tss.withName(PersonaDisplay.name).create(() => ({
-	summarySticky: {
+	whiteSummarySticky: {
 		position: "sticky",
 		top: "20px",
 		".fr-summary__link:before": {
 			visibility: "hidden",
 		},
+		backgroundColor: fr.colors.decisions.background.default.grey.default,
 	},
 }));
