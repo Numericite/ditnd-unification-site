@@ -15,7 +15,7 @@ import type {
 import type { AugmentedCourse } from "./courses";
 
 export interface AugmentedPracticalGuide extends Omit<PracticalGuide, ""> {
-	theme: Theme[];
+	themes: Theme[];
 	conditions: Condition[];
 	"practical-guides": PracticalGuide[];
 	courses: AugmentedCourse[];
@@ -40,7 +40,7 @@ export const practicalGuidesRouter = createTRPCRouter({
 				result.docs.map(async (guide) => {
 					return {
 						...guide,
-						theme: await resolveRelations(guide.theme, "themes"),
+						themes: await resolveRelations(guide.themes, "themes"),
 						conditions: await resolveRelations(
 							guide.conditions as Condition[],
 							"conditions",
@@ -82,7 +82,7 @@ export const practicalGuidesRouter = createTRPCRouter({
 
 			if (themes?.length) {
 				whereConditions.push({
-					"theme.slug": { in: themes },
+					"themes.slug": { in: themes },
 				});
 			}
 

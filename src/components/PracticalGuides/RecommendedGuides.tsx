@@ -15,22 +15,14 @@ export default function RecommendedGuides({
 						Ces fiches pratiques qui pourraient vous intéresser
 					</h3>
 					<div className={fr.cx("fr-grid-row", "fr-grid-row--gutters")}>
-						{guides.map((g, index) => {
-							const theme0 = g.theme?.[0];
+						{guides.map((guide, index) => {
 							return (
 								<div
 									key={`guide${index}`}
 									className={fr.cx("fr-col-12", "fr-col-sm-6")}
 									style={{ display: "flex" }}
 								>
-									<PracticalGuide
-										key={g.slug}
-										title={g.title}
-										slug={g.slug}
-										badge={theme0?.name}
-										description={g.description}
-										conditions={g.conditions}
-									/>
+									<PracticalGuide guide={guide} />
 								</div>
 							);
 						})}

@@ -101,7 +101,7 @@ export const PracticalGuides: CollectionConfig = {
 			label: { fr: "Persona" },
 		},
 		{
-			name: "theme",
+			name: "themes",
 			type: "relationship",
 			required: true,
 			relationTo: "themes",

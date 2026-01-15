@@ -135,7 +135,7 @@ const guides = [
 			"Un éclairage sur ce qu'est l'autisme, adapté aux parents et proches, pour mieux comprendre les besoins de leur enfant.",
 		conditions: [6],
 		persona: [1],
-		theme: [1],
+		themes: [1],
 	},
 	{
 		title: "Manifestations possibles selon l'âge",
@@ -144,7 +144,7 @@ const guides = [
 			"Comment l'autisme peut apparaître différemment chez un jeune enfant, un adolescent ou un adulte.",
 		conditions: [6],
 		persona: [1],
-		theme: [2],
+		themes: [2],
 	},
 	{
 		title: "Aller au lycée quand on a un TDAH",
@@ -153,7 +153,7 @@ const guides = [
 			"Le lycée constitue une étape cruciale pour l'élève avec un TDAH puisqu'il définit ses goûts et ses aptitudes et commence à tracer son parcours étudiant et professionnel. Quels sont les dispositifs existants pour lui permettre...",
 		conditions: [4],
 		persona: [2],
-		theme: [8],
+		themes: [8],
 	},
 	{
 		title: "Parcours de diagnostic DYS",
@@ -162,7 +162,7 @@ const guides = [
 			"Comment entamer un parcours de diagnostic d'un trouble DYS ? Vous vous posez des questions sur le développement de votre enfant ? En tant qu'adulte vous n'arrivez pas expliquer certaines de vos difficultés et ...",
 		conditions: [7],
 		persona: [2],
-		theme: [6],
+		themes: [6],
 	},
 ];
 
@@ -176,7 +176,7 @@ async function createPracticalGuide(
 		content: DefaultTypedEditorState;
 		html: string;
 		persona: number[];
-		theme: number[];
+		themes: number[];
 		practicalGuide?: number;
 		courses?: Course[];
 	},

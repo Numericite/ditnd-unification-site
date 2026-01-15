@@ -45,7 +45,9 @@ export default function PersonaDisplay({
 						pg.conditions.some((c) =>
 							c.slug.toLowerCase().includes(loweredQuery),
 						) ||
-						pg.theme[0]?.name.toLowerCase().includes(loweredQuery),
+						pg.themes.some((theme) =>
+							theme.name.toLowerCase().includes(loweredQuery),
+						),
 				),
 			}));
 			setChapterList(res);

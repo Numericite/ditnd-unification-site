@@ -31,13 +31,7 @@ export const SearchGuidesDisplay = ({ filters }: { filters: FiltersQuery }) => {
 							className={fr.cx("fr-col-12", "fr-col-md-6")}
 							style={{ display: "flex" }}
 						>
-							<PracticalGuide
-								title={guide.title}
-								slug={guide.slug}
-								badge={guide.theme[0]?.name}
-								description={guide.description}
-								conditions={guide.conditions}
-							/>
+							<PracticalGuide guide={guide} />
 						</div>
 					))}
 				</div>
