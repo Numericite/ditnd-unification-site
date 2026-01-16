@@ -4,6 +4,7 @@ import { personaRouter } from "./routers/personas";
 import { themeRouter } from "./routers/themes";
 import { practicalGuidesRouter } from "./routers/practical-guides";
 import { journeyRouter } from "./routers/journeys";
+import { courseRouter } from "./routers/courses";
 
 /**
  * This is the primary router for your server.
@@ -14,6 +15,7 @@ export const appRouter = createTRPCRouter({
 	condition: conditionRouter,
 	persona: personaRouter,
 	theme: themeRouter,
+	course: courseRouter,
 	practicalGuide: practicalGuidesRouter,
 	journey: journeyRouter,
 });
