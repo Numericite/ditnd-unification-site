@@ -17,7 +17,7 @@ import type { AugmentedCourse } from "./courses";
 export interface AugmentedPracticalGuide extends PracticalGuide {
 	themes: Theme[];
 	conditions: Condition[];
-	"practical-guides": PracticalGuide[];
+	"practical-guides": AugmentedPracticalGuide[];
 	courses: AugmentedCourse[];
 }
 
