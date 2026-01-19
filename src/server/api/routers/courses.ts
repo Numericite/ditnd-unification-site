@@ -21,13 +21,14 @@ export const courseRouter = createTRPCRouter({
 				conditions: z.array(z.string()),
 				themes: z.array(z.string()),
 				personas: z.array(z.string()),
+				type: z.array(z.string()),
 				text: z.string(),
 			}),
 		)
 		.query(async ({ input, ctx }): Promise<AugmentedCourse[]> => {
 			const whereConditions: Where[] = [];
 
-			const { conditions, themes, personas, text } = input;
+			const { conditions, themes, personas, type, text } = input;
 
 			if (conditions?.length) {
 				whereConditions.push({
@@ -44,6 +45,25 @@ export const courseRouter = createTRPCRouter({
 			if (personas?.length) {
 				whereConditions.push({
 					"persona.slug": { in: personas },
+				});
+			}
+
+			if (type?.length) {
+				whereConditions.push({
+					type: { in: type },
+				});
+			}
+
+			const trimmedText = text?.trim();
+
+			if (trimmedText) {
+				whereConditions.push({
+					or: [
+						{ title: { contains: trimmedText } },
+						{ description: { contains: trimmedText } },
+						{ "condition.acronym": { contains: trimmedText } },
+						{ "persona.name": { contains: trimmedText } },
+					],
 				});
 			}
 

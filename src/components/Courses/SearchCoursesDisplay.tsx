@@ -1,16 +1,26 @@
 import { api } from "~/utils/api";
-import { PracticalGuide } from "../ui/PracticalGuides/PracticalGuide";
 import { fr } from "@codegouvfr/react-dsfr";
-import type { FiltersQuery } from "./GuidesFiltersDisplay";
 import { useState } from "react";
 import { SearchBarUI } from "../ui/SearchPage/SearchBarUI";
 import { Loader } from "../ui/Loader";
+import Course from "../ui/Courses/Course";
 
-export const SearchGuidesDisplay = ({ filters }: { filters: FiltersQuery }) => {
+export type CoursesFiltersQuery = {
+	conditions: string[];
+	themes: string[];
+	personas: string[];
+	type: string[];
+};
+
+export const SearchCoursesDisplay = ({
+	filters,
+}: {
+	filters: CoursesFiltersQuery;
+}) => {
 	const [query, setQuery] = useState<string>("");
 
-	const { data: practicalGuideData, isLoading: isLoadingGuides } =
-		api.practicalGuide.getByFilters.useQuery({ ...filters, text: query });
+	const { data: coursesData, isLoading: isLoadingCourses } =
+		api.course.getByFilters.useQuery({ ...filters, text: query });
 
 	return (
 		<>
@@ -19,19 +29,19 @@ export const SearchGuidesDisplay = ({ filters }: { filters: FiltersQuery }) => {
 					setQuery(query);
 				}}
 			/>
-			{isLoadingGuides ? (
+			{isLoadingCourses ? (
 				<Loader />
 			) : (
 				<div
 					className={fr.cx("fr-grid-row", "fr-grid-row--gutters", "fr-pt-3w")}
 				>
-					{practicalGuideData?.map((guide) => (
+					{coursesData?.map((course) => (
 						<div
-							key={guide.id}
+							key={course.id}
 							className={fr.cx("fr-col-12", "fr-col-md-6")}
 							style={{ display: "flex" }}
 						>
-							<PracticalGuide guide={guide} />
+							<Course course={course} />
 						</div>
 					))}
 				</div>

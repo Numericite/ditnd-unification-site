@@ -10,7 +10,7 @@ export default function Course({ course }: { course: AugmentedCourse }) {
 				background
 				badge={
 					<Badge noIcon severity="info">
-						LABEL BADGE
+						{course.type}
 					</Badge>
 				}
 				border
