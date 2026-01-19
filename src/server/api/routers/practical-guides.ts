@@ -14,7 +14,7 @@ import type {
 } from "~/payload/payload-types";
 import type { AugmentedCourse } from "./courses";
 
-export interface AugmentedPracticalGuide extends Omit<PracticalGuide, ""> {
+export interface AugmentedPracticalGuide extends PracticalGuide {
 	themes: Theme[];
 	conditions: Condition[];
 	"practical-guides": PracticalGuide[];

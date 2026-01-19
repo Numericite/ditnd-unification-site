@@ -38,6 +38,9 @@ export default function Home() {
 
 	return (
 		<>
+			<Head>
+				<title>DITND - Accueil</title>
+			</Head>
 			<div className={fr.cx("fr-container")}>
 				<Breadcrumb
 					currentPageLabel=""
@@ -46,9 +49,6 @@ export default function Home() {
 					}}
 					segments={[]}
 				/>
-				<Head>
-					<title>DITND - Accueil</title>
-				</Head>
 			</div>
 
 			<div>

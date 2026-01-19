@@ -31,7 +31,10 @@ export default function JourneyPage() {
 	const journey = journeyData[0] as AugmentedJourney;
 
 	return (
-		<div className="">
+		<>
+			<Head>
+				<title>DITND - {journey.journey_name}</title>
+			</Head>
 			<div className={fr.cx("fr-container")}>
 				<Breadcrumb
 					currentPageLabel={journey.journey_name}
@@ -40,9 +43,6 @@ export default function JourneyPage() {
 					}}
 					segments={[]}
 				/>
-				<Head>
-					<title>DITND - {journey.journey_name}</title>
-				</Head>
 			</div>
 			<div className={fr.cx("fr-container")}>
 				<div className={fr.cx("fr-py-4w")}>
@@ -94,7 +94,7 @@ export default function JourneyPage() {
 					<PersonaDisplay journey={journey} viewCourses={viewCourses} />
 				</div>
 			</div>
-		</div>
+		</>
 	);
 }
 
