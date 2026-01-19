@@ -2,6 +2,8 @@ import Accordion from "@codegouvfr/react-dsfr/Accordion";
 import Checkbox from "@codegouvfr/react-dsfr/Checkbox";
 import { useState } from "react";
 import type { FilterItem } from "~/components/PracticalGuides/GuidesFiltersDisplay";
+import { useBreakpointsValuesPx } from "@codegouvfr/react-dsfr/useBreakpointsValuesPx";
+import { useWindowInnerSize } from "@codegouvfr/react-dsfr/tools/useWindowInnerSize";
 
 type Props = {
 	label: string;
@@ -10,7 +12,11 @@ type Props = {
 };
 
 export const Filter = ({ label, value, handleOnChange }: Props) => {
-	const isMobile = window.matchMedia("(max-width: 48em)").matches;
+	const { breakpointsValues } = useBreakpointsValuesPx();
+
+	const { windowInnerWidth } = useWindowInnerSize();
+
+	const isMobile = windowInnerWidth < breakpointsValues.md;
 	const [expand, setExpand] = useState<boolean>(!isMobile);
 
 	return (

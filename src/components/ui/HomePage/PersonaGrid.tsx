@@ -15,22 +15,14 @@ export const PersonaGrid = ({ tiles, onClick }: Props) => {
 	return tiles.map((tile, index) => (
 		<div
 			key={index}
-			className={fr.cx(
-				"fr-col-12",
-				"fr-col-sm-6",
-				"fr-col-md-4",
-				"fr-col-lg-3",
+			className={cx(
+				fr.cx("fr-col-12", "fr-col-sm-6", "fr-col-md-4", "fr-col-lg-3"),
+				classes.tile,
 			)}
-			style={{
-				alignItems: "stretch",
-				marginLeft: 0,
-			}}
 		>
 			<Tile
 				buttonProps={{
-					onClick: () => {
-						onClick[tile.display](tile);
-					},
+					onClick: () => onClick[tile.display](tile),
 				}}
 				className={cx(classes.noBtn)}
 				orientation="vertical"
@@ -50,5 +42,9 @@ const useStyles = tss.withName(PersonaGrid.name).create({
 		".fr-tile__content": {
 			paddingBottom: `${fr.spacing("3v")} !important`,
 		},
+	},
+	tile: {
+		alignItems: "stretch",
+		marginLeft: "0",
 	},
 });

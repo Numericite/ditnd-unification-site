@@ -9,7 +9,7 @@ import {
 import type { AugmentedPracticalGuide } from "./practical-guides";
 import type { AugmentedCourse } from "./courses";
 
-export interface AugmentedJourney extends Omit<Journey, ""> {
+export interface AugmentedJourney extends Journey {
 	persona: Persona;
 	chapter: Chapter[];
 }

@@ -9,7 +9,7 @@ import type {
 } from "~/payload/payload-types";
 import { createTRPCRouter, publicProcedure } from "~/server/api/trpc";
 
-export interface AugmentedCourse extends Omit<Course, ""> {
+export interface AugmentedCourse extends Course {
 	theme: Theme;
 	persona: Persona;
 	condition: Condition;

@@ -1,13 +1,29 @@
 import { fr } from "@codegouvfr/react-dsfr";
 import Summary from "@codegouvfr/react-dsfr/Summary";
 import { SearchBarUI } from "../ui/SearchPage/SearchBarUI";
-import { useEffect, useState } from "react";
+import { useMemo, useState } from "react";
 import { slugify } from "~/utils/tools";
-import type { AugmentedJourney, Chapter } from "~/server/api/routers/journeys";
+import type { AugmentedJourney } from "~/server/api/routers/journeys";
 import { useRouter } from "next/router";
 import PersonaGuidesContent from "../ui/PersonaPage/PersonaGuidesContent";
 import { tss } from "tss-react";
 import PersonaCoursesContent from "../ui/PersonaPage/PersonaCoursesContent";
+import type { AugmentedPracticalGuide } from "~/server/api/routers/practical-guides";
+
+function practicalGuideQuery({
+	pg,
+	query,
+}: {
+	pg: AugmentedPracticalGuide;
+	query: string;
+}) {
+	return (
+		pg.description.toLowerCase().includes(query) ||
+		pg.title.toLowerCase().includes(query) ||
+		pg.conditions.some((c) => c.slug.toLowerCase().includes(query)) ||
+		pg.themes.some((theme) => theme.name.toLowerCase().includes(query))
+	);
+}
 
 export default function PersonaDisplay({
 	journey,
@@ -19,7 +35,6 @@ export default function PersonaDisplay({
 	const { classes, cx } = useStyles();
 
 	const [query, setQuery] = useState<string>("");
-	const [chaptersList, setChapterList] = useState<Chapter[]>();
 
 	const router = useRouter();
 	const routerCondition = router.query.condition as string;
@@ -31,26 +46,18 @@ export default function PersonaDisplay({
 		text: chap["chapter-name"],
 	}));
 
-	useEffect(() => {
+	const chaptersList = useMemo(() => {
 		if (!query) {
-			setChapterList(journey.chapter);
+			return journey.chapter;
 		} else {
 			const loweredQuery = query.toLowerCase();
-			const res = chaptersList?.map((chap) => ({
+			const res = journey.chapter.map((chap) => ({
 				...chap,
-				"practical-guides": chap["practical-guides"].filter(
-					(pg) =>
-						pg.description.toLowerCase().includes(loweredQuery) ||
-						pg.title.toLowerCase().includes(loweredQuery) ||
-						pg.conditions.some((c) =>
-							c.slug.toLowerCase().includes(loweredQuery),
-						) ||
-						pg.themes.some((theme) =>
-							theme.name.toLowerCase().includes(loweredQuery),
-						),
+				"practical-guides": chap["practical-guides"].filter((pg) =>
+					practicalGuideQuery({ pg, query: loweredQuery }),
 				),
 			}));
-			setChapterList(res);
+			return res;
 		}
 	}, [query]);
 
@@ -76,11 +83,7 @@ export default function PersonaDisplay({
 				/>
 			</div>
 			<div className={fr.cx("fr-col-12", "fr-col-lg-8")}>
-				<SearchBarUI
-					onClick={(query) => {
-						setQuery(query);
-					}}
-				/>
+				<SearchBarUI onClick={(query) => setQuery(query)} />
 				{chaptersList.map((chap, index) => (
 					<div key={index} className={fr.cx("fr-pt-3w")}>
 						<h3 id={slugify(chap["chapter-name"])}>{chap["chapter-name"]}</h3>

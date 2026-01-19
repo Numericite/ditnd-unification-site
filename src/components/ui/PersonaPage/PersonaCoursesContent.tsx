@@ -20,15 +20,13 @@ export default function PersonaCoursesContent({
 					c.title.toLowerCase().includes(loweredQuery) ||
 					c.theme.name.toLowerCase().includes(loweredQuery)),
 		)
-		.map((course, index) => {
-			return (
-				<div
-					key={`guide${index}`}
-					className={fr.cx("fr-col-12", "fr-col-sm-6")}
-					style={{ display: "flex" }}
-				>
-					<Course key={`${course.title + index}`} course={course} />
-				</div>
-			);
-		});
+		.map((course, index) => (
+			<div
+				key={`guide${index}`}
+				className={fr.cx("fr-col-12", "fr-col-sm-6")}
+				style={{ display: "flex" }}
+			>
+				<Course key={`${course.title + index}`} course={course} />
+			</div>
+		));
 }
