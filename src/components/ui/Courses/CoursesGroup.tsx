@@ -12,7 +12,12 @@ export default function CoursesGroup({
 			{courses?.map((course) => (
 				<div
 					key={course.id}
-					className={fr.cx("fr-col-12", "fr-col-md-6")}
+					className={fr.cx(
+						"fr-col-12",
+						"fr-col-sm-6",
+						"fr-col-md-12",
+						"fr-col-lg-6",
+					)}
 					style={{ display: "flex" }}
 				>
 					<Course course={course} />
