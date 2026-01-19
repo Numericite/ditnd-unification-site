@@ -1,6 +1,6 @@
-import Course from "../ui/Courses/Course";
 import { fr } from "@codegouvfr/react-dsfr";
 import type { AugmentedCourse } from "~/server/api/routers/courses";
+import CoursesGroup from "../ui/Courses/CoursesGroup";
 
 export default function RecommendedCourses({
 	courses,
@@ -15,17 +15,7 @@ export default function RecommendedCourses({
 						Ces formations qui pourraient vous intéresser{" "}
 					</h3>
 					<div className={fr.cx("fr-grid-row", "fr-grid-row--gutters")}>
-						{courses?.map((course, index) => {
-							return (
-								<div
-									key={`guide${index}`}
-									className={fr.cx("fr-col-12", "fr-col-sm-6")}
-									style={{ display: "flex" }}
-								>
-									<Course key={`${course.title + index}`} course={course} />
-								</div>
-							);
-						})}
+						<CoursesGroup courses={courses} />
 					</div>
 				</div>
 			)}

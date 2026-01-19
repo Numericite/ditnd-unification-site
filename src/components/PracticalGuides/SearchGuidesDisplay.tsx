@@ -1,10 +1,10 @@
 import { api } from "~/utils/api";
-import { PracticalGuide } from "../ui/PracticalGuides/PracticalGuide";
 import { fr } from "@codegouvfr/react-dsfr";
 import type { FiltersQuery } from "./GuidesFiltersDisplay";
 import { useState } from "react";
 import { SearchBarUI } from "../ui/SearchPage/SearchBarUI";
 import { Loader } from "../ui/Loader";
+import PracticalGuidesGroup from "../ui/PracticalGuides/PracticalGuidesGroup";
 
 export const SearchGuidesDisplay = ({ filters }: { filters: FiltersQuery }) => {
 	const [query, setQuery] = useState<string>("");
@@ -25,15 +25,9 @@ export const SearchGuidesDisplay = ({ filters }: { filters: FiltersQuery }) => {
 				<div
 					className={fr.cx("fr-grid-row", "fr-grid-row--gutters", "fr-pt-3w")}
 				>
-					{practicalGuideData?.map((guide) => (
-						<div
-							key={guide.id}
-							className={fr.cx("fr-col-12", "fr-col-md-6")}
-							style={{ display: "flex" }}
-						>
-							<PracticalGuide guide={guide} />
-						</div>
-					))}
+					{practicalGuideData && (
+						<PracticalGuidesGroup practicalGuides={practicalGuideData} lg={6} />
+					)}
 				</div>
 			)}
 		</>
