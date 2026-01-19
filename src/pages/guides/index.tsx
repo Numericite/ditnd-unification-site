@@ -16,7 +16,10 @@ export default function PracticalGuides() {
 	});
 
 	return (
-		<>
+		<div className={fr.cx("fr-container", "fr-pb-8w")}>
+			<Head>
+				<title>DITND - Fiches Pratiques</title>
+			</Head>
 			<Breadcrumb
 				currentPageLabel="Fiches Pratiques"
 				homeLinkProps={{
@@ -24,9 +27,6 @@ export default function PracticalGuides() {
 				}}
 				segments={[]}
 			/>
-			<Head>
-				<title>DITND - Fiches Pratiques</title>
-			</Head>
 
 			<div>
 				<h1 className={fr.cx("fr-mb-4w")}>Fiches pratiques</h1>
@@ -39,18 +39,18 @@ export default function PracticalGuides() {
 						}}
 					>
 						<div className={fr.cx("fr-p-3w")}>
-							<p className={fr.cx("fr-h4")}>Affiner la recherche</p>
+							<h2 className={fr.cx("fr-h4")}>Affiner la recherche</h2>
 							<div className={fr.cx("fr-mt-2w")}>
 								<FiltersDisplay setFilters={setFilters} />
 							</div>
 						</div>
 					</aside>
 
-					<main className={fr.cx("fr-col-12", "fr-col-md-8")}>
+					<div className={fr.cx("fr-col-12", "fr-col-md-8")}>
 						<SearchGuidesDisplay filters={filters} />
-					</main>
+					</div>
 				</div>
 			</div>
-		</>
+		</div>
 	);
 }

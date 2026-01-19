@@ -6,24 +6,6 @@ import { useState } from "react";
 import { SearchBarUI } from "../ui/SearchPage/SearchBarUI";
 import { Loader } from "../ui/Loader";
 
-export type DisplayItem = {
-	id: number;
-	name: string;
-	slug: string;
-	textColor: string;
-	backgroundColor: string;
-};
-
-export type GuidesItems = {
-	id: number;
-	title: string;
-	slug: string;
-	description: string;
-	condition?: DisplayItem;
-	persona?: DisplayItem;
-	theme?: DisplayItem;
-};
-
 export const SearchGuidesDisplay = ({ filters }: { filters: FiltersQuery }) => {
 	const [query, setQuery] = useState<string>("");
 
@@ -40,22 +22,16 @@ export const SearchGuidesDisplay = ({ filters }: { filters: FiltersQuery }) => {
 			{isLoadingGuides ? (
 				<Loader />
 			) : (
-				<div className={fr.cx("fr-grid-row", "fr-grid-row--gutters")}>
+				<div
+					className={fr.cx("fr-grid-row", "fr-grid-row--gutters", "fr-pt-3w")}
+				>
 					{practicalGuideData?.map((guide) => (
 						<div
 							key={guide.id}
 							className={fr.cx("fr-col-12", "fr-col-md-6")}
 							style={{ display: "flex" }}
 						>
-							<PracticalGuide
-								title={guide.title}
-								slug={guide.slug}
-								badge={guide.theme?.name ?? ""}
-								description={guide.description}
-								condition={guide.condition?.slug ?? ""}
-								textColor={guide.condition?.textColor ?? ""}
-								backgroundColor={guide.condition?.backgroundColor ?? ""}
-							/>
+							<PracticalGuide guide={guide} />
 						</div>
 					))}
 				</div>

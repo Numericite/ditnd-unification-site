@@ -2,8 +2,10 @@ import type { CollectionConfig } from "payload";
 import {
 	lexicalEditor,
 	FixedToolbarFeature,
+	HeadingFeature,
 } from "@payloadcms/richtext-lexical";
 import { convertLexicalToHTML } from "@payloadcms/richtext-lexical/html";
+import { slugify } from "~/utils/tools";
 
 export const PracticalGuides: CollectionConfig = {
 	slug: "practical-guides",
@@ -19,17 +21,31 @@ export const PracticalGuides: CollectionConfig = {
 			name: "title",
 			type: "text",
 			required: true,
+			label: { fr: "Titre" },
 		},
 		{
 			name: "slug",
 			type: "text",
 			unique: true,
 			required: true,
+			label: { fr: "Identifiant texte" },
+			admin: {
+				readOnly: true,
+			},
+			hooks: {
+				beforeChange: [
+					async ({ siblingData }) => {
+						if (!siblingData?.title) return "";
+						return slugify(siblingData.title);
+					},
+				],
+			},
 		},
 		{
 			name: "description",
 			type: "text",
 			required: true,
+			label: { fr: "Description" },
 		},
 		{
 			name: "conditions",
@@ -37,11 +53,13 @@ export const PracticalGuides: CollectionConfig = {
 			required: false,
 			relationTo: "conditions",
 			hasMany: true,
+			label: { fr: "Troubles du neurodéveloppement" },
 		},
 		{
 			name: "content",
 			type: "richText",
 			required: true,
+			label: { fr: "Contenu" },
 			editor: lexicalEditor({
 				admin: {
 					placeholder: "Content of the practical guide",
@@ -51,6 +69,9 @@ export const PracticalGuides: CollectionConfig = {
 				features: ({ defaultFeatures }) => [
 					...defaultFeatures,
 					FixedToolbarFeature(),
+					HeadingFeature({
+						enabledHeadingSizes: ["h2", "h3", "h4", "h5", "h6"],
+					}),
 				],
 			}),
 		},
@@ -58,6 +79,7 @@ export const PracticalGuides: CollectionConfig = {
 			name: "html",
 			type: "text",
 			required: true,
+			label: { fr: "html" },
 			admin: {
 				readOnly: true,
 			},
@@ -76,13 +98,15 @@ export const PracticalGuides: CollectionConfig = {
 			required: true,
 			relationTo: "personas",
 			hasMany: true,
+			label: { fr: "Persona" },
 		},
 		{
-			name: "theme",
+			name: "themes",
 			type: "relationship",
 			required: true,
 			relationTo: "themes",
 			hasMany: true,
+			label: { fr: "Thèmes" },
 		},
 		{
 			name: "practical-guides",
@@ -90,6 +114,7 @@ export const PracticalGuides: CollectionConfig = {
 			required: false,
 			relationTo: "practical-guides",
 			hasMany: true,
+			label: { fr: "Fiches pratiques" },
 		},
 		{
 			name: "courses",
@@ -97,6 +122,7 @@ export const PracticalGuides: CollectionConfig = {
 			required: false,
 			relationTo: "courses",
 			hasMany: true,
+			label: { fr: "Formations" },
 		},
 	],
 };

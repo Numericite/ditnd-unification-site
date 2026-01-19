@@ -4,21 +4,21 @@ import WysiwygContent from "../ui/PracticalGuides/WysiwigContent";
 import ShareSocials from "../ui/PracticalGuides/ShareSocials";
 import RecommendedGuides from "./RecommendedGuides";
 import { tss } from "tss-react";
-import type { PracticalGuide } from "~/payload/payload-types";
+import RecommendedCourses from "./RecommendedCourses";
+import type { AugmentedPracticalGuide } from "~/server/api/routers/practical-guides";
 
 export default function PracticalGuidesDisplay({
 	guide,
 }: {
-	guide: PracticalGuide;
+	guide: AugmentedPracticalGuide;
 }) {
 	const { classes, cx } = useStyles();
 
 	return (
-		<div className={fr.cx("fr-grid-row")}>
+		<div className={fr.cx("fr-grid-row", "fr-grid-row--gutters")}>
 			<GuideSummary html={guide.html} />
 			<div className={fr.cx("fr-col-12", "fr-col-lg-9")}>
-				<h4>Fiches pratiques</h4>
-				<WysiwygContent html={guide.html} />
+				<WysiwygContent title={guide.title} html={guide.html} />
 				<div className={cx(classes.footerContent)}>
 					<div className={cx(classes.marginContent)}>
 						<p className={fr.cx("fr-text--md")}>Partager la page</p>
@@ -29,11 +29,11 @@ export default function PracticalGuidesDisplay({
 					{guide["practical-guides"] && (
 						<RecommendedGuides guides={guide["practical-guides"]} />
 					)}
-					{guide.courses?.length !== 0 && (
+				</div>
+				<div className={cx(classes.footerContent)}>
+					{guide.courses && (
 						<div className={cx(classes.marginContent)}>
-							<h5 id="formations">
-								Ces formations qui pourraient vous intéresser{" "}
-							</h5>
+							<RecommendedCourses courses={guide.courses} />
 						</div>
 					)}
 				</div>

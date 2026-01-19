@@ -1,64 +1,51 @@
 import { Card } from "@codegouvfr/react-dsfr/Card";
 import Tag from "@codegouvfr/react-dsfr/Tag";
+import type { AugmentedPracticalGuide } from "~/server/api/routers/practical-guides";
 
 type Props = {
-	title: string;
-	description: string;
-	slug: string;
-	badge?: string;
-	condition?: string;
-	textColor?: string;
-	backgroundColor?: string;
+	guide: AugmentedPracticalGuide;
 };
 
-export const PracticalGuide = ({
-	title,
-	description,
-	slug,
-	badge,
-	condition,
-	textColor,
-	backgroundColor,
-}: Props) => {
+export const PracticalGuide = ({ guide }: Props) => {
 	return (
 		<div className="container">
 			<Card
 				border
 				start={
 					<ul className="fr-tags-group">
-						{condition && (
-							<li>
+						{guide.conditions?.map((condition, index) => (
+							<li key={index}>
 								<Tag
 									style={{
-										color: textColor,
-										backgroundColor: backgroundColor,
+										color: condition.textColor,
+										backgroundColor: condition.backgroundColor,
 									}}
 								>
-									<strong>{condition.toUpperCase()}</strong>
+									<strong>{condition.slug.toUpperCase()}</strong>
 								</Tag>
 							</li>
-						)}
-						{badge && (
-							<li>
+						))}
+						{guide.themes?.map((theme, index) => (
+							<li key={index}>
 								<Tag>
-									<strong>{badge}</strong>
+									<strong>{theme.name}</strong>
 								</Tag>
 							</li>
-						)}
+						))}
 					</ul>
 				}
-				desc={description}
+				desc={guide.description}
 				footer={
 					<a
 						className="fr-link fr-icon-arrow-right-line fr-link--icon-right"
-						href={`/guides/${slug}`}
+						href={`/guides/${guide.slug}`}
 					>
 						Voir la fiche
 					</a>
 				}
 				size="medium"
-				title={title}
-				titleAs="h3"
+				title={guide.title}
+				titleAs="h4"
 			/>
 		</div>
 	);

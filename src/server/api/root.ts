@@ -3,6 +3,7 @@ import { conditionRouter } from "./routers/conditions";
 import { personaRouter } from "./routers/personas";
 import { themeRouter } from "./routers/themes";
 import { practicalGuidesRouter } from "./routers/practical-guides";
+import { journeyRouter } from "./routers/journeys";
 
 /**
  * This is the primary router for your server.
@@ -14,6 +15,7 @@ export const appRouter = createTRPCRouter({
 	persona: personaRouter,
 	theme: themeRouter,
 	practicalGuide: practicalGuidesRouter,
+	journey: journeyRouter,
 });
 
 // export type definition of API
