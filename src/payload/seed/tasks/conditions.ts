@@ -11,14 +11,6 @@ const conditions = [
 		backgroundColor: "#F6F6F6",
 	},
 	{
-		name: "Trouble du développement de la coordination",
-		description: "Difficultés motrices impactant la coordination des gestes.",
-		acronym: "TDC",
-		slug: "tdc",
-		textColor: "#161616",
-		backgroundColor: "#F6F6F6",
-	},
-	{
 		name: "Troubles spécifiques des apprentissages",
 		description: "Difficultés ciblées de lecture, écriture ou mathématiques.",
 		acronym: "TSAp",
