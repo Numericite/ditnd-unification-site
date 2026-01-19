@@ -15,15 +15,13 @@ export default function PersonaGuidesContent({
 				g.conditions.some((c) => c.slug === condition) ||
 				g.conditions.length === 0,
 		)
-		.map((guide, index) => {
-			return (
-				<div
-					key={index}
-					className={fr.cx("fr-col-12", "fr-col-md-6")}
-					style={{ display: "flex" }}
-				>
-					<PracticalGuide guide={guide} />
-				</div>
-			);
-		});
+		.map((guide, index) => (
+			<div
+				key={index}
+				className={fr.cx("fr-col-12", "fr-col-md-6")}
+				style={{ display: "flex" }}
+			>
+				<PracticalGuide guide={guide} />
+			</div>
+		));
 }

@@ -15,17 +15,15 @@ export default function RecommendedCourses({
 						Ces formations qui pourraient vous intéresser{" "}
 					</h3>
 					<div className={fr.cx("fr-grid-row", "fr-grid-row--gutters")}>
-						{courses?.map((course, index) => {
-							return (
-								<div
-									key={`guide${index}`}
-									className={fr.cx("fr-col-12", "fr-col-sm-6")}
-									style={{ display: "flex" }}
-								>
-									<Course key={`${course.title + index}`} course={course} />
-								</div>
-							);
-						})}
+						{courses?.map((course, index) => (
+							<div
+								key={`guide${index}`}
+								className={fr.cx("fr-col-12", "fr-col-sm-6")}
+								style={{ display: "flex" }}
+							>
+								<Course key={`${course.title + index}`} course={course} />
+							</div>
+						))}
 					</div>
 				</div>
 			)}

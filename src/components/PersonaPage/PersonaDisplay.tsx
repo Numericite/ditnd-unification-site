@@ -76,11 +76,7 @@ export default function PersonaDisplay({
 				/>
 			</div>
 			<div className={fr.cx("fr-col-12", "fr-col-lg-8")}>
-				<SearchBarUI
-					onClick={(query) => {
-						setQuery(query);
-					}}
-				/>
+				<SearchBarUI onClick={(query) => setQuery(query)} />
 				{chaptersList.map((chap, index) => (
 					<div key={index} className={fr.cx("fr-pt-3w")}>
 						<h3 id={slugify(chap["chapter-name"])}>{chap["chapter-name"]}</h3>
