@@ -28,7 +28,7 @@ export const PracticalGuides: CollectionConfig = {
 			type: "text",
 			unique: true,
 			required: true,
-			label: { fr: "Jeton" },
+			label: { fr: "Identifiant texte" },
 			admin: {
 				readOnly: true,
 			},
@@ -45,7 +45,7 @@ export const PracticalGuides: CollectionConfig = {
 			name: "description",
 			type: "text",
 			required: true,
-			label: { fr: "description" },
+			label: { fr: "Description" },
 		},
 		{
 			name: "conditions",

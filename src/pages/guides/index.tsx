@@ -17,6 +17,9 @@ export default function PracticalGuides() {
 
 	return (
 		<div className={fr.cx("fr-container", "fr-pb-8w")}>
+			<Head>
+				<title>DITND - Fiches Pratiques</title>
+			</Head>
 			<Breadcrumb
 				currentPageLabel="Fiches Pratiques"
 				homeLinkProps={{
@@ -24,9 +27,6 @@ export default function PracticalGuides() {
 				}}
 				segments={[]}
 			/>
-			<Head>
-				<title>DITND - Fiches Pratiques</title>
-			</Head>
 
 			<div>
 				<h1 className={fr.cx("fr-mb-4w")}>Fiches pratiques</h1>

@@ -5,6 +5,8 @@ import type {
 	FilterItem,
 	FiltersQuery,
 } from "~/components/PracticalGuides/FiltersDisplay";
+import { useBreakpointsValuesPx } from "@codegouvfr/react-dsfr/useBreakpointsValuesPx";
+import { useWindowInnerSize } from "@codegouvfr/react-dsfr/tools/useWindowInnerSize";
 
 type Props = {
 	label: string;
@@ -14,7 +16,11 @@ type Props = {
 };
 
 export const Filter = ({ label, collection, value, setFilters }: Props) => {
-	const isMobile = window.matchMedia("(max-width: 48em)").matches;
+	const { breakpointsValues } = useBreakpointsValuesPx();
+	const { windowInnerWidth } = useWindowInnerSize();
+
+	const isMobile = windowInnerWidth < breakpointsValues.md;
+
 	const [expand, setExpand] = useState<boolean>(!isMobile);
 
 	const handleOnChange = (e: React.ChangeEvent<HTMLInputElement>) => {

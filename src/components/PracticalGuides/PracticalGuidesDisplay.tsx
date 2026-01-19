@@ -27,9 +27,7 @@ export default function PracticalGuidesDisplay({
 				</div>
 				<div className={cx(classes.footerContent)}>
 					{guide["practical-guides"] && (
-						<RecommendedGuides
-							guides={guide["practical-guides"] as AugmentedPracticalGuide[]}
-						/>
+						<RecommendedGuides guides={guide["practical-guides"]} />
 					)}
 				</div>
 				<div className={cx(classes.footerContent)}>

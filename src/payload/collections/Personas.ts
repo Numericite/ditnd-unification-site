@@ -23,7 +23,7 @@ export const Personas: CollectionConfig = {
 			type: "text",
 			required: true,
 			unique: true,
-			label: { fr: "Jeton" },
+			label: { fr: "Identifiant texte" },
 		},
 	],
 };
