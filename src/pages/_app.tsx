@@ -127,9 +127,7 @@ function App({ Component, pageProps }: AppProps) {
 						},
 						<Button
 							key={"button-question"}
-							id="button-question"
 							iconId={"fr-icon-message-2-line"}
-							aria-label={`Ouvrir le menu mon compte`}
 							priority="secondary"
 							size="large"
 						>

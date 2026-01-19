@@ -26,7 +26,7 @@ export const SearchGuidesDisplay = ({ filters }: { filters: FiltersQuery }) => {
 					className={fr.cx("fr-grid-row", "fr-grid-row--gutters", "fr-pt-3w")}
 				>
 					{practicalGuideData && (
-						<PracticalGuidesGroup practicalGuides={practicalGuideData} lg={6} />
+						<PracticalGuidesGroup practicalGuides={practicalGuideData} />
 					)}
 				</div>
 			)}

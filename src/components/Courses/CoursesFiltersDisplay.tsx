@@ -3,7 +3,7 @@ import {
 	GuidesFiltersValues,
 	type FiltersQuery,
 } from "../PracticalGuides/GuidesFiltersDisplay";
-import { Filter } from "../ui/SearchPage/Filter";
+import FiltersGroup from "../ui/SearchPage/FiltersGroup";
 
 export const CoursesFiltersDisplay = ({
 	setFilters,
@@ -22,35 +22,5 @@ export const CoursesFiltersDisplay = ({
 		],
 	});
 
-	const handleOnChange = (
-		e: React.ChangeEvent<HTMLInputElement>,
-		collection: keyof FiltersQuery,
-	) => {
-		const slug = e.target.value;
-		const checked = e.target.checked;
-
-		setFilters((prev) => {
-			const current = prev[collection];
-			if (!current) return { ...prev };
-			return {
-				...prev,
-				[collection]: checked
-					? [...current, slug]
-					: current.filter((value) => value !== slug),
-			};
-		});
-	};
-
-	return (
-		<>
-			{filters?.map((filter, index) => (
-				<Filter
-					key={`filter${index}`}
-					label={filter.label}
-					value={filter.value}
-					handleOnChange={(e) => handleOnChange(e, filter.collection)}
-				/>
-			))}
-		</>
-	);
+	return <FiltersGroup filters={filters} setFilters={setFilters} />;
 };

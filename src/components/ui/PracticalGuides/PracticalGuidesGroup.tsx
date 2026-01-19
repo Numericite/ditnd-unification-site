@@ -17,8 +17,10 @@ export default function PracticalGuidesGroup({
 }: Props) {
 	const medium = md ? (`fr-col-md-${md}` as FrCxArg) : "fr-col-md-6";
 	const small = sm ? (`fr-col-sm-${sm}` as FrCxArg) : "fr-col-sm-12";
-	const large = lg ? (`fr-col-lg-${lg}` as FrCxArg) : "fr-col-lg-4";
+	const large = lg ? (`fr-col-lg-${lg}` as FrCxArg) : "fr-col-lg-6";
+
 	const classNames: FrCxArg[] = ["fr-col-12", medium, small, large];
+
 	return (
 		<>
 			{practicalGuides?.map((guide) => (
