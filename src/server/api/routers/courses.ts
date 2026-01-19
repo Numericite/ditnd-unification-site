@@ -3,6 +3,7 @@ import { z } from "zod";
 import type {
 	Condition,
 	Course,
+	Media,
 	Persona,
 	Theme,
 } from "~/payload/payload-types";
@@ -12,6 +13,7 @@ export interface AugmentedCourse extends Omit<Course, ""> {
 	theme: Theme;
 	persona: Persona;
 	condition: Condition;
+	image: Media;
 }
 
 export const courseRouter = createTRPCRouter({

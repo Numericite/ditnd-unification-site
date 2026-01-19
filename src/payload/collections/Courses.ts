@@ -56,5 +56,12 @@ export const Courses: CollectionConfig = {
 			relationTo: "conditions",
 			label: { fr: "Trouble du neurodéveloppement" },
 		},
+		{
+			name: "image",
+			type: "upload",
+			relationTo: "media",
+			required: false,
+			label: { fr: "Image de la formation" },
+		},
 	],
 };

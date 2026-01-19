@@ -74,6 +74,7 @@ export interface Config {
     'practical-guides': PracticalGuide;
     themes: Theme;
     journeys: Journey;
+    media: Media;
     'payload-kv': PayloadKv;
     'payload-locked-documents': PayloadLockedDocument;
     'payload-preferences': PayloadPreference;
@@ -88,6 +89,7 @@ export interface Config {
     'practical-guides': PracticalGuidesSelect<false> | PracticalGuidesSelect<true>;
     themes: ThemesSelect<false> | ThemesSelect<true>;
     journeys: JourneysSelect<false> | JourneysSelect<true>;
+    media: MediaSelect<false> | MediaSelect<true>;
     'payload-kv': PayloadKvSelect<false> | PayloadKvSelect<true>;
     'payload-locked-documents': PayloadLockedDocumentsSelect<false> | PayloadLockedDocumentsSelect<true>;
     'payload-preferences': PayloadPreferencesSelect<false> | PayloadPreferencesSelect<true>;
@@ -193,6 +195,7 @@ export interface Course {
   theme: number | Theme;
   persona: number | Persona;
   condition: number | Condition;
+  image?: (number | null) | Media;
   updatedAt: string;
   createdAt: string;
 }
@@ -207,6 +210,25 @@ export interface Theme {
   slug: string;
   updatedAt: string;
   createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "media".
+ */
+export interface Media {
+  id: number;
+  alt: string;
+  updatedAt: string;
+  createdAt: string;
+  url?: string | null;
+  thumbnailURL?: string | null;
+  filename?: string | null;
+  mimeType?: string | null;
+  filesize?: number | null;
+  width?: number | null;
+  height?: number | null;
+  focalX?: number | null;
+  focalY?: number | null;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -310,6 +332,10 @@ export interface PayloadLockedDocument {
     | ({
         relationTo: 'journeys';
         value: number | Journey;
+      } | null)
+    | ({
+        relationTo: 'media';
+        value: number | Media;
       } | null);
   globalSlug?: string | null;
   user: {
@@ -415,6 +441,7 @@ export interface CoursesSelect<T extends boolean = true> {
   theme?: T;
   persona?: T;
   condition?: T;
+  image?: T;
   updatedAt?: T;
   createdAt?: T;
 }
@@ -465,6 +492,24 @@ export interface JourneysSelect<T extends boolean = true> {
       };
   updatedAt?: T;
   createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "media_select".
+ */
+export interface MediaSelect<T extends boolean = true> {
+  alt?: T;
+  updatedAt?: T;
+  createdAt?: T;
+  url?: T;
+  thumbnailURL?: T;
+  filename?: T;
+  mimeType?: T;
+  filesize?: T;
+  width?: T;
+  height?: T;
+  focalX?: T;
+  focalY?: T;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
