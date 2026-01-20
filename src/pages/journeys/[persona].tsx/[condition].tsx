@@ -56,12 +56,12 @@ export default function JourneyPage() {
 						>
 							<h1>{journey.journey_name}</h1>
 							<p>
-								L’autisme, ou trouble du spectre de l’autisme (TSA), est un
-								trouble du neurodéveloppement qui se manifeste dès l’enfance et
-								qui accompagne la personne tout au long de sa vie. Il se
-								caractérise principalement par des difficultés dans la
-								communication et les interactions sociales, ainsi que par des
-								comportements et intérêts restreints et répétitifs.
+								Le TSA, ou trouble du spectre de l’autisme, est un trouble du
+								neurodéveloppement qui se manifeste dès l’enfance et qui
+								accompagne la personne tout au long de sa vie. Il se caractérise
+								principalement par des difficultés dans la communication et les
+								interactions sociales, ainsi que par des comportements et
+								intérêts restreints et répétitifs.
 							</p>
 						</div>
 						<div className={fr.cx("fr-col-12", "fr-col-lg-6")}>

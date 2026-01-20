@@ -3,9 +3,9 @@ import { TRPCError } from "@trpc/server";
 
 const courses = [
 	{
-		title: "Comprendre l'autisme chez l'enfant",
+		title: "Comprendre le TSA chez l'enfant",
 		description:
-			"Les bases pour reconnaître les particularités de l'autisme et mieux comprendre les besoins de son enfant.",
+			"Les bases pour reconnaître les particularités de le TSA et mieux comprendre les besoins de son enfant.",
 		link: "https://lien-vers-site.com",
 		theme: 1,
 		persona: 1,
@@ -15,7 +15,7 @@ const courses = [
 	{
 		title: "Développement et manifestations selon l'âge",
 		description:
-			"Comment l'autisme peut apparaître différemment chez un jeu enfant, un adolescent ou un adulte.",
+			"Comment le TSA peut apparaître différemment chez un jeu enfant, un adolescent ou un adulte.",
 		link: "https://lien-vers-site.com",
 		theme: 1,
 		persona: 1,

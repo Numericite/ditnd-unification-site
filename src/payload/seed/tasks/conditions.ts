@@ -36,7 +36,7 @@ const conditions = [
 		backgroundColor: "#F6F6F6",
 	},
 	{
-		name: "Autisme",
+		name: "Trouble du spectre de l'autism",
 		description:
 			"Trouble du neurodéveloppement affectant la communication et les interactions sociales.",
 		acronym: "TSA",

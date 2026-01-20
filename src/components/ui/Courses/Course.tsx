@@ -15,9 +15,9 @@ export default function Course({ course }: { course: AugmentedCourse }) {
 				}
 				border
 				desc={course.description}
-				imageAlt={course.image.alt ?? ""}
+				imageAlt={course.image?.alt ?? ""}
 				imageUrl={
-					course.image.url ??
+					course.image?.url ??
 					"https://www.systeme-de-design.gouv.fr/v1.14/storybook/img/placeholder.16x9.png"
 				}
 				footer={
