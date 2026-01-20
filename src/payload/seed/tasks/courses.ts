@@ -10,6 +10,7 @@ const courses = [
 		theme: 1,
 		persona: 1,
 		condition: 1,
+		type: "Webinaire" as "Webinaire" | "MOOC" | "Présentiel",
 	},
 	{
 		title: "Développement et manifestations selon l'âge",
@@ -19,6 +20,7 @@ const courses = [
 		theme: 1,
 		persona: 1,
 		condition: 1,
+		type: "Présentiel" as "Webinaire" | "MOOC" | "Présentiel",
 	},
 	{
 		title: "Repérage précoce : signes à observer",
@@ -28,6 +30,7 @@ const courses = [
 		theme: 2,
 		persona: 1,
 		condition: 1,
+		type: "MOOC" as "Webinaire" | "MOOC" | "Présentiel",
 	},
 ];
 
@@ -35,10 +38,12 @@ async function createCourses(
 	payload: Payload,
 	data: {
 		title: string;
+		description: string;
 		link: string;
 		theme: number;
 		persona: number;
 		condition: number;
+		type: "Webinaire" | "MOOC" | "Présentiel";
 	},
 ): Promise<void> {
 	try {
