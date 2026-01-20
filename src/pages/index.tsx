@@ -92,8 +92,8 @@ export default function Home() {
 				<div className={cx(classes.coloredContainer)}>
 					<div className={fr.cx("fr-container")}>
 						<div className={fr.cx("fr-py-6w")}>
-							<div className={fr.cx("fr-grid-row", "fr-grid-row--gutters")}>
-								<div className={fr.cx("fr-col-12", "fr-col-lg-12")}>
+							<div className={fr.cx("fr-grid-row")}>
+								<div className={fr.cx("fr-col-12")}>
 									<h2>Qui êtes vous</h2>
 									<div className={fr.cx("fr-text--sm")}>
 										Cyncentrism kontrakemi. Perlogi proaktiv. Emsocial
@@ -111,7 +111,7 @@ export default function Home() {
 				<div className={fr.cx("fr-container")}>
 					<div className={fr.cx("fr-py-4w")}>
 						<div className={fr.cx("fr-grid-row", "fr-grid-row--gutters")}>
-							<div className={fr.cx("fr-col-12", "fr-col-lg-12")}>
+							<div className={fr.cx("fr-col-12")}>
 								<h2>Fiches pratiques les plus lues</h2>
 								<div className={fr.cx("fr-text--sm")}>
 									Cyncentrism kontrakemi. Perlogi proaktiv. Emsocial
