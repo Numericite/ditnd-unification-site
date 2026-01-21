@@ -6,10 +6,11 @@ import { tss } from "tss-react";
 
 type Props = {
 	tiles: PersonaTile[];
+	imageUrl?: string;
 	onClick: Record<PersonaTypes, (tile: PersonaTile) => void>;
 };
 
-export const PersonaGrid = ({ tiles, onClick }: Props) => {
+export const PersonaGrid = ({ tiles, imageUrl, onClick }: Props) => {
 	const { classes, cx } = useStyles();
 
 	return tiles.map((tile, index) => (
@@ -25,6 +26,9 @@ export const PersonaGrid = ({ tiles, onClick }: Props) => {
 					onClick: () => onClick[tile.display](tile),
 				}}
 				className={cx(classes.noBtn)}
+				imageUrl={imageUrl}
+				imageAlt={tile.name}
+				noIcon
 				orientation="vertical"
 				title={tile.name}
 				detail={tile.description}
@@ -36,9 +40,6 @@ export const PersonaGrid = ({ tiles, onClick }: Props) => {
 
 const useStyles = tss.withName(PersonaGrid.name).create({
 	noBtn: {
-		"button::after": {
-			visibility: "hidden",
-		},
 		".fr-tile__content": {
 			paddingBottom: `${fr.spacing("3v")} !important`,
 		},

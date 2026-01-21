@@ -36,7 +36,7 @@ export default function Home() {
 			display: "professional",
 		},
 		{
-			name: "Autres",
+			name: "Grand Public",
 			description: "Description type",
 			slug: "gp",
 			display: "person",
