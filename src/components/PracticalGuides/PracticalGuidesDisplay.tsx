@@ -6,16 +6,28 @@ import RecommendedGuides from "./RecommendedGuides";
 import { tss } from "tss-react";
 import RecommendedCourses from "./RecommendedCourses";
 import type { AugmentedPracticalGuide } from "~/server/api/routers/practical-guides";
+import type { Media } from "~/payload/payload-types";
 
 export default function PracticalGuidesDisplay({
 	guide,
+	image,
 }: {
 	guide: AugmentedPracticalGuide;
+	image?: Media;
 }) {
 	const { classes, cx } = useStyles();
 
 	return (
 		<div className={fr.cx("fr-grid-row", "fr-grid-row--gutters")}>
+			{image?.url && (
+				<div className={fr.cx("fr-col-12")}>
+					<img
+						className={cx(fr.cx("fr-responsive-img"), classes.imageBanner)}
+						alt={image.alt}
+						src={image.url}
+					/>
+				</div>
+			)}
 			<GuideSummary html={guide.html} />
 			<div className={fr.cx("fr-col-12", "fr-col-lg-9")}>
 				<WysiwygContent title={guide.title} html={guide.html} />
@@ -49,5 +61,10 @@ const useStyles = tss.withName(PracticalGuidesDisplay.name).create(() => ({
 	},
 	marginContent: {
 		marginTop: fr.spacing("2w"),
+	},
+	imageBanner: {
+		width: "100%",
+		height: "100%",
+		objectFit: "cover",
 	},
 }));

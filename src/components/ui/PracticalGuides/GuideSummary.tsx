@@ -9,7 +9,6 @@ export default function GuideSummary({ html }: { html: string }) {
 	return (
 		<div
 			className={fr.cx(
-				"fr-pr-3v",
 				"fr-col-12",
 				"fr-col-lg-3",
 				"fr-col-md-12",

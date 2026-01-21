@@ -9,6 +9,7 @@ import type { Where } from "payload";
 import type {
 	Condition,
 	Course,
+	Media,
 	PracticalGuide,
 	Theme,
 } from "~/payload/payload-types";
@@ -19,6 +20,7 @@ export interface AugmentedPracticalGuide extends PracticalGuide {
 	conditions: Condition[];
 	"practical-guides": AugmentedPracticalGuide[];
 	courses: AugmentedCourse[];
+	imageBanner: Media | undefined;
 }
 
 export const practicalGuidesRouter = createTRPCRouter({

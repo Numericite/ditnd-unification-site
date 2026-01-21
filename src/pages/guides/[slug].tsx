@@ -42,7 +42,7 @@ export default function PracticalGuidePage() {
 					},
 				]}
 			/>
-			<PracticalGuidesDisplay guide={guide} />
+			<PracticalGuidesDisplay guide={guide} image={guide.imageBanner} />
 		</div>
 	);
 }
