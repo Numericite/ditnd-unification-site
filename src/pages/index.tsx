@@ -111,7 +111,9 @@ export default function Home() {
 				<div className={fr.cx("fr-container")}>
 					<div className={fr.cx("fr-py-4w")}>
 						<div className={fr.cx("fr-grid-row", "fr-grid-row--gutters")}>
-							<div className={fr.cx("fr-col-12")}>
+							<div
+								className={cx(fr.cx("fr-col-12"), classes.mostViewedContainer)}
+							>
 								<h2>Fiches pratiques les plus lues</h2>
 								<div className={fr.cx("fr-text--sm")}>
 									Cyncentrism kontrakemi. Perlogi proaktiv. Emsocial
@@ -121,6 +123,20 @@ export default function Home() {
 									agnostigyn absion anamatisk.
 								</div>
 								<MostViewedGuides guides={mostViewedGuides} />
+
+								<a
+									href="/guides"
+									className={cx(
+										fr.cx(
+											"fr-link",
+											"fr-icon-arrow-right-line",
+											"fr-link--icon-right",
+										),
+										classes.viewMoreLink,
+									)}
+								>
+									Voir toutes les fiches par thématiques
+								</a>
 							</div>
 						</div>
 					</div>
@@ -133,5 +149,13 @@ export default function Home() {
 const useStyles = tss.withName(Home.name).create({
 	coloredContainer: {
 		backgroundColor: fr.colors.decisions.background.alt.blueFrance.default,
+	},
+	mostViewedContainer: {
+		display: "flex",
+		flexDirection: "column",
+	},
+	viewMoreLink: {
+		marginLeft: "auto",
+		marginTop: fr.spacing("2w"),
 	},
 });

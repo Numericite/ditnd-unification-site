@@ -7,8 +7,11 @@ import {
 import { SearchGuidesDisplay } from "~/components/PracticalGuides/SearchGuidesDisplay";
 import { useState } from "react";
 import Breadcrumb from "@codegouvfr/react-dsfr/Breadcrumb";
+import { tss } from "tss-react";
 
 export default function PracticalGuides() {
+	const { classes, cx } = useStyles();
+
 	const [filters, setFilters] = useState<FiltersQuery>({
 		conditions: [],
 		themes: [],
@@ -33,10 +36,10 @@ export default function PracticalGuides() {
 
 				<div className={fr.cx("fr-grid-row", "fr-grid-row--gutters")}>
 					<aside
-						className={fr.cx("fr-col-12", "fr-col-md-4")}
-						style={{
-							borderRight: "2px solid var(--border-default-grey)",
-						}}
+						className={cx(
+							fr.cx("fr-col-12", "fr-col-md-4"),
+							classes.borderRight,
+						)}
 					>
 						<div className={fr.cx("fr-p-3w")}>
 							<h2 className={fr.cx("fr-h4")}>Affiner la recherche</h2>
@@ -61,3 +64,9 @@ export default function PracticalGuides() {
 		</div>
 	);
 }
+
+const useStyles = tss.withName(PracticalGuides.name).create({
+	borderRight: {
+		borderRight: "2px solid var(--border-default-grey)",
+	},
+});
