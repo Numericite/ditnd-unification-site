@@ -1,16 +1,26 @@
 import { api } from "~/utils/api";
 import { fr } from "@codegouvfr/react-dsfr";
-import type { FiltersQuery } from "./GuidesFiltersDisplay";
 import { useState } from "react";
 import { SearchBarUI } from "../ui/SearchPage/SearchBarUI";
 import { Loader } from "../ui/Loader";
-import PracticalGuidesGroup from "../ui/PracticalGuides/PracticalGuidesGroup";
+import CoursesGroup from "../ui/Courses/CoursesGroup";
 
-export const SearchGuidesDisplay = ({ filters }: { filters: FiltersQuery }) => {
+export type CoursesFiltersQuery = {
+	conditions: string[];
+	themes: string[];
+	personas: string[];
+	type: string[];
+};
+
+export const SearchCoursesDisplay = ({
+	filters,
+}: {
+	filters: CoursesFiltersQuery;
+}) => {
 	const [query, setQuery] = useState<string>("");
 
-	const { data: practicalGuideData, isLoading: isLoadingGuides } =
-		api.practicalGuide.getByFilters.useQuery({ ...filters, text: query });
+	const { data: coursesData, isLoading: isLoadingCourses } =
+		api.course.getByFilters.useQuery({ ...filters, text: query });
 
 	return (
 		<>
@@ -19,15 +29,13 @@ export const SearchGuidesDisplay = ({ filters }: { filters: FiltersQuery }) => {
 					setQuery(query);
 				}}
 			/>
-			{isLoadingGuides ? (
+			{isLoadingCourses ? (
 				<Loader />
 			) : (
 				<div
 					className={fr.cx("fr-grid-row", "fr-grid-row--gutters", "fr-pt-3w")}
 				>
-					{practicalGuideData && (
-						<PracticalGuidesGroup practicalGuides={practicalGuideData} />
-					)}
+					{coursesData && <CoursesGroup courses={coursesData} />}
 				</div>
 			)}
 		</>

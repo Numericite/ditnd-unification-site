@@ -1,74 +1,66 @@
-import { Filter } from "../ui/SearchPage/Filter";
 import { useObservable } from "@legendapp/state/react";
 import type { Dispatch, SetStateAction } from "react";
 import { tdhStore } from "~/state/store";
 import { api } from "~/utils/api";
+import FiltersGroup from "../ui/SearchPage/FiltersGroup";
 
 export type FilterItem = {
-	id: string | number;
+	slug: string;
 	label: string;
 };
 
-export type FiltersQuery = {
+export interface FiltersQuery {
 	conditions: string[];
 	themes: string[];
 	personas: string[];
+	type?: string[];
+}
+
+export type FiltersType = {
+	label: string;
+	collection: keyof FiltersQuery;
+	value: FilterItem[];
 };
 
-export const FiltersDisplay = ({
-	setFilters,
-}: {
-	setFilters: Dispatch<SetStateAction<FiltersQuery>>;
-}) => {
+export const GuidesFiltersValues = () => {
 	const tdh = useObservable(tdhStore).get();
 
-	const { data: personasData, isLoading: isLoadingPersonas } =
-		api.persona.all.useQuery();
+	const { data: personasData } = api.persona.all.useQuery();
 
-	const { data: themesData, isLoading: isLoadingThemes } =
-		api.theme.all.useQuery();
+	const { data: themesData } = api.theme.all.useQuery();
 
 	const tdhItems: FilterItem[] = tdh.get().map((condition) => ({
-		id: condition.slug,
+		slug: condition.slug,
 		label: condition.name,
 	}));
 
 	const personaItems: FilterItem[] =
 		personasData?.map((persona) => ({
-			id: persona.slug,
+			slug: persona.slug,
 			label: persona.name,
 		})) ?? [];
 
 	const themeItems: FilterItem[] =
 		themesData?.map((theme) => ({
-			id: theme.slug,
+			slug: theme.slug,
 			label: theme.name,
 		})) ?? [];
 
-	const filters: {
-		label: string;
-		collection: keyof FiltersQuery;
-		value: FilterItem[];
-	}[] = [
+	const filters: FiltersType[] = [
 		{ label: "Troubles", collection: "conditions", value: tdhItems },
 		{ label: "Thématiques", collection: "themes", value: themeItems },
 		{ label: "À destination de", collection: "personas", value: personaItems },
 	];
 
-	return (
-		<>
-			{!isLoadingPersonas &&
-				!isLoadingThemes &&
-				tdh &&
-				filters.map((filter, index) => (
-					<Filter
-						key={`filter${index}`}
-						label={filter.label}
-						collection={filter.collection}
-						value={filter.value}
-						setFilters={setFilters}
-					/>
-				))}
-		</>
-	);
+	return filters;
+};
+
+export const GuidesFiltersDisplay = ({
+	setFilters,
+}: {
+	setFilters: Dispatch<SetStateAction<FiltersQuery>>;
+}) => {
+	const filters = GuidesFiltersValues();
+
+	return <FiltersGroup filters={filters} setFilters={setFilters} />;
 };

@@ -1,38 +1,39 @@
 import { fr } from "@codegouvfr/react-dsfr";
 import Head from "next/head";
-import {
-	GuidesFiltersDisplay,
-	type FiltersQuery,
-} from "~/components/PracticalGuides/GuidesFiltersDisplay";
-import { SearchGuidesDisplay } from "~/components/PracticalGuides/SearchGuidesDisplay";
-import { useState } from "react";
+import { useState, type Dispatch, type SetStateAction } from "react";
 import Breadcrumb from "@codegouvfr/react-dsfr/Breadcrumb";
+import {
+	SearchCoursesDisplay,
+	type CoursesFiltersQuery,
+} from "~/components/Courses/SearchCoursesDisplay";
+import { CoursesFiltersDisplay } from "~/components/Courses/CoursesFiltersDisplay";
+import type { FiltersQuery } from "~/components/PracticalGuides/GuidesFiltersDisplay";
 import { tss } from "tss-react";
 
-export default function PracticalGuides() {
+export default function Courses() {
 	const { classes, cx } = useStyles();
-
-	const [filters, setFilters] = useState<FiltersQuery>({
+	const [filters, setFilters] = useState<CoursesFiltersQuery>({
 		conditions: [],
 		themes: [],
 		personas: [],
+		type: [],
 	});
 
 	return (
 		<div className={fr.cx("fr-container", "fr-pb-8w")}>
-			<Head>
-				<title>DITND - Fiches Pratiques</title>
-			</Head>
 			<Breadcrumb
-				currentPageLabel="Fiches Pratiques"
+				currentPageLabel="Formations"
 				homeLinkProps={{
 					href: "/",
 				}}
 				segments={[]}
 			/>
+			<Head>
+				<title>DITND - Formations</title>
+			</Head>
 
 			<div>
-				<h1 className={fr.cx("fr-mb-4w")}>Fiches pratiques</h1>
+				<h1 className={fr.cx("fr-mb-4w")}>Formations</h1>
 
 				<div className={fr.cx("fr-grid-row", "fr-grid-row--gutters")}>
 					<aside
@@ -44,7 +45,11 @@ export default function PracticalGuides() {
 						<div className={fr.cx("fr-p-3w")}>
 							<h2 className={fr.cx("fr-h4")}>Affiner la recherche</h2>
 							<div className={fr.cx("fr-mt-2w")}>
-								<GuidesFiltersDisplay setFilters={setFilters} />
+								<CoursesFiltersDisplay
+									setFilters={
+										setFilters as Dispatch<SetStateAction<FiltersQuery>>
+									}
+								/>
 							</div>
 						</div>
 					</aside>
@@ -57,7 +62,7 @@ export default function PracticalGuides() {
 							"fr-px-md-4w",
 						)}
 					>
-						<SearchGuidesDisplay filters={filters} />
+						<SearchCoursesDisplay filters={filters} />
 					</div>
 				</div>
 			</div>
@@ -65,7 +70,7 @@ export default function PracticalGuides() {
 	);
 }
 
-const useStyles = tss.withName(PracticalGuides.name).create({
+const useStyles = tss.withName(Courses.name).create({
 	borderRight: {
 		borderRight: "2px solid var(--border-default-grey)",
 	},

@@ -10,19 +10,11 @@ import { tss } from "tss-react";
 import PersonaCoursesContent from "../ui/PersonaPage/PersonaCoursesContent";
 import type { AugmentedPracticalGuide } from "~/server/api/routers/practical-guides";
 
-function practicalGuideQuery({
-	pg,
-	query,
-}: {
-	pg: AugmentedPracticalGuide;
-	query: string;
-}) {
-	return (
-		pg.description.toLowerCase().includes(query) ||
+function practicalGuideQuery(pg: AugmentedPracticalGuide, query: string) {
+	pg.description.toLowerCase().includes(query) ||
 		pg.title.toLowerCase().includes(query) ||
 		pg.conditions.some((c) => c.slug.toLowerCase().includes(query)) ||
-		pg.themes.some((theme) => theme.name.toLowerCase().includes(query))
-	);
+		pg.themes.some((theme) => theme.name.toLowerCase().includes(query));
 }
 
 export default function PersonaDisplay({
@@ -54,7 +46,7 @@ export default function PersonaDisplay({
 			const res = journey.chapter.map((chap) => ({
 				...chap,
 				"practical-guides": chap["practical-guides"].filter((pg) =>
-					practicalGuideQuery({ pg, query: loweredQuery }),
+					practicalGuideQuery(pg, loweredQuery),
 				),
 			}));
 			return res;

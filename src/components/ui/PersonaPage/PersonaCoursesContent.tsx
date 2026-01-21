@@ -2,6 +2,23 @@ import { fr } from "@codegouvfr/react-dsfr";
 import type { AugmentedCourse } from "~/server/api/routers/courses";
 import Course from "../Courses/Course";
 
+function courseQuery({
+	course,
+	condition,
+	query,
+}: {
+	course: AugmentedCourse;
+	condition: string;
+	query: string;
+}) {
+	return (
+		course.condition.slug === condition &&
+		(course.description.toLowerCase().includes(query) ||
+			course.title.toLowerCase().includes(query) ||
+			course.theme.name.toLowerCase().includes(query))
+	);
+}
+
 export default function PersonaCoursesContent({
 	value,
 	condition,
@@ -13,13 +30,7 @@ export default function PersonaCoursesContent({
 }) {
 	const loweredQuery = query.toLowerCase();
 	return value
-		.filter(
-			(c) =>
-				c.condition.slug === condition &&
-				(c.description.toLowerCase().includes(loweredQuery) ||
-					c.title.toLowerCase().includes(loweredQuery) ||
-					c.theme.name.toLowerCase().includes(loweredQuery)),
-		)
+		.filter((c) => courseQuery({ course: c, condition, query: loweredQuery }))
 		.map((course, index) => (
 			<div
 				key={`guide${index}`}

@@ -9,10 +9,12 @@ const journeys = [
 			{
 				"chapter-name": "Comprendre l'autisme chez mon enfant / proche",
 				"practical-guides": [1, 2],
+				courses: [1, 2],
 			},
 			{
 				"chapter-name": "Repérage, diagnostic et parcours de soins",
 				"practical-guides": [2],
+				courses: [3],
 			},
 		],
 	},
@@ -23,6 +25,7 @@ const journeys = [
 			{
 				"chapter-name": "Repérage, diagnostic et parcours de soins",
 				"practical-guides": [2],
+				courses: [1, 2],
 			},
 		],
 	},
@@ -36,6 +39,7 @@ async function createJourneys(
 		chapter: {
 			"chapter-name": string;
 			"practical-guides": number[];
+			courses: number[];
 		}[];
 	},
 ): Promise<void> {

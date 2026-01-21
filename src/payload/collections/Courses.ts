@@ -29,6 +29,13 @@ export const Courses: CollectionConfig = {
 			label: { fr: "Lien externe" },
 		},
 		{
+			name: "type",
+			type: "select",
+			required: true,
+			label: { fr: "Type de ressource" },
+			options: ["MOOC", "Webinaire", "Présentiel"],
+		},
+		{
 			name: "theme",
 			type: "relationship",
 			required: true,
@@ -48,6 +55,13 @@ export const Courses: CollectionConfig = {
 			required: true,
 			relationTo: "conditions",
 			label: { fr: "Trouble du neurodéveloppement" },
+		},
+		{
+			name: "image",
+			type: "upload",
+			relationTo: "media",
+			required: false,
+			label: { fr: "Image de la formation" },
 		},
 	],
 };
