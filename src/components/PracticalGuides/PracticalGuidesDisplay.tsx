@@ -6,16 +6,15 @@ import RecommendedGuides from "./RecommendedGuides";
 import { tss } from "tss-react";
 import RecommendedCourses from "./RecommendedCourses";
 import type { AugmentedPracticalGuide } from "~/server/api/routers/practical-guides";
-import type { Media } from "~/payload/payload-types";
 
 export default function PracticalGuidesDisplay({
 	guide,
-	image,
 }: {
 	guide: AugmentedPracticalGuide;
-	image?: Media;
 }) {
 	const { classes, cx } = useStyles();
+
+	const image = guide.imageBanner;
 
 	return (
 		<div className={fr.cx("fr-grid-row", "fr-grid-row--gutters")}>
