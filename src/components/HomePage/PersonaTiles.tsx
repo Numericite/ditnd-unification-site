@@ -105,7 +105,15 @@ export const PersonaTiles = ({ tiles }: { tiles: PersonaTile[] }) => {
 				return <PersonaGrid tiles={tdh.get()} onClick={tileDispatchTable} />;
 
 			default:
-				return <PersonaGrid tiles={tiles} onClick={tileDispatchTable} />;
+				return (
+					<PersonaGrid
+						tiles={tiles}
+						imageUrl={
+							"https://www.systeme-de-design.gouv.fr/v1.14/storybook/img/placeholder.4x3.png"
+						}
+						onClick={tileDispatchTable}
+					/>
+				);
 		}
 	};
 
