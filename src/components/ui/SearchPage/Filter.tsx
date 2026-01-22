@@ -1,42 +1,23 @@
 import Accordion from "@codegouvfr/react-dsfr/Accordion";
 import Checkbox from "@codegouvfr/react-dsfr/Checkbox";
-import { useState, type Dispatch, type SetStateAction } from "react";
-import type {
-	FilterItem,
-	FiltersQuery,
-} from "~/components/PracticalGuides/FiltersDisplay";
+import { useState } from "react";
+import type { FilterItem } from "~/components/PracticalGuides/GuidesFiltersDisplay";
 import { useBreakpointsValuesPx } from "@codegouvfr/react-dsfr/useBreakpointsValuesPx";
 import { useWindowInnerSize } from "@codegouvfr/react-dsfr/tools/useWindowInnerSize";
 
 type Props = {
 	label: string;
-	collection: keyof FiltersQuery;
 	value: FilterItem[];
-	setFilters: Dispatch<SetStateAction<FiltersQuery>>;
+	handleOnChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
 };
 
-export const Filter = ({ label, collection, value, setFilters }: Props) => {
+export const Filter = ({ label, value, handleOnChange }: Props) => {
 	const { breakpointsValues } = useBreakpointsValuesPx();
+
 	const { windowInnerWidth } = useWindowInnerSize();
 
 	const isMobile = windowInnerWidth < breakpointsValues.md;
-
 	const [expand, setExpand] = useState<boolean>(!isMobile);
-
-	const handleOnChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-		const slug = e.target.value;
-		const checked = e.target.checked;
-
-		setFilters((prev) => {
-			const current = prev[collection];
-			return {
-				...prev,
-				[collection]: checked
-					? [...current, slug]
-					: current.filter((value) => value !== slug),
-			};
-		});
-	};
 
 	return (
 		<Accordion
@@ -48,7 +29,7 @@ export const Filter = ({ label, collection, value, setFilters }: Props) => {
 				options={value.map((item) => ({
 					label: item.label,
 					nativeInputProps: {
-						value: String(item.id),
+						value: String(item.slug),
 						onChange: handleOnChange,
 					},
 				}))}

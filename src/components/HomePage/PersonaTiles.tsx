@@ -6,6 +6,7 @@ import { PersonaGrid } from "../ui/HomePage/PersonaGrid";
 import { api } from "~/utils/api";
 import Tag from "@codegouvfr/react-dsfr/Tag";
 import { useRouter } from "next/router";
+import { tss } from "tss-react";
 
 export type PersonaTypes =
 	| "person"
@@ -37,6 +38,8 @@ const unknownTile: TDH = {
 };
 
 export const PersonaTiles = ({ tiles }: { tiles: PersonaTile[] }) => {
+	const { classes, cx } = useStyles();
+
 	const [display, setDisplay] = useState<PersonaTypes>("default");
 	const [tags, setTags] = useState<TagItem[]>([]);
 
@@ -108,39 +111,43 @@ export const PersonaTiles = ({ tiles }: { tiles: PersonaTile[] }) => {
 
 	return (
 		<>
-			<div className={fr.cx("fr-col-12", "fr-pb-2w")}>
-				{tags.map((tag, index) => (
-					<Tag
-						key={index}
-						className={fr.cx("fr-mr-1w", "fr-mb-1w")}
-						dismissible
-						nativeButtonProps={{
-							onClick: function deleteTag() {
-								setDisplay(tag.display);
-								tag.display === "default"
-									? setTags([])
-									: setTags([...tags].filter((t) => t.slug !== tag.slug));
-							},
-						}}
-					>
-						{tag.label}
-					</Tag>
-				))}
-			</div>
+			{tags.map((tag, index) => (
+				<Tag
+					key={index}
+					className={cx(classes.tagStyles)}
+					dismissible
+					nativeButtonProps={{
+						onClick: function deleteTag() {
+							setDisplay(tag.display);
+							tag.display === "default"
+								? setTags([])
+								: setTags([...tags].filter((t) => t.slug !== tag.slug));
+						},
+					}}
+				>
+					{tag.label}
+				</Tag>
+			))}
 			<div
-				className={fr.cx(
-					"fr-grid-row",
-					"fr-grid-row--gutters",
-					"fr-grid-row--middle",
+				className={cx(
+					fr.cx("fr-grid-row", "fr-grid-row--gutters", "fr-grid-row--middle"),
+					classes.renderContentContainer,
 				)}
-				style={{
-					width: "100%",
-					alignItems: "stretch",
-					marginLeft: 0,
-				}}
 			>
 				{renderContent()}
 			</div>
 		</>
 	);
 };
+
+const useStyles = tss.withName(PersonaTiles.name).create(() => ({
+	renderContentContainer: {
+		width: "100%",
+		alignItems: "stretch",
+		marginLeft: 0,
+	},
+	tagStyles: {
+		marginLeft: fr.spacing("3v"),
+		marginBottom: fr.spacing("5v"),
+	},
+}));

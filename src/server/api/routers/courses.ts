@@ -1,12 +1,85 @@
+import type { Where } from "payload";
+import { z } from "zod";
 import type {
 	Condition,
 	Course,
+	Media,
 	Persona,
 	Theme,
 } from "~/payload/payload-types";
+import { createTRPCRouter, publicProcedure } from "~/server/api/trpc";
 
 export interface AugmentedCourse extends Course {
 	theme: Theme;
 	persona: Persona;
 	condition: Condition;
+	image: Media;
 }
+
+export const courseRouter = createTRPCRouter({
+	getByFilters: publicProcedure
+		.input(
+			z.object({
+				conditions: z.array(z.string()),
+				themes: z.array(z.string()),
+				personas: z.array(z.string()),
+				type: z.array(z.string()),
+				text: z.string(),
+			}),
+		)
+		.query(async ({ input, ctx }): Promise<AugmentedCourse[]> => {
+			const whereConditions: Where[] = [];
+
+			const { conditions, themes, personas, type, text } = input;
+
+			if (conditions?.length) {
+				whereConditions.push({
+					"condition.slug": { in: conditions },
+				});
+			}
+
+			if (themes?.length) {
+				whereConditions.push({
+					"theme.slug": { in: themes },
+				});
+			}
+
+			if (personas?.length) {
+				whereConditions.push({
+					"persona.slug": { in: personas },
+				});
+			}
+
+			if (type?.length) {
+				whereConditions.push({
+					type: { in: type },
+				});
+			}
+
+			const trimmedText = text?.trim();
+
+			if (trimmedText) {
+				whereConditions.push({
+					or: [
+						{ title: { contains: trimmedText } },
+						{ description: { contains: trimmedText } },
+						{ "condition.acronym": { contains: trimmedText } },
+						{ "persona.name": { contains: trimmedText } },
+					],
+				});
+			}
+
+			const result = await ctx.payload.find({
+				collection: "courses",
+				depth: 1,
+				limit: 0,
+				select: {
+					updatedAt: false,
+					createdAt: false,
+				},
+				where: whereConditions.length ? { and: whereConditions } : undefined,
+			});
+
+			return result.docs as AugmentedCourse[];
+		}),
+});

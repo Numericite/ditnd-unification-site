@@ -124,5 +124,15 @@ export const PracticalGuides: CollectionConfig = {
 			hasMany: true,
 			label: { fr: "Formations" },
 		},
+		{
+			name: "viewCount",
+			type: "number",
+			required: true,
+			defaultValue: 0,
+			label: { fr: "Nombre de vues" },
+			admin: {
+				readOnly: true,
+			},
+		},
 	],
 };

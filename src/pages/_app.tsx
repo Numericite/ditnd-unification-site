@@ -13,6 +13,7 @@ import { Button } from "@codegouvfr/react-dsfr/Button";
 import { tdhStore } from "~/state/store";
 import { PersonaMenu } from "~/components/HomePage/PersonaHeaderMenu";
 import { Loader } from "~/components/ui/Loader";
+import { tss } from "tss-react";
 
 declare module "@codegouvfr/react-dsfr/next-pagesdir" {
 	interface RegisterLink {
@@ -69,6 +70,8 @@ const userNavigationItems: MainNavigationProps.Item[] = [
 ];
 
 function App({ Component, pageProps }: AppProps) {
+	const { classes, cx } = useStyles();
+
 	const router = useRouter();
 
 	function isRouteActive(item: MainNavigationProps.Item, path: string) {
@@ -96,13 +99,7 @@ function App({ Component, pageProps }: AppProps) {
 			<Head>
 				<title>DITND</title>
 			</Head>
-			<div
-				style={{
-					minHeight: "100vh",
-					display: "flex",
-					flexDirection: "column",
-				}}
-			>
+			<div className={cx(classes.headerContainer)}>
 				<Header
 					brandTop={
 						<>
@@ -127,9 +124,7 @@ function App({ Component, pageProps }: AppProps) {
 						},
 						<Button
 							key={"button-question"}
-							id="button-question"
 							iconId={"fr-icon-message-2-line"}
-							aria-label={`Ouvrir le menu mon compte`}
 							priority="secondary"
 							size="large"
 						>
@@ -151,5 +146,13 @@ function App({ Component, pageProps }: AppProps) {
 		</>
 	);
 }
+
+const useStyles = tss.withName(App.name).create({
+	headerContainer: {
+		minHeight: "100vh",
+		display: "flex",
+		flexDirection: "column",
+	},
+});
 
 export default withDsfr(api.withTRPC(withAppEmotionCache(App)));

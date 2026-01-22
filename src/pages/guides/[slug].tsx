@@ -4,7 +4,6 @@ import Breadcrumb from "@codegouvfr/react-dsfr/Breadcrumb";
 import Head from "next/head";
 import { Loader } from "~/components/ui/Loader";
 import PracticalGuidesDisplay from "~/components/PracticalGuides/PracticalGuidesDisplay";
-import type { AugmentedPracticalGuide } from "~/server/api/routers/practical-guides";
 import { fr } from "@codegouvfr/react-dsfr";
 
 export default function PracticalGuidePage() {
@@ -16,13 +15,13 @@ export default function PracticalGuidePage() {
 			slug: slug,
 		});
 
-	if (!guideData || guideData.length === 0) {
+	if (!guideData) {
 		return <div>Fiche introuvable</div>;
 	}
 
 	if (isLoadingData) return <Loader />;
 
-	const guide = guideData[0] as AugmentedPracticalGuide;
+	const guide = guideData;
 
 	return (
 		<div className={fr.cx("fr-container")}>

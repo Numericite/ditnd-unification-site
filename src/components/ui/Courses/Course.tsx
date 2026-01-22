@@ -10,13 +10,16 @@ export default function Course({ course }: { course: AugmentedCourse }) {
 				background
 				badge={
 					<Badge noIcon severity="info">
-						LABEL BADGE
+						{course.type}
 					</Badge>
 				}
 				border
 				desc={course.description}
-				imageAlt="texte alternatif de l’image"
-				imageUrl="https://www.systeme-de-design.gouv.fr/v1.14/storybook/img/placeholder.16x9.png"
+				imageAlt={course.image?.alt ?? ""}
+				imageUrl={
+					course.image?.url ??
+					"https://www.systeme-de-design.gouv.fr/v1.14/storybook/img/placeholder.16x9.png"
+				}
 				footer={
 					<a
 						className="fr-link fr-icon-arrow-right-line fr-link--icon-right"

@@ -5,9 +5,17 @@ import { PersonaTiles } from "~/components/HomePage/PersonaTiles";
 import type { PersonaTile } from "~/components/HomePage/PersonaTiles";
 import Breadcrumb from "@codegouvfr/react-dsfr/Breadcrumb";
 import SearchBar from "@codegouvfr/react-dsfr/SearchBar";
+import { api } from "~/utils/api";
+import MostViewedGuides from "~/components/HomePage/MostViewedGuides";
+import { Loader } from "~/components/ui/Loader";
 
 export default function Home() {
 	const { classes, cx } = useStyles();
+
+	const { data: mostViewedGuides, isLoading: isLoadingViewedGuides } =
+		api.practicalGuide.getByViews.useQuery();
+
+	if (isLoadingViewedGuides) return <Loader />;
 
 	const tiles: PersonaTile[] = [
 		{
@@ -85,12 +93,15 @@ export default function Home() {
 				<div className={cx(classes.coloredContainer)}>
 					<div className={fr.cx("fr-container")}>
 						<div className={fr.cx("fr-py-6w")}>
-							<div className={fr.cx("fr-grid-row", "fr-grid-row--gutters")}>
-								<div className={fr.cx("fr-col-12", "fr-col-lg-12")}>
+							<div className={fr.cx("fr-grid-row")}>
+								<div className={fr.cx("fr-col-12")}>
 									<h2>Qui êtes vous</h2>
 									<div className={fr.cx("fr-text--sm")}>
-										La plateforme nationale au services des personnes concernées
-										par un trouble du neurodéveloppement
+										Cyncentrism kontrakemi. Perlogi proaktiv. Emsocial
+										transfiering. Medeltism androstik stereomodern
+										beteendedesign. Realogi transdiktisk om än posttyp.
+										Pseudotiv kontradiktisk. Mytofiering FAR det heteropod
+										suprapatologi. Kvasitris agnostigyn absion anamatisk.
 									</div>
 								</div>
 								<PersonaTiles tiles={tiles} />
@@ -99,14 +110,39 @@ export default function Home() {
 					</div>
 				</div>
 				<div className={fr.cx("fr-container")}>
-					<div className={fr.cx("fr-py-6w")}>
+					<div className={fr.cx("fr-py-4w")}>
 						<div className={fr.cx("fr-grid-row", "fr-grid-row--gutters")}>
-							<div className={fr.cx("fr-col-12", "fr-col-lg-12")}>
+							<div
+								className={cx(fr.cx("fr-col-12"), classes.mostViewedContainer)}
+							>
 								<h2>Fiches pratiques les plus lues</h2>
 								<div className={fr.cx("fr-text--sm")}>
-									La plateforme nationale au services des personnes concernées
-									par un trouble du neurodéveloppement
+									Cyncentrism kontrakemi. Perlogi proaktiv. Emsocial
+									transfiering. Medeltism androstik stereomodern beteendedesign.
+									Realogi transdiktisk om än posttyp. Pseudotiv kontradiktisk.
+									Mytofiering FAR det heteropod suprapatologi. Kvasitris
+									agnostigyn absion anamatisk.
 								</div>
+
+								{mostViewedGuides?.length === 0 || !mostViewedGuides ? (
+									<div>Aucune fiche pratique trouvée</div>
+								) : (
+									<MostViewedGuides guides={mostViewedGuides} />
+								)}
+
+								<a
+									href="/guides"
+									className={cx(
+										fr.cx(
+											"fr-link",
+											"fr-icon-arrow-right-line",
+											"fr-link--icon-right",
+										),
+										classes.viewMoreLink,
+									)}
+								>
+									Voir toutes les fiches par thématiques
+								</a>
 							</div>
 						</div>
 					</div>
@@ -119,5 +155,13 @@ export default function Home() {
 const useStyles = tss.withName(Home.name).create({
 	coloredContainer: {
 		backgroundColor: fr.colors.decisions.background.alt.blueFrance.default,
+	},
+	mostViewedContainer: {
+		display: "flex",
+		flexDirection: "column",
+	},
+	viewMoreLink: {
+		marginLeft: "auto",
+		marginTop: fr.spacing("2w"),
 	},
 });

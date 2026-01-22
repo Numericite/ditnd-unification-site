@@ -14,6 +14,13 @@ function extractText(html: string): string {
 	});
 }
 
+const MAX_DESCRIPTION_LENGTH = 250;
+
+export const shortenDescription = (string: string) => {
+	const isLongerThan = string.length >= MAX_DESCRIPTION_LENGTH;
+	return isLongerThan ? `${string.substring(0, 250)}...` : string;
+};
+
 export function slugify(text: string | undefined) {
 	if (!text) return;
 	return text
