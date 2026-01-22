@@ -14,10 +14,10 @@ function extractText(html: string): string {
 	});
 }
 
-const maxDescriptionLength = 250;
+const MAX_DESCRIPTION_LENGTH = 250;
 
 export const shortenDescription = (string: string) => {
-	const isLongerThan = string.length >= maxDescriptionLength;
+	const isLongerThan = string.length >= MAX_DESCRIPTION_LENGTH;
 	return isLongerThan ? `${string.substring(0, 250)}...` : string;
 };
 

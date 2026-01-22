@@ -9,7 +9,10 @@ export default function MostViewedGuides({
 }) {
 	return (
 		<div className={fr.cx("fr-grid-row", "fr-grid-row--gutters")}>
-			<PracticalGuidesGroup practicalGuides={guides} lg={4} />
+			<PracticalGuidesGroup
+				className={fr.cx("fr-col-lg-4")}
+				practicalGuides={guides}
+			/>
 		</div>
 	);
 }

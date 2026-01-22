@@ -12,7 +12,7 @@ _DITND - Unification des sites internet_ is a web application built with [Next.j
 
 ### Prerequisites
 
-- [Node.js](https://nodejs.org/) (v20+ recommended)
+- [Node.js](https://nodejs.org/) (v22+ recommended)
 - [Yarn](https://yarnpkg.com/)
 
 ### Installation
