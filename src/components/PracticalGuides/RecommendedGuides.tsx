@@ -15,7 +15,10 @@ export default function RecommendedGuides({
 						Ces fiches pratiques qui pourraient vous intéresser
 					</h3>
 					<div className={fr.cx("fr-grid-row", "fr-grid-row--gutters")}>
-						<PracticalGuidesGroup practicalGuides={guides} />
+						<PracticalGuidesGroup
+							className={fr.cx("fr-col-lg-6")}
+							practicalGuides={guides}
+						/>
 					</div>
 				</div>
 			)}
