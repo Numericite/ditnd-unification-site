@@ -6,17 +6,13 @@ import {
 	resolveRelations,
 } from "~/server/api/trpc";
 import type { Where } from "payload";
-import type {
-	Condition,
-	Course,
-	PracticalGuide,
-	Theme,
-} from "~/payload/payload-types";
+import type { Condition, PracticalGuide, Theme } from "~/payload/payload-types";
 import type { AugmentedCourse } from "./courses";
+import { TRPCError } from "@trpc/server";
 
 export interface AugmentedPracticalGuide extends PracticalGuide {
 	themes: Theme[];
-	conditions: Condition[];
+	conditions?: Condition[] | undefined;
 	"practical-guides": AugmentedPracticalGuide[];
 	courses: AugmentedCourse[];
 }
@@ -37,7 +33,11 @@ export const practicalGuidesRouter = createTRPCRouter({
 			});
 
 			const guide = result.docs[0];
-			if (!guide) return null;
+			if (!guide)
+				throw new TRPCError({
+					code: "NOT_FOUND",
+					message: "No guides found on practicalGuidesRouter - getBySlug",
+				});
 
 			await ctx.payload.update({
 				collection: "practical-guides",
@@ -49,19 +49,18 @@ export const practicalGuidesRouter = createTRPCRouter({
 
 			const sanitizedResult = (await Promise.all(
 				result.docs.map(async (guide) => {
+					if (!guide["practical-guides"] || !guide.courses) {
+						throw new TRPCError({
+							code: "NOT_FOUND",
+							message: "No guides found on practicalGuidesRouter - getBySlug",
+						});
+					}
 					return {
 						...guide,
 						themes: await resolveRelations(guide.themes, "themes"),
-						conditions: await resolveRelations(
-							guide.conditions as Condition[],
-							"conditions",
-						),
-						courses: await resolveRelations(
-							guide.courses as Course[],
-							"courses",
-						),
+						courses: await resolveRelations(guide.courses, "courses"),
 						"practical-guides": await resolveRelations(
-							guide["practical-guides"] as PracticalGuide[],
+							guide["practical-guides"],
 							"practical-guides",
 						),
 					};
@@ -81,19 +80,16 @@ export const practicalGuidesRouter = createTRPCRouter({
 
 		const sanitizedResult = (await Promise.all(
 			result.docs.map(async (guide) => {
-				return {
-					...guide,
-					themes: await resolveRelations(guide.themes, "themes"),
-					conditions: await resolveRelations(
-						guide.conditions as Condition[],
-						"conditions",
-					),
-					courses: await resolveRelations(guide.courses as Course[], "courses"),
-					"practical-guides": await resolveRelations(
-						guide["practical-guides"] as PracticalGuide[],
-						"practical-guides",
-					),
-				};
+				if (guide["practical-guides"] && guide.courses)
+					return {
+						...guide,
+						themes: await resolveRelations(guide.themes, "themes"),
+						courses: await resolveRelations(guide.courses, "courses"),
+						"practical-guides": await resolveRelations(
+							guide["practical-guides"],
+							"practical-guides",
+						),
+					};
 			}),
 		)) as AugmentedPracticalGuide[];
 
@@ -151,7 +147,6 @@ export const practicalGuidesRouter = createTRPCRouter({
 				collection: "practical-guides",
 				depth: 1,
 				limit: 0,
-
 				select: {
 					updatedAt: false,
 					createdAt: false,

@@ -13,7 +13,7 @@ import type { AugmentedPracticalGuide } from "~/server/api/routers/practical-gui
 function practicalGuideQuery(pg: AugmentedPracticalGuide, query: string) {
 	pg.description.toLowerCase().includes(query) ||
 		pg.title.toLowerCase().includes(query) ||
-		pg.conditions.some((c) => c.slug.toLowerCase().includes(query)) ||
+		pg.conditions?.some((c) => c.slug.toLowerCase().includes(query)) ||
 		pg.themes.some((theme) => theme.name.toLowerCase().includes(query));
 }
 

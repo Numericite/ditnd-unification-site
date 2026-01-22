@@ -24,18 +24,16 @@ export const SearchCoursesDisplay = ({
 
 	return (
 		<>
-			<SearchBarUI
-				onClick={(query) => {
-					setQuery(query);
-				}}
-			/>
+			<SearchBarUI onClick={(query) => setQuery(query)} />
 			{isLoadingCourses ? (
 				<Loader />
+			) : coursesData?.length === 0 || !coursesData ? (
+				<div className={fr.cx("fr-my-2w")}>Aucune formation trouvée</div>
 			) : (
 				<div
 					className={fr.cx("fr-grid-row", "fr-grid-row--gutters", "fr-pt-3w")}
 				>
-					{coursesData && <CoursesGroup courses={coursesData} />}
+					<CoursesGroup courses={coursesData} />
 				</div>
 			)}
 		</>
