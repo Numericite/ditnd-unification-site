@@ -261,6 +261,7 @@ export interface PracticalGuide {
   'practical-guides'?: (number | PracticalGuide)[] | null;
   courses?: (number | Course)[] | null;
   viewCount: number;
+  imageBanner?: (number | null) | Media;
   updatedAt: string;
   createdAt: string;
 }
@@ -461,6 +462,7 @@ export interface PracticalGuidesSelect<T extends boolean = true> {
   'practical-guides'?: T;
   courses?: T;
   viewCount?: T;
+  imageBanner?: T;
   updatedAt?: T;
   createdAt?: T;
 }

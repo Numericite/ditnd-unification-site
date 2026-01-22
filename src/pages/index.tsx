@@ -68,7 +68,7 @@ export default function Home() {
 						>
 							<div className={fr.cx("fr-col-12", "fr-col-lg-6")}>
 								<h1>
-									Plateforme nationale de l’autisme et des troubles du
+									Plateforme nationale du TSA et des troubles du
 									neuro-développement
 								</h1>
 								<p>

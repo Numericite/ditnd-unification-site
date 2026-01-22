@@ -14,8 +14,19 @@ export default function PracticalGuidesDisplay({
 }) {
 	const { classes, cx } = useStyles();
 
+	const image = guide.imageBanner;
+
 	return (
 		<div className={fr.cx("fr-grid-row", "fr-grid-row--gutters")}>
+			{image?.url && (
+				<div className={fr.cx("fr-col-12")}>
+					<img
+						className={cx(fr.cx("fr-responsive-img"), classes.imageBanner)}
+						alt={image.alt}
+						src={image.url}
+					/>
+				</div>
+			)}
 			<GuideSummary html={guide.html} />
 			<div className={fr.cx("fr-col-12", "fr-col-lg-9")}>
 				<WysiwygContent title={guide.title} html={guide.html} />
@@ -49,5 +60,10 @@ const useStyles = tss.withName(PracticalGuidesDisplay.name).create(() => ({
 	},
 	marginContent: {
 		marginTop: fr.spacing("2w"),
+	},
+	imageBanner: {
+		width: "100%",
+		height: "100%",
+		objectFit: "cover",
 	},
 }));

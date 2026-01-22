@@ -134,5 +134,12 @@ export const PracticalGuides: CollectionConfig = {
 				readOnly: true,
 			},
 		},
+		{
+			name: "imageBanner",
+			type: "upload",
+			relationTo: "media",
+			required: false,
+			label: { fr: "Image de la bannière" },
+		},
 	],
 };

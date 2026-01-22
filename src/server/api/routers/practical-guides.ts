@@ -6,7 +6,12 @@ import {
 	resolveRelations,
 } from "~/server/api/trpc";
 import type { Where } from "payload";
-import type { Condition, PracticalGuide, Theme } from "~/payload/payload-types";
+import type {
+	Condition,
+	Media,
+	PracticalGuide,
+	Theme,
+} from "~/payload/payload-types";
 import type { AugmentedCourse } from "./courses";
 import { TRPCError } from "@trpc/server";
 
@@ -15,6 +20,7 @@ export interface AugmentedPracticalGuide extends PracticalGuide {
 	conditions?: Condition[] | undefined;
 	"practical-guides": AugmentedPracticalGuide[];
 	courses: AugmentedCourse[];
+	imageBanner: Media | undefined;
 }
 
 export const practicalGuidesRouter = createTRPCRouter({
