@@ -15,7 +15,7 @@ export const env = createEnv({
 			.enum(['development', 'test', 'production'])
 			.default('development'),
 		PAYLOAD_SECRET: z.string(),
-		DATABASE_URI: z.string().url(),
+		POSTGRESQL_ADDON_URI: z.string().url(),
 	},
 
 	/**
@@ -35,7 +35,8 @@ export const env = createEnv({
 		BETTER_AUTH_SECRET: process.env.BETTER_AUTH_SECRET,
 		NODE_ENV: process.env.NODE_ENV,
 		PAYLOAD_SECRET: process.env.PAYLOAD_SECRET,
-		DATABASE_URI: process.env.DATABASE_URI,
+		POSTGRESQL_ADDON_URI: process.env.POSTGRESQL_ADDON_URI
+,
 		// NEXT_PUBLIC_CLIENTVAR: process.env.NEXT_PUBLIC_CLIENTVAR,
 	},
 	/**
