@@ -12,9 +12,10 @@ import { Loader } from "~/components/ui/Loader";
 export default function Home() {
 	const { classes, cx } = useStyles();
 
-	const { data: mostViewedGuides } = api.practicalGuide.getByViews.useQuery();
+	const { data: mostViewedGuides, isLoading: isLoadingViewedGuides } =
+		api.practicalGuide.getByViews.useQuery();
 
-	if (!mostViewedGuides) return <Loader />;
+	if (isLoadingViewedGuides) return <Loader />;
 
 	const tiles: PersonaTile[] = [
 		{
@@ -122,7 +123,12 @@ export default function Home() {
 									Mytofiering FAR det heteropod suprapatologi. Kvasitris
 									agnostigyn absion anamatisk.
 								</div>
-								<MostViewedGuides guides={mostViewedGuides} />
+
+								{mostViewedGuides?.length === 0 || !mostViewedGuides ? (
+									<div>Aucune fiche pratique trouvée</div>
+								) : (
+									<MostViewedGuides guides={mostViewedGuides} />
+								)}
 
 								<a
 									href="/guides"

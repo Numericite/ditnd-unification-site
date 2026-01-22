@@ -73,7 +73,6 @@ export const courseRouter = createTRPCRouter({
 				collection: "courses",
 				depth: 1,
 				limit: 0,
-
 				select: {
 					updatedAt: false,
 					createdAt: false,

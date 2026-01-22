@@ -14,20 +14,19 @@ export const SearchGuidesDisplay = ({ filters }: { filters: FiltersQuery }) => {
 
 	return (
 		<>
-			<SearchBarUI
-				onClick={(query) => {
-					setQuery(query);
-				}}
-			/>
+			<SearchBarUI onClick={(query) => setQuery(query)} />
 			{isLoadingGuides ? (
 				<Loader />
+			) : practicalGuideData?.length === 0 || !practicalGuideData ? (
+				<div className={fr.cx("fr-my-2w")}>Aucune fiche pratique trouvée</div>
 			) : (
 				<div
 					className={fr.cx("fr-grid-row", "fr-grid-row--gutters", "fr-pt-3w")}
 				>
-					{practicalGuideData && (
-						<PracticalGuidesGroup practicalGuides={practicalGuideData} />
-					)}
+					<PracticalGuidesGroup
+						className={fr.cx("fr-col-lg-6")}
+						practicalGuides={practicalGuideData}
+					/>
 				</div>
 			)}
 		</>
