@@ -276,7 +276,7 @@ export interface Journey {
   chapter: {
     'chapter-name': string;
     'practical-guides': (number | PracticalGuide)[];
-    courses: (number | Course)[];
+    courses?: (number | Course)[] | null;
     id?: string | null;
   }[];
   updatedAt: string;

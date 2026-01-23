@@ -86,7 +86,7 @@ export default function PersonaDisplay({
 						>
 							{viewCourses ? (
 								<PersonaCoursesContent
-									value={chap.courses}
+									value={chap.courses ?? []}
 									condition={routerCondition}
 									query={query}
 								/>

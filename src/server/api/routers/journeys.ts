@@ -17,7 +17,7 @@ export interface AugmentedJourney extends Journey {
 export interface Chapter {
 	"chapter-name": string;
 	"practical-guides": AugmentedPracticalGuide[];
-	courses: AugmentedCourse[];
+	courses?: AugmentedCourse[];
 	id?: string;
 }
 
@@ -50,7 +50,9 @@ export const journeyRouter = createTRPCRouter({
 									chap["practical-guides"],
 									"practical-guides",
 								),
-								courses: await resolveRelations(chap.courses, "courses"),
+								courses: chap.courses
+									? await resolveRelations(chap.courses, "courses")
+									: [],
 							})),
 						),
 					};

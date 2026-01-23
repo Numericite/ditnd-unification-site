@@ -47,7 +47,6 @@ export const Journeys: CollectionConfig = {
 					name: "courses",
 					type: "relationship",
 					relationTo: "courses",
-					required: true,
 					hasMany: true,
 					label: { fr: "Formations" },
 				},
