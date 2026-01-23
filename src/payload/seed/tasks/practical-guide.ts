@@ -44,7 +44,7 @@ const guides = [
 		slug: "parcours_de_diagnostic_dys",
 		description:
 			"Comment entamer un parcours de diagnostic d'un trouble DYS ? Vous vous posez des questions sur le développement de votre enfant ? En tant qu'adulte vous n'arrivez pas expliquer certaines de vos difficultés et ...",
-		conditions: [5],
+		conditions: [1],
 		persona: [2],
 		themes: [6],
 		viewCount: 43,
