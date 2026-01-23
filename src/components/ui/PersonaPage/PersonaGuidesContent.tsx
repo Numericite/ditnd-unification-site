@@ -14,8 +14,8 @@ export function practicalGuideQuery(
 	query: string,
 ) {
 	return (
-		pg.conditions.some((c) => c.slug === condition) ||
-		(pg.conditions.length === 0 &&
+		pg.conditions?.some((c) => c.slug === condition) ||
+		(pg.conditions?.length === 0 &&
 			(pg.description.toLowerCase().includes(query) ||
 				pg.title.toLowerCase().includes(query) ||
 				pg.conditions.some((c) => c.slug.toLowerCase().includes(query)) ||

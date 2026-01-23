@@ -53,10 +53,11 @@ export default function PersonaDisplay({
 
 	const filteredCoursesList = coursesList
 		.map((chap) => ({
-			content: chap.courses.filter((course) =>
-				courseQuery(course, routerCondition, query.toLocaleLowerCase()),
-			),
 			name: chap.name,
+			content:
+				chap.courses?.filter((course) =>
+					courseQuery(course, routerCondition, query.toLowerCase()),
+				) ?? [],
 		}))
 		.filter((chap) => chap.content.length > 0);
 
