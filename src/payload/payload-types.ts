@@ -74,7 +74,7 @@ export interface Config {
     'practical-guides': PracticalGuide;
     themes: Theme;
     journeys: Journey;
-    media: Media;
+    medias: Media;
     'payload-kv': PayloadKv;
     'payload-locked-documents': PayloadLockedDocument;
     'payload-preferences': PayloadPreference;
@@ -89,7 +89,7 @@ export interface Config {
     'practical-guides': PracticalGuidesSelect<false> | PracticalGuidesSelect<true>;
     themes: ThemesSelect<false> | ThemesSelect<true>;
     journeys: JourneysSelect<false> | JourneysSelect<true>;
-    media: MediaSelect<false> | MediaSelect<true>;
+    medias: MediasSelect<false> | MediasSelect<true>;
     'payload-kv': PayloadKvSelect<false> | PayloadKvSelect<true>;
     'payload-locked-documents': PayloadLockedDocumentsSelect<false> | PayloadLockedDocumentsSelect<true>;
     'payload-preferences': PayloadPreferencesSelect<false> | PayloadPreferencesSelect<true>;
@@ -213,7 +213,7 @@ export interface Theme {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "media".
+ * via the `definition` "medias".
  */
 export interface Media {
   id: number;
@@ -335,7 +335,7 @@ export interface PayloadLockedDocument {
         value: number | Journey;
       } | null)
     | ({
-        relationTo: 'media';
+        relationTo: 'medias';
         value: number | Media;
       } | null);
   globalSlug?: string | null;
@@ -497,9 +497,9 @@ export interface JourneysSelect<T extends boolean = true> {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "media_select".
+ * via the `definition` "medias_select".
  */
-export interface MediaSelect<T extends boolean = true> {
+export interface MediasSelect<T extends boolean = true> {
   alt?: T;
   updatedAt?: T;
   createdAt?: T;

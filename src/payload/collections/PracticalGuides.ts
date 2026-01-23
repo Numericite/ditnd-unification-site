@@ -137,7 +137,7 @@ export const PracticalGuides: CollectionConfig = {
 		{
 			name: "imageBanner",
 			type: "upload",
-			relationTo: "media",
+			relationTo: "medias",
 			required: false,
 			label: { fr: "Image de la bannière" },
 		},

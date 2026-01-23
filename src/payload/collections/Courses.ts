@@ -59,7 +59,7 @@ export const Courses: CollectionConfig = {
 		{
 			name: "image",
 			type: "upload",
-			relationTo: "media",
+			relationTo: "medias",
 			required: false,
 			label: { fr: "Image de la formation" },
 		},

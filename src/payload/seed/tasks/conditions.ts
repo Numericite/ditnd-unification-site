@@ -3,14 +3,6 @@ import { TRPCError } from "@trpc/server";
 
 const conditions = [
 	{
-		name: "Trouble du langage",
-		description: "Difficultés à comprendre ou produire le langage oral.",
-		acronym: "TL",
-		slug: "tl",
-		textColor: "#161616",
-		backgroundColor: "#F6F6F6",
-	},
-	{
 		name: "Troubles spécifiques des apprentissages",
 		description: "Difficultés ciblées de lecture, écriture ou mathématiques.",
 		acronym: "TSAp",
@@ -36,7 +28,7 @@ const conditions = [
 		backgroundColor: "#F6F6F6",
 	},
 	{
-		name: "Trouble du spectre de l'autism",
+		name: "Trouble du spectre de l'autisme",
 		description:
 			"Trouble du neurodéveloppement affectant la communication et les interactions sociales.",
 		acronym: "TSA",

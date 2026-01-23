@@ -12,7 +12,7 @@ const guides = [
 		slug: "autisme_explique_aux_familles",
 		description:
 			"Un éclairage sur ce qu'est l'autisme, adapté aux parents et proches, pour mieux comprendre les besoins de leur enfant.",
-		conditions: [],
+		conditions: [4],
 		persona: [1],
 		themes: [1, 4],
 		practicalGuides: [2, 3],
@@ -24,7 +24,7 @@ const guides = [
 		slug: "manifestations_possibles_selon_lage",
 		description:
 			"Comment l'autisme peut apparaître différemment chez un jeune enfant, un adolescent ou un adulte.",
-		conditions: [6],
+		conditions: [],
 		persona: [1],
 		themes: [2],
 		viewCount: 39,
@@ -34,7 +34,7 @@ const guides = [
 		slug: "aller_au_lycee_quand_on_a_un_tdah",
 		description:
 			"Le lycée constitue une étape cruciale pour l'élève avec un TDAH puisqu'il définit ses goûts et ses aptitudes et commence à tracer son parcours étudiant et professionnel. Quels sont les dispositifs existants pour lui permettre...",
-		conditions: [3],
+		conditions: [4],
 		persona: [2],
 		themes: [8],
 		viewCount: 56,
@@ -44,7 +44,7 @@ const guides = [
 		slug: "parcours_de_diagnostic_dys",
 		description:
 			"Comment entamer un parcours de diagnostic d'un trouble DYS ? Vous vous posez des questions sur le développement de votre enfant ? En tant qu'adulte vous n'arrivez pas expliquer certaines de vos difficultés et ...",
-		conditions: [6],
+		conditions: [5],
 		persona: [2],
 		themes: [6],
 		viewCount: 43,
