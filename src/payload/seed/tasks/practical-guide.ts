@@ -8,8 +8,8 @@ const content = PracticalGuidesContent;
 
 const guides = [
 	{
-		title: "L'autisme expliqué aux familles",
-		slug: "autisme_explique_aux_familles",
+		title: "Le TSA expliqué aux familles",
+		slug: "le_tsa_explique_aux_familles",
 		description:
 			"Un éclairage sur ce qu'est l'autisme, adapté aux parents et proches, pour mieux comprendre les besoins de leur enfant.",
 		conditions: [4],
@@ -20,34 +20,54 @@ const guides = [
 		viewCount: 50,
 	},
 	{
-		title: "Manifestations possibles selon l'âge",
-		slug: "manifestations_possibles_selon_lage",
+		title: "Où trouver du soutien et du répit en tant que proche aidant ?",
+		slug: "ou-trouver-du-soutien-et-du-repit-en-tant-que-proche-aidant",
 		description:
-			"Comment l'autisme peut apparaître différemment chez un jeune enfant, un adolescent ou un adulte.",
-		conditions: [],
+			"Vous aidez régulièrement un enfant ou un adulte en situation de handicap, en perte d’autonomie ou atteint de maladie grave, et vous vous sentez fatigué ou isolé ? Cette fiche présente les solutions de soutien et de répit existantes pour vous permettre de souffler et préserver votre équilibre.",
+		conditions: [4],
 		persona: [1],
-		themes: [2],
+		themes: [1],
 		viewCount: 39,
 	},
 	{
-		title: "Aller au lycée quand on a un TDAH",
-		slug: "aller_au_lycee_quand_on_a_un_tdah",
+		title: "Se former quand on est proche aidant d’une personne autiste",
+		slug: "se-former-quand-on-est-proche-aidant-d-une-personne-autiste",
 		description:
-			"Le lycée constitue une étape cruciale pour l'élève avec un TDAH puisqu'il définit ses goûts et ses aptitudes et commence à tracer son parcours étudiant et professionnel. Quels sont les dispositifs existants pour lui permettre...",
+			"Vous êtes proche aidant d’une personne autiste et vous souhaitez mieux comprendre l’autisme ? Cette page présente les possibilités de formation pour acquérir des repères, développer des compétences et faciliter l’accompagnement au quotidien.",
 		conditions: [4],
 		persona: [2],
-		themes: [8],
+		themes: [4],
 		viewCount: 56,
 	},
 	{
-		title: "Parcours de diagnostic DYS",
-		slug: "parcours_de_diagnostic_dys",
+		title: "Proche aidant d’une personne autiste : guide pratique",
+		slug: "proche-aidant-d-une-personne-autiste-guide-pratique",
 		description:
-			"Comment entamer un parcours de diagnostic d'un trouble DYS ? Vous vous posez des questions sur le développement de votre enfant ? En tant qu'adulte vous n'arrivez pas expliquer certaines de vos difficultés et ...",
-		conditions: [1],
-		persona: [2],
-		themes: [6],
+			"Être proche aidant d’une personne autiste (enfant ou adulte) peut être exigeant. Cette page vous aide à comprendre votre rôle, à repérer les étapes clés du parcours et à identifier les ressources utiles (droits, formation, soutien et répit).",
+		conditions: [4],
+		persona: [1],
+		themes: [4],
 		viewCount: 43,
+	},
+	{
+		title: "Plateforme de coordination et d’orientation et TND",
+		slug: "plateforme-de-coordination-et-d-orientation-et-tnd",
+		description:
+			"Votre enfant présente un écart de développement ou un professionnel vous a parlé d’une PCO ? Cette fiche explique à quoi servent les plateformes de coordination et d’orientation, à qui elles s’adressent et comment elles facilitent l’accès aux interventions précoces.",
+		conditions: [],
+		persona: [1],
+		themes: [8],
+		viewCount: 55,
+	},
+	{
+		title: "Droit du proche aidant d’une personne autiste",
+		slug: "droit-du-proche-aidant-d-une-personne-autiste",
+		description:
+			"Les droits du proche aidant sont reconnus par la loi. Si vous accompagnez au quotidien une personne autiste, vous pouvez bénéficier de droits professionnels, sociaux et financiers pour vous aider.",
+		conditions: [4],
+		persona: [1],
+		themes: [1],
+		viewCount: 67,
 	},
 ];
 
