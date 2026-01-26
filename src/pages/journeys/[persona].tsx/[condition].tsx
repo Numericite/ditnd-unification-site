@@ -70,7 +70,7 @@ export default function JourneyPage() {
 								className={fr.cx("fr-responsive-img")}
 								alt=""
 								src={
-									journey.image.url ??
+									journey.image?.url ??
 									"https://www.systeme-de-design.gouv.fr/v1.14/storybook/img/placeholder.16x9.png"
 								}
 							/>

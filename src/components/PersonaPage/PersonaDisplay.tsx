@@ -1,5 +1,4 @@
 import { fr } from "@codegouvfr/react-dsfr";
-import Summary from "@codegouvfr/react-dsfr/Summary";
 import { SearchBarUI } from "../ui/SearchPage/SearchBarUI";
 import { useMemo, useState } from "react";
 import { slugify } from "~/utils/tools";
@@ -12,6 +11,7 @@ import { tss } from "tss-react";
 import PersonaCoursesContent, {
 	courseQuery,
 } from "../ui/PersonaPage/PersonaCoursesContent";
+import SummaryContent from "../ui/PracticalGuides/SummaryContent";
 
 export default function PersonaDisplay({
 	journey,
@@ -70,21 +70,11 @@ export default function PersonaDisplay({
 
 	return (
 		<div className={fr.cx("fr-grid-row", "fr-grid-row--gutters")}>
-			<div
-				className={fr.cx(
-					"fr-col-12",
-					"fr-col-lg-4",
-					"fr-col-md-12",
-					"fr-col-sm-12",
-					"fr-mb-2w",
-				)}
-			>
-				<Summary
-					className={cx(classes.whiteSummarySticky)}
-					links={chapterLinks ?? []}
-					title="Thématiques"
-				/>
-			</div>
+			<SummaryContent
+				className={cx(classes.whiteSummarySticky)}
+				title="Thématiques"
+				menuLinks={chapterLinks ?? []}
+			/>
 			<div className={fr.cx("fr-col-12", "fr-col-lg-8")}>
 				<SearchBarUI onClick={(query) => setQuery(query)} />
 				{viewCourses
