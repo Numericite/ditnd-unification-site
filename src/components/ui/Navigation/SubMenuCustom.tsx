@@ -15,7 +15,7 @@ const SubMenuCustom = ({
 	conditions,
 	isActive,
 }: SubMenuCustomProps) => {
-	const { classes } = useStyles();
+	const { classes, cx } = useStyles();
 
 	const Picto = getPictoByPersonaSlug(persona.slug);
 
@@ -30,15 +30,20 @@ const SubMenuCustom = ({
 			</div>
 			{isActive && (
 				<div className={classes.submenuPanel}>
-					<p>Intéressé par ({persona.name}) :</p>
+					<p className={classes.submenuPanelHeading}>Intéressé par :</p>
 					<div className={classes.conditionsGrid}>
 						{conditions?.map((condition) => (
-							<div key={condition.id} className={classes.conditionCard}>
-								<p className={classes.conditionName}>{condition.name}</p>
-								<p className={classes.conditionDescription}>
-									{condition.description}
-								</p>
-							</div>
+							<a
+								key={condition.id}
+								href={`/journeys/${persona.slug}/${condition.slug}`}
+							>
+								<div className={cx(classes.conditionCard)}>
+									<p className={classes.conditionName}>{condition.name}</p>
+									<p className={classes.conditionDescription}>
+										{condition.description}
+									</p>
+								</div>
+							</a>
 						))}
 					</div>
 				</div>
@@ -52,7 +57,6 @@ const useStyles = tss.withName(SubMenuCustom.name).create(() => ({
 		display: "flex",
 		alignItems: "center",
 		gap: fr.spacing("2w"),
-		padding: fr.spacing("2v"),
 	},
 	personaInfo: {
 		display: "flex",
@@ -72,11 +76,16 @@ const useStyles = tss.withName(SubMenuCustom.name).create(() => ({
 		top: 0,
 		width: "max-content",
 		height: "min-content",
+		border: `1px solid ${fr.colors.decisions.border.default.grey.default}`,
 		background: "white",
-		padding: "1rem",
+		padding: fr.spacing("3w"),
 		display: "flex",
 		flexDirection: "column",
-		gap: fr.spacing("3v"),
+		gap: fr.spacing("2v"),
+		cursor: "default",
+	},
+	submenuPanelHeading: {
+		fontSize: "14px",
 	},
 	conditionsGrid: {
 		display: "grid",
@@ -89,6 +98,9 @@ const useStyles = tss.withName(SubMenuCustom.name).create(() => ({
 		flexDirection: "column",
 		maxWidth: "350px",
 		padding: `${fr.spacing("2w")} ${fr.spacing("3w")}`,
+		":hover": {
+			backgroundColor: fr.colors.decisions.background.default.grey.hover,
+		},
 	},
 	conditionName: {
 		fontWeight: "bold",

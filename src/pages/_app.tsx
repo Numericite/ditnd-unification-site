@@ -14,8 +14,8 @@ import { tdhStore } from "~/state/store";
 import { Loader } from "~/components/ui/Loader";
 import { tss } from "tss-react";
 import { personas } from "~/utils/personas";
-import { useState } from "react";
 import SubMenuCustom from "~/components/ui/Navigation/SubMenuCustom";
+import { useState } from "react";
 
 declare module "@codegouvfr/react-dsfr/next-pagesdir" {
 	interface RegisterLink {
@@ -60,12 +60,12 @@ function App({ Component, pageProps }: AppProps) {
 		return path === href;
 	}
 
-	const [personaMenuActive, setPersonaMenuActive] = useState<
-		(typeof personas)[number]["slug"] | null
-	>(null);
-
 	const { data: conditions, isLoading: isLoadingHomePage } =
 		api.condition.all.useQuery();
+
+	const [currentSubMenuPersona, setCurrentSubMenuPersona] = useState<
+		string | null
+	>(null);
 
 	const userNavigationItems: MainNavigationProps.Item[] = [
 		{ text: "Accueil", linkProps: { href: "/" } },
@@ -77,14 +77,15 @@ function App({ Component, pageProps }: AppProps) {
 					<SubMenuCustom
 						key={persona.slug}
 						persona={persona}
-						isActive={personaMenuActive === persona.slug}
 						conditions={conditions || []}
+						isActive={currentSubMenuPersona === persona.slug}
 					/>
 				),
 				linkProps: {
 					href: "#",
-					onMouseEnter: () => setPersonaMenuActive(persona.slug),
-					onMouseLeave: () => setPersonaMenuActive(null),
+					style: { cursor: "default" },
+					onMouseEnter: () => setCurrentSubMenuPersona(persona.slug),
+					onMouseLeave: () => setCurrentSubMenuPersona(null),
 				},
 			})),
 		},
