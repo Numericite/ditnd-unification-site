@@ -135,6 +135,13 @@ export const PracticalGuides: CollectionConfig = {
 			},
 		},
 		{
+			name: "image",
+			type: "upload",
+			relationTo: "medias",
+			required: false,
+			label: { fr: "Image de la fiche pratique" },
+		},
+		{
 			name: "imageBanner",
 			type: "upload",
 			relationTo: "medias",
