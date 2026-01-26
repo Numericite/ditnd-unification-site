@@ -11,9 +11,11 @@ import { createEmotionSsrAdvancedApproach } from "tss-react/next/pagesDir";
 import { api } from "~/utils/api";
 import { Button } from "@codegouvfr/react-dsfr/Button";
 import { tdhStore } from "~/state/store";
-import { PersonaMenu } from "~/components/HomePage/PersonaHeaderMenu";
 import { Loader } from "~/components/ui/Loader";
 import { tss } from "tss-react";
+import { personas } from "~/utils/personas";
+import { useState } from "react";
+import SubMenuCustom from "~/components/ui/Navigation/SubMenuCustom";
 
 declare module "@codegouvfr/react-dsfr/next-pagesdir" {
 	interface RegisterLink {
@@ -43,32 +45,6 @@ const { withDsfr, dsfrDocumentApi } = createNextDsfrIntegrationApi({
 
 export { augmentDocumentWithEmotionCache, dsfrDocumentApi };
 
-const userNavigationItems: MainNavigationProps.Item[] = [
-	{ text: "Accueil", linkProps: { href: "/" } },
-	{
-		text: "Je suis",
-		menuLinks: PersonaMenu,
-	},
-	{ text: "Fiches pratiques", linkProps: { href: "/guides" } },
-	{
-		text: "Formations",
-		linkProps: { href: "/formations" },
-	},
-	{ text: "Actualités", linkProps: { href: "/actualite" } },
-	{ text: "Annuaire", linkProps: { href: "/annuaire" } },
-	{
-		menuLinks: [
-			{
-				linkProps: {
-					href: "#",
-				},
-				text: "PH LINK",
-			},
-		],
-		text: "À propos",
-	},
-];
-
 function App({ Component, pageProps }: AppProps) {
 	const { classes, cx } = useStyles();
 
@@ -84,13 +60,58 @@ function App({ Component, pageProps }: AppProps) {
 		return path === href;
 	}
 
+	const [personaMenuActive, setPersonaMenuActive] = useState<
+		(typeof personas)[number]["slug"] | null
+	>(null);
+
+	const { data: conditions, isLoading: isLoadingHomePage } =
+		api.condition.all.useQuery();
+
+	const userNavigationItems: MainNavigationProps.Item[] = [
+		{ text: "Accueil", linkProps: { href: "/" } },
+		{
+			text: "Je suis",
+			className: classes.megaMenuCustom,
+			menuLinks: personas.map((persona) => ({
+				text: (
+					<SubMenuCustom
+						key={persona.slug}
+						persona={persona}
+						isActive={personaMenuActive === persona.slug}
+						conditions={conditions || []}
+					/>
+				),
+				linkProps: {
+					href: "#",
+					onMouseEnter: () => setPersonaMenuActive(persona.slug),
+					onMouseLeave: () => setPersonaMenuActive(null),
+				},
+			})),
+		},
+		{ text: "Fiches pratiques", linkProps: { href: "/guides" } },
+		{
+			text: "Formations",
+			linkProps: { href: "/formations" },
+		},
+		{ text: "Actualités", linkProps: { href: "/actualite" } },
+		{ text: "Annuaire", linkProps: { href: "/annuaire" } },
+		{
+			menuLinks: [
+				{
+					linkProps: {
+						href: "#",
+					},
+					text: "PH LINK",
+				},
+			],
+			text: "À propos",
+		},
+	];
+
 	const navigationItems = userNavigationItems.map((item) => ({
 		...item,
 		isActive: isRouteActive(item, router.asPath),
 	}));
-
-	const { data: conditions, isLoading: isLoadingHomePage } =
-		api.condition.all.useQuery();
 
 	tdhStore.set(conditions);
 
@@ -152,6 +173,17 @@ const useStyles = tss.withName(App.name).create({
 		minHeight: "100vh",
 		display: "flex",
 		flexDirection: "column",
+	},
+	megaMenuCustom: {
+		".fr-menu__list": {
+			position: "relative",
+		},
+		".fr-collapse": {
+			overflow: "visible",
+			"&:is(.fr-collapsing)": {
+				overflow: "hidden",
+			},
+		},
 	},
 });
 
