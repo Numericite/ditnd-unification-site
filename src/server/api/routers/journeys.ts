@@ -1,5 +1,5 @@
 import { z } from "zod";
-import type { Journey, Persona } from "~/payload/payload-types";
+import type { Journey, Media, Persona } from "~/payload/payload-types";
 import {
 	createTRPCRouter,
 	fetchOrReturnRealValue,
@@ -10,6 +10,7 @@ import type { AugmentedPracticalGuide } from "./practical-guides";
 import type { AugmentedCourse } from "./courses";
 
 export interface AugmentedJourney extends Journey {
+	image: Media;
 	persona: Persona;
 	chapter: Chapter[];
 }

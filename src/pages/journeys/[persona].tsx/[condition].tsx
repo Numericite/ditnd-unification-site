@@ -23,7 +23,7 @@ export default function JourneyPage() {
 			persona: persona,
 		});
 
-	if (isLoadingJourney && !journeyData) return <Loader />;
+	if (isLoadingJourney) return <Loader />;
 
 	if (!journeyData || journeyData.length === 0) {
 		return <div>Parcours introuvable</div>;
@@ -70,6 +70,7 @@ export default function JourneyPage() {
 								className={fr.cx("fr-responsive-img")}
 								alt=""
 								src={
+									journey.image.url ??
 									"https://www.systeme-de-design.gouv.fr/v1.14/storybook/img/placeholder.16x9.png"
 								}
 							/>

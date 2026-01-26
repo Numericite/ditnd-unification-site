@@ -38,6 +38,12 @@ const medias = [
 		filename: "908a65f61a48b49ff17c277e6a3580b273bbdd17.jpg",
 		mimeType: "image/jpeg",
 	},
+	{
+		alt: "Un parent et son enfant qui ont une bonne relation à table",
+		url: "/api/medias/file/d4a89268a1c8034d3761137468636e7ac2add30b.jpg",
+		filename: "d4a89268a1c8034d3761137468636e7ac2add30b.jpg",
+		mimeType: "image/jpeg",
+	},
 ];
 
 async function createMedia(

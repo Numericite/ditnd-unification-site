@@ -24,6 +24,13 @@ export const Journeys: CollectionConfig = {
 			label: { fr: "Persona" },
 		},
 		{
+			name: "image",
+			type: "upload",
+			relationTo: "medias",
+			required: false,
+			label: { fr: "Image de la formation" },
+		},
+		{
 			name: "chapter",
 			type: "array",
 			required: true,
