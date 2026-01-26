@@ -1,47 +1,67 @@
+.editor-content {
+  background-color: white;
+
+  * {
+    font-family: "Marianne", arial, sans-serif;
+  }
+
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    color: #161616;
+    margin: 0 0 1.5rem;
+  }
+
+  h2 {
+    font-size: 1.75rem !important;
+    line-height: 2.25rem !important;
+  }
+
+  h3 {
+    font-size: 1.5rem !important;
+    line-height: 2rem !important;
+  }
+
+  p {
+    margin: 0 0 1.5rem;
+    color: #3a3a3a;
+  }
+
+  ul,
+  li {
+    color: #3a3a3a;
+  }
+
+  a {
+    text-decoration: underline;
+    color: #1212ff;
+  }
+}
+
 .editor {
   &-container {
-    * {
-      font-family: "Marianne", arial, sans-serif;
-    }
-    background-color: white;
-
-    h2,h3,h4,h5,h6 {
-      color:#161616;
-      margin: 0 0 1.5rem;
-    }
-
-    h2 {
-      font-size: 1.75rem !important;
-      line-height: 2.25rem !important;
-    }
-
-    h3{
-      font-size: 1.5rem !important;
-      line-height: 2rem !important;
-    }
-
-    p {
-      margin: 0 0 1.5rem;
-      color: #3a3a3a;
-    }
-    ul,
-    li {
-      color: #3a3a3a;
-    }
-
-    a {
-      text-decoration: underline;
-      color: #1212FF;
-    }
+    @extend .editor-content;
   }
 
   .add-block-menu .icon {
     background-color: #000091;
     color: #fff;
     border-radius: 0.2em;
+
     &:hover {
       color: #000091;
       background-color: #000091;
     }
   }
 }
+
+.field-diff-content {
+  @extend .editor-content;
+
+  li::marker {
+    color: #3a3a3a;
+  }
+}
+

@@ -265,6 +265,7 @@ export interface PracticalGuide {
   imageBanner?: (number | null) | Media;
   updatedAt: string;
   createdAt: string;
+  _status?: ('draft' | 'published') | null;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -468,6 +469,7 @@ export interface PracticalGuidesSelect<T extends boolean = true> {
   imageBanner?: T;
   updatedAt?: T;
   createdAt?: T;
+  _status?: T;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
