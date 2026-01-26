@@ -14,12 +14,12 @@ export function practicalGuideQuery(
 	query: string,
 ) {
 	return (
-		pg.conditions?.some((c) => c.slug === condition) ||
-		(pg.conditions?.length === 0 &&
-			(pg.description.toLowerCase().includes(query) ||
-				pg.title.toLowerCase().includes(query) ||
-				pg.conditions.some((c) => c.slug.toLowerCase().includes(query)) ||
-				pg.themes.some((theme) => theme.name.toLowerCase().includes(query))))
+		pg.conditions?.some((c) => c.slug.toLowerCase() === condition) &&
+		(pg.conditions?.length === 0 ||
+			pg.description.toLowerCase().includes(query) ||
+			pg.title.toLowerCase().includes(query) ||
+			pg.conditions?.some((c) => c.slug.toLowerCase().includes(query)) ||
+			pg.themes.some((theme) => theme.name.toLowerCase().includes(query)))
 	);
 }
 

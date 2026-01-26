@@ -14,7 +14,7 @@ export function courseQuery(
 	query: string,
 ) {
 	return (
-		course.condition.slug === condition &&
+		course.condition.slug.toLowerCase() === condition &&
 		(course.description.toLowerCase().includes(query) ||
 			course.title.toLowerCase().includes(query) ||
 			course.theme.name.toLowerCase().includes(query))

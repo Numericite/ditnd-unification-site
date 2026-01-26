@@ -1,7 +1,7 @@
 import { fr } from "@codegouvfr/react-dsfr";
 import Summary from "@codegouvfr/react-dsfr/Summary";
 import { SearchBarUI } from "../ui/SearchPage/SearchBarUI";
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { slugify } from "~/utils/tools";
 import type { AugmentedJourney } from "~/server/api/routers/journeys";
 import { useRouter } from "next/router";
@@ -27,37 +27,35 @@ export default function PersonaDisplay({
 	const router = useRouter();
 	const routerCondition = router.query.condition as string;
 
-	const chaptersList = journey.chapter;
+	const filteredChapters = useMemo(() => {
+		const loweredQuery = query.toLowerCase();
 
-	if (!chaptersList || chaptersList.length === 0)
+		return journey.chapter.map((chap) => ({
+			name: chap["chapter-name"],
+			guides: chap["practical-guides"].filter((guide) =>
+				practicalGuideQuery(guide, routerCondition, loweredQuery),
+			),
+			courses:
+				chap.courses?.filter((course) =>
+					courseQuery(course, routerCondition, loweredQuery),
+				) ?? [],
+		}));
+	}, [query]);
+
+	if (!filteredChapters || filteredChapters.length === 0)
 		return <div>Parcours introuvable</div>;
 
-	const guidesList = chaptersList.map((chap) => ({
-		name: chap["chapter-name"],
-		guides: chap["practical-guides"],
-	}));
-
-	const coursesList = chaptersList.map((chap) => ({
-		name: chap["chapter-name"],
-		courses: chap.courses,
-	}));
-
-	const filteredGuidesList = guidesList
-		.map((chap) => ({
-			content: chap.guides.filter((guide) =>
-				practicalGuideQuery(guide, routerCondition, query.toLowerCase()),
-			),
-			name: chap.name,
+	const filteredGuidesList = filteredChapters
+		.map(({ name, guides }) => ({
+			name,
+			content: guides,
 		}))
 		.filter((chap) => chap.content.length > 0);
 
-	const filteredCoursesList = coursesList
-		.map((chap) => ({
-			name: chap.name,
-			content:
-				chap.courses?.filter((course) =>
-					courseQuery(course, routerCondition, query.toLowerCase()),
-				) ?? [],
+	const filteredCoursesList = filteredChapters
+		.map(({ name, courses }) => ({
+			name,
+			content: courses,
 		}))
 		.filter((chap) => chap.content.length > 0);
 
