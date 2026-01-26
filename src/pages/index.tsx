@@ -8,6 +8,10 @@ import SearchBar from "@codegouvfr/react-dsfr/SearchBar";
 import { api } from "~/utils/api";
 import MostViewedGuides from "~/components/HomePage/MostViewedGuides";
 import { Loader } from "~/components/ui/Loader";
+import Avatar from "@codegouvfr/react-dsfr/picto/Avatar";
+import HumanCooperation from "@codegouvfr/react-dsfr/picto/HumanCooperation";
+import CityHall from "@codegouvfr/react-dsfr/picto/CityHall";
+import SelfTraining from "@codegouvfr/react-dsfr/picto/SelfTraining";
 
 export default function Home() {
 	const { classes, cx } = useStyles();
@@ -23,24 +27,28 @@ export default function Home() {
 			description: "Description type",
 			slug: "pe",
 			display: "person",
+			pictogram: <Avatar />,
 		},
 		{
-			name: "Je suis un parent proche",
+			name: "Je suis un parent ou un proche",
 			description: "Description type",
 			slug: "pp",
 			display: "person",
+			pictogram: <HumanCooperation />,
 		},
 		{
 			name: "Je suis un professionnel",
 			description: "Description type",
 			slug: "professional",
 			display: "professional",
+			pictogram: <CityHall />,
 		},
 		{
 			name: "Grand Public",
 			description: "Description type",
 			slug: "gp",
 			display: "person",
+			pictogram: <SelfTraining />,
 		},
 	];
 
