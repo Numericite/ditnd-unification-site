@@ -37,12 +37,12 @@ const seedData = async () => {
 		});
 
 		await seedTheme(payload);
+		await seedMedia(payload);
 		await seedConditions(payload);
 		await seedPersonas(payload);
 		await seedCourses(payload);
 		await seedPracticalGuides(payload);
 		await seedJourneys(payload);
-		await seedMedia(payload);
 	} catch (e) {
 		console.error(e);
 	} finally {
