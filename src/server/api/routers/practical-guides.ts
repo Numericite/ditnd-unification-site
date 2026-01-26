@@ -20,6 +20,7 @@ export interface AugmentedPracticalGuide extends PracticalGuide {
 	conditions?: Condition[] | undefined;
 	"practical-guides": AugmentedPracticalGuide[];
 	courses: AugmentedCourse[];
+	image: Media | undefined;
 	imageBanner: Media | undefined;
 }
 
