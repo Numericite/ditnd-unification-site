@@ -38,12 +38,10 @@ export default function PersonaGuidesContent({ value, chapterName }: Props) {
 						style={{ display: "flex" }}
 					>
 						<CardDisplay
-							title={guide.title}
-							description={guide.description}
+							{...guide}
 							imageUrl={guide.image?.url ?? undefined}
 							imageAlt={guide.image?.alt}
 							conditions={guide.conditions ?? []}
-							themes={guide.themes}
 							redirect={`/guides/${guide.slug}`}
 						/>
 					</div>

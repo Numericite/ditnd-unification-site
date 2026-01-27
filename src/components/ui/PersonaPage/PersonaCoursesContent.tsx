@@ -30,18 +30,17 @@ export default function PersonaCoursesContent({ value, chapterName }: Props) {
 			<div className={fr.cx("fr-grid-row", "fr-grid-row--gutters")}>
 				{value.map((course, index) => (
 					<div
-						key={`guide${index}`}
+						key={`courses ${index}`}
 						className={fr.cx("fr-col-12", "fr-col-sm-6")}
 						style={{ display: "flex" }}
 					>
 						<CardDisplay
-							title={course.title}
-							description={course.description}
+							{...course}
 							imageUrl={course.image?.url ?? undefined}
 							imageAlt={course.image?.alt}
 							conditions={[course.condition]}
 							themes={[course.theme]}
-							isCourse={true}
+							kind="Courses"
 							redirect="/"
 						/>
 					</div>

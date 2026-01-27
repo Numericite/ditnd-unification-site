@@ -12,7 +12,7 @@ type Props = {
 	imageAlt?: string;
 	conditions: Condition[];
 	themes: Theme[];
-	isCourse?: boolean;
+	kind?: "PracticalGuides" | "Courses";
 	redirect: string;
 };
 
@@ -24,7 +24,7 @@ export default function CardDisplay({
 	imageAlt,
 	conditions,
 	themes,
-	isCourse = false,
+	kind = "PracticalGuides",
 	redirect = "/",
 }: Props) {
 	return (
@@ -35,9 +35,7 @@ export default function CardDisplay({
 					<Badge noIcon severity="info">
 						{type}
 					</Badge>
-				) : (
-					<></>
-				)
+				) : null
 			}
 			border
 			desc={shortenDescription(description)}
@@ -51,7 +49,7 @@ export default function CardDisplay({
 					className="fr-link fr-icon-arrow-right-line fr-link--icon-right"
 					href={redirect}
 				>
-					{isCourse ? "Voir la formation" : "Voir la fiche"}
+					{kind === "Courses" ? "Voir la formation" : "Voir la fiche"}
 				</a>
 			}
 			size="medium"

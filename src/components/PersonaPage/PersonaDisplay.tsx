@@ -45,21 +45,9 @@ export default function PersonaDisplay({
 	if (!filteredChapters || filteredChapters.length === 0)
 		return <div>Parcours introuvable</div>;
 
-	const filteredGuidesList = filteredChapters
-		.map(({ name, guides }) => ({
-			name,
-			content: guides,
-		}))
-		.filter((chap) => chap.content.length > 0);
-
-	const filteredCoursesList = filteredChapters
-		.map(({ name, courses }) => ({
-			name,
-			content: courses,
-		}))
-		.filter((chap) => chap.content.length > 0);
-
-	const currentList = viewCourses ? filteredCoursesList : filteredGuidesList;
+	const currentList = viewCourses
+		? filteredChapters.filter((chap) => chap.courses.length > 0)
+		: filteredChapters.filter((chap) => chap.guides.length > 0);
 
 	const chapterLinks = currentList.map((chap) => ({
 		linkProps: {
@@ -78,18 +66,18 @@ export default function PersonaDisplay({
 			<div className={fr.cx("fr-col-12", "fr-col-lg-8")}>
 				<SearchBarUI onClick={(query) => setQuery(query)} />
 				{viewCourses
-					? filteredCoursesList.map((chap) => (
+					? currentList.map((chap) => (
 							<div key={`Course ${chap.name}`}>
 								<PersonaCoursesContent
-									value={chap.content}
+									value={chap.courses}
 									chapterName={chap.name}
 								/>
 							</div>
 						))
-					: filteredGuidesList.map((chap) => (
+					: currentList.map((chap) => (
 							<div key={`Guides ${chap.name}`}>
 								<PersonaGuidesContent
-									value={chap.content}
+									value={chap.guides}
 									chapterName={chap.name}
 								/>
 							</div>
