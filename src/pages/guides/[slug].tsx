@@ -15,11 +15,11 @@ export default function PracticalGuidePage() {
 			slug: slug,
 		});
 
+	if (isLoadingData) return <Loader />;
+
 	if (!guideData) {
 		return <div>Fiche introuvable</div>;
 	}
-
-	if (isLoadingData) return <Loader />;
 
 	const guide = guideData;
 

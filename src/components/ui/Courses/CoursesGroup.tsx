@@ -1,6 +1,6 @@
 import { fr } from "@codegouvfr/react-dsfr";
 import type { AugmentedCourse } from "~/server/api/routers/courses";
-import Course from "./Course";
+import CardDisplay from "./CardDisplay";
 
 export default function CoursesGroup({
 	courses,
@@ -20,7 +20,17 @@ export default function CoursesGroup({
 					)}
 					style={{ display: "flex" }}
 				>
-					<Course course={course} />
+					<CardDisplay
+						title={course.title}
+						description={course.description}
+						type={course.type}
+						conditions={[course.condition]}
+						themes={[course.theme]}
+						imageUrl={course.image?.url ?? undefined}
+						imageAlt={course.image?.alt}
+						isCourse={true}
+						redirect="/"
+					/>
 				</div>
 			))}
 		</>

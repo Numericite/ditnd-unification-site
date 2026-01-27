@@ -1,5 +1,5 @@
 import type { AugmentedPracticalGuide } from "~/server/api/routers/practical-guides";
-import { PracticalGuide } from "./PracticalGuide";
+import CardDisplay from "../Courses/CardDisplay";
 
 type Props = {
 	practicalGuides: AugmentedPracticalGuide[];
@@ -14,7 +14,15 @@ export default function PracticalGuidesGroup({
 		<>
 			{practicalGuides?.map((guide) => (
 				<div key={guide.id} className={className} style={{ display: "flex" }}>
-					<PracticalGuide guide={guide} />
+					<CardDisplay
+						title={guide.title}
+						description={guide.description}
+						imageUrl={guide.image?.url ?? undefined}
+						imageAlt={guide.image?.alt}
+						conditions={guide.conditions ?? []}
+						themes={guide.themes}
+						redirect={`/guides/${guide.slug}`}
+					/>
 				</div>
 			))}
 		</>

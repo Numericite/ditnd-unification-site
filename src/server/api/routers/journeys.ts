@@ -1,5 +1,5 @@
 import { z } from "zod";
-import type { Journey, Persona } from "~/payload/payload-types";
+import type { Journey, Media, Persona } from "~/payload/payload-types";
 import {
 	createTRPCRouter,
 	fetchOrReturnRealValue,
@@ -10,6 +10,7 @@ import type { AugmentedPracticalGuide } from "./practical-guides";
 import type { AugmentedCourse } from "./courses";
 
 export interface AugmentedJourney extends Journey {
+	image: Media;
 	persona: Persona;
 	chapter: Chapter[];
 }
@@ -17,7 +18,7 @@ export interface AugmentedJourney extends Journey {
 export interface Chapter {
 	"chapter-name": string;
 	"practical-guides": AugmentedPracticalGuide[];
-	courses: AugmentedCourse[];
+	courses?: AugmentedCourse[];
 	id?: string;
 }
 
@@ -50,7 +51,9 @@ export const journeyRouter = createTRPCRouter({
 									chap["practical-guides"],
 									"practical-guides",
 								),
-								courses: await resolveRelations(chap.courses, "courses"),
+								courses: chap.courses
+									? await resolveRelations(chap.courses, "courses")
+									: [],
 							})),
 						),
 					};

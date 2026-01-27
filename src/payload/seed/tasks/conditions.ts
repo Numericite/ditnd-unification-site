@@ -3,23 +3,15 @@ import { TRPCError } from "@trpc/server";
 
 const conditions = [
 	{
-		name: "Trouble du langage",
-		description: "Difficultés à comprendre ou produire le langage oral.",
-		acronym: "TL",
-		slug: "tl",
-		textColor: "#161616",
-		backgroundColor: "#F6F6F6",
-	},
-	{
 		name: "Troubles spécifiques des apprentissages",
 		description: "Difficultés ciblées de lecture, écriture ou mathématiques.",
-		acronym: "TSAp",
-		slug: "tsap",
+		acronym: "DYS",
+		slug: "dys",
 		textColor: "#161616",
 		backgroundColor: "#F6F6F6",
 	},
 	{
-		name: "Trouble du déficit de l’attention avec ou sans hyperactivité",
+		name: "Trouble du déficit de l'attention avec ou sans hyperactivité",
 		description: "Difficultés d’attention, impulsivité et agitation.",
 		acronym: "TDAH",
 		slug: "tdah",
@@ -36,22 +28,13 @@ const conditions = [
 		backgroundColor: "#F6F6F6",
 	},
 	{
-		name: "Trouble du spectre de l'autism",
+		name: "Trouble du spectre autistique",
 		description:
 			"Trouble du neurodéveloppement affectant la communication et les interactions sociales.",
 		acronym: "TSA",
 		slug: "tsa",
 		textColor: "#0078f3",
 		backgroundColor: "#f4f6ff",
-	},
-	{
-		name: "DYS",
-		description:
-			"Troubles cognitifs spécifiques qui affectent certaines fonctions humaines",
-		acronym: "dys",
-		slug: "dys",
-		textColor: "#8D533E",
-		backgroundColor: "#fef4f2",
 	},
 ];
 

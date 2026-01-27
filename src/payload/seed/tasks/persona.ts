@@ -8,7 +8,7 @@ const personas = [
 		slug: "pp",
 	},
 	{
-		name: "Personne",
+		name: "Personne concernée par un TND",
 		description: "Description d'une personne concernée",
 		slug: "pe",
 	},

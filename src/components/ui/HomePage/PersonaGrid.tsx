@@ -10,40 +10,38 @@ type Props = {
 	onClick: Record<PersonaTypes, (tile: PersonaTile) => void>;
 };
 
-export const PersonaGrid = ({ tiles, imageUrl, onClick }: Props) => {
+export const PersonaGrid = ({ tiles, onClick }: Props) => {
 	const { classes, cx } = useStyles();
 
-	return tiles.map((tile, index) => (
-		<div
-			key={index}
-			className={cx(
-				fr.cx("fr-col-12", "fr-col-sm-6", "fr-col-md-4", "fr-col-lg-3"),
-				classes.tile,
-			)}
-		>
-			<Tile
-				buttonProps={{
-					onClick: () => onClick[tile.display](tile),
-				}}
-				className={cx(classes.noBtn)}
-				imageUrl={imageUrl}
-				imageAlt={tile.name}
-				noIcon
-				orientation="vertical"
-				title={tile.name}
-				detail={tile.description}
-				titleAs="h3"
-			/>
-		</div>
-	));
+	return tiles.map((tile, index) => {
+		let pictogramProp = {};
+		if (tile.pictogram) pictogramProp = { pictogram: tile.pictogram };
+
+		return (
+			<div
+				key={index}
+				className={cx(
+					fr.cx("fr-col-12", "fr-col-sm-6", "fr-col-md-4", "fr-col-lg-3"),
+					classes.tile,
+				)}
+			>
+				<Tile
+					{...pictogramProp}
+					buttonProps={{
+						onClick: () => onClick[tile.display](tile),
+					}}
+					noIcon
+					orientation="vertical"
+					title={tile.name}
+					detail={tile.description}
+					titleAs="h3"
+				/>
+			</div>
+		);
+	});
 };
 
 const useStyles = tss.withName(PersonaGrid.name).create({
-	noBtn: {
-		".fr-tile__content": {
-			paddingBottom: `${fr.spacing("3v")} !important`,
-		},
-	},
 	tile: {
 		alignItems: "stretch",
 		marginLeft: "0",
