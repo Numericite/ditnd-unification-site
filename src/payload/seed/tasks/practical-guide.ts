@@ -19,6 +19,7 @@ const guides = [
 		courses: [2, 3],
 		viewCount: 50,
 		image: 7,
+		imageBanner: 7,
 	},
 	{
 		title: "Où trouver du soutien et du répit en tant que proche aidant ?",
@@ -31,6 +32,7 @@ const guides = [
 		themes: [1],
 		viewCount: 39,
 		image: 6,
+		imageBanner: 6,
 	},
 	{
 		title: "Se former quand on est proche aidant d’une personne autiste",
@@ -43,6 +45,7 @@ const guides = [
 		themes: [4],
 		viewCount: 56,
 		image: 2,
+		imageBanner: 2,
 	},
 	{
 		title: "Proche aidant d’une personne autiste : guide pratique",
@@ -56,6 +59,7 @@ const guides = [
 		themes: [4],
 		viewCount: 43,
 		image: 4,
+		imageBanner: 4,
 	},
 	{
 		title: "Plateforme de coordination et d’orientation et TND",
@@ -68,6 +72,7 @@ const guides = [
 		themes: [8],
 		viewCount: 55,
 		image: 1,
+		imageBanner: 1,
 	},
 	{
 		title: "Droit du proche aidant d’une personne autiste",
@@ -80,6 +85,7 @@ const guides = [
 		themes: [1],
 		viewCount: 67,
 		image: 3,
+		imageBanner: 3,
 	},
 ];
 
@@ -98,6 +104,7 @@ async function createPracticalGuide(
 		courses?: number[];
 		viewCount: number;
 		image: number;
+		imageBanner: number;
 	},
 ): Promise<void> {
 	try {

@@ -84,7 +84,7 @@ const useStyles = tss.withName(PracticalGuidesDisplay.name).create(() => ({
 	},
 	imageBanner: {
 		width: "100%",
-		height: "100%",
+		height: "240px",
 		objectFit: "cover",
 	},
 	summarySticky: {
