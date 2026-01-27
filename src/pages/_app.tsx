@@ -82,10 +82,11 @@ function App({ Component, pageProps }: AppProps) {
 					/>
 				),
 				linkProps: {
-					href: "#",
-					style: { cursor: "default" },
-					onMouseEnter: () => setCurrentSubMenuPersona(persona.slug),
-					onMouseLeave: () => setCurrentSubMenuPersona(null),
+					href: `#`,
+					onClick: () =>
+						setCurrentSubMenuPersona(
+							currentSubMenuPersona !== persona.slug ? persona.slug : null,
+						),
 				},
 			})),
 		},
