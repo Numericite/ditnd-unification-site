@@ -16,6 +16,7 @@ import { tss } from "tss-react";
 import { personas } from "~/utils/personas";
 import SubMenuCustom from "~/components/ui/Navigation/SubMenuCustom";
 import { useState } from "react";
+import { fr } from "@codegouvfr/react-dsfr";
 
 declare module "@codegouvfr/react-dsfr/next-pagesdir" {
 	interface RegisterLink {
@@ -88,6 +89,12 @@ function App({ Component, pageProps }: AppProps) {
 				),
 				linkProps: {
 					href: `/journeys/${persona.slug}`,
+					style: {
+						backgroundColor:
+							currentSubMenuPersona === persona.slug
+								? fr.colors.decisions.background.contrast.grey.default
+								: "inherit",
+					},
 					onClick:
 						persona.slug === "professional"
 							? (e) => {

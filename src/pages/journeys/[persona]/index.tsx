@@ -20,24 +20,21 @@ export default function JourneyPage() {
 		isLoading: isLoadingProfessionalPersonas,
 	} = api.persona.professionals.useQuery();
 
-	const persona =
-		persona_slug === "professional"
-			? professionalPersonas?.find((c) => c.slug === persona_slug)
-			: personas.find((p) => p.slug === persona_slug);
+	const persona = persona_slug.startsWith("pro")
+		? professionalPersonas?.find((c) => c.slug === persona_slug)
+		: personas.find((p) => p.slug === persona_slug);
 
 	const defaultTags: TagItem[] = useMemo(() => {
 		if (persona_slug.startsWith("pro")) {
 			return [
 				{
 					display: "default",
-					label: personas?.find((c) => c.slug === "professional")?.name || "",
+					label: "",
 					slug: "professional",
 				},
 				{
 					display: "professional",
-					label:
-						professionalPersonas?.find((c) => c.slug === persona_slug)?.name ||
-						"",
+					label: "",
 					slug: persona_slug,
 				},
 			];
@@ -46,7 +43,7 @@ export default function JourneyPage() {
 		return [
 			{
 				display: "default",
-				label: personas?.find((c) => c.slug === persona_slug)?.name || "",
+				label: "",
 				slug: persona_slug,
 			},
 		];

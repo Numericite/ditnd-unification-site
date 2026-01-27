@@ -68,6 +68,7 @@ const useStyles = tss.withName(SubMenuCustom.name).create(() => ({
 		display: "flex",
 		alignItems: "center",
 		gap: fr.spacing("2w"),
+		marginTop: fr.spacing("1v"),
 	},
 	personaInfo: {
 		display: "flex",
@@ -88,6 +89,7 @@ const useStyles = tss.withName(SubMenuCustom.name).create(() => ({
 		width: "max-content",
 		height: "min-content",
 		border: `1px solid ${fr.colors.decisions.border.default.grey.default}`,
+		borderBottom: "none",
 		background: "white",
 		padding: fr.spacing("3w"),
 		display: "flex",
@@ -106,8 +108,9 @@ const useStyles = tss.withName(SubMenuCustom.name).create(() => ({
 	conditionCard: {
 		display: "flex",
 		border: `1px solid ${fr.colors.decisions.border.default.grey.default}`,
+
 		flexDirection: "column",
-		maxWidth: "350px",
+		maxWidth: "300px",
 		padding: `${fr.spacing("2w")} ${fr.spacing("3w")}`,
 		":hover": {
 			backgroundColor: fr.colors.decisions.background.default.grey.hover,
