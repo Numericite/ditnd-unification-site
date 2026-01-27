@@ -1,7 +1,7 @@
 import { fr } from "@codegouvfr/react-dsfr";
 import type { AugmentedCourse } from "~/server/api/routers/courses";
-import Course from "../Courses/Course";
 import { slugify } from "~/utils/tools";
+import CardDisplay from "../Courses/CardDisplay";
 
 type Props = {
 	value: AugmentedCourse[];
@@ -34,7 +34,16 @@ export default function PersonaCoursesContent({ value, chapterName }: Props) {
 						className={fr.cx("fr-col-12", "fr-col-sm-6")}
 						style={{ display: "flex" }}
 					>
-						<Course key={`${course.title + index}`} course={course} />
+						<CardDisplay
+							title={course.title}
+							description={course.description}
+							imageUrl={course.image?.url ?? undefined}
+							imageAlt={course.image?.alt}
+							conditions={[course.condition]}
+							themes={[course.theme]}
+							isCourse={true}
+							redirect="/"
+						/>
 					</div>
 				))}
 			</div>

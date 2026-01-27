@@ -16,6 +16,9 @@ export const PracticalGuides: CollectionConfig = {
 		singular: "Fiche pratique",
 		plural: "Fiches pratiques",
 	},
+	versions: {
+		drafts: true,
+	},
 	fields: [
 		{
 			name: "title",

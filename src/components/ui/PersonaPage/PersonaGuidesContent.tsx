@@ -1,7 +1,7 @@
 import type { AugmentedPracticalGuide } from "~/server/api/routers/practical-guides";
-import { PracticalGuide } from "../PracticalGuides/PracticalGuide";
 import { fr } from "@codegouvfr/react-dsfr";
 import { slugify } from "~/utils/tools";
+import CardDisplay from "../Courses/CardDisplay";
 
 type Props = {
 	value: AugmentedPracticalGuide[];
@@ -37,7 +37,15 @@ export default function PersonaGuidesContent({ value, chapterName }: Props) {
 						className={fr.cx("fr-col-12", "fr-col-md-6")}
 						style={{ display: "flex" }}
 					>
-						<PracticalGuide guide={guide} />
+						<CardDisplay
+							title={guide.title}
+							description={guide.description}
+							imageUrl={guide.image?.url ?? undefined}
+							imageAlt={guide.image?.alt}
+							conditions={guide.conditions ?? []}
+							themes={guide.themes}
+							redirect={`/guides/${guide.slug}`}
+						/>
 					</div>
 				))}
 			</div>
