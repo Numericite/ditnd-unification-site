@@ -14,6 +14,7 @@
 		"preview": "next build && next start",
 		"start": "next start",
 		"typecheck": "tsc --noEmit",
+		"seed:prod": "PAYLOAD_CONFIG_PATH=./src/payload/payload.config.ts payload run ./src/payload/seed/index.ts",
 		"seed:dev": "NODE_ENV=development PAYLOAD_CONFIG_PATH=./src/payload/payload.config.ts PAYLOAD_DROP_DATABASE=true payload run ./src/payload/seed/index.ts"
 	},
 	"dependencies": {
