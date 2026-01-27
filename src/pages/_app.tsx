@@ -63,6 +63,8 @@ function App({ Component, pageProps }: AppProps) {
 	const { data: conditions, isLoading: isLoadingHomePage } =
 		api.condition.all.useQuery();
 
+	const { data: personaPros } = api.persona.professionals.useQuery();
+
 	const [currentSubMenuPersona, setCurrentSubMenuPersona] = useState<
 		string | null
 	>(null);
@@ -72,21 +74,31 @@ function App({ Component, pageProps }: AppProps) {
 		{
 			text: "Je suis",
 			className: classes.megaMenuCustom,
+			buttonProps: {
+				onClick: () => setCurrentSubMenuPersona(null),
+			},
 			menuLinks: personas.map((persona) => ({
 				text: (
 					<SubMenuCustom
 						key={persona.slug}
 						persona={persona}
-						conditions={conditions || []}
+						personaPros={personaPros || []}
 						isActive={currentSubMenuPersona === persona.slug}
 					/>
 				),
 				linkProps: {
-					href: `#`,
-					onClick: () =>
-						setCurrentSubMenuPersona(
-							currentSubMenuPersona !== persona.slug ? persona.slug : null,
-						),
+					href: `/journeys/${persona.slug}`,
+					onClick:
+						persona.slug === "professional"
+							? (e) => {
+									e.preventDefault();
+									setCurrentSubMenuPersona(
+										currentSubMenuPersona !== persona.slug
+											? persona.slug
+											: null,
+									);
+								}
+							: undefined,
 				},
 			})),
 		},

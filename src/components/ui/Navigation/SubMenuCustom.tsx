@@ -1,21 +1,51 @@
 import { fr } from "@codegouvfr/react-dsfr";
+import { useRouter } from "next/router";
 import { tss } from "tss-react";
 import type { PersonaTile } from "~/components/HomePage/PersonaTiles";
-import type { TDH } from "~/state/store";
 import { getPictoByPersonaSlug } from "~/utils/personas";
 
 type SubMenuCustomProps = {
 	persona: PersonaTile;
-	conditions: TDH[];
+	personaPros: PersonaTile[];
 	isActive: boolean;
+};
+
+const ProfessionalPanelSlugs = ({
+	personaPros,
+}: {
+	personaPros: PersonaTile[];
+}) => {
+	const router = useRouter();
+	const { classes, cx } = useStyles();
+	return (
+		<div className={classes.submenuPanel}>
+			<p className={classes.submenuPanelHeading}>Types de professionnels :</p>
+			<div className={classes.conditionsGrid}>
+				{personaPros?.map((personaPro) => (
+					<button
+						key={personaPro.id}
+						type="button"
+						onClick={() => router.push(`/journeys/${personaPro.slug}`)}
+					>
+						<div className={cx(classes.conditionCard)}>
+							<p className={classes.conditionName}>{personaPro.name}</p>
+							<p className={classes.conditionDescription}>
+								{personaPro.description}
+							</p>
+						</div>
+					</button>
+				))}
+			</div>
+		</div>
+	);
 };
 
 const SubMenuCustom = ({
 	persona,
-	conditions,
+	personaPros,
 	isActive,
 }: SubMenuCustomProps) => {
-	const { classes, cx } = useStyles();
+	const { classes } = useStyles();
 
 	const Picto = getPictoByPersonaSlug(persona.slug);
 
@@ -28,26 +58,7 @@ const SubMenuCustom = ({
 					<p className={classes.personaDescription}>{persona.description}</p>
 				</div>
 			</div>
-			{isActive && (
-				<div className={classes.submenuPanel}>
-					<p className={classes.submenuPanelHeading}>Intéressé par :</p>
-					<div className={classes.conditionsGrid}>
-						{conditions?.map((condition) => (
-							<a
-								key={condition.id}
-								href={`/journeys/${persona.slug}/${condition.slug}`}
-							>
-								<div className={cx(classes.conditionCard)}>
-									<p className={classes.conditionName}>{condition.name}</p>
-									<p className={classes.conditionDescription}>
-										{condition.description}
-									</p>
-								</div>
-							</a>
-						))}
-					</div>
-				</div>
-			)}
+			{isActive && <ProfessionalPanelSlugs personaPros={personaPros} />}
 		</>
 	);
 };

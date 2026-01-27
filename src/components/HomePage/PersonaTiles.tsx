@@ -37,11 +37,23 @@ const unknownTile: TDH = {
 	display: "condition",
 };
 
-export const PersonaTiles = ({ tiles }: { tiles: PersonaTile[] }) => {
+export const PersonaTiles = ({
+	tiles,
+	defaultDisplay,
+	defaultTags,
+	hideTags = false,
+}: {
+	tiles: PersonaTile[];
+	defaultDisplay?: PersonaTypes;
+	defaultTags?: TagItem[];
+	hideTags?: boolean;
+}) => {
 	const { classes, cx } = useStyles();
 
-	const [display, setDisplay] = useState<PersonaTypes>("default");
-	const [tags, setTags] = useState<TagItem[]>([]);
+	const [display, setDisplay] = useState<PersonaTypes>(
+		defaultDisplay || "default",
+	);
+	const [tags, setTags] = useState<TagItem[]>(defaultTags || []);
 
 	const { data: professionalPersonas } = api.persona.professionals.useQuery();
 
@@ -75,6 +87,7 @@ export const PersonaTiles = ({ tiles }: { tiles: PersonaTile[] }) => {
 			setDisplay("afterProfessional");
 		},
 		condition: (tile) => {
+			console.log(tags);
 			const personaSlug = tags
 				.filter((tag) => tag.slug !== "professional")
 				.map((tag) => tag.slug);
@@ -119,23 +132,24 @@ export const PersonaTiles = ({ tiles }: { tiles: PersonaTile[] }) => {
 
 	return (
 		<>
-			{tags.map((tag, index) => (
-				<Tag
-					key={index}
-					className={cx(classes.tagStyles)}
-					dismissible
-					nativeButtonProps={{
-						onClick: function deleteTag() {
-							setDisplay(tag.display);
-							tag.display === "default"
-								? setTags([])
-								: setTags([...tags].filter((t) => t.slug !== tag.slug));
-						},
-					}}
-				>
-					{tag.label}
-				</Tag>
-			))}
+			{!hideTags &&
+				tags.map((tag, index) => (
+					<Tag
+						key={index}
+						className={cx(classes.tagStyles)}
+						dismissible
+						nativeButtonProps={{
+							onClick: function deleteTag() {
+								setDisplay(tag.display);
+								tag.display === "default"
+									? setTags([])
+									: setTags([...tags].filter((t) => t.slug !== tag.slug));
+							},
+						}}
+					>
+						{tag.label}
+					</Tag>
+				))}
 			<div
 				className={cx(
 					fr.cx("fr-grid-row", "fr-grid-row--gutters", "fr-grid-row--middle"),
