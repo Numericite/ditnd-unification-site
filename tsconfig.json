@@ -48,7 +48,7 @@
     "**/*.js",
     ".next/types/**/*.ts",
     ".next/dev/types/**/*.ts"
-  ],
+, "src/pages/journeys/[persona]"  ],
   "exclude": [
     "node_modules",
     "generated",
