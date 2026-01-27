@@ -12,6 +12,7 @@ import Avatar from "@codegouvfr/react-dsfr/picto/Avatar";
 import HumanCooperation from "@codegouvfr/react-dsfr/picto/HumanCooperation";
 import CityHall from "@codegouvfr/react-dsfr/picto/CityHall";
 import SelfTraining from "@codegouvfr/react-dsfr/picto/SelfTraining";
+import Image from "next/image";
 
 export default function Home() {
 	const { classes, cx } = useStyles();
@@ -86,13 +87,19 @@ export default function Home() {
 								</p>
 								<SearchBar big onButtonClick={function noRefCheck() {}} />
 							</div>
-							<div className={fr.cx("fr-col-12", "fr-col-lg-6")}>
-								<img
-									className={fr.cx("fr-responsive-img")}
+							<div
+								className={fr.cx("fr-col-12", "fr-col-md-6")}
+								style={{
+									display: "flex",
+									justifyContent: "center",
+								}}
+							>
+								<Image
 									alt=""
-									src={
-										"https://www.systeme-de-design.gouv.fr/v1.14/storybook/img/placeholder.16x9.png"
-									}
+									width={400}
+									height={400}
+									src={"/HomePageIllustration.svg"}
+									unoptimized
 								/>
 							</div>
 						</div>
