@@ -28,7 +28,7 @@ export default function CoursesGroup({
 						themes={[course.theme]}
 						imageUrl={course.image?.url ?? undefined}
 						imageAlt={course.image?.alt}
-						isCourse={true}
+						kind="Courses"
 						redirect="/"
 					/>
 				</div>
