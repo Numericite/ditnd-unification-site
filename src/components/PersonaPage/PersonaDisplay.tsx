@@ -12,6 +12,7 @@ import PersonaCoursesContent, {
 	courseQuery,
 } from "../ui/PersonaPage/PersonaCoursesContent";
 import SummaryContent from "../ui/PracticalGuides/SummaryContent";
+import { useSearchParams } from "next/navigation";
 
 export default function PersonaDisplay({
 	journey,
@@ -22,10 +23,13 @@ export default function PersonaDisplay({
 }) {
 	const { classes, cx } = useStyles();
 
-	const [query, setQuery] = useState<string>("");
+	const searchParams = useSearchParams();
+	const search = searchParams?.get("search");
 
 	const router = useRouter();
 	const routerCondition = router.query.condition as string;
+
+	const [query, setQuery] = useState<string>(search ?? "");
 
 	const filteredChapters = useMemo(() => {
 		const loweredQuery = query.toLowerCase();
@@ -64,7 +68,7 @@ export default function PersonaDisplay({
 				menuLinks={chapterLinks ?? []}
 			/>
 			<div className={fr.cx("fr-col-12", "fr-col-lg-8")}>
-				<SearchBarUI onClick={(query) => setQuery(query)} />
+				<SearchBarUI value={query} onClick={(query) => setQuery(query)} />
 				{viewCourses
 					? currentList.map((chap) => (
 							<div key={`Course ${chap.name}`}>

@@ -4,6 +4,7 @@ import { useState } from "react";
 import { SearchBarUI } from "../ui/SearchPage/SearchBarUI";
 import { Loader } from "../ui/Loader";
 import CoursesGroup from "../ui/Courses/CoursesGroup";
+import { useSearchParams } from "next/navigation";
 
 export type CoursesFiltersQuery = {
 	conditions: string[];
@@ -17,14 +18,18 @@ export const SearchCoursesDisplay = ({
 }: {
 	filters: CoursesFiltersQuery;
 }) => {
-	const [query, setQuery] = useState<string>("");
+	const searchParams = useSearchParams();
+
+	const search = searchParams?.get("search");
+
+	const [query, setQuery] = useState<string>(search ?? "");
 
 	const { data: coursesData, isLoading: isLoadingCourses } =
 		api.course.getByFilters.useQuery({ ...filters, text: query });
 
 	return (
 		<>
-			<SearchBarUI onClick={(query) => setQuery(query)} />
+			<SearchBarUI value={query} onClick={(query) => setQuery(query)} />
 			{isLoadingCourses ? (
 				<Loader />
 			) : coursesData?.length === 0 || !coursesData ? (

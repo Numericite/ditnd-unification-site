@@ -1,13 +1,17 @@
 import { fr } from "@codegouvfr/react-dsfr";
 import SearchBar from "@codegouvfr/react-dsfr/SearchBar";
+import { useRouter } from "next/router";
 import { useState } from "react";
 
 type Props = {
+	value?: string;
 	onClick: (query: string) => void;
 };
 
-export const SearchBarUI = ({ onClick }: Props) => {
-	const [search, onSearchChange] = useState("");
+export const SearchBarUI = ({ value = "", onClick }: Props) => {
+	const [search, onSearchChange] = useState(value);
+
+	const router = useRouter();
 
 	return (
 		<div className={fr.cx("fr-grid-row")}>
@@ -15,7 +19,20 @@ export const SearchBarUI = ({ onClick }: Props) => {
 				<SearchBar
 					label="Rechercher un sujet, une thématique..."
 					big
-					onButtonClick={() => onClick(search)}
+					onButtonClick={() => {
+						onClick(search);
+						router.push(
+							{
+								pathname: router.pathname,
+								query: {
+									...router.query,
+									search,
+								},
+							},
+							undefined,
+							{ shallow: true },
+						);
+					}}
 					renderInput={({ className, id, placeholder, type }) => (
 						<input
 							className={className}
@@ -24,7 +41,21 @@ export const SearchBarUI = ({ onClick }: Props) => {
 							type={type}
 							value={search}
 							onChange={(event) => {
-								if (event.currentTarget.value === "") onClick("");
+								if (event.currentTarget.value === "") {
+									onClick("");
+
+									const { search, ...rest } = router.query;
+
+									router.push(
+										{
+											pathname: router.pathname,
+											query: rest,
+										},
+										undefined,
+										{ shallow: true },
+									);
+								}
+
 								onSearchChange(event.currentTarget.value);
 							}}
 						/>
