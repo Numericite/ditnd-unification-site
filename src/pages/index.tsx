@@ -12,10 +12,16 @@ import Avatar from "@codegouvfr/react-dsfr/picto/Avatar";
 import HumanCooperation from "@codegouvfr/react-dsfr/picto/HumanCooperation";
 import CityHall from "@codegouvfr/react-dsfr/picto/CityHall";
 import SelfTraining from "@codegouvfr/react-dsfr/picto/SelfTraining";
+import { useState } from "react";
+import { useRouter } from "next/router";
 import Image from "next/image";
 
 export default function Home() {
 	const { classes, cx } = useStyles();
+
+	const [search, setSearch] = useState("");
+
+	const router = useRouter();
 
 	const { data: mostViewedGuides, isLoading: isLoadingViewedGuides } =
 		api.practicalGuide.getByViews.useQuery();
@@ -75,7 +81,7 @@ export default function Home() {
 							className={fr.cx("fr-grid-row", "fr-grid-row--gutters")}
 							style={{ alignContent: "center" }}
 						>
-							<div className={fr.cx("fr-col-12", "fr-col-lg-6")}>
+							<div className={fr.cx("fr-col-12", "fr-col-md-6")}>
 								<h1>
 									Plateforme nationale du TSA et des troubles du
 									neuro-développement
@@ -85,7 +91,23 @@ export default function Home() {
 									par un trouble du neurodéveloppement, les parents, et les
 									professionnels.
 								</p>
-								<SearchBar big onButtonClick={function noRefCheck() {}} />
+								<SearchBar
+									big
+									onButtonClick={() => router.push(`/guides?search=${search}`)}
+									renderInput={({ className, id, placeholder, type }) => (
+										<input
+											className={className}
+											id={id}
+											placeholder={placeholder}
+											type={type}
+											value={search}
+											onChange={(event) => {
+												if (event.currentTarget.value === "") setSearch("");
+												setSearch(event.currentTarget.value);
+											}}
+										/>
+									)}
+								/>
 							</div>
 							<div
 								className={fr.cx("fr-col-12", "fr-col-md-6")}

@@ -5,16 +5,21 @@ import { useState } from "react";
 import { SearchBarUI } from "../ui/SearchPage/SearchBarUI";
 import { Loader } from "../ui/Loader";
 import PracticalGuidesGroup from "../ui/PracticalGuides/PracticalGuidesGroup";
+import { useSearchParams } from "next/navigation";
 
 export const SearchGuidesDisplay = ({ filters }: { filters: FiltersQuery }) => {
-	const [query, setQuery] = useState<string>("");
+	const searchParams = useSearchParams();
+
+	const search = searchParams?.get("search");
+
+	const [query, setQuery] = useState<string>(search ?? "");
 
 	const { data: practicalGuideData, isLoading: isLoadingGuides } =
 		api.practicalGuide.getByFilters.useQuery({ ...filters, text: query });
 
 	return (
 		<>
-			<SearchBarUI onClick={(query) => setQuery(query)} />
+			<SearchBarUI value={query} onClick={(query) => setQuery(query)} />
 			{isLoadingGuides ? (
 				<Loader />
 			) : practicalGuideData?.length === 0 || !practicalGuideData ? (
