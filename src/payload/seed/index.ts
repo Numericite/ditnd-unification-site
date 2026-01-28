@@ -1,7 +1,6 @@
 import config from "@payload-config";
 import { getPayload } from "payload";
 import { seedConditions } from "./tasks/conditions";
-import { seedPersonas } from "./tasks/persona";
 import { seedTheme } from "./tasks/theme";
 import { seedPracticalGuides } from "./tasks/practical-guide";
 import { seedCourses } from "./tasks/courses";
@@ -39,7 +38,7 @@ const seedData = async () => {
 		await seedTheme(payload);
 		await seedMedia(payload);
 		await seedConditions(payload);
-		await seedPersonas(payload);
+		// await seedPersonas(payload);
 		await seedCourses(payload);
 		await seedPracticalGuides(payload);
 		await seedJourneys(payload);
