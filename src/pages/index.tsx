@@ -1,8 +1,10 @@
 import Head from "next/head";
 import { tss } from "tss-react";
 import { fr } from "@codegouvfr/react-dsfr";
-import { PersonaTiles } from "~/components/HomePage/PersonaTiles";
-import type { PersonaTile } from "~/components/HomePage/PersonaTiles";
+import {
+	PersonaTiles,
+	type PersonaTile,
+} from "~/components/HomePage/PersonaTiles";
 import Breadcrumb from "@codegouvfr/react-dsfr/Breadcrumb";
 import SearchBar from "@codegouvfr/react-dsfr/SearchBar";
 import { api } from "~/utils/api";
@@ -16,6 +18,37 @@ import { useState } from "react";
 import { useRouter } from "next/router";
 import Image from "next/image";
 
+export const personas: PersonaTile[] = [
+	{
+		name: "Je suis une personne concernée",
+		description: "Description type",
+		slug: "pe",
+		display: "person",
+		pictogram: <Avatar />,
+	},
+	{
+		name: "Je suis un parent ou un proche",
+		description: "Description type",
+		slug: "pp",
+		display: "person",
+		pictogram: <HumanCooperation />,
+	},
+	{
+		name: "Je suis un professionnel",
+		description: "Description type",
+		slug: "professional",
+		display: "professional",
+		pictogram: <CityHall />,
+	},
+	{
+		name: "Grand Public",
+		description: "Description type",
+		slug: "gp",
+		display: "person",
+		pictogram: <SelfTraining />,
+	},
+];
+
 export default function Home() {
 	const { classes, cx } = useStyles();
 
@@ -27,37 +60,6 @@ export default function Home() {
 		api.practicalGuide.getByViews.useQuery();
 
 	if (isLoadingViewedGuides) return <Loader />;
-
-	const tiles: PersonaTile[] = [
-		{
-			name: "Je suis une personne concernée",
-			description: "Description type",
-			slug: "pe",
-			display: "person",
-			pictogram: <Avatar />,
-		},
-		{
-			name: "Je suis un parent ou un proche",
-			description: "Description type",
-			slug: "pp",
-			display: "person",
-			pictogram: <HumanCooperation />,
-		},
-		{
-			name: "Je suis un professionnel",
-			description: "Description type",
-			slug: "professional",
-			display: "professional",
-			pictogram: <CityHall />,
-		},
-		{
-			name: "Grand Public",
-			description: "Description type",
-			slug: "gp",
-			display: "person",
-			pictogram: <SelfTraining />,
-		},
-	];
 
 	return (
 		<>
@@ -73,7 +75,6 @@ export default function Home() {
 					segments={[]}
 				/>
 			</div>
-
 			<div>
 				<div className={fr.cx("fr-container")}>
 					<div className={fr.cx("fr-py-4w")}>
@@ -141,7 +142,7 @@ export default function Home() {
 										suprapatologi. Kvasitris agnostigyn absion anamatisk.
 									</div>
 								</div>
-								<PersonaTiles tiles={tiles} />
+								<PersonaTiles tiles={personas} />
 							</div>
 						</div>
 					</div>
