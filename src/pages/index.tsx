@@ -1,18 +1,51 @@
 import Head from "next/head";
 import { tss } from "tss-react";
 import { fr } from "@codegouvfr/react-dsfr";
-import { PersonaTiles } from "~/components/HomePage/PersonaTiles";
+import {
+	PersonaTiles,
+	type PersonaTile,
+} from "~/components/HomePage/PersonaTiles";
 import Breadcrumb from "@codegouvfr/react-dsfr/Breadcrumb";
 import SearchBar from "@codegouvfr/react-dsfr/SearchBar";
 import { api } from "~/utils/api";
 import MostViewedGuides from "~/components/HomePage/MostViewedGuides";
 import { Loader } from "~/components/ui/Loader";
-import { personas } from "~/utils/personas";
 import Avatar from "@codegouvfr/react-dsfr/picto/Avatar";
 import HumanCooperation from "@codegouvfr/react-dsfr/picto/HumanCooperation";
 import CityHall from "@codegouvfr/react-dsfr/picto/CityHall";
 import SelfTraining from "@codegouvfr/react-dsfr/picto/SelfTraining";
 import Image from "next/image";
+
+export const personas: PersonaTile[] = [
+	{
+		name: "Je suis une personne concernée",
+		description: "Description type",
+		slug: "pe",
+		display: "person",
+		pictogram: <Avatar />,
+	},
+	{
+		name: "Je suis un parent ou un proche",
+		description: "Description type",
+		slug: "pp",
+		display: "person",
+		pictogram: <HumanCooperation />,
+	},
+	{
+		name: "Je suis un professionnel",
+		description: "Description type",
+		slug: "professional",
+		display: "professional",
+		pictogram: <CityHall />,
+	},
+	{
+		name: "Grand Public",
+		description: "Description type",
+		slug: "gp",
+		display: "person",
+		pictogram: <SelfTraining />,
+	},
+];
 
 export default function Home() {
 	const { classes, cx } = useStyles();
@@ -21,37 +54,6 @@ export default function Home() {
 		api.practicalGuide.getByViews.useQuery();
 
 	if (isLoadingViewedGuides) return <Loader />;
-
-	const tiles: PersonaTile[] = [
-		{
-			name: "Je suis une personne concernée",
-			description: "Description type",
-			slug: "pe",
-			display: "person",
-			pictogram: <Avatar />,
-		},
-		{
-			name: "Je suis un parent ou un proche",
-			description: "Description type",
-			slug: "pp",
-			display: "person",
-			pictogram: <HumanCooperation />,
-		},
-		{
-			name: "Je suis un professionnel",
-			description: "Description type",
-			slug: "professional",
-			display: "professional",
-			pictogram: <CityHall />,
-		},
-		{
-			name: "Grand Public",
-			description: "Description type",
-			slug: "gp",
-			display: "person",
-			pictogram: <SelfTraining />,
-		},
-	];
 
 	return (
 		<>

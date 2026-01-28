@@ -13,10 +13,10 @@ import { Button } from "@codegouvfr/react-dsfr/Button";
 import { tdhStore } from "~/state/store";
 import { Loader } from "~/components/ui/Loader";
 import { tss } from "tss-react";
-import { personas } from "~/utils/personas";
 import SubMenuCustom from "~/components/ui/Navigation/SubMenuCustom";
 import { useState } from "react";
 import { fr } from "@codegouvfr/react-dsfr";
+import { personas } from ".";
 
 declare module "@codegouvfr/react-dsfr/next-pagesdir" {
 	interface RegisterLink {

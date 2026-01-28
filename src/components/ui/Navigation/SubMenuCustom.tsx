@@ -1,8 +1,28 @@
 import { fr } from "@codegouvfr/react-dsfr";
+import {
+	Avatar,
+	CityHall,
+	HumanCooperation,
+	SelfTraining,
+} from "@codegouvfr/react-dsfr/picto";
 import { useRouter } from "next/router";
 import { tss } from "tss-react";
 import type { PersonaTile } from "~/components/HomePage/PersonaTiles";
-import { getPictoByPersonaSlug } from "~/utils/personas";
+
+const getPictoByPersonaSlug = (slug: string) => {
+	switch (slug) {
+		case "pe":
+			return Avatar;
+		case "pp":
+			return HumanCooperation;
+		case "professional":
+			return CityHall;
+		case "gp":
+			return SelfTraining;
+		default:
+			return Avatar;
+	}
+};
 
 type SubMenuCustomProps = {
 	persona: PersonaTile;
@@ -47,12 +67,12 @@ const SubMenuCustom = ({
 }: SubMenuCustomProps) => {
 	const { classes } = useStyles();
 
-	const Picto = getPictoByPersonaSlug(persona.slug);
+	const PictoComponent = getPictoByPersonaSlug(persona.slug);
 
 	return (
 		<>
 			<div className={classes.personaContainer}>
-				<Picto fontSize="56px" />
+				<PictoComponent fontSize="56px" />
 				<div className={classes.personaInfo}>
 					<p className={classes.personaName}>{persona.name}</p>
 					<p className={classes.personaDescription}>{persona.description}</p>
