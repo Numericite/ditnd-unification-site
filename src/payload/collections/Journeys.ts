@@ -24,6 +24,13 @@ export const Journeys: CollectionConfig = {
 			label: { fr: "Persona" },
 		},
 		{
+			name: "image",
+			type: "upload",
+			relationTo: "medias",
+			required: false,
+			label: { fr: "Image de la formation" },
+		},
+		{
 			name: "chapter",
 			type: "array",
 			required: true,
@@ -47,7 +54,6 @@ export const Journeys: CollectionConfig = {
 					name: "courses",
 					type: "relationship",
 					relationTo: "courses",
-					required: true,
 					hasMany: true,
 					label: { fr: "Formations" },
 				},

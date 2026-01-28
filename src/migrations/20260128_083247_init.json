@@ -232,8 +232,8 @@
       "checkConstraints": {},
       "isRLSEnabled": false
     },
-    "public.persona": {
-      "name": "persona",
+    "public.personas": {
+      "name": "personas",
       "schema": "",
       "columns": {
         "id": {
@@ -276,8 +276,8 @@
         }
       },
       "indexes": {
-        "persona_slug_idx": {
-          "name": "persona_slug_idx",
+        "personas_slug_idx": {
+          "name": "personas_slug_idx",
           "columns": [
             {
               "expression": "slug",
@@ -291,8 +291,8 @@
           "method": "btree",
           "with": {}
         },
-        "persona_updated_at_idx": {
-          "name": "persona_updated_at_idx",
+        "personas_updated_at_idx": {
+          "name": "personas_updated_at_idx",
           "columns": [
             {
               "expression": "updated_at",
@@ -306,8 +306,8 @@
           "method": "btree",
           "with": {}
         },
-        "persona_created_at_idx": {
-          "name": "persona_created_at_idx",
+        "personas_created_at_idx": {
+          "name": "personas_created_at_idx",
           "columns": [
             {
               "expression": "created_at",
@@ -329,8 +329,8 @@
       "checkConstraints": {},
       "isRLSEnabled": false
     },
-    "public.condition": {
-      "name": "condition",
+    "public.conditions": {
+      "name": "conditions",
       "schema": "",
       "columns": {
         "id": {
@@ -363,6 +363,18 @@
           "primaryKey": false,
           "notNull": true
         },
+        "text_color": {
+          "name": "text_color",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "background_color": {
+          "name": "background_color",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": true
+        },
         "updated_at": {
           "name": "updated_at",
           "type": "timestamp(3) with time zone",
@@ -379,8 +391,8 @@
         }
       },
       "indexes": {
-        "condition_slug_idx": {
-          "name": "condition_slug_idx",
+        "conditions_slug_idx": {
+          "name": "conditions_slug_idx",
           "columns": [
             {
               "expression": "slug",
@@ -394,8 +406,8 @@
           "method": "btree",
           "with": {}
         },
-        "condition_updated_at_idx": {
-          "name": "condition_updated_at_idx",
+        "conditions_updated_at_idx": {
+          "name": "conditions_updated_at_idx",
           "columns": [
             {
               "expression": "updated_at",
@@ -409,8 +421,8 @@
           "method": "btree",
           "with": {}
         },
-        "condition_created_at_idx": {
-          "name": "condition_created_at_idx",
+        "conditions_created_at_idx": {
+          "name": "conditions_created_at_idx",
           "columns": [
             {
               "expression": "created_at",
@@ -448,9 +460,22 @@
           "primaryKey": false,
           "notNull": true
         },
+        "description": {
+          "name": "description",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": true
+        },
         "link": {
           "name": "link",
           "type": "varchar",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "type": {
+          "name": "type",
+          "type": "enum_courses_type",
+          "typeSchema": "public",
           "primaryKey": false,
           "notNull": true
         },
@@ -471,6 +496,12 @@
           "type": "integer",
           "primaryKey": false,
           "notNull": true
+        },
+        "image_id": {
+          "name": "image_id",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
         },
         "updated_at": {
           "name": "updated_at",
@@ -533,6 +564,21 @@
           "method": "btree",
           "with": {}
         },
+        "courses_image_idx": {
+          "name": "courses_image_idx",
+          "columns": [
+            {
+              "expression": "image_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        },
         "courses_updated_at_idx": {
           "name": "courses_updated_at_idx",
           "columns": [
@@ -565,10 +611,10 @@
         }
       },
       "foreignKeys": {
-        "courses_theme_id_theme_id_fk": {
-          "name": "courses_theme_id_theme_id_fk",
+        "courses_theme_id_themes_id_fk": {
+          "name": "courses_theme_id_themes_id_fk",
           "tableFrom": "courses",
-          "tableTo": "theme",
+          "tableTo": "themes",
           "columnsFrom": [
             "theme_id"
           ],
@@ -578,10 +624,10 @@
           "onDelete": "set null",
           "onUpdate": "no action"
         },
-        "courses_persona_id_theme_id_fk": {
-          "name": "courses_persona_id_theme_id_fk",
+        "courses_persona_id_personas_id_fk": {
+          "name": "courses_persona_id_personas_id_fk",
           "tableFrom": "courses",
-          "tableTo": "theme",
+          "tableTo": "personas",
           "columnsFrom": [
             "persona_id"
           ],
@@ -591,12 +637,25 @@
           "onDelete": "set null",
           "onUpdate": "no action"
         },
-        "courses_condition_id_condition_id_fk": {
-          "name": "courses_condition_id_condition_id_fk",
+        "courses_condition_id_conditions_id_fk": {
+          "name": "courses_condition_id_conditions_id_fk",
           "tableFrom": "courses",
-          "tableTo": "condition",
+          "tableTo": "conditions",
           "columnsFrom": [
             "condition_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "set null",
+          "onUpdate": "no action"
+        },
+        "courses_image_id_medias_id_fk": {
+          "name": "courses_image_id_medias_id_fk",
+          "tableFrom": "courses",
+          "tableTo": "medias",
+          "columnsFrom": [
+            "image_id"
           ],
           "columnsTo": [
             "id"
@@ -611,8 +670,8 @@
       "checkConstraints": {},
       "isRLSEnabled": false
     },
-    "public.practical_guide": {
-      "name": "practical_guide",
+    "public.practical_guides": {
+      "name": "practical_guides",
       "schema": "",
       "columns": {
         "id": {
@@ -625,17 +684,17 @@
           "name": "title",
           "type": "varchar",
           "primaryKey": false,
-          "notNull": true
+          "notNull": false
+        },
+        "slug": {
+          "name": "slug",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
         },
         "description": {
           "name": "description",
           "type": "varchar",
-          "primaryKey": false,
-          "notNull": true
-        },
-        "condition_id": {
-          "name": "condition_id",
-          "type": "integer",
           "primaryKey": false,
           "notNull": false
         },
@@ -643,7 +702,7 @@
           "name": "content",
           "type": "jsonb",
           "primaryKey": false,
-          "notNull": true
+          "notNull": false
         },
         "html": {
           "name": "html",
@@ -651,26 +710,21 @@
           "primaryKey": false,
           "notNull": false
         },
-        "persona_id": {
-          "name": "persona_id",
-          "type": "integer",
+        "view_count": {
+          "name": "view_count",
+          "type": "numeric",
           "primaryKey": false,
-          "notNull": true
+          "notNull": false,
+          "default": 0
         },
-        "theme_id": {
-          "name": "theme_id",
-          "type": "integer",
-          "primaryKey": false,
-          "notNull": true
-        },
-        "practical_guide_id": {
-          "name": "practical_guide_id",
+        "image_id": {
+          "name": "image_id",
           "type": "integer",
           "primaryKey": false,
           "notNull": false
         },
-        "courses_id": {
-          "name": "courses_id",
+        "image_banner_id": {
+          "name": "image_banner_id",
           "type": "integer",
           "primaryKey": false,
           "notNull": false
@@ -688,14 +742,37 @@
           "primaryKey": false,
           "notNull": true,
           "default": "now()"
+        },
+        "_status": {
+          "name": "_status",
+          "type": "enum_practical_guides_status",
+          "typeSchema": "public",
+          "primaryKey": false,
+          "notNull": false,
+          "default": "'draft'"
         }
       },
       "indexes": {
-        "practical_guide_condition_idx": {
-          "name": "practical_guide_condition_idx",
+        "practical_guides_slug_idx": {
+          "name": "practical_guides_slug_idx",
           "columns": [
             {
-              "expression": "condition_id",
+              "expression": "slug",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": true,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        },
+        "practical_guides_image_idx": {
+          "name": "practical_guides_image_idx",
+          "columns": [
+            {
+              "expression": "image_id",
               "isExpression": false,
               "asc": true,
               "nulls": "last"
@@ -706,11 +783,11 @@
           "method": "btree",
           "with": {}
         },
-        "practical_guide_persona_idx": {
-          "name": "practical_guide_persona_idx",
+        "practical_guides_image_banner_idx": {
+          "name": "practical_guides_image_banner_idx",
           "columns": [
             {
-              "expression": "persona_id",
+              "expression": "image_banner_id",
               "isExpression": false,
               "asc": true,
               "nulls": "last"
@@ -721,53 +798,8 @@
           "method": "btree",
           "with": {}
         },
-        "practical_guide_theme_idx": {
-          "name": "practical_guide_theme_idx",
-          "columns": [
-            {
-              "expression": "theme_id",
-              "isExpression": false,
-              "asc": true,
-              "nulls": "last"
-            }
-          ],
-          "isUnique": false,
-          "concurrently": false,
-          "method": "btree",
-          "with": {}
-        },
-        "practical_guide_practical_guide_idx": {
-          "name": "practical_guide_practical_guide_idx",
-          "columns": [
-            {
-              "expression": "practical_guide_id",
-              "isExpression": false,
-              "asc": true,
-              "nulls": "last"
-            }
-          ],
-          "isUnique": false,
-          "concurrently": false,
-          "method": "btree",
-          "with": {}
-        },
-        "practical_guide_courses_idx": {
-          "name": "practical_guide_courses_idx",
-          "columns": [
-            {
-              "expression": "courses_id",
-              "isExpression": false,
-              "asc": true,
-              "nulls": "last"
-            }
-          ],
-          "isUnique": false,
-          "concurrently": false,
-          "method": "btree",
-          "with": {}
-        },
-        "practical_guide_updated_at_idx": {
-          "name": "practical_guide_updated_at_idx",
+        "practical_guides_updated_at_idx": {
+          "name": "practical_guides_updated_at_idx",
           "columns": [
             {
               "expression": "updated_at",
@@ -781,8 +813,8 @@
           "method": "btree",
           "with": {}
         },
-        "practical_guide_created_at_idx": {
-          "name": "practical_guide_created_at_idx",
+        "practical_guides_created_at_idx": {
+          "name": "practical_guides_created_at_idx",
           "columns": [
             {
               "expression": "created_at",
@@ -795,15 +827,30 @@
           "concurrently": false,
           "method": "btree",
           "with": {}
+        },
+        "practical_guides__status_idx": {
+          "name": "practical_guides__status_idx",
+          "columns": [
+            {
+              "expression": "_status",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
         }
       },
       "foreignKeys": {
-        "practical_guide_condition_id_condition_id_fk": {
-          "name": "practical_guide_condition_id_condition_id_fk",
-          "tableFrom": "practical_guide",
-          "tableTo": "condition",
+        "practical_guides_image_id_medias_id_fk": {
+          "name": "practical_guides_image_id_medias_id_fk",
+          "tableFrom": "practical_guides",
+          "tableTo": "medias",
           "columnsFrom": [
-            "condition_id"
+            "image_id"
           ],
           "columnsTo": [
             "id"
@@ -811,51 +858,12 @@
           "onDelete": "set null",
           "onUpdate": "no action"
         },
-        "practical_guide_persona_id_persona_id_fk": {
-          "name": "practical_guide_persona_id_persona_id_fk",
-          "tableFrom": "practical_guide",
-          "tableTo": "persona",
+        "practical_guides_image_banner_id_medias_id_fk": {
+          "name": "practical_guides_image_banner_id_medias_id_fk",
+          "tableFrom": "practical_guides",
+          "tableTo": "medias",
           "columnsFrom": [
-            "persona_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
-          "onDelete": "set null",
-          "onUpdate": "no action"
-        },
-        "practical_guide_theme_id_theme_id_fk": {
-          "name": "practical_guide_theme_id_theme_id_fk",
-          "tableFrom": "practical_guide",
-          "tableTo": "theme",
-          "columnsFrom": [
-            "theme_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
-          "onDelete": "set null",
-          "onUpdate": "no action"
-        },
-        "practical_guide_practical_guide_id_practical_guide_id_fk": {
-          "name": "practical_guide_practical_guide_id_practical_guide_id_fk",
-          "tableFrom": "practical_guide",
-          "tableTo": "practical_guide",
-          "columnsFrom": [
-            "practical_guide_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
-          "onDelete": "set null",
-          "onUpdate": "no action"
-        },
-        "practical_guide_courses_id_courses_id_fk": {
-          "name": "practical_guide_courses_id_courses_id_fk",
-          "tableFrom": "practical_guide",
-          "tableTo": "courses",
-          "columnsFrom": [
-            "courses_id"
+            "image_banner_id"
           ],
           "columnsTo": [
             "id"
@@ -870,8 +878,847 @@
       "checkConstraints": {},
       "isRLSEnabled": false
     },
-    "public.theme": {
-      "name": "theme",
+    "public.practical_guides_rels": {
+      "name": "practical_guides_rels",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "serial",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "order": {
+          "name": "order",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "parent_id": {
+          "name": "parent_id",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "path": {
+          "name": "path",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "conditions_id": {
+          "name": "conditions_id",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "personas_id": {
+          "name": "personas_id",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "themes_id": {
+          "name": "themes_id",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "practical_guides_id": {
+          "name": "practical_guides_id",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "courses_id": {
+          "name": "courses_id",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        }
+      },
+      "indexes": {
+        "practical_guides_rels_order_idx": {
+          "name": "practical_guides_rels_order_idx",
+          "columns": [
+            {
+              "expression": "order",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        },
+        "practical_guides_rels_parent_idx": {
+          "name": "practical_guides_rels_parent_idx",
+          "columns": [
+            {
+              "expression": "parent_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        },
+        "practical_guides_rels_path_idx": {
+          "name": "practical_guides_rels_path_idx",
+          "columns": [
+            {
+              "expression": "path",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        },
+        "practical_guides_rels_conditions_id_idx": {
+          "name": "practical_guides_rels_conditions_id_idx",
+          "columns": [
+            {
+              "expression": "conditions_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        },
+        "practical_guides_rels_personas_id_idx": {
+          "name": "practical_guides_rels_personas_id_idx",
+          "columns": [
+            {
+              "expression": "personas_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        },
+        "practical_guides_rels_themes_id_idx": {
+          "name": "practical_guides_rels_themes_id_idx",
+          "columns": [
+            {
+              "expression": "themes_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        },
+        "practical_guides_rels_practical_guides_id_idx": {
+          "name": "practical_guides_rels_practical_guides_id_idx",
+          "columns": [
+            {
+              "expression": "practical_guides_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        },
+        "practical_guides_rels_courses_id_idx": {
+          "name": "practical_guides_rels_courses_id_idx",
+          "columns": [
+            {
+              "expression": "courses_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        }
+      },
+      "foreignKeys": {
+        "practical_guides_rels_parent_fk": {
+          "name": "practical_guides_rels_parent_fk",
+          "tableFrom": "practical_guides_rels",
+          "tableTo": "practical_guides",
+          "columnsFrom": [
+            "parent_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        },
+        "practical_guides_rels_conditions_fk": {
+          "name": "practical_guides_rels_conditions_fk",
+          "tableFrom": "practical_guides_rels",
+          "tableTo": "conditions",
+          "columnsFrom": [
+            "conditions_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        },
+        "practical_guides_rels_personas_fk": {
+          "name": "practical_guides_rels_personas_fk",
+          "tableFrom": "practical_guides_rels",
+          "tableTo": "personas",
+          "columnsFrom": [
+            "personas_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        },
+        "practical_guides_rels_themes_fk": {
+          "name": "practical_guides_rels_themes_fk",
+          "tableFrom": "practical_guides_rels",
+          "tableTo": "themes",
+          "columnsFrom": [
+            "themes_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        },
+        "practical_guides_rels_practical_guides_fk": {
+          "name": "practical_guides_rels_practical_guides_fk",
+          "tableFrom": "practical_guides_rels",
+          "tableTo": "practical_guides",
+          "columnsFrom": [
+            "practical_guides_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        },
+        "practical_guides_rels_courses_fk": {
+          "name": "practical_guides_rels_courses_fk",
+          "tableFrom": "practical_guides_rels",
+          "tableTo": "courses",
+          "columnsFrom": [
+            "courses_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
+    "public._practical_guides_v": {
+      "name": "_practical_guides_v",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "serial",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "parent_id": {
+          "name": "parent_id",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "version_title": {
+          "name": "version_title",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "version_slug": {
+          "name": "version_slug",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "version_description": {
+          "name": "version_description",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "version_content": {
+          "name": "version_content",
+          "type": "jsonb",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "version_html": {
+          "name": "version_html",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "version_view_count": {
+          "name": "version_view_count",
+          "type": "numeric",
+          "primaryKey": false,
+          "notNull": false,
+          "default": 0
+        },
+        "version_image_id": {
+          "name": "version_image_id",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "version_image_banner_id": {
+          "name": "version_image_banner_id",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "version_updated_at": {
+          "name": "version_updated_at",
+          "type": "timestamp(3) with time zone",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "version_created_at": {
+          "name": "version_created_at",
+          "type": "timestamp(3) with time zone",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "version__status": {
+          "name": "version__status",
+          "type": "enum__practical_guides_v_version_status",
+          "typeSchema": "public",
+          "primaryKey": false,
+          "notNull": false,
+          "default": "'draft'"
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp(3) with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "updated_at": {
+          "name": "updated_at",
+          "type": "timestamp(3) with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "latest": {
+          "name": "latest",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": false
+        }
+      },
+      "indexes": {
+        "_practical_guides_v_parent_idx": {
+          "name": "_practical_guides_v_parent_idx",
+          "columns": [
+            {
+              "expression": "parent_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        },
+        "_practical_guides_v_version_version_slug_idx": {
+          "name": "_practical_guides_v_version_version_slug_idx",
+          "columns": [
+            {
+              "expression": "version_slug",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        },
+        "_practical_guides_v_version_version_image_idx": {
+          "name": "_practical_guides_v_version_version_image_idx",
+          "columns": [
+            {
+              "expression": "version_image_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        },
+        "_practical_guides_v_version_version_image_banner_idx": {
+          "name": "_practical_guides_v_version_version_image_banner_idx",
+          "columns": [
+            {
+              "expression": "version_image_banner_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        },
+        "_practical_guides_v_version_version_updated_at_idx": {
+          "name": "_practical_guides_v_version_version_updated_at_idx",
+          "columns": [
+            {
+              "expression": "version_updated_at",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        },
+        "_practical_guides_v_version_version_created_at_idx": {
+          "name": "_practical_guides_v_version_version_created_at_idx",
+          "columns": [
+            {
+              "expression": "version_created_at",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        },
+        "_practical_guides_v_version_version__status_idx": {
+          "name": "_practical_guides_v_version_version__status_idx",
+          "columns": [
+            {
+              "expression": "version__status",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        },
+        "_practical_guides_v_created_at_idx": {
+          "name": "_practical_guides_v_created_at_idx",
+          "columns": [
+            {
+              "expression": "created_at",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        },
+        "_practical_guides_v_updated_at_idx": {
+          "name": "_practical_guides_v_updated_at_idx",
+          "columns": [
+            {
+              "expression": "updated_at",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        },
+        "_practical_guides_v_latest_idx": {
+          "name": "_practical_guides_v_latest_idx",
+          "columns": [
+            {
+              "expression": "latest",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        }
+      },
+      "foreignKeys": {
+        "_practical_guides_v_parent_id_practical_guides_id_fk": {
+          "name": "_practical_guides_v_parent_id_practical_guides_id_fk",
+          "tableFrom": "_practical_guides_v",
+          "tableTo": "practical_guides",
+          "columnsFrom": [
+            "parent_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "set null",
+          "onUpdate": "no action"
+        },
+        "_practical_guides_v_version_image_id_medias_id_fk": {
+          "name": "_practical_guides_v_version_image_id_medias_id_fk",
+          "tableFrom": "_practical_guides_v",
+          "tableTo": "medias",
+          "columnsFrom": [
+            "version_image_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "set null",
+          "onUpdate": "no action"
+        },
+        "_practical_guides_v_version_image_banner_id_medias_id_fk": {
+          "name": "_practical_guides_v_version_image_banner_id_medias_id_fk",
+          "tableFrom": "_practical_guides_v",
+          "tableTo": "medias",
+          "columnsFrom": [
+            "version_image_banner_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "set null",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
+    "public._practical_guides_v_rels": {
+      "name": "_practical_guides_v_rels",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "serial",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "order": {
+          "name": "order",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "parent_id": {
+          "name": "parent_id",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "path": {
+          "name": "path",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "conditions_id": {
+          "name": "conditions_id",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "personas_id": {
+          "name": "personas_id",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "themes_id": {
+          "name": "themes_id",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "practical_guides_id": {
+          "name": "practical_guides_id",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "courses_id": {
+          "name": "courses_id",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        }
+      },
+      "indexes": {
+        "_practical_guides_v_rels_order_idx": {
+          "name": "_practical_guides_v_rels_order_idx",
+          "columns": [
+            {
+              "expression": "order",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        },
+        "_practical_guides_v_rels_parent_idx": {
+          "name": "_practical_guides_v_rels_parent_idx",
+          "columns": [
+            {
+              "expression": "parent_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        },
+        "_practical_guides_v_rels_path_idx": {
+          "name": "_practical_guides_v_rels_path_idx",
+          "columns": [
+            {
+              "expression": "path",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        },
+        "_practical_guides_v_rels_conditions_id_idx": {
+          "name": "_practical_guides_v_rels_conditions_id_idx",
+          "columns": [
+            {
+              "expression": "conditions_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        },
+        "_practical_guides_v_rels_personas_id_idx": {
+          "name": "_practical_guides_v_rels_personas_id_idx",
+          "columns": [
+            {
+              "expression": "personas_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        },
+        "_practical_guides_v_rels_themes_id_idx": {
+          "name": "_practical_guides_v_rels_themes_id_idx",
+          "columns": [
+            {
+              "expression": "themes_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        },
+        "_practical_guides_v_rels_practical_guides_id_idx": {
+          "name": "_practical_guides_v_rels_practical_guides_id_idx",
+          "columns": [
+            {
+              "expression": "practical_guides_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        },
+        "_practical_guides_v_rels_courses_id_idx": {
+          "name": "_practical_guides_v_rels_courses_id_idx",
+          "columns": [
+            {
+              "expression": "courses_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        }
+      },
+      "foreignKeys": {
+        "_practical_guides_v_rels_parent_fk": {
+          "name": "_practical_guides_v_rels_parent_fk",
+          "tableFrom": "_practical_guides_v_rels",
+          "tableTo": "_practical_guides_v",
+          "columnsFrom": [
+            "parent_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        },
+        "_practical_guides_v_rels_conditions_fk": {
+          "name": "_practical_guides_v_rels_conditions_fk",
+          "tableFrom": "_practical_guides_v_rels",
+          "tableTo": "conditions",
+          "columnsFrom": [
+            "conditions_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        },
+        "_practical_guides_v_rels_personas_fk": {
+          "name": "_practical_guides_v_rels_personas_fk",
+          "tableFrom": "_practical_guides_v_rels",
+          "tableTo": "personas",
+          "columnsFrom": [
+            "personas_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        },
+        "_practical_guides_v_rels_themes_fk": {
+          "name": "_practical_guides_v_rels_themes_fk",
+          "tableFrom": "_practical_guides_v_rels",
+          "tableTo": "themes",
+          "columnsFrom": [
+            "themes_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        },
+        "_practical_guides_v_rels_practical_guides_fk": {
+          "name": "_practical_guides_v_rels_practical_guides_fk",
+          "tableFrom": "_practical_guides_v_rels",
+          "tableTo": "practical_guides",
+          "columnsFrom": [
+            "practical_guides_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        },
+        "_practical_guides_v_rels_courses_fk": {
+          "name": "_practical_guides_v_rels_courses_fk",
+          "tableFrom": "_practical_guides_v_rels",
+          "tableTo": "courses",
+          "columnsFrom": [
+            "courses_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
+    "public.themes": {
+      "name": "themes",
       "schema": "",
       "columns": {
         "id": {
@@ -914,8 +1761,8 @@
         }
       },
       "indexes": {
-        "theme_slug_idx": {
-          "name": "theme_slug_idx",
+        "themes_slug_idx": {
+          "name": "themes_slug_idx",
           "columns": [
             {
               "expression": "slug",
@@ -929,8 +1776,8 @@
           "method": "btree",
           "with": {}
         },
-        "theme_updated_at_idx": {
-          "name": "theme_updated_at_idx",
+        "themes_updated_at_idx": {
+          "name": "themes_updated_at_idx",
           "columns": [
             {
               "expression": "updated_at",
@@ -944,8 +1791,8 @@
           "method": "btree",
           "with": {}
         },
-        "theme_created_at_idx": {
-          "name": "theme_created_at_idx",
+        "themes_created_at_idx": {
+          "name": "themes_created_at_idx",
           "columns": [
             {
               "expression": "created_at",
@@ -967,118 +1814,8 @@
       "checkConstraints": {},
       "isRLSEnabled": false
     },
-    "public.journey_persona_chapter_practical_guide_list": {
-      "name": "journey_persona_chapter_practical_guide_list",
-      "schema": "",
-      "columns": {
-        "_order": {
-          "name": "_order",
-          "type": "integer",
-          "primaryKey": false,
-          "notNull": true
-        },
-        "_parent_id": {
-          "name": "_parent_id",
-          "type": "varchar",
-          "primaryKey": false,
-          "notNull": true
-        },
-        "id": {
-          "name": "id",
-          "type": "varchar",
-          "primaryKey": true,
-          "notNull": true
-        },
-        "practical_guide_id": {
-          "name": "practical_guide_id",
-          "type": "integer",
-          "primaryKey": false,
-          "notNull": false
-        }
-      },
-      "indexes": {
-        "journey_persona_chapter_practical_guide_list_order_idx": {
-          "name": "journey_persona_chapter_practical_guide_list_order_idx",
-          "columns": [
-            {
-              "expression": "_order",
-              "isExpression": false,
-              "asc": true,
-              "nulls": "last"
-            }
-          ],
-          "isUnique": false,
-          "concurrently": false,
-          "method": "btree",
-          "with": {}
-        },
-        "journey_persona_chapter_practical_guide_list_parent_id_idx": {
-          "name": "journey_persona_chapter_practical_guide_list_parent_id_idx",
-          "columns": [
-            {
-              "expression": "_parent_id",
-              "isExpression": false,
-              "asc": true,
-              "nulls": "last"
-            }
-          ],
-          "isUnique": false,
-          "concurrently": false,
-          "method": "btree",
-          "with": {}
-        },
-        "journey_persona_chapter_practical_guide_list_practical_g_idx": {
-          "name": "journey_persona_chapter_practical_guide_list_practical_g_idx",
-          "columns": [
-            {
-              "expression": "practical_guide_id",
-              "isExpression": false,
-              "asc": true,
-              "nulls": "last"
-            }
-          ],
-          "isUnique": false,
-          "concurrently": false,
-          "method": "btree",
-          "with": {}
-        }
-      },
-      "foreignKeys": {
-        "journey_persona_chapter_practical_guide_list_practical_guide_id_practical_guide_id_fk": {
-          "name": "journey_persona_chapter_practical_guide_list_practical_guide_id_practical_guide_id_fk",
-          "tableFrom": "journey_persona_chapter_practical_guide_list",
-          "tableTo": "practical_guide",
-          "columnsFrom": [
-            "practical_guide_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
-          "onDelete": "set null",
-          "onUpdate": "no action"
-        },
-        "journey_persona_chapter_practical_guide_list_parent_id_fk": {
-          "name": "journey_persona_chapter_practical_guide_list_parent_id_fk",
-          "tableFrom": "journey_persona_chapter_practical_guide_list",
-          "tableTo": "journey_persona_chapter",
-          "columnsFrom": [
-            "_parent_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
-          "onDelete": "cascade",
-          "onUpdate": "no action"
-        }
-      },
-      "compositePrimaryKeys": {},
-      "uniqueConstraints": {},
-      "policies": {},
-      "checkConstraints": {},
-      "isRLSEnabled": false
-    },
-    "public.journey_persona_chapter": {
-      "name": "journey_persona_chapter",
+    "public.journeys_chapter": {
+      "name": "journeys_chapter",
       "schema": "",
       "columns": {
         "_order": {
@@ -1107,8 +1844,8 @@
         }
       },
       "indexes": {
-        "journey_persona_chapter_order_idx": {
-          "name": "journey_persona_chapter_order_idx",
+        "journeys_chapter_order_idx": {
+          "name": "journeys_chapter_order_idx",
           "columns": [
             {
               "expression": "_order",
@@ -1122,8 +1859,8 @@
           "method": "btree",
           "with": {}
         },
-        "journey_persona_chapter_parent_id_idx": {
-          "name": "journey_persona_chapter_parent_id_idx",
+        "journeys_chapter_parent_id_idx": {
+          "name": "journeys_chapter_parent_id_idx",
           "columns": [
             {
               "expression": "_parent_id",
@@ -1139,10 +1876,10 @@
         }
       },
       "foreignKeys": {
-        "journey_persona_chapter_parent_id_fk": {
-          "name": "journey_persona_chapter_parent_id_fk",
-          "tableFrom": "journey_persona_chapter",
-          "tableTo": "journey",
+        "journeys_chapter_parent_id_fk": {
+          "name": "journeys_chapter_parent_id_fk",
+          "tableFrom": "journeys_chapter",
+          "tableTo": "journeys",
           "columnsFrom": [
             "_parent_id"
           ],
@@ -1159,8 +1896,8 @@
       "checkConstraints": {},
       "isRLSEnabled": false
     },
-    "public.journey": {
-      "name": "journey",
+    "public.journeys": {
+      "name": "journeys",
       "schema": "",
       "columns": {
         "id": {
@@ -1175,8 +1912,14 @@
           "primaryKey": false,
           "notNull": true
         },
-        "persona_persona_id": {
-          "name": "persona_persona_id",
+        "persona_id": {
+          "name": "persona_id",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "image_id": {
+          "name": "image_id",
           "type": "integer",
           "primaryKey": false,
           "notNull": false
@@ -1197,11 +1940,11 @@
         }
       },
       "indexes": {
-        "journey_persona_persona_persona_idx": {
-          "name": "journey_persona_persona_persona_idx",
+        "journeys_persona_idx": {
+          "name": "journeys_persona_idx",
           "columns": [
             {
-              "expression": "persona_persona_id",
+              "expression": "persona_id",
               "isExpression": false,
               "asc": true,
               "nulls": "last"
@@ -1212,8 +1955,23 @@
           "method": "btree",
           "with": {}
         },
-        "journey_updated_at_idx": {
-          "name": "journey_updated_at_idx",
+        "journeys_image_idx": {
+          "name": "journeys_image_idx",
+          "columns": [
+            {
+              "expression": "image_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        },
+        "journeys_updated_at_idx": {
+          "name": "journeys_updated_at_idx",
           "columns": [
             {
               "expression": "updated_at",
@@ -1227,8 +1985,8 @@
           "method": "btree",
           "with": {}
         },
-        "journey_created_at_idx": {
-          "name": "journey_created_at_idx",
+        "journeys_created_at_idx": {
+          "name": "journeys_created_at_idx",
           "columns": [
             {
               "expression": "created_at",
@@ -1244,12 +2002,25 @@
         }
       },
       "foreignKeys": {
-        "journey_persona_persona_id_persona_id_fk": {
-          "name": "journey_persona_persona_id_persona_id_fk",
-          "tableFrom": "journey",
-          "tableTo": "persona",
+        "journeys_persona_id_personas_id_fk": {
+          "name": "journeys_persona_id_personas_id_fk",
+          "tableFrom": "journeys",
+          "tableTo": "personas",
           "columnsFrom": [
-            "persona_persona_id"
+            "persona_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "set null",
+          "onUpdate": "no action"
+        },
+        "journeys_image_id_medias_id_fk": {
+          "name": "journeys_image_id_medias_id_fk",
+          "tableFrom": "journeys",
+          "tableTo": "medias",
+          "columnsFrom": [
+            "image_id"
           ],
           "columnsTo": [
             "id"
@@ -1258,6 +2029,310 @@
           "onUpdate": "no action"
         }
       },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
+    "public.journeys_rels": {
+      "name": "journeys_rels",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "serial",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "order": {
+          "name": "order",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "parent_id": {
+          "name": "parent_id",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "path": {
+          "name": "path",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "practical_guides_id": {
+          "name": "practical_guides_id",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "courses_id": {
+          "name": "courses_id",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        }
+      },
+      "indexes": {
+        "journeys_rels_order_idx": {
+          "name": "journeys_rels_order_idx",
+          "columns": [
+            {
+              "expression": "order",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        },
+        "journeys_rels_parent_idx": {
+          "name": "journeys_rels_parent_idx",
+          "columns": [
+            {
+              "expression": "parent_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        },
+        "journeys_rels_path_idx": {
+          "name": "journeys_rels_path_idx",
+          "columns": [
+            {
+              "expression": "path",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        },
+        "journeys_rels_practical_guides_id_idx": {
+          "name": "journeys_rels_practical_guides_id_idx",
+          "columns": [
+            {
+              "expression": "practical_guides_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        },
+        "journeys_rels_courses_id_idx": {
+          "name": "journeys_rels_courses_id_idx",
+          "columns": [
+            {
+              "expression": "courses_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        }
+      },
+      "foreignKeys": {
+        "journeys_rels_parent_fk": {
+          "name": "journeys_rels_parent_fk",
+          "tableFrom": "journeys_rels",
+          "tableTo": "journeys",
+          "columnsFrom": [
+            "parent_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        },
+        "journeys_rels_practical_guides_fk": {
+          "name": "journeys_rels_practical_guides_fk",
+          "tableFrom": "journeys_rels",
+          "tableTo": "practical_guides",
+          "columnsFrom": [
+            "practical_guides_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        },
+        "journeys_rels_courses_fk": {
+          "name": "journeys_rels_courses_fk",
+          "tableFrom": "journeys_rels",
+          "tableTo": "courses",
+          "columnsFrom": [
+            "courses_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
+    "public.medias": {
+      "name": "medias",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "serial",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "alt": {
+          "name": "alt",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "updated_at": {
+          "name": "updated_at",
+          "type": "timestamp(3) with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp(3) with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "url": {
+          "name": "url",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "thumbnail_u_r_l": {
+          "name": "thumbnail_u_r_l",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "filename": {
+          "name": "filename",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "mime_type": {
+          "name": "mime_type",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "filesize": {
+          "name": "filesize",
+          "type": "numeric",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "width": {
+          "name": "width",
+          "type": "numeric",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "height": {
+          "name": "height",
+          "type": "numeric",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "focal_x": {
+          "name": "focal_x",
+          "type": "numeric",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "focal_y": {
+          "name": "focal_y",
+          "type": "numeric",
+          "primaryKey": false,
+          "notNull": false
+        }
+      },
+      "indexes": {
+        "medias_updated_at_idx": {
+          "name": "medias_updated_at_idx",
+          "columns": [
+            {
+              "expression": "updated_at",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        },
+        "medias_created_at_idx": {
+          "name": "medias_created_at_idx",
+          "columns": [
+            {
+              "expression": "created_at",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        },
+        "medias_filename_idx": {
+          "name": "medias_filename_idx",
+          "columns": [
+            {
+              "expression": "filename",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": true,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        }
+      },
+      "foreignKeys": {},
       "compositePrimaryKeys": {},
       "uniqueConstraints": {},
       "policies": {},
@@ -1430,14 +2505,14 @@
           "primaryKey": false,
           "notNull": false
         },
-        "persona_id": {
-          "name": "persona_id",
+        "personas_id": {
+          "name": "personas_id",
           "type": "integer",
           "primaryKey": false,
           "notNull": false
         },
-        "condition_id": {
-          "name": "condition_id",
+        "conditions_id": {
+          "name": "conditions_id",
           "type": "integer",
           "primaryKey": false,
           "notNull": false
@@ -1448,20 +2523,26 @@
           "primaryKey": false,
           "notNull": false
         },
-        "practical_guide_id": {
-          "name": "practical_guide_id",
+        "practical_guides_id": {
+          "name": "practical_guides_id",
           "type": "integer",
           "primaryKey": false,
           "notNull": false
         },
-        "theme_id": {
-          "name": "theme_id",
+        "themes_id": {
+          "name": "themes_id",
           "type": "integer",
           "primaryKey": false,
           "notNull": false
         },
-        "journey_id": {
-          "name": "journey_id",
+        "journeys_id": {
+          "name": "journeys_id",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "medias_id": {
+          "name": "medias_id",
           "type": "integer",
           "primaryKey": false,
           "notNull": false
@@ -1528,11 +2609,11 @@
           "method": "btree",
           "with": {}
         },
-        "payload_locked_documents_rels_persona_id_idx": {
-          "name": "payload_locked_documents_rels_persona_id_idx",
+        "payload_locked_documents_rels_personas_id_idx": {
+          "name": "payload_locked_documents_rels_personas_id_idx",
           "columns": [
             {
-              "expression": "persona_id",
+              "expression": "personas_id",
               "isExpression": false,
               "asc": true,
               "nulls": "last"
@@ -1543,11 +2624,11 @@
           "method": "btree",
           "with": {}
         },
-        "payload_locked_documents_rels_condition_id_idx": {
-          "name": "payload_locked_documents_rels_condition_id_idx",
+        "payload_locked_documents_rels_conditions_id_idx": {
+          "name": "payload_locked_documents_rels_conditions_id_idx",
           "columns": [
             {
-              "expression": "condition_id",
+              "expression": "conditions_id",
               "isExpression": false,
               "asc": true,
               "nulls": "last"
@@ -1573,11 +2654,11 @@
           "method": "btree",
           "with": {}
         },
-        "payload_locked_documents_rels_practical_guide_id_idx": {
-          "name": "payload_locked_documents_rels_practical_guide_id_idx",
+        "payload_locked_documents_rels_practical_guides_id_idx": {
+          "name": "payload_locked_documents_rels_practical_guides_id_idx",
           "columns": [
             {
-              "expression": "practical_guide_id",
+              "expression": "practical_guides_id",
               "isExpression": false,
               "asc": true,
               "nulls": "last"
@@ -1588,11 +2669,11 @@
           "method": "btree",
           "with": {}
         },
-        "payload_locked_documents_rels_theme_id_idx": {
-          "name": "payload_locked_documents_rels_theme_id_idx",
+        "payload_locked_documents_rels_themes_id_idx": {
+          "name": "payload_locked_documents_rels_themes_id_idx",
           "columns": [
             {
-              "expression": "theme_id",
+              "expression": "themes_id",
               "isExpression": false,
               "asc": true,
               "nulls": "last"
@@ -1603,11 +2684,26 @@
           "method": "btree",
           "with": {}
         },
-        "payload_locked_documents_rels_journey_id_idx": {
-          "name": "payload_locked_documents_rels_journey_id_idx",
+        "payload_locked_documents_rels_journeys_id_idx": {
+          "name": "payload_locked_documents_rels_journeys_id_idx",
           "columns": [
             {
-              "expression": "journey_id",
+              "expression": "journeys_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        },
+        "payload_locked_documents_rels_medias_id_idx": {
+          "name": "payload_locked_documents_rels_medias_id_idx",
+          "columns": [
+            {
+              "expression": "medias_id",
               "isExpression": false,
               "asc": true,
               "nulls": "last"
@@ -1646,12 +2742,12 @@
           "onDelete": "cascade",
           "onUpdate": "no action"
         },
-        "payload_locked_documents_rels_persona_fk": {
-          "name": "payload_locked_documents_rels_persona_fk",
+        "payload_locked_documents_rels_personas_fk": {
+          "name": "payload_locked_documents_rels_personas_fk",
           "tableFrom": "payload_locked_documents_rels",
-          "tableTo": "persona",
+          "tableTo": "personas",
           "columnsFrom": [
-            "persona_id"
+            "personas_id"
           ],
           "columnsTo": [
             "id"
@@ -1659,12 +2755,12 @@
           "onDelete": "cascade",
           "onUpdate": "no action"
         },
-        "payload_locked_documents_rels_condition_fk": {
-          "name": "payload_locked_documents_rels_condition_fk",
+        "payload_locked_documents_rels_conditions_fk": {
+          "name": "payload_locked_documents_rels_conditions_fk",
           "tableFrom": "payload_locked_documents_rels",
-          "tableTo": "condition",
+          "tableTo": "conditions",
           "columnsFrom": [
-            "condition_id"
+            "conditions_id"
           ],
           "columnsTo": [
             "id"
@@ -1685,12 +2781,12 @@
           "onDelete": "cascade",
           "onUpdate": "no action"
         },
-        "payload_locked_documents_rels_practical_guide_fk": {
-          "name": "payload_locked_documents_rels_practical_guide_fk",
+        "payload_locked_documents_rels_practical_guides_fk": {
+          "name": "payload_locked_documents_rels_practical_guides_fk",
           "tableFrom": "payload_locked_documents_rels",
-          "tableTo": "practical_guide",
+          "tableTo": "practical_guides",
           "columnsFrom": [
-            "practical_guide_id"
+            "practical_guides_id"
           ],
           "columnsTo": [
             "id"
@@ -1698,12 +2794,12 @@
           "onDelete": "cascade",
           "onUpdate": "no action"
         },
-        "payload_locked_documents_rels_theme_fk": {
-          "name": "payload_locked_documents_rels_theme_fk",
+        "payload_locked_documents_rels_themes_fk": {
+          "name": "payload_locked_documents_rels_themes_fk",
           "tableFrom": "payload_locked_documents_rels",
-          "tableTo": "theme",
+          "tableTo": "themes",
           "columnsFrom": [
-            "theme_id"
+            "themes_id"
           ],
           "columnsTo": [
             "id"
@@ -1711,12 +2807,25 @@
           "onDelete": "cascade",
           "onUpdate": "no action"
         },
-        "payload_locked_documents_rels_journey_fk": {
-          "name": "payload_locked_documents_rels_journey_fk",
+        "payload_locked_documents_rels_journeys_fk": {
+          "name": "payload_locked_documents_rels_journeys_fk",
           "tableFrom": "payload_locked_documents_rels",
-          "tableTo": "journey",
+          "tableTo": "journeys",
           "columnsFrom": [
-            "journey_id"
+            "journeys_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        },
+        "payload_locked_documents_rels_medias_fk": {
+          "name": "payload_locked_documents_rels_medias_fk",
+          "tableFrom": "payload_locked_documents_rels",
+          "tableTo": "medias",
+          "columnsFrom": [
+            "medias_id"
           ],
           "columnsTo": [
             "id"
@@ -2038,6 +3147,31 @@
         "admin",
         "editor"
       ]
+    },
+    "public.enum_courses_type": {
+      "name": "enum_courses_type",
+      "schema": "public",
+      "values": [
+        "MOOC",
+        "Webinaire",
+        "Présentiel"
+      ]
+    },
+    "public.enum_practical_guides_status": {
+      "name": "enum_practical_guides_status",
+      "schema": "public",
+      "values": [
+        "draft",
+        "published"
+      ]
+    },
+    "public.enum__practical_guides_v_version_status": {
+      "name": "enum__practical_guides_v_version_status",
+      "schema": "public",
+      "values": [
+        "draft",
+        "published"
+      ]
     }
   },
   "schemas": {},
@@ -2050,6 +3184,6 @@
     "tables": {},
     "columns": {}
   },
-  "id": "3fa37b06-7c14-48f4-a944-18fa35b68705",
+  "id": "84dc2965-fe66-4b45-af15-807b6d36eb23",
   "prevId": "00000000-0000-0000-0000-000000000000"
 }

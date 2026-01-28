@@ -1,7 +1,7 @@
 import type { RegisteredLinkProps } from "@codegouvfr/react-dsfr/link";
 import sanitize from "sanitize-html";
 
-type Link = {
+export type Link = {
 	text: string;
 	linkProps: RegisteredLinkProps;
 	subLinks?: Link[];
@@ -21,8 +21,7 @@ export const shortenDescription = (string: string) => {
 	return isLongerThan ? `${string.substring(0, 250)}...` : string;
 };
 
-export function slugify(text: string | undefined) {
-	if (!text) return;
+export function slugify(text: string): string {
 	return text
 		.toLowerCase()
 		.normalize("NFD")
@@ -41,17 +40,9 @@ export default function generateSummary(html: string): Link[] {
 
 	const res = [
 		...matches.map(([, title]) => ({
-			linkProps: { href: `#${slugify(title)}` },
+			linkProps: { href: `#${title ? slugify(title) : ""}` },
 			text: title,
 		})),
-		{
-			linkProps: { href: "#fiches-pratiques" },
-			text: "Ces fiches pratiques qui pourraient vous intéresser",
-		},
-		{
-			linkProps: { href: "#formations" },
-			text: "Ces formations qui pourraient vous intéresser",
-		},
 	] as Link[];
 
 	return res;

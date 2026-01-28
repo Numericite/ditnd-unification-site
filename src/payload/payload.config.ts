@@ -13,7 +13,7 @@ import { Courses } from "./collections/Courses";
 import { PracticalGuides } from "./collections/PracticalGuides";
 import { Themes } from "./collections/Themes";
 import { Journeys } from "./collections/Journeys";
-import { Media } from "./collections/Media";
+import { Medias } from "./collections/Medias";
 
 const filename = fileURLToPath(import.meta.url);
 const dirname = path.dirname(filename);
@@ -33,7 +33,7 @@ export default buildConfig({
 		PracticalGuides,
 		Themes,
 		Journeys,
-		Media,
+		Medias,
 	],
 	editor: lexicalEditor(),
 	secret: process.env.PAYLOAD_SECRET || "",

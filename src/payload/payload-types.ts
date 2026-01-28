@@ -74,7 +74,7 @@ export interface Config {
     'practical-guides': PracticalGuide;
     themes: Theme;
     journeys: Journey;
-    media: Media;
+    medias: Media;
     'payload-kv': PayloadKv;
     'payload-locked-documents': PayloadLockedDocument;
     'payload-preferences': PayloadPreference;
@@ -89,7 +89,7 @@ export interface Config {
     'practical-guides': PracticalGuidesSelect<false> | PracticalGuidesSelect<true>;
     themes: ThemesSelect<false> | ThemesSelect<true>;
     journeys: JourneysSelect<false> | JourneysSelect<true>;
-    media: MediaSelect<false> | MediaSelect<true>;
+    medias: MediasSelect<false> | MediasSelect<true>;
     'payload-kv': PayloadKvSelect<false> | PayloadKvSelect<true>;
     'payload-locked-documents': PayloadLockedDocumentsSelect<false> | PayloadLockedDocumentsSelect<true>;
     'payload-preferences': PayloadPreferencesSelect<false> | PayloadPreferencesSelect<true>;
@@ -213,7 +213,7 @@ export interface Theme {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "media".
+ * via the `definition` "medias".
  */
 export interface Media {
   id: number;
@@ -261,9 +261,11 @@ export interface PracticalGuide {
   'practical-guides'?: (number | PracticalGuide)[] | null;
   courses?: (number | Course)[] | null;
   viewCount: number;
+  image?: (number | null) | Media;
   imageBanner?: (number | null) | Media;
   updatedAt: string;
   createdAt: string;
+  _status?: ('draft' | 'published') | null;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -273,10 +275,11 @@ export interface Journey {
   id: number;
   journey_name: string;
   persona: number | Persona;
+  image?: (number | null) | Media;
   chapter: {
     'chapter-name': string;
     'practical-guides': (number | PracticalGuide)[];
-    courses: (number | Course)[];
+    courses?: (number | Course)[] | null;
     id?: string | null;
   }[];
   updatedAt: string;
@@ -335,7 +338,7 @@ export interface PayloadLockedDocument {
         value: number | Journey;
       } | null)
     | ({
-        relationTo: 'media';
+        relationTo: 'medias';
         value: number | Media;
       } | null);
   globalSlug?: string | null;
@@ -462,9 +465,11 @@ export interface PracticalGuidesSelect<T extends boolean = true> {
   'practical-guides'?: T;
   courses?: T;
   viewCount?: T;
+  image?: T;
   imageBanner?: T;
   updatedAt?: T;
   createdAt?: T;
+  _status?: T;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -484,6 +489,7 @@ export interface ThemesSelect<T extends boolean = true> {
 export interface JourneysSelect<T extends boolean = true> {
   journey_name?: T;
   persona?: T;
+  image?: T;
   chapter?:
     | T
     | {
@@ -497,9 +503,9 @@ export interface JourneysSelect<T extends boolean = true> {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "media_select".
+ * via the `definition` "medias_select".
  */
-export interface MediaSelect<T extends boolean = true> {
+export interface MediasSelect<T extends boolean = true> {
   alt?: T;
   updatedAt?: T;
   createdAt?: T;

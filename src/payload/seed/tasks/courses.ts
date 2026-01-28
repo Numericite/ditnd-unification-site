@@ -9,7 +9,7 @@ const courses = [
 		link: "https://lien-vers-site.com",
 		theme: 1,
 		persona: 1,
-		condition: 1,
+		condition: 4,
 		type: "Webinaire" as "Webinaire" | "MOOC" | "Présentiel",
 	},
 	{
@@ -19,7 +19,7 @@ const courses = [
 		link: "https://lien-vers-site.com",
 		theme: 1,
 		persona: 1,
-		condition: 1,
+		condition: 4,
 		type: "Présentiel" as "Webinaire" | "MOOC" | "Présentiel",
 	},
 	{
