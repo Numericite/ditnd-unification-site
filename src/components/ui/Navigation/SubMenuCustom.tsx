@@ -36,7 +36,7 @@ const ProfessionalPanelSlugs = ({
 	personaPros: PersonaTile[];
 }) => {
 	const router = useRouter();
-	const { classes, cx } = useStyles();
+	const { classes, cx } = useStyles({ personaSlug: "professional" });
 	return (
 		<div className={classes.submenuPanel}>
 			<p className={classes.submenuPanelHeading}>Types de professionnels :</p>
@@ -65,7 +65,7 @@ const SubMenuCustom = ({
 	personaPros,
 	isActive,
 }: SubMenuCustomProps) => {
-	const { classes } = useStyles();
+	const { classes } = useStyles({ personaSlug: persona.slug });
 
 	const PictoComponent = getPictoByPersonaSlug(persona.slug);
 
@@ -83,66 +83,70 @@ const SubMenuCustom = ({
 	);
 };
 
-const useStyles = tss.withName(SubMenuCustom.name).create(() => ({
-	personaContainer: {
-		display: "flex",
-		alignItems: "center",
-		gap: fr.spacing("2w"),
-		marginTop: fr.spacing("1v"),
-	},
-	personaInfo: {
-		display: "flex",
-		flexDirection: "column",
-	},
-	personaName: {
-		fontWeight: "bold",
-		fontSize: "14px",
-	},
-	personaDescription: {
-		color: fr.colors.decisions.text.default.grey.default,
-		fontSize: "12px",
-	},
-	submenuPanel: {
-		position: "absolute",
-		left: "100%",
-		top: 0,
-		width: "max-content",
-		height: "min-content",
-		border: `1px solid ${fr.colors.decisions.border.default.grey.default}`,
-		borderBottom: "none",
-		background: "white",
-		padding: fr.spacing("3w"),
-		display: "flex",
-		flexDirection: "column",
-		gap: fr.spacing("2v"),
-		cursor: "default",
-	},
-	submenuPanelHeading: {
-		fontSize: "14px",
-	},
-	conditionsGrid: {
-		display: "grid",
-		gridTemplateColumns: "repeat(2, 1fr)",
-		gap: fr.spacing("2w"),
-	},
-	conditionCard: {
-		display: "flex",
-		border: `1px solid ${fr.colors.decisions.border.default.grey.default}`,
-
-		flexDirection: "column",
-		maxWidth: "300px",
-		padding: `${fr.spacing("2w")} ${fr.spacing("3w")}`,
-		":hover": {
-			backgroundColor: fr.colors.decisions.background.default.grey.hover,
+const useStyles = tss
+	.withName(SubMenuCustom.name)
+	.withParams<{ personaSlug: string }>()
+	.create(({ personaSlug }) => ({
+		personaContainer: {
+			display: "flex",
+			alignItems: "center",
+			gap: fr.spacing("2w"),
+			marginTop: fr.spacing("1v"),
+			pointerEvents: personaSlug !== "professional" ? "none" : "auto",
 		},
-	},
-	conditionName: {
-		fontWeight: "bold",
-		fontSize: "14px",
-	},
-	conditionDescription: {
-		fontSize: "12px",
-	},
-}));
+		personaInfo: {
+			display: "flex",
+			flexDirection: "column",
+		},
+		personaName: {
+			fontWeight: "bold",
+			fontSize: "14px",
+		},
+		personaDescription: {
+			color: fr.colors.decisions.text.default.grey.default,
+			fontSize: "12px",
+		},
+		submenuPanel: {
+			position: "absolute",
+			left: "100%",
+			top: 0,
+			width: "max-content",
+			height: "min-content",
+			border: `1px solid ${fr.colors.decisions.border.default.grey.default}`,
+			borderBottom: "none",
+			background: "white",
+			padding: fr.spacing("3w"),
+			display: "flex",
+			flexDirection: "column",
+			gap: fr.spacing("2v"),
+			cursor: "default",
+		},
+		submenuPanelHeading: {
+			fontSize: "14px",
+		},
+		conditionsGrid: {
+			display: "grid",
+			gridTemplateColumns: "repeat(2, 1fr)",
+			gap: fr.spacing("2w"),
+		},
+		conditionCard: {
+			display: "flex",
+			border: `1px solid ${fr.colors.decisions.border.default.grey.default}`,
+
+			flexDirection: "column",
+			maxWidth: "300px",
+			padding: `${fr.spacing("2w")} ${fr.spacing("3w")}`,
+			":hover": {
+				backgroundColor: fr.colors.decisions.background.default.grey.hover,
+			},
+		},
+		conditionName: {
+			fontWeight: "bold",
+			fontSize: "14px",
+		},
+		conditionDescription: {
+			fontSize: "12px",
+		},
+	}));
 
 export default SubMenuCustom;

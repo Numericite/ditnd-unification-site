@@ -73,15 +73,18 @@ export default function JourneyPage() {
 			</Head>
 			<div className={fr.cx("fr-container")}>
 				<Breadcrumb
+					className={fr.cx("fr-mb-2v")}
 					currentPageLabel={persona?.name.toLowerCase()}
 					homeLinkProps={{
 						href: "/",
 					}}
 					segments={[]}
 				/>
-			</div>
-			<div className={fr.cx("fr-container")}>
-				<div className={fr.cx("fr-pb-4w")}>
+				<h2>{persona?.name}</h2>
+				<div
+					className={fr.cx("fr-pb-4w")}
+					style={{ marginRight: "-12px", marginLeft: "-12px" }}
+				>
 					<PersonaTiles
 						key={persona_slug}
 						tiles={personas}
