@@ -17,6 +17,7 @@ import SubMenuCustom from "~/components/ui/Navigation/SubMenuCustom";
 import { useState } from "react";
 import { fr } from "@codegouvfr/react-dsfr";
 import { personas } from ".";
+import ChatBot from "~/components/Chatbot/Chatbot";
 
 declare module "@codegouvfr/react-dsfr/next-pagesdir" {
 	interface RegisterLink {
@@ -176,9 +177,9 @@ function App({ Component, pageProps }: AppProps) {
 					serviceTitle="DI-TND"
 					serviceTagline="Délégation interministérielle pour les troubles du neurodéveloppement"
 				/>
-
 				<main>
 					{isLoadingHomePage ? <Loader /> : <Component {...pageProps} />}
+					<ChatBot />
 				</main>
 				<Footer
 					accessibility="non compliant"
