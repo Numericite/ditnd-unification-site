@@ -68,6 +68,7 @@ export const standardFields = {
 		label: { fr: "html" },
 		admin: {
 			readOnly: true,
+			hidden: true,
 		},
 		hooks: {
 			beforeChange: [

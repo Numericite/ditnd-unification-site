@@ -36,6 +36,15 @@ export const CMSFooter: GlobalConfig = {
 						standardFields.html,
 					],
 				},
+				{
+					label: "Modalités d'utilisation",
+					name: "termsOfUse",
+					fields: [
+						standardFields.title,
+						standardFields.wysiwyg,
+						standardFields.html,
+					],
+				},
 			],
 		},
 	],

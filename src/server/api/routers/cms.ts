@@ -40,4 +40,11 @@ export const cmsRouter = createTRPCRouter({
 
 		return res.cgu;
 	}),
+	termsOfUse: publicProcedure.query(async ({ ctx }) => {
+		const res = await ctx.payload.findGlobal({
+			slug: "footer",
+		});
+
+		return res.termsOfUse;
+	}),
 });
