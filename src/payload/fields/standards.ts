@@ -3,6 +3,7 @@ import {
 	HeadingFeature,
 	lexicalEditor,
 } from "@payloadcms/richtext-lexical";
+import { convertLexicalToHTML } from "@payloadcms/richtext-lexical/html";
 import type { Field } from "payload";
 
 export const standardFields = {
@@ -59,6 +60,23 @@ export const standardFields = {
 				}),
 			],
 		}),
+	},
+	html: {
+		name: "html",
+		type: "text",
+		required: true,
+		label: { fr: "html" },
+		admin: {
+			readOnly: true,
+		},
+		hooks: {
+			beforeChange: [
+				async ({ siblingData }) => {
+					if (!siblingData?.content) return "";
+					return convertLexicalToHTML({ data: siblingData.content });
+				},
+			],
+		},
 	},
 	image: {
 		name: "image",

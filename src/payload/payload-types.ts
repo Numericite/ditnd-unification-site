@@ -609,6 +609,7 @@ export interface Footer {
       };
       [k: string]: unknown;
     };
+    html: string;
   };
   legalNotice: {
     title: string;
@@ -627,6 +628,7 @@ export interface Footer {
       };
       [k: string]: unknown;
     };
+    html: string;
   };
   cgu: {
     title: string;
@@ -645,6 +647,7 @@ export interface Footer {
       };
       [k: string]: unknown;
     };
+    html: string;
   };
   updatedAt?: string | null;
   createdAt?: string | null;
@@ -686,18 +689,21 @@ export interface FooterSelect<T extends boolean = true> {
     | {
         title?: T;
         content?: T;
+        html?: T;
       };
   legalNotice?:
     | T
     | {
         title?: T;
         content?: T;
+        html?: T;
       };
   cgu?:
     | T
     | {
         title?: T;
         content?: T;
+        html?: T;
       };
   updatedAt?: T;
   createdAt?: T;

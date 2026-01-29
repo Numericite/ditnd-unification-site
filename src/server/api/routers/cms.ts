@@ -24,4 +24,20 @@ export const cmsRouter = createTRPCRouter({
 
 		return res.accessibility;
 	}),
+
+	legalNotice: publicProcedure.query(async ({ ctx }) => {
+		const res = await ctx.payload.findGlobal({
+			slug: "footer",
+		});
+
+		return res.legalNotice;
+	}),
+
+	cgu: publicProcedure.query(async ({ ctx }) => {
+		const res = await ctx.payload.findGlobal({
+			slug: "footer",
+		});
+
+		return res.cgu;
+	}),
 });
