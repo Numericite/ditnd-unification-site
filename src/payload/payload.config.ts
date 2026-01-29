@@ -14,6 +14,7 @@ import { PracticalGuides } from "./collections/PracticalGuides";
 import { Themes } from "./collections/Themes";
 import { Journeys } from "./collections/Journeys";
 import { Medias } from "./collections/Medias";
+import { CMSHome } from "./globals/cms/Home";
 
 const filename = fileURLToPath(import.meta.url);
 const dirname = path.dirname(filename);
@@ -35,6 +36,7 @@ export default buildConfig({
 		Journeys,
 		Medias,
 	],
+	globals: [CMSHome],
 	editor: lexicalEditor(),
 	secret: process.env.PAYLOAD_SECRET || "",
 	typescript: {
