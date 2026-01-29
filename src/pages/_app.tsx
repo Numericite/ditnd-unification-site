@@ -66,7 +66,11 @@ function App({ Component, pageProps }: AppProps) {
 	const { data: conditions, isLoading: isLoadingHomePage } =
 		api.condition.all.useQuery();
 
-	const { data: personaPros } = api.persona.professionals.useQuery();
+	const { data: personaPros, isLoading: isLoadingPersona } =
+		api.persona.professionals.useQuery();
+
+	const { data: footerTitle, isLoading: isLoadingFooterTitle } =
+		api.cms.footerTitle.useQuery();
 
 	const [currentSubMenuPersona, setCurrentSubMenuPersona] = useState<
 		string | null
@@ -180,11 +184,39 @@ function App({ Component, pageProps }: AppProps) {
 				/>
 
 				<main>
-					{isLoadingHomePage ? <Loader /> : <Component {...pageProps} />}
+					{isLoadingHomePage || isLoadingPersona || isLoadingFooterTitle ? (
+						<Loader />
+					) : (
+						<Component {...pageProps} />
+					)}
 				</main>
 				<Footer
 					accessibility="non compliant"
-					bottomItems={[headerFooterDisplayItem]}
+					contentDescription={footerTitle}
+					accessibilityLinkProps={{
+						href: "/accessibility",
+					}}
+					termsLinkProps={{
+						href: "/legalNotice",
+					}}
+					bottomItems={[
+						{
+							text: "Données personnelles",
+							linkProps: { href: "/cgu" },
+						},
+						{
+							text: "Modalités d’utilisation",
+							linkProps: { href: "/termsOfUse" },
+						},
+						{
+							text: "Code source",
+							linkProps: {
+								href: "https://github.com/Numericite/ditnd-unification-site",
+								title: "Code source, nouvelle fenêtre",
+							},
+						},
+						headerFooterDisplayItem,
+					]}
 				/>
 			</div>
 		</>

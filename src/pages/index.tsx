@@ -17,6 +17,7 @@ import SelfTraining from "@codegouvfr/react-dsfr/picto/SelfTraining";
 import { useState } from "react";
 import { useRouter } from "next/router";
 import Image from "next/image";
+import { EmptyScreenZone } from "~/components/ui/EmptyScreenZone";
 
 export const personas: PersonaTile[] = [
 	{
@@ -56,10 +57,23 @@ export default function Home() {
 
 	const router = useRouter();
 
+	const { data: homeCMS, isLoading: isLoadingHomeCMS } =
+		api.cms.home.useQuery();
+
 	const { data: mostViewedGuides, isLoading: isLoadingViewedGuides } =
 		api.practicalGuide.getByViews.useQuery();
 
-	if (isLoadingViewedGuides) return <Loader />;
+	if (isLoadingViewedGuides || isLoadingHomeCMS) return <Loader />;
+
+	if (!homeCMS)
+		return (
+			<EmptyScreenZone>
+				<p>
+					Error loading globals with payload CMS please review your payload
+					database's globals
+				</p>
+			</EmptyScreenZone>
+		);
 
 	return (
 		<>
@@ -83,15 +97,8 @@ export default function Home() {
 							style={{ alignContent: "center" }}
 						>
 							<div className={fr.cx("fr-col-12", "fr-col-md-6")}>
-								<h1>
-									Plateforme nationale du TSA et des troubles du
-									neuro-développement
-								</h1>
-								<p>
-									La plateforme nationale au service des personnes concernées
-									par un trouble du neurodéveloppement, les parents, et les
-									professionnels.
-								</p>
+								<h1>{homeCMS.header.title}</h1>
+								<p>{homeCMS.header.description}</p>
 								<SearchBar
 									big
 									onButtonClick={() => router.push(`/guides?search=${search}`)}
@@ -122,7 +129,6 @@ export default function Home() {
 									width={400}
 									height={400}
 									src={"/HomePageIllustration.svg"}
-									unoptimized
 								/>
 							</div>
 						</div>
@@ -153,13 +159,9 @@ export default function Home() {
 							<div
 								className={cx(fr.cx("fr-col-12"), classes.mostViewedContainer)}
 							>
-								<h2>Fiches pratiques les plus lues</h2>
+								<h2>{homeCMS?.mostViewedGuides.title}</h2>
 								<div className={fr.cx("fr-text--sm")}>
-									Cyncentrism kontrakemi. Perlogi proaktiv. Emsocial
-									transfiering. Medeltism androstik stereomodern beteendedesign.
-									Realogi transdiktisk om än posttyp. Pseudotiv kontradiktisk.
-									Mytofiering FAR det heteropod suprapatologi. Kvasitris
-									agnostigyn absion anamatisk.
+									{homeCMS?.mostViewedGuides.description}
 								</div>
 
 								{mostViewedGuides?.length === 0 || !mostViewedGuides ? (
