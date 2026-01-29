@@ -1,3 +1,8 @@
+import {
+	FixedToolbarFeature,
+	HeadingFeature,
+	lexicalEditor,
+} from "@payloadcms/richtext-lexical";
 import type { Field } from "payload";
 
 export const standardFields = {
@@ -34,6 +39,26 @@ export const standardFields = {
 				required: true,
 			},
 		],
+	},
+	wysiwyg: {
+		name: "content",
+		type: "richText",
+		required: true,
+		label: { fr: "Contenu" },
+		editor: lexicalEditor({
+			admin: {
+				placeholder: "Commencez à écrire...",
+				hideGutter: false,
+			},
+
+			features: ({ defaultFeatures }) => [
+				...defaultFeatures,
+				FixedToolbarFeature(),
+				HeadingFeature({
+					enabledHeadingSizes: ["h2", "h3", "h4", "h5", "h6"],
+				}),
+			],
+		}),
 	},
 	image: {
 		name: "image",

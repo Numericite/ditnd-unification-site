@@ -8,4 +8,20 @@ export const cmsRouter = createTRPCRouter({
 
 		return res;
 	}),
+
+	footerTitle: publicProcedure.query(async ({ ctx }) => {
+		const res = await ctx.payload.findGlobal({
+			slug: "footer",
+		});
+
+		return res.title;
+	}),
+
+	accessibility: publicProcedure.query(async ({ ctx }) => {
+		const res = await ctx.payload.findGlobal({
+			slug: "footer",
+		});
+
+		return res.accessibility;
+	}),
 });

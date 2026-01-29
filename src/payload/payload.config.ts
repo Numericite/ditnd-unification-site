@@ -15,6 +15,7 @@ import { Themes } from "./collections/Themes";
 import { Journeys } from "./collections/Journeys";
 import { Medias } from "./collections/Medias";
 import { CMSHome } from "./globals/cms/Home";
+import { CMSFooter } from "./globals/cms/Footer";
 
 const filename = fileURLToPath(import.meta.url);
 const dirname = path.dirname(filename);
@@ -36,7 +37,7 @@ export default buildConfig({
 		Journeys,
 		Medias,
 	],
-	globals: [CMSHome],
+	globals: [CMSHome, CMSFooter],
 	editor: lexicalEditor(),
 	secret: process.env.PAYLOAD_SECRET || "",
 	typescript: {
