@@ -55,3 +55,8 @@ export function addAnchors(html: string) {
 		return `<h2${attrs} id="${id}">${innerHTML}</h2>`;
 	});
 }
+
+export const toArray = (value?: string | string[]) => {
+	if (!value) return [];
+	return Array.isArray(value) ? value : [value];
+};

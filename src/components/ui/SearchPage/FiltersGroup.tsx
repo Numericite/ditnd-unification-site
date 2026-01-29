@@ -4,6 +4,8 @@ import type {
 } from "~/components/PracticalGuides/GuidesFiltersDisplay";
 import { Filter } from "./Filter";
 import type { Dispatch, SetStateAction } from "react";
+import { useRouter } from "next/router";
+import { toArray } from "~/utils/tools";
 
 type Props = {
 	filters: FiltersType[];
@@ -11,6 +13,8 @@ type Props = {
 };
 
 export default function FiltersGroup({ filters, setFilters }: Props) {
+	const router = useRouter();
+
 	const handleOnChange = (
 		e: React.ChangeEvent<HTMLInputElement>,
 		collection: keyof FiltersQuery,
@@ -28,6 +32,29 @@ export default function FiltersGroup({ filters, setFilters }: Props) {
 					: current.filter((value) => value !== slug),
 			};
 		});
+
+		const currentQueryValues = toArray(router.query[collection]);
+
+		const nextValues = checked
+			? [...currentQueryValues, slug]
+			: currentQueryValues.filter((value) => value !== slug);
+
+		const nextQuery = { ...router.query };
+
+		if (nextValues.length > 0) {
+			nextQuery[collection] = nextValues;
+		} else {
+			delete nextQuery[collection];
+		}
+
+		router.push(
+			{
+				pathname: router.pathname,
+				query: nextQuery,
+			},
+			undefined,
+			{ shallow: true },
+		);
 	};
 
 	return (

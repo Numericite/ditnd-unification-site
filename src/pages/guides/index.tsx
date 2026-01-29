@@ -8,14 +8,19 @@ import { SearchGuidesDisplay } from "~/components/PracticalGuides/SearchGuidesDi
 import { useState } from "react";
 import Breadcrumb from "@codegouvfr/react-dsfr/Breadcrumb";
 import { tss } from "tss-react";
+import { useRouter } from "next/router";
+import { toArray } from "~/utils/tools";
 
 export default function PracticalGuides() {
 	const { classes, cx } = useStyles();
 
+	const router = useRouter();
+	const { conditions, themes, personas } = router.query;
+
 	const [filters, setFilters] = useState<FiltersQuery>({
-		conditions: [],
-		themes: [],
-		personas: [],
+		conditions: toArray(conditions) ?? [],
+		themes: toArray(themes) ?? [],
+		personas: toArray(personas) ?? [],
 	});
 
 	return (

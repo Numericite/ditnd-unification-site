@@ -58,6 +58,8 @@ function App({ Component, pageProps }: AppProps) {
 
 		if (href === "/guides") return path.startsWith("/guides");
 
+		if (href === "/formations") return path.startsWith("/formations");
+
 		return path === href;
 	}
 
