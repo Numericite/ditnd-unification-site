@@ -39,6 +39,14 @@ const unknownTile: TDH = {
 	display: "condition",
 };
 
+const titleByDisplay: Record<PersonaTypes, string> = {
+	default: "Qui êtes vous?",
+	person: "Sur quel trouble voulez-vous vous informer ?",
+	professional: "Quel type de professionnel êtes-vous ?",
+	afterProfessional: "Sur quel trouble voulez-vous vous informer ?",
+	condition: "",
+};
+
 export const PersonaTiles = ({
 	tiles,
 	defaultDisplay,
@@ -56,6 +64,7 @@ export const PersonaTiles = ({
 		defaultDisplay || "default",
 	);
 	const [tags, setTags] = useState<TagItem[]>(defaultTags || []);
+	const [title, setTitle] = useState(titleByDisplay.default);
 
 	const { data: professionalPersonas } = api.persona.professionals.useQuery();
 
@@ -79,14 +88,17 @@ export const PersonaTiles = ({
 		person: (tile) => {
 			handleClick(tile, "default");
 			setDisplay("person");
+			setTitle(titleByDisplay.person);
 		},
 		professional: (tile) => {
 			handleClick(tile, "default");
 			setDisplay("professional");
+			setTitle(titleByDisplay.professional);
 		},
 		afterProfessional: (tile) => {
 			handleClick(tile, "professional");
 			setDisplay("afterProfessional");
+			setTitle(titleByDisplay.afterProfessional);
 		},
 		condition: (tile) => {
 			console.log(tags);
@@ -99,6 +111,14 @@ export const PersonaTiles = ({
 			setDisplay("default");
 		},
 	};
+
+	function deleteTag(tag: TagItem) {
+		setDisplay(tag.display);
+		setTitle(titleByDisplay[tag.display]);
+		tag.display === "default"
+			? setTags([])
+			: setTags([...tags].filter((t) => t.slug !== tag.slug));
+	}
 
 	const renderContent = () => {
 		switch (display) {
@@ -134,6 +154,15 @@ export const PersonaTiles = ({
 
 	return (
 		<>
+			<div className={fr.cx("fr-col-12")}>
+				<h2>{title}</h2>
+				<div className={fr.cx("fr-text--sm")}>
+					Cyncentrism kontrakemi. Perlogi proaktiv. Emsocial transfiering.
+					Medeltism androstik stereomodern beteendedesign. Realogi transdiktisk
+					om än posttyp. Pseudotiv kontradiktisk. Mytofiering FAR det heteropod
+					suprapatologi. Kvasitris agnostigyn absion anamatisk.
+				</div>
+			</div>
 			{!hideTags && (
 				<div className={cx(fr.cx("fr-grid-row", "fr-grid-row--gutters"))}>
 					{tags.map((tag, index) => (
@@ -142,12 +171,7 @@ export const PersonaTiles = ({
 							className={cx(classes.tagStyles)}
 							dismissible
 							nativeButtonProps={{
-								onClick: function deleteTag() {
-									setDisplay(tag.display);
-									tag.display === "default"
-										? setTags([])
-										: setTags([...tags].filter((t) => t.slug !== tag.slug));
-								},
+								onClick: () => deleteTag(tag),
 							}}
 						>
 							{tag.label}

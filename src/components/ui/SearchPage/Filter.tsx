@@ -5,7 +5,7 @@ import type { FilterItem } from "~/components/PracticalGuides/GuidesFiltersDispl
 import { useBreakpointsValuesPx } from "@codegouvfr/react-dsfr/useBreakpointsValuesPx";
 import { useWindowInnerSize } from "@codegouvfr/react-dsfr/tools/useWindowInnerSize";
 import { useRouter } from "next/router";
-import { toArray } from "~/utils/tools";
+import { deserialize } from "~/utils/tools";
 
 type Props = {
 	label: string;
@@ -25,10 +25,10 @@ export const Filter = ({ label, value, handleOnChange }: Props) => {
 	const { conditions, themes, personas, type } = router.query;
 
 	const isChecked = (slug: string) =>
-		toArray(conditions).includes(slug) ||
-		toArray(themes).includes(slug) ||
-		toArray(personas).includes(slug) ||
-		toArray(type).includes(slug);
+		deserialize(conditions).includes(slug) ||
+		deserialize(themes).includes(slug) ||
+		deserialize(personas).includes(slug) ||
+		deserialize(type).includes(slug);
 
 	return (
 		<Accordion

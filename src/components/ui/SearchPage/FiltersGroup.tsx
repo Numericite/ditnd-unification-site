@@ -5,7 +5,7 @@ import type {
 import { Filter } from "./Filter";
 import type { Dispatch, SetStateAction } from "react";
 import { useRouter } from "next/router";
-import { toArray } from "~/utils/tools";
+import { deserialize, serialize } from "~/utils/tools";
 
 type Props = {
 	filters: FiltersType[];
@@ -33,16 +33,16 @@ export default function FiltersGroup({ filters, setFilters }: Props) {
 			};
 		});
 
-		const currentQueryValues = toArray(router.query[collection]);
+		const currentValues = deserialize(router.query[collection]);
 
 		const nextValues = checked
-			? [...currentQueryValues, slug]
-			: currentQueryValues.filter((value) => value !== slug);
+			? [...new Set([...currentValues, slug])]
+			: currentValues.filter((v) => v !== slug);
 
 		const nextQuery = { ...router.query };
 
 		if (nextValues.length > 0) {
-			nextQuery[collection] = nextValues;
+			nextQuery[collection] = serialize(nextValues);
 		} else {
 			delete nextQuery[collection];
 		}
