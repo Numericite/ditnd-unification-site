@@ -55,3 +55,14 @@ export function addAnchors(html: string) {
 		return `<h2${attrs} id="${id}">${innerHTML}</h2>`;
 	});
 }
+
+export const sanitizeArray = (values: string[]): string[] =>
+	Array.from(new Set(values.map((v) => v.trim())));
+
+export const serialize = (values: string[]) => values.join(",");
+
+export const deserialize = (value?: string | string[]) => {
+	if (!value) return [];
+
+	return sanitizeArray(typeof value === "string" ? value.split(",") : []);
+};
