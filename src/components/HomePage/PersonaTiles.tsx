@@ -134,33 +134,28 @@ export const PersonaTiles = ({
 
 	return (
 		<>
-      {!hideTags && (
-        <div className={cx(fr.cx("fr-grid-row", "fr-grid-row--gutters"))}>
-          {tags.map((tag, index) => (
-            <Tag
-              key={index}
-              className={cx(classes.tagStyles)}
-              dismissible
-              nativeButtonProps={{
-                onClick: function deleteTag() {
-                  setDisplay(tag.display);
-                  tag.display === "default"
-                    ? setTags([])
-                    : setTags([...tags].filter((t) => t.slug !== tag.slug));
-                },
-              }}
-            >
-              {tag.label}
-            </Tag>
-          ))}
-        </div>
-      )}
-			<div
-				className={cx(
-					fr.cx("fr-grid-row", "fr-grid-row--gutters"),
-					classes.renderContentContainer,
-				)}
-			>
+			{!hideTags && (
+				<div className={cx(fr.cx("fr-grid-row", "fr-grid-row--gutters"))}>
+					{tags.map((tag, index) => (
+						<Tag
+							key={index}
+							className={cx(classes.tagStyles)}
+							dismissible
+							nativeButtonProps={{
+								onClick: function deleteTag() {
+									setDisplay(tag.display);
+									tag.display === "default"
+										? setTags([])
+										: setTags([...tags].filter((t) => t.slug !== tag.slug));
+								},
+							}}
+						>
+							{tag.label}
+						</Tag>
+					))}
+				</div>
+			)}
+			<div className={fr.cx("fr-grid-row", "fr-grid-row--gutters")}>
 				{renderContent()}
 			</div>
 		</>
@@ -168,13 +163,8 @@ export const PersonaTiles = ({
 };
 
 const useStyles = tss.withName(PersonaTiles.name).create(() => ({
-	renderContentContainer: {
-		width: "100%",
-		alignItems: "stretch",
-		marginLeft: 0,
-	},
 	tagStyles: {
 		marginLeft: fr.spacing("3v"),
-		marginBottom: fr.spacing("5v"),
+		marginBottom: fr.spacing("8v"),
 	},
 }));
