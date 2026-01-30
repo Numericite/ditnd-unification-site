@@ -39,6 +39,14 @@ const unknownTile: TDH = {
 	display: "condition",
 };
 
+const titleByDisplay: Record<PersonaTypes, string> = {
+	default: "Qui êtes vous?",
+	person: "Sur quel trouble voulez-vous vous informer ?",
+	professional: "Quel type de professionnel êtes-vous ?",
+	afterProfessional: "Sur quel trouble voulez-vous vous informer ?",
+	condition: "",
+};
+
 export const PersonaTiles = ({
 	tiles,
 	defaultDisplay,
@@ -56,7 +64,7 @@ export const PersonaTiles = ({
 		defaultDisplay || "default",
 	);
 	const [tags, setTags] = useState<TagItem[]>(defaultTags || []);
-	const [title, setTitle] = useState("Qui êtes vous?");
+	const [title, setTitle] = useState(titleByDisplay.default);
 
 	const { data: professionalPersonas } = api.persona.professionals.useQuery();
 
@@ -74,14 +82,6 @@ export const PersonaTiles = ({
 				display: prevDisplay,
 			},
 		]);
-	};
-
-	const titleByDisplay: Record<PersonaTypes, string> = {
-		default: "Qui êtes vous?",
-		person: "Sur quel trouble voulez-vous vous informer ?",
-		professional: "Quel type de professionnel êtes-vous ?",
-		afterProfessional: "Sur quel trouble voulez-vous vous informer ?",
-		condition: "",
 	};
 
 	const tileDispatchTable: Record<PersonaTypes, (tile: PersonaTile) => void> = {
@@ -111,6 +111,14 @@ export const PersonaTiles = ({
 			setDisplay("default");
 		},
 	};
+
+	function deleteTag(tag: TagItem) {
+		setDisplay(tag.display);
+		setTitle(titleByDisplay[tag.display]);
+		tag.display === "default"
+			? setTags([])
+			: setTags([...tags].filter((t) => t.slug !== tag.slug));
+	}
 
 	const renderContent = () => {
 		switch (display) {
@@ -163,13 +171,7 @@ export const PersonaTiles = ({
 							className={cx(classes.tagStyles)}
 							dismissible
 							nativeButtonProps={{
-								onClick: function deleteTag() {
-									setDisplay(tag.display);
-									setTitle(titleByDisplay[tag.display]);
-									tag.display === "default"
-										? setTags([])
-										: setTags([...tags].filter((t) => t.slug !== tag.slug));
-								},
+								onClick: () => deleteTag(tag),
 							}}
 						>
 							{tag.label}
