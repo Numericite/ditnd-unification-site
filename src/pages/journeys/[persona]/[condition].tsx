@@ -5,6 +5,7 @@ import { useRouter } from "next/router";
 import { useState } from "react";
 import { tss } from "tss-react";
 import PersonaDisplay from "~/components/PersonaPage/PersonaDisplay";
+import { EmptyScreenZone } from "~/components/ui/EmptyScreenZone";
 import { Loader } from "~/components/ui/Loader";
 import InfoOrCoursesButtons from "~/components/ui/PersonaPage/InfoOrCoursesButtons";
 import type { AugmentedJourney } from "~/server/api/routers/journeys";
@@ -26,7 +27,7 @@ export default function JourneyPage() {
 	if (isLoadingJourney) return <Loader />;
 
 	if (!journeyData || journeyData.length === 0) {
-		return <div>Parcours introuvable</div>;
+		return <EmptyScreenZone>Parcours introuvable</EmptyScreenZone>;
 	}
 
 	const journey = journeyData[0] as AugmentedJourney;

@@ -5,6 +5,7 @@ import Head from "next/head";
 import { Loader } from "~/components/ui/Loader";
 import PracticalGuidesDisplay from "~/components/PracticalGuides/PracticalGuidesDisplay";
 import { fr } from "@codegouvfr/react-dsfr";
+import { EmptyScreenZone } from "~/components/ui/EmptyScreenZone";
 
 export default function PracticalGuidePage() {
 	const router = useRouter();
@@ -18,7 +19,7 @@ export default function PracticalGuidePage() {
 	if (isLoadingData) return <Loader />;
 
 	if (!guideData) {
-		return <div>Fiche introuvable</div>;
+		return <EmptyScreenZone>Fiche introuvable</EmptyScreenZone>;
 	}
 
 	const guide = guideData;

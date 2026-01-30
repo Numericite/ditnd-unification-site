@@ -13,6 +13,7 @@ import PersonaCoursesContent, {
 } from "../ui/PersonaPage/PersonaCoursesContent";
 import SummaryContent from "../ui/PracticalGuides/SummaryContent";
 import { useSearchParams } from "next/navigation";
+import { EmptyScreenZone } from "../ui/EmptyScreenZone";
 
 export default function PersonaDisplay({
 	journey,
@@ -47,7 +48,7 @@ export default function PersonaDisplay({
 	}, [query]);
 
 	if (!filteredChapters || filteredChapters.length === 0)
-		return <div>Parcours introuvable</div>;
+		return <EmptyScreenZone>Parcours introuvable</EmptyScreenZone>;
 
 	const currentList = viewCourses
 		? filteredChapters.filter((chap) => chap.courses.length > 0)
