@@ -9,7 +9,7 @@ import { useState } from "react";
 import Breadcrumb from "@codegouvfr/react-dsfr/Breadcrumb";
 import { tss } from "tss-react";
 import { useRouter } from "next/router";
-import { toArray } from "~/utils/tools";
+import { deserialize } from "~/utils/tools";
 
 export default function PracticalGuides() {
 	const { classes, cx } = useStyles();
@@ -18,9 +18,9 @@ export default function PracticalGuides() {
 	const { conditions, themes, personas } = router.query;
 
 	const [filters, setFilters] = useState<FiltersQuery>({
-		conditions: toArray(conditions) ?? [],
-		themes: toArray(themes) ?? [],
-		personas: toArray(personas) ?? [],
+		conditions: deserialize(conditions) ?? [],
+		themes: deserialize(themes) ?? [],
+		personas: deserialize(personas) ?? [],
 	});
 
 	return (

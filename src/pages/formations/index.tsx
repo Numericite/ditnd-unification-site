@@ -10,7 +10,7 @@ import { CoursesFiltersDisplay } from "~/components/Courses/CoursesFiltersDispla
 import type { FiltersQuery } from "~/components/PracticalGuides/GuidesFiltersDisplay";
 import { tss } from "tss-react";
 import { useRouter } from "next/router";
-import { toArray } from "~/utils/tools";
+import { deserialize } from "~/utils/tools";
 
 export default function Courses() {
 	const { classes, cx } = useStyles();
@@ -19,10 +19,10 @@ export default function Courses() {
 	const { conditions, themes, personas, type } = router.query;
 
 	const [filters, setFilters] = useState<CoursesFiltersQuery>({
-		conditions: toArray(conditions) ?? [],
-		themes: toArray(themes) ?? [],
-		personas: toArray(personas) ?? [],
-		type: toArray(type) ?? [],
+		conditions: deserialize(conditions) ?? [],
+		themes: deserialize(themes) ?? [],
+		personas: deserialize(personas) ?? [],
+		type: deserialize(type) ?? [],
 	});
 
 	return (
