@@ -1,22 +1,15 @@
-import { Header } from "@codegouvfr/react-dsfr/Header";
 import { Footer } from "@codegouvfr/react-dsfr/Footer";
 import { headerFooterDisplayItem } from "@codegouvfr/react-dsfr/Display";
-import type { MainNavigationProps } from "@codegouvfr/react-dsfr/MainNavigation";
 import { createNextDsfrIntegrationApi } from "@codegouvfr/react-dsfr/next-pagesdir";
 import type { AppProps } from "next/app";
 import Head from "next/head";
 import Link from "next/link";
-import { useRouter } from "next/router";
 import { createEmotionSsrAdvancedApproach } from "tss-react/next/pagesDir";
 import { api } from "~/utils/api";
-import { Button } from "@codegouvfr/react-dsfr/Button";
 import { tdhStore } from "~/state/store";
 import { Loader } from "~/components/ui/Loader";
 import { tss } from "tss-react";
-import SubMenuCustom from "~/components/ui/Navigation/SubMenuCustom";
-import { useState } from "react";
-import { fr } from "@codegouvfr/react-dsfr";
-import { personas } from ".";
+import MainNavigation from "~/components/ui/Navigation/MainNavigation";
 
 declare module "@codegouvfr/react-dsfr/next-pagesdir" {
 	interface RegisterLink {
@@ -49,20 +42,6 @@ export { augmentDocumentWithEmotionCache, dsfrDocumentApi };
 function App({ Component, pageProps }: AppProps) {
 	const { classes, cx } = useStyles();
 
-	const router = useRouter();
-
-	function isRouteActive(item: MainNavigationProps.Item, path: string) {
-		const href = item.linkProps?.href;
-
-		if (!href) return false;
-
-		if (href === "/guides") return path.startsWith("/guides");
-
-		if (href === "/formations") return path.startsWith("/formations");
-
-		return path === href;
-	}
-
 	const { data: conditions, isLoading: isLoadingHomePage } =
 		api.condition.all.useQuery();
 
@@ -72,74 +51,6 @@ function App({ Component, pageProps }: AppProps) {
 	const { data: footerTitle, isLoading: isLoadingFooterTitle } =
 		api.cms.footerTitle.useQuery();
 
-	const [currentSubMenuPersona, setCurrentSubMenuPersona] = useState<
-		string | null
-	>(null);
-
-	const userNavigationItems: MainNavigationProps.Item[] = [
-		{ text: "Accueil", linkProps: { href: "/" } },
-		{
-			text: "Je suis",
-			className: classes.megaMenuCustom,
-			buttonProps: {
-				onClick: () => setCurrentSubMenuPersona(null),
-			},
-			menuLinks: personas.map((persona) => ({
-				text: (
-					<SubMenuCustom
-						key={persona.slug}
-						persona={persona}
-						personaPros={personaPros || []}
-						isActive={currentSubMenuPersona === persona.slug}
-					/>
-				),
-				linkProps: {
-					href: `/journeys/${persona.slug}`,
-					style: {
-						backgroundColor:
-							currentSubMenuPersona === persona.slug
-								? fr.colors.decisions.background.contrast.grey.default
-								: "inherit",
-					},
-					onClick:
-						persona.slug === "professional"
-							? (e) => {
-									e.preventDefault();
-									setCurrentSubMenuPersona(
-										currentSubMenuPersona !== persona.slug
-											? persona.slug
-											: null,
-									);
-								}
-							: undefined,
-				},
-			})),
-		},
-		{ text: "Fiches pratiques", linkProps: { href: "/guides" } },
-		{
-			text: "Formations",
-			linkProps: { href: "/formations" },
-		},
-		{ text: "Actualités", linkProps: { href: "/actualite" } },
-		{ text: "Annuaire", linkProps: { href: "/annuaire" } },
-		{
-			menuLinks: [
-				{
-					linkProps: {
-						href: "#",
-					},
-					text: "PH LINK",
-				},
-			],
-			text: "À propos",
-		},
-	];
-
-	const navigationItems = userNavigationItems.map((item) => ({
-		...item,
-		isActive: isRouteActive(item, router.asPath),
-	}));
-
 	tdhStore.set(conditions);
 
 	return (
@@ -148,42 +59,9 @@ function App({ Component, pageProps }: AppProps) {
 				<title>DITND</title>
 			</Head>
 			<div className={cx(classes.headerContainer)}>
-				<Header
-					brandTop={
-						<>
-							RÉPUBLIQUE
-							<br />
-							FRANÇAISE
-						</>
-					}
-					homeLinkProps={{
-						href: "/",
-						title: "Accueil DITND",
-					}}
-					id="fr-header-with-horizontal-operator-logo"
-					navigation={navigationItems}
-					quickAccessItems={[
-						{
-							iconId: "fr-icon-add-circle-line",
-							linkProps: {
-								href: "#",
-							},
-							text: "Besoin de vérifier une information ?",
-						},
-						<Button
-							key={"button-question"}
-							iconId={"fr-icon-message-2-line"}
-							priority="secondary"
-							size="large"
-						>
-							Posez votre question
-						</Button>,
-					]}
-					serviceTitle="DI-TND"
-					serviceTagline="Délégation interministérielle pour les troubles du neurodéveloppement"
-				/>
+				<MainNavigation personaPros={personaPros} />
 
-				<main>
+				<main id="contenu">
 					{isLoadingHomePage || isLoadingPersona || isLoadingFooterTitle ? (
 						<Loader />
 					) : (
@@ -191,6 +69,7 @@ function App({ Component, pageProps }: AppProps) {
 					)}
 				</main>
 				<Footer
+					id="footer"
 					accessibility="non compliant"
 					contentDescription={footerTitle}
 					accessibilityLinkProps={{
