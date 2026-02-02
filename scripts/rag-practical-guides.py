@@ -7,7 +7,6 @@ from sentence_transformers import SentenceTransformer
 from dotenv import load_dotenv
 import os
 import tempfile
-import re
 from psycopg2.extras import execute_values
 from typing import Dict, List
 
