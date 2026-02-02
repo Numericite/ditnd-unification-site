@@ -10964,3 +10964,134 @@ export const PracticalGuidesContent: DefaultTypedEditorState[] = [
 		},
 	},
 ];
+
+export const legalsContent = {
+	accessibility: {
+		root: {
+			type: "root",
+			format: "",
+			indent: 0,
+			version: 1,
+
+			children: [
+				{
+					tag: "h2",
+					type: "heading",
+					format: "",
+					indent: 0,
+					version: 1,
+
+					children: [
+						{
+							mode: "normal",
+							text: "Accessibilité",
+							type: "text",
+							style: "",
+							detail: 0,
+							format: 0,
+							version: 1,
+						},
+					],
+					direction: null,
+				},
+			],
+			direction: null,
+		},
+	},
+	legalNotice: {
+		root: {
+			type: "root",
+			format: "",
+			indent: 0,
+			version: 1,
+
+			children: [
+				{
+					tag: "h2",
+					type: "heading",
+					format: "",
+					indent: 0,
+					version: 1,
+
+					children: [
+						{
+							mode: "normal",
+							text: "Mention légales",
+							type: "text",
+							style: "",
+							detail: 0,
+							format: 0,
+							version: 1,
+						},
+					],
+					direction: null,
+				},
+			],
+			direction: null,
+		},
+	},
+	cgu: {
+		root: {
+			type: "root",
+			format: "",
+			indent: 0,
+			version: 1,
+
+			children: [
+				{
+					tag: "h2",
+					type: "heading",
+					format: "",
+					indent: 0,
+					version: 1,
+
+					children: [
+						{
+							mode: "normal",
+							text: "Politique de confidentialité",
+							type: "text",
+							style: "",
+							detail: 0,
+							format: 0,
+							version: 1,
+						},
+					],
+					direction: null,
+				},
+			],
+			direction: null,
+		},
+	},
+	termsOfUse: {
+		root: {
+			type: "root",
+			format: "",
+			indent: 0,
+			version: 1,
+
+			children: [
+				{
+					tag: "h2",
+					type: "heading",
+					format: "",
+					indent: 0,
+					version: 1,
+
+					children: [
+						{
+							mode: "normal",
+							text: "Modalités d'utilisation",
+							type: "text",
+							style: "",
+							detail: 0,
+							format: 0,
+							version: 1,
+						},
+					],
+					direction: null,
+				},
+			],
+			direction: null,
+		},
+	},
+} satisfies Record<string, DefaultTypedEditorState>;
