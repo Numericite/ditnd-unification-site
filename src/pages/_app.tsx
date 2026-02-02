@@ -6,7 +6,7 @@ import Head from "next/head";
 import Link from "next/link";
 import { createEmotionSsrAdvancedApproach } from "tss-react/next/pagesDir";
 import { api } from "~/utils/api";
-import { tdhStore } from "~/state/store";
+import { homeCMSStore, tdhStore } from "~/state/store";
 import { Loader } from "~/components/ui/Loader";
 import { tss } from "tss-react";
 import MainNavigation from "~/components/ui/Navigation/MainNavigation";
@@ -48,8 +48,13 @@ function App({ Component, pageProps }: AppProps) {
 	const { data: personaPros, isLoading: isLoadingPersona } =
 		api.persona.professionals.useQuery();
 
+	const { data: homeCMS, isLoading: isLoadingHomeCMS } =
+		api.cms.home.useQuery();
+
 	const { data: footerTitle, isLoading: isLoadingFooterTitle } =
 		api.cms.footerTitle.useQuery();
+
+	if (homeCMS && !isLoadingHomeCMS) homeCMSStore.set(homeCMS);
 
 	tdhStore.set(conditions);
 
