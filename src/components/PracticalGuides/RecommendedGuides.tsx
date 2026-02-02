@@ -1,6 +1,6 @@
 import { fr } from "@codegouvfr/react-dsfr";
 import type { AugmentedPracticalGuide } from "~/server/api/routers/practical-guides";
-import PracticalGuidesGroup from "../ui/PracticalGuides/PracticalGuidesGroup";
+import CardsDisplayGroup from "../ui/Cards/CardsDisplayGroup";
 
 export default function RecommendedGuides({
 	guides,
@@ -15,9 +15,10 @@ export default function RecommendedGuides({
 						Ces fiches pratiques qui pourraient vous intéresser
 					</h3>
 					<div className={fr.cx("fr-grid-row", "fr-grid-row--gutters")}>
-						<PracticalGuidesGroup
+						<CardsDisplayGroup
 							className={fr.cx("fr-col-lg-6")}
-							practicalGuides={guides}
+							guides={guides}
+							kind="Guides"
 						/>
 					</div>
 				</div>

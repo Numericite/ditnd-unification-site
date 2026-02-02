@@ -12,8 +12,9 @@ type Props = {
 	imageAlt?: string;
 	conditions: Condition[];
 	themes: Theme[];
-	kind?: "PracticalGuides" | "Courses";
+	kind?: "Guides" | "Courses";
 	redirect: string;
+	titleAs?: "h2" | "h3" | "h4" | "h5" | "h6" | undefined;
 };
 
 export default function CardDisplay({
@@ -24,8 +25,9 @@ export default function CardDisplay({
 	imageAlt,
 	conditions,
 	themes,
-	kind = "PracticalGuides",
+	kind = "Guides",
 	redirect = "/",
+	titleAs = "h4",
 }: Props) {
 	return (
 		<Card
@@ -77,7 +79,7 @@ export default function CardDisplay({
 				</ul>
 			}
 			title={title}
-			titleAs="h4"
+			titleAs={titleAs}
 		/>
 	);
 }

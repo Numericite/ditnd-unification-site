@@ -1,6 +1,6 @@
 import { fr } from "@codegouvfr/react-dsfr";
 import type { AugmentedCourse } from "~/server/api/routers/courses";
-import CoursesGroup from "../ui/Courses/CoursesGroup";
+import CardsDisplayGroup from "../ui/Cards/CardsDisplayGroup";
 
 export default function RecommendedCourses({
 	courses,
@@ -15,7 +15,16 @@ export default function RecommendedCourses({
 						Ces formations qui pourraient vous intéresser{" "}
 					</h3>
 					<div className={fr.cx("fr-grid-row", "fr-grid-row--gutters")}>
-						<CoursesGroup courses={courses} />
+						<CardsDisplayGroup
+							className={fr.cx(
+								"fr-col-12",
+								"fr-col-sm-6",
+								"fr-col-md-12",
+								"fr-col-lg-6",
+							)}
+							courses={courses}
+							kind="Courses"
+						/>
 					</div>
 				</div>
 			)}

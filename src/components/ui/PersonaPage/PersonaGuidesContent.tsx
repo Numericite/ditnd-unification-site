@@ -1,7 +1,8 @@
 import type { AugmentedPracticalGuide } from "~/server/api/routers/practical-guides";
 import { fr } from "@codegouvfr/react-dsfr";
 import { slugify } from "~/utils/tools";
-import CardDisplay from "../Courses/CardDisplay";
+import CardDisplay from "../Cards/CardDisplay";
+import SkipLinks from "@codegouvfr/react-dsfr/SkipLinks";
 
 type Props = {
 	value: AugmentedPracticalGuide[];
@@ -47,6 +48,14 @@ export default function PersonaGuidesContent({ value, chapterName }: Props) {
 					</div>
 				))}
 			</div>
+			<SkipLinks
+				links={[
+					{
+						label: "Retour au sommaire",
+						anchor: "#summary",
+					},
+				]}
+			/>
 		</>
 	);
 }
