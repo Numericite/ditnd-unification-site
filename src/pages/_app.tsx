@@ -18,6 +18,7 @@ import { useState } from "react";
 import { fr } from "@codegouvfr/react-dsfr";
 import { personas } from ".";
 import ChatBot from "~/components/Chatbot/Chatbot";
+import "~/utils/styles/keyframes.css";
 
 declare module "@codegouvfr/react-dsfr/next-pagesdir" {
 	interface RegisterLink {
