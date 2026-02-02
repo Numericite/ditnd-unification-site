@@ -3,6 +3,9 @@ import { z } from "zod";
 import { createTRPCRouter, publicProcedure } from "~/server/api/trpc";
 import { readFileSync } from "node:fs";
 import path from "node:path";
+import type { Payload } from "payload";
+import { pipeline } from "@huggingface/transformers";
+import { sql } from "@payloadcms/db-postgres";
 
 const systemPrompt = readFileSync(
 	path.join(process.cwd(), "src/utils/prompts/chatbot-system.md"),
@@ -22,10 +25,49 @@ export const messageSchema = z.object({
 	userChoices: z.array(z.string()).optional(),
 });
 
+type Message = z.infer<typeof messageSchema>;
+
+const retrieveDocsFromUserPrompt = async ({
+	payload,
+	userPrompt,
+}: {
+	payload: Payload;
+	userPrompt: string;
+}) => {
+	const modelSentence = await pipeline(
+		"feature-extraction",
+		"Xenova/all-MiniLM-L6-v2",
+	);
+
+	const output = await modelSentence(userPrompt, {
+		pooling: "mean",
+		normalize: true,
+	});
+
+	const embedding = Array.from(output.data);
+	const retrieveSqlEmbedding = await payload.db.drizzle.execute(sql`
+		SELECT doc_id, text, embedding <-> ${JSON.stringify(embedding)}::vector as similarity_score FROM practical_guide_vectors
+		ORDER BY embedding <-> ${JSON.stringify(embedding)}::vector
+		LIMIT 10
+	`);
+
+	const practicalGuides = await payload.find({
+		collection: "practical-guides",
+		where: {
+			id: {
+				in: retrieveSqlEmbedding.rows.map(({ doc_id }) => doc_id),
+			},
+		},
+		limit: 2,
+	});
+
+	return practicalGuides.docs;
+};
+
 export const aiRouter = createTRPCRouter({
 	chatbotSend: publicProcedure
 		.input(z.array(messageSchema))
-		.mutation(async ({ input }) => {
+		.mutation(async ({ input, ctx }) => {
 			const apiKey = process.env.ALBERT_API_KEY;
 			const apiUrl = process.env.ALBERT_API_URL;
 
@@ -46,9 +88,7 @@ export const aiRouter = createTRPCRouter({
 					...input,
 				],
 				temperature: 0.1,
-				response_format: {
-					type: "json_object",
-				},
+				response_format: { type: "json_object" },
 				max_completion_tokens: 500,
 			};
 
@@ -68,8 +108,29 @@ export const aiRouter = createTRPCRouter({
 				});
 			}
 
-			const data = await response.json();
+			const data = (await response.json()) as { id: string; choices: any[] };
 
-			return data;
+			const message = JSON.parse(data.choices[0].message.content) as Message & {
+				useRetrieval: boolean;
+			};
+
+			console.log("ALBERT response data:", message);
+
+			const isRetrievalNeeded = message.useRetrieval;
+
+			console.log("isRetrievalNeeded:", isRetrievalNeeded);
+
+			if (isRetrievalNeeded === true) {
+				const practicalGuides = await retrieveDocsFromUserPrompt({
+					payload: ctx.payload,
+					userPrompt: input
+						.filter((msg) => msg.role === "user")
+						.map((msg) => msg.content)
+						.join("\n"),
+				});
+				return practicalGuides;
+			}
+
+			return message;
 		}),
 });

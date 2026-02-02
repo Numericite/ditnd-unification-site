@@ -5,10 +5,11 @@ import { tss } from "tss-react";
 import { Input } from "@codegouvfr/react-dsfr/Input";
 import { api } from "~/utils/api";
 import { Loader } from "../ui/Loader";
+import type { PracticalGuide } from "~/payload/payload-types";
 
 type Message = {
 	role: "user" | "assistant";
-	content: string;
+	content: string | React.ReactNode;
 	choices?: string[];
 	userStream?: string[];
 };
@@ -24,24 +25,49 @@ const ChatBot = () => {
 	const [messages, setMessages] = useState<Message[]>([]);
 
 	const sendMessage = async (text: string) => {
+		const messagesForApi = messages.filter(
+			(msg): msg is Message & { content: string } =>
+				typeof msg.content === "string",
+		);
+
 		const response = await chatbotSendMessage([
-			...messages,
+			...messagesForApi,
 			{ role: "user", content: text },
 		]);
-		const chatbotAnswer = JSON.parse(
-			response.choices[0].message.content,
-		) as Omit<Message, "role">;
-		console.log("chatbotAnswer", chatbotAnswer);
-		setMessages((prev) => [
-			...prev,
-			{ role: "user", content: text },
-			{
-				role: "assistant",
-				content: chatbotAnswer.content || "",
-				choices: chatbotAnswer.choices || [],
-			},
-		]);
-		setMessage("");
+
+		if ("choices" in response) {
+			console.log("chatbotAnswer", response);
+			setMessages((prev) => [
+				...prev,
+				{ role: "user", content: text },
+				{
+					role: "assistant",
+					content: response.content || "",
+					choices: response.choices || [],
+				},
+			]);
+			setMessage("");
+		} else if (Array.isArray(response)) {
+			const practicalGuides = response;
+
+			const guidesContent = practicalGuides.map((guide: PracticalGuide) => (
+				<div key={guide.id} style={{ marginBottom: fr.spacing("2v") }}>
+					<h3>{guide.title}</h3>
+					<p>{guide.description}</p>
+				</div>
+			));
+
+			setMessages((prev) => [
+				...prev,
+				{ role: "user", content: text },
+				{
+					role: "assistant",
+					content: guidesContent,
+				},
+			]);
+
+			setMessage("");
+		}
 	};
 
 	return (
@@ -197,7 +223,7 @@ const useStyles = tss.withName(ChatBot.name).create({
 		right: 0,
 		display: "flex",
 		justifyContent: "end",
-		zIndex: 0,
+		zIndex: 1,
 	},
 	chatBotButton: {
 		backgroundColor: fr.colors.decisions.artwork.minor.blueFrance.default,
