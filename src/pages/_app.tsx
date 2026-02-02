@@ -52,6 +52,8 @@ function App({ Component, pageProps }: AppProps) {
 
 	const router = useRouter();
 
+	const { displayTmpChatbot } = router.query as { displayTmpChatbot?: string };
+
 	function isRouteActive(item: MainNavigationProps.Item, path: string) {
 		const href = item.linkProps?.href;
 
@@ -179,7 +181,7 @@ function App({ Component, pageProps }: AppProps) {
 				/>
 				<main>
 					{isLoadingHomePage ? <Loader /> : <Component {...pageProps} />}
-					<ChatBot />
+					{displayTmpChatbot === "true" && <ChatBot />}
 				</main>
 				<Footer
 					accessibility="non compliant"
