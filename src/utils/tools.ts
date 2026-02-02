@@ -1,5 +1,7 @@
 import type { RegisteredLinkProps } from "@codegouvfr/react-dsfr/link";
 import sanitize from "sanitize-html";
+import type { AugmentedCourse } from "~/server/api/routers/courses";
+import type { AugmentedPracticalGuide } from "~/server/api/routers/practical-guides";
 
 export type Link = {
 	text: string;
@@ -66,3 +68,31 @@ export const deserialize = (value?: string | string[]) => {
 
 	return sanitizeArray(typeof value === "string" ? value.split(",") : []);
 };
+
+export function courseQuery(
+	course: AugmentedCourse,
+	condition: string,
+	query: string,
+) {
+	return (
+		course.condition.slug.toLowerCase() === condition &&
+		(course.description.toLowerCase().includes(query) ||
+			course.title.toLowerCase().includes(query) ||
+			course.theme.name.toLowerCase().includes(query))
+	);
+}
+
+export function practicalGuideQuery(
+	pg: AugmentedPracticalGuide,
+	condition: string,
+	query: string,
+) {
+	return (
+		pg.conditions?.some((c) => c.slug.toLowerCase() === condition) &&
+		(pg.conditions?.length === 0 ||
+			pg.description.toLowerCase().includes(query) ||
+			pg.title.toLowerCase().includes(query) ||
+			pg.conditions?.some((c) => c.slug.toLowerCase().includes(query)) ||
+			pg.themes.some((theme) => theme.name.toLowerCase().includes(query)))
+	);
+}

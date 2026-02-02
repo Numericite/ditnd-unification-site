@@ -70,6 +70,7 @@ export const PersonaTiles = ({
 	const { data: professionalPersonas } = api.persona.professionals.useQuery();
 
 	const router = useRouter();
+
 	const tdh = tdhStore.get();
 	const homeCMS = homeCMSStore.get();
 
