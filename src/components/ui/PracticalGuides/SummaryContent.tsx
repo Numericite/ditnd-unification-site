@@ -19,7 +19,12 @@ export default function SummaryContent({ menuLinks, className, title }: Props) {
 				"fr-mb-2w",
 			)}
 		>
-			<Summary className={className} links={menuLinks} title={title} />
+			<Summary
+				id="summary"
+				className={className}
+				links={menuLinks}
+				title={title}
+			/>
 		</div>
 	);
 }

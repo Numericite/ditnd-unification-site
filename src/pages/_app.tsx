@@ -66,7 +66,7 @@ function App({ Component, pageProps }: AppProps) {
 			<div className={cx(classes.headerContainer)}>
 				<MainNavigation personaPros={personaPros} />
 
-				<main id="contenu">
+				<main>
 					{isLoadingHomePage || isLoadingPersona || isLoadingFooterTitle ? (
 						<Loader />
 					) : (

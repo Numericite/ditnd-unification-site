@@ -1,5 +1,6 @@
 import { fr } from "@codegouvfr/react-dsfr";
 import Breadcrumb from "@codegouvfr/react-dsfr/Breadcrumb";
+import SkipLinks from "@codegouvfr/react-dsfr/SkipLinks";
 import Head from "next/head";
 import { useRouter } from "next/router";
 import { useState } from "react";
@@ -37,6 +38,27 @@ export default function JourneyPage() {
 			<Head>
 				<title>DITND - {journey.journey_name}</title>
 			</Head>
+			<SkipLinks
+				links={[
+					{
+						anchor: "#summary",
+						label: "Sommaire",
+					},
+
+					{
+						anchor: "#search",
+						label: "Recherche",
+					},
+					{
+						anchor: "#contenu",
+						label: "Contenu",
+					},
+					{
+						anchor: "#footer",
+						label: "Pied de page",
+					},
+				]}
+			/>
 			<div className={fr.cx("fr-container")}>
 				<Breadcrumb
 					currentPageLabel={`Je suis un ${journey.persona.name.toLowerCase()} interessé par le ${condition.toUpperCase()}`}

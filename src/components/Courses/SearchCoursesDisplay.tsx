@@ -37,6 +37,7 @@ export const SearchCoursesDisplay = ({
 			) : (
 				<div
 					className={fr.cx("fr-grid-row", "fr-grid-row--gutters", "fr-pt-3w")}
+					id="contenu"
 				>
 					<CardsDisplayGroup
 						className={fr.cx(

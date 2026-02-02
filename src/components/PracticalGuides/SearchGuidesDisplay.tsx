@@ -27,6 +27,7 @@ export const SearchGuidesDisplay = ({ filters }: { filters: FiltersQuery }) => {
 			) : (
 				<div
 					className={fr.cx("fr-grid-row", "fr-grid-row--gutters", "fr-pt-3w")}
+					id="contenu"
 				>
 					<CardsDisplayGroup
 						className={fr.cx("fr-col-lg-6")}

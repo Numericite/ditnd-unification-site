@@ -23,7 +23,10 @@ export default function PersonaContent({
 			<h3 className={fr.cx("fr-pt-3w")} id={slugify(chapterName)}>
 				{chapterName}
 			</h3>
-			<div className={fr.cx("fr-grid-row", "fr-grid-row--gutters")}>
+			<div
+				className={fr.cx("fr-grid-row", "fr-grid-row--gutters")}
+				id="contenu"
+			>
 				{viewCourse ? (
 					<CardsDisplayGroup
 						className={fr.cx("fr-col-12", "fr-col-sm-6")}

@@ -18,6 +18,8 @@ import { useState } from "react";
 import { useRouter } from "next/router";
 import Image from "next/image";
 import { EmptyScreenZone } from "~/components/ui/EmptyScreenZone";
+import SkipLinks from "@codegouvfr/react-dsfr/SkipLinks";
+import { homeCMSStore } from "~/state/store";
 
 export const personas: PersonaTile[] = [
 	{
@@ -57,13 +59,12 @@ export default function Home() {
 
 	const router = useRouter();
 
-	const { data: homeCMS, isLoading: isLoadingHomeCMS } =
-		api.cms.home.useQuery();
-
 	const { data: mostViewedGuides, isLoading: isLoadingViewedGuides } =
 		api.practicalGuide.getByViews.useQuery();
 
-	if (isLoadingViewedGuides || isLoadingHomeCMS) return <Loader />;
+	const homeCMS = homeCMSStore.get();
+
+	if (isLoadingViewedGuides || isLoadingPersona) return <Loader />;
 
 	if (!homeCMS)
 		return (
@@ -80,6 +81,27 @@ export default function Home() {
 			<Head>
 				<title>DITND - Accueil</title>
 			</Head>
+			<SkipLinks
+				links={[
+					{
+						anchor: "#search",
+						label: "Recherche",
+					},
+					{
+						anchor: "#who",
+						label: "Qui êtes vous",
+					},
+					{
+						anchor: "#mostViewed",
+						label: "Fiches Pratiques les plus lues",
+					},
+
+					{
+						anchor: "#footer",
+						label: "Pied de page",
+					},
+				]}
+			/>
 			<div className={fr.cx("fr-container")}>
 				<Breadcrumb
 					currentPageLabel=""
@@ -100,6 +122,7 @@ export default function Home() {
 								<h1>{homeCMS.header.title}</h1>
 								<p>{homeCMS.header.description}</p>
 								<SearchBar
+									id="search"
 									big
 									onButtonClick={() => router.push(`/guides?search=${search}`)}
 									renderInput={({ className, id, placeholder, type }) => (
@@ -134,7 +157,7 @@ export default function Home() {
 						</div>
 					</div>
 				</div>
-				<div className={cx(classes.coloredContainer)}>
+				<div className={cx(classes.coloredContainer)} id="who">
 					<div className={fr.cx("fr-container")}>
 						<div className={fr.cx("fr-py-6w")}>
 							<div className={fr.cx("fr-grid-row")}>
@@ -148,6 +171,7 @@ export default function Home() {
 						<div className={fr.cx("fr-grid-row", "fr-grid-row--gutters")}>
 							<div
 								className={cx(fr.cx("fr-col-12"), classes.mostViewedContainer)}
+								id="mostViewed"
 							>
 								<h2>{homeCMS?.mostViewedGuides.title}</h2>
 								<div className={fr.cx("fr-text--sm")}>
