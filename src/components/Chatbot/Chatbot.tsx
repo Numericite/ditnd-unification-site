@@ -4,8 +4,9 @@ import { useState } from "react";
 import { tss } from "tss-react";
 import { Input } from "@codegouvfr/react-dsfr/Input";
 import { api } from "~/utils/api";
-import { Loader } from "../ui/Loader";
-import type { PracticalGuide } from "~/payload/payload-types";
+import { Loader } from "~/components/ui/Loader";
+import CardDisplay from "~/components/ui/Courses/CardDisplay";
+import type { AugmentedPracticalGuide } from "~/server/api/routers/practical-guides";
 
 type Message = {
 	role: "user" | "assistant";
@@ -20,15 +21,26 @@ const ChatBot = () => {
 	const { mutateAsync: chatbotSendMessage, isPending: isPendingSendMessage } =
 		api.ai.chatbotSend.useMutation();
 
-	const [isOpen, setIsOpen] = useState(true);
+	const [isOpen, setIsOpen] = useState(false);
 	const [message, setMessage] = useState("");
 	const [messages, setMessages] = useState<Message[]>([]);
+	const [documentsRetrieved, setDocumentsRetrieved] = useState<
+		AugmentedPracticalGuide[]
+	>([]);
 
 	const sendMessage = async (text: string) => {
 		const messagesForApi = messages.filter(
 			(msg): msg is Message & { content: string } =>
 				typeof msg.content === "string",
 		);
+
+		setMessages((prev) => [
+			...prev,
+			{
+				role: "user",
+				content: text,
+			},
+		]);
 
 		const response = await chatbotSendMessage([
 			...messagesForApi,
@@ -39,7 +51,6 @@ const ChatBot = () => {
 			console.log("chatbotAnswer", response);
 			setMessages((prev) => [
 				...prev,
-				{ role: "user", content: text },
 				{
 					role: "assistant",
 					content: response.content || "",
@@ -48,21 +59,14 @@ const ChatBot = () => {
 			]);
 			setMessage("");
 		} else if (Array.isArray(response)) {
-			const practicalGuides = response;
-
-			const guidesContent = practicalGuides.map((guide: PracticalGuide) => (
-				<div key={guide.id} style={{ marginBottom: fr.spacing("2v") }}>
-					<h3>{guide.title}</h3>
-					<p>{guide.description}</p>
-				</div>
-			));
+			setDocumentsRetrieved(response);
 
 			setMessages((prev) => [
 				...prev,
-				{ role: "user", content: text },
 				{
 					role: "assistant",
-					content: guidesContent,
+					content:
+						"Merci. Voici les ressources qui pourront vous être utiles :",
 				},
 			]);
 
@@ -133,40 +137,94 @@ const ChatBot = () => {
 										key={index}
 										style={{
 											alignSelf: msg.role === "user" ? "end" : "start",
-											backgroundColor:
-												msg.role === "user"
-													? fr.colors.options.blueCumulus.main526.default
-													: fr.colors.decisions.background.alt.blueFrance
-															.default,
 											color: msg.role === "user" ? "white" : "black",
 											padding: fr.spacing("2v"),
-											borderRadius: fr.spacing("2v"),
-											maxWidth: "80%",
+											maxWidth: "85%",
 										}}
 									>
-										{msg.content}
-										{msg.choices &&
-											msg.choices.length > 0 &&
+										<div
+											style={{
+												borderRadius: fr.spacing("2v"),
+												padding: fr.spacing("2v"),
+												backgroundColor:
+													msg.role === "user"
+														? fr.colors.options.blueCumulus.main526.default
+														: fr.colors.decisions.background.alt.blueFrance
+																.default,
+											}}
+										>
+											{msg.content}
+										</div>
+										{documentsRetrieved.length > 0 &&
+											msg.role === "assistant" &&
 											index === messages.length - 1 && (
 												<div
 													style={{
 														marginTop: fr.spacing("2v"),
 														display: "flex",
 														flexDirection: "column",
-														gap: fr.spacing("1v"),
+														gap: fr.spacing("2v"),
+													}}
+												>
+													{documentsRetrieved.map(
+														({ id, title, conditions, themes, slug }) => (
+															<CardDisplay
+																key={id}
+																title={title}
+																conditions={conditions ?? []}
+																themes={themes}
+																redirect={`/guides/${slug}`}
+																noImg
+															/>
+														),
+													)}
+													<Button
+														size="small"
+														onClick={() => setMessages([])}
+														priority="secondary"
+														title="Retour"
+														iconId="fr-icon-arrow-left-line"
+														style={{ borderRadius: "100px" }}
+													>
+														Retour
+													</Button>
+												</div>
+											)}
+										{msg.choices &&
+											msg.choices.length > 0 &&
+											!isPendingSendMessage &&
+											index === messages.length - 1 && (
+												<div
+													style={{
+														marginTop: fr.spacing("2v"),
+														display: "flex",
+														flexDirection: "column",
+														gap: fr.spacing("2v"),
 													}}
 												>
 													{msg.choices.map((choice, choiceIndex) => (
 														<Button
 															key={choiceIndex}
+															size="small"
 															onClick={() => sendMessage(choice)}
+															priority="secondary"
 															title={choice}
 															disabled={isPendingSendMessage}
-															style={{ textAlign: "left" }}
+															style={{ borderRadius: "100px" }}
 														>
 															{choice}
 														</Button>
 													))}
+													<Button
+														size="small"
+														onClick={() => setMessages([])}
+														priority="secondary"
+														title="Retour"
+														iconId="fr-icon-arrow-left-line"
+														style={{ borderRadius: "100px" }}
+													>
+														Retour
+													</Button>
 												</div>
 											)}
 									</div>
@@ -179,11 +237,29 @@ const ChatBot = () => {
 									textArea
 									label=""
 									state="default"
-									stateRelatedMessage="Text de validation / d'explication de l'erreur"
 									nativeTextAreaProps={{
 										value: message,
 										onChange: (e) => setMessage(e.target.value),
-										rows: 4,
+										onKeyDown: (e) => {
+											if (
+												e.key === "Enter" &&
+												!e.shiftKey &&
+												message.trim() !== ""
+											) {
+												e.preventDefault();
+												sendMessage(message);
+											}
+										},
+										placeholder:
+											"Exemple : “Je souhaite m’informer sur le TSA”",
+										autoFocus: true,
+										style: {
+											background: "none",
+											boxShadow: "none",
+											outline: "none",
+											resize: "none",
+										},
+										rows: 3,
 									}}
 									style={{
 										marginBottom: 0,
@@ -200,6 +276,7 @@ const ChatBot = () => {
 									>
 										<Button
 											iconId="fr-icon-arrow-right-up-line"
+											disabled={message.trim() === "" || isPendingSendMessage}
 											onClick={() => sendMessage(message)}
 											title="Envoyer le message"
 											style={{ borderRadius: "100%" }}

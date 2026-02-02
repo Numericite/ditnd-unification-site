@@ -6,10 +6,11 @@ import { shortenDescription } from "~/utils/tools";
 
 type Props = {
 	title: string;
-	description: string;
+	description?: string;
 	type?: "Webinaire" | "MOOC" | "Présentiel";
 	imageUrl?: string;
 	imageAlt?: string;
+	noImg?: boolean;
 	conditions: Condition[];
 	themes: Theme[];
 	kind?: "PracticalGuides" | "Courses";
@@ -22,11 +23,21 @@ export default function CardDisplay({
 	type,
 	imageUrl,
 	imageAlt,
+	noImg,
 	conditions,
 	themes,
 	kind = "PracticalGuides",
 	redirect = "/",
 }: Props) {
+	const imgProps = !noImg
+		? {
+				imageUrl:
+					imageUrl ??
+					"https://www.systeme-de-design.gouv.fr/v1.14/storybook/img/placeholder.16x9.png",
+				imageAlt: imageAlt ?? "",
+			}
+		: { imageComponent: undefined };
+
 	return (
 		<Card
 			background
@@ -38,12 +49,8 @@ export default function CardDisplay({
 				) : null
 			}
 			border
-			desc={shortenDescription(description)}
-			imageAlt={imageAlt ?? ""}
-			imageUrl={
-				imageUrl ??
-				"https://www.systeme-de-design.gouv.fr/v1.14/storybook/img/placeholder.16x9.png"
-			}
+			desc={description ? shortenDescription(description) : undefined}
+			{...imgProps}
 			footer={
 				<a
 					className="fr-link fr-icon-arrow-right-line fr-link--icon-right"

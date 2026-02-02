@@ -1,11 +1,17 @@
 import { TRPCError } from "@trpc/server";
 import { z } from "zod";
-import { createTRPCRouter, publicProcedure } from "~/server/api/trpc";
+import {
+	createTRPCRouter,
+	publicProcedure,
+	resolveRelations,
+} from "~/server/api/trpc";
 import { readFileSync } from "node:fs";
 import path from "node:path";
 import type { Payload } from "payload";
 import { pipeline } from "@huggingface/transformers";
 import { sql } from "@payloadcms/db-postgres";
+import type { Condition } from "~/payload/payload-types";
+import type { AugmentedPracticalGuide } from "./practical-guides";
 
 const systemPrompt = readFileSync(
 	path.join(process.cwd(), "src/utils/prompts/chatbot-system.md"),
@@ -59,9 +65,21 @@ const retrieveDocsFromUserPrompt = async ({
 			},
 		},
 		limit: 2,
+		depth: 1,
 	});
 
-	return practicalGuides.docs;
+	const tmpPracticalGuides = (await Promise.all(
+		practicalGuides.docs.map(async (doc) => ({
+			...doc,
+			conditions: await resolveRelations(
+				doc.conditions as (number | Condition)[],
+				"conditions",
+			),
+			themes: await resolveRelations(doc.themes, "themes"),
+		})),
+	)) as AugmentedPracticalGuide[];
+
+	return tmpPracticalGuides;
 };
 
 export const aiRouter = createTRPCRouter({
@@ -117,8 +135,6 @@ export const aiRouter = createTRPCRouter({
 			console.log("ALBERT response data:", message);
 
 			const isRetrievalNeeded = message.useRetrieval;
-
-			console.log("isRetrievalNeeded:", isRetrievalNeeded);
 
 			if (isRetrievalNeeded === true) {
 				const practicalGuides = await retrieveDocsFromUserPrompt({
