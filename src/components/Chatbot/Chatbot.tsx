@@ -48,7 +48,6 @@ const ChatBot = () => {
 		]);
 
 		if ("choices" in response) {
-			console.log("chatbotAnswer", response);
 			setMessages((prev) => [
 				...prev,
 				{
