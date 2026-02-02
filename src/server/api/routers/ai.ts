@@ -132,8 +132,6 @@ export const aiRouter = createTRPCRouter({
 				useRetrieval: boolean;
 			};
 
-			console.log("ALBERT response data:", message);
-
 			const isRetrievalNeeded = message.useRetrieval;
 
 			if (isRetrievalNeeded === true) {
