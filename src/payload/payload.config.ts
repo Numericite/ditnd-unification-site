@@ -62,11 +62,9 @@ export default buildConfig({
 	sharp,
 	plugins: [
 		s3Storage({
-			enabled: hasAwsCreds,
+			enabled: hasAwsCreds && process.env.NODE_ENV === "production",
 			collections: {
-				medias: {
-					prefix: "medias",
-				},
+				medias: true,
 			},
 			bucket: process.env.S3_BUCKET || "",
 			config: {
