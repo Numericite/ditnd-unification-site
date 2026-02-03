@@ -1,4 +1,3 @@
-import { TRPCError } from "@trpc/server";
 import type { Payload } from "payload";
 import fs from "node:fs";
 import path from "node:path";
@@ -67,10 +66,7 @@ async function createMedia(
 			draft: true,
 		});
 	} catch (error) {
-		throw new TRPCError({
-			message: `Error creating media: ${error}`,
-			code: "INTERNAL_SERVER_ERROR",
-		});
+		throw new Error(`Error creating media: ${error}`);
 	}
 }
 

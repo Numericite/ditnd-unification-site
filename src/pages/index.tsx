@@ -70,8 +70,8 @@ export default function Home() {
 		return (
 			<EmptyScreenZone>
 				<p>
-					Error loading globals with payload CMS please review your payload
-					database's globals
+					Erreur lors du chargement des variables globales sur payload CMS,
+					veuillez revoir la configuration de votre instance Payload.{" "}
 				</p>
 			</EmptyScreenZone>
 		);
@@ -84,7 +84,7 @@ export default function Home() {
 			<SkipLinks
 				links={[
 					{
-						anchor: "#search",
+						anchor: "#search-global",
 						label: "Recherche",
 					},
 					{
@@ -122,7 +122,7 @@ export default function Home() {
 								<h1>{homeCMS.header.title}</h1>
 								<p>{homeCMS.header.description}</p>
 								<SearchBar
-									id="search"
+									id="search-global"
 									big
 									onButtonClick={() => router.push(`/guides?search=${search}`)}
 									renderInput={({ className, id, placeholder, type }) => (

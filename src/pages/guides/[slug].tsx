@@ -37,7 +37,7 @@ export default function PracticalGuidePage() {
 						label: "Sommaire",
 					},
 					{
-						anchor: "#pg-content",
+						anchor: "#wysiwig-content",
 						label: "Contenu de la fiche pratique",
 					},
 					{

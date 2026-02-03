@@ -32,7 +32,7 @@ export const SearchGuidesDisplay = ({ filters }: { filters: FiltersQuery }) => {
 					<CardsDisplayGroup
 						className={fr.cx("fr-col-lg-6")}
 						guides={practicalGuideData}
-						kind="Guides"
+						kind="guides"
 					/>
 				</div>
 			)}

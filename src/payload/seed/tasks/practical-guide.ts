@@ -1,5 +1,4 @@
 import type { Payload } from "payload";
-import { TRPCError } from "@trpc/server";
 import type { DefaultTypedEditorState } from "@payloadcms/richtext-lexical";
 import { convertLexicalToHTML } from "@payloadcms/richtext-lexical/html";
 import { PracticalGuidesContent } from "~/utils/wysiwyg-content";
@@ -113,10 +112,9 @@ async function createPracticalGuide(
 			data,
 		});
 	} catch (error) {
-		throw new TRPCError({
-			message: `Error creating practical guides ${data.title} with error ${error}`,
-			code: "INTERNAL_SERVER_ERROR",
-		});
+		throw new Error(
+			`Error creating practical guides ${data.title} with error ${error}`,
+		);
 	}
 }
 

@@ -12,7 +12,7 @@ type Props = {
 	imageAlt?: string;
 	conditions: Condition[];
 	themes: Theme[];
-	kind?: "Guides" | "Courses";
+	kind?: "guides" | "courses";
 	redirect: string;
 	titleAs?: "h2" | "h3" | "h4" | "h5" | "h6" | undefined;
 };
@@ -25,7 +25,7 @@ export default function CardDisplay({
 	imageAlt,
 	conditions,
 	themes,
-	kind = "Guides",
+	kind = "guides",
 	redirect = "/",
 	titleAs = "h4",
 }: Props) {
@@ -51,7 +51,7 @@ export default function CardDisplay({
 					className="fr-link fr-icon-arrow-right-line fr-link--icon-right"
 					href={redirect}
 				>
-					{kind === "Courses" ? "Voir la formation" : "Voir la fiche"}
+					{kind === "courses" ? "Voir la formation" : "Voir la fiche"}
 				</a>
 			}
 			size="medium"

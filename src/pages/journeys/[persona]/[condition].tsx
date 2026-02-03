@@ -46,7 +46,7 @@ export default function JourneyPage() {
 					},
 
 					{
-						anchor: "#search",
+						anchor: "#search-global",
 						label: "Recherche",
 					},
 					{

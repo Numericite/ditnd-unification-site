@@ -13,7 +13,7 @@ export default function MostViewedGuides({
 				className={fr.cx("fr-col-lg-4")}
 				guides={guides}
 				titleAs="h3"
-				kind="Guides"
+				kind="guides"
 			/>
 		</div>
 	);

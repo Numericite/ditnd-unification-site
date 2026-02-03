@@ -17,7 +17,7 @@ export const SearchBarUI = ({ value = "", onClick }: Props) => {
 		<div className={fr.cx("fr-grid-row")}>
 			<div className={fr.cx("fr-col-12")}>
 				<SearchBar
-					id="search"
+					id="search-global"
 					label="Rechercher un sujet, une thématique..."
 					big
 					onButtonClick={() => {

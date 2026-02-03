@@ -1,5 +1,4 @@
 import type { Payload } from "payload";
-import { TRPCError } from "@trpc/server";
 
 const personas = [
 	{
@@ -49,10 +48,7 @@ async function createPersonas(
 			data,
 		});
 	} catch (error) {
-		throw new TRPCError({
-			message: `Error creating persona ${data.name} with error ${error}`,
-			code: "INTERNAL_SERVER_ERROR",
-		});
+		throw new Error(`Error creating persona ${data.name} with error ${error}`);
 	}
 }
 

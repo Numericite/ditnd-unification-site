@@ -1,5 +1,4 @@
 import type { Payload } from "payload";
-import { TRPCError } from "@trpc/server";
 
 const journeys = [
 	{
@@ -49,10 +48,7 @@ async function createJourneys(
 			data,
 		});
 	} catch (error) {
-		throw new TRPCError({
-			message: `Error creating journeys ${error}`,
-			code: "INTERNAL_SERVER_ERROR",
-		});
+		throw new Error(`Error creating journeys ${error}`);
 	}
 }
 
