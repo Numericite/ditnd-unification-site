@@ -5,9 +5,8 @@ import { useRouter } from "next/router";
 import { useMemo } from "react";
 import { PersonaTiles, type TagItem } from "~/components/HomePage/PersonaTiles";
 import { Loader } from "~/components/ui/Loader";
-import { proStore } from "~/state/store";
+import { personStore, proStore } from "~/state/store";
 import { api } from "~/utils/api";
-import { personas } from "~/utils/personas";
 
 export default function JourneyPage() {
 	const router = useRouter();
@@ -17,6 +16,20 @@ export default function JourneyPage() {
 		api.condition.all.useQuery();
 
 	const professionalPersonas = proStore.get();
+
+	const personas = [
+		...personStore.get().map((persona) => ({
+			...persona,
+			name: `Je suis ${persona.name}`,
+		})),
+		{
+			name: "Je suis un professionnel",
+			description: "Description type",
+			slug: "professional",
+			display: "professional" as const,
+			pictogram: "CityHall" as const,
+		},
+	];
 
 	const persona = persona_slug.startsWith("pro")
 		? professionalPersonas?.find((c) => c.slug === persona_slug)
@@ -72,7 +85,7 @@ export default function JourneyPage() {
 			<div className={fr.cx("fr-container")}>
 				<Breadcrumb
 					className={fr.cx("fr-mb-2v")}
-					currentPageLabel={persona?.name.toLowerCase()}
+					currentPageLabel={persona?.name}
 					homeLinkProps={{
 						href: "/",
 					}}
