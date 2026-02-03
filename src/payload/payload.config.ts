@@ -5,6 +5,7 @@ import path from "path";
 import { buildConfig } from "payload";
 import { fileURLToPath } from "url";
 import sharp from "sharp";
+import { s3Storage } from "@payloadcms/storage-s3";
 
 import { Users } from "./collections/Users";
 import { Personas } from "./collections/Personas";
@@ -18,6 +19,13 @@ import {
 	addPracticalGuidesTable,
 	addPracticalGuidesTableVector,
 } from "./hooks";
+
+const hasAwsCreds = Boolean(
+	process.env.S3_ACCESS_KEY_ID &&
+		process.env.S3_SECRET_ACCESS_KEY &&
+		process.env.S3_BUCKET &&
+		process.env.S3_REGION,
+);
 
 const filename = fileURLToPath(import.meta.url);
 const dirname = path.dirname(filename);
@@ -53,6 +61,21 @@ export default buildConfig({
 	}),
 	sharp,
 	plugins: [
-		// storage-adapter-placeholder
+		s3Storage({
+			enabled: hasAwsCreds && process.env.NODE_ENV === "production",
+			collections: {
+				medias: {
+					prefix: "medias",
+				},
+			},
+			bucket: process.env.S3_BUCKET || "",
+			config: {
+				credentials: {
+					accessKeyId: process.env.S3_ACCESS_KEY_ID || "",
+					secretAccessKey: process.env.S3_SECRET_ACCESS_KEY || "",
+				},
+				region: process.env.S3_REGION || "",
+			},
+		}),
 	],
 });
