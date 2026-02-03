@@ -64,7 +64,7 @@ export default function Home() {
 
 	const homeCMS = homeCMSStore.get();
 
-	if (isLoadingViewedGuides || isLoadingPersona) return <Loader />;
+	if (isLoadingViewedGuides) return <Loader />;
 
 	if (!homeCMS)
 		return (

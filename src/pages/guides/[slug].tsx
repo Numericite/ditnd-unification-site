@@ -6,6 +6,7 @@ import { Loader } from "~/components/ui/Loader";
 import PracticalGuidesDisplay from "~/components/PracticalGuides/PracticalGuidesDisplay";
 import { fr } from "@codegouvfr/react-dsfr";
 import { EmptyScreenZone } from "~/components/ui/EmptyScreenZone";
+import SkipLinks from "@codegouvfr/react-dsfr/SkipLinks";
 
 export default function PracticalGuidePage() {
 	const router = useRouter();
@@ -25,25 +26,43 @@ export default function PracticalGuidePage() {
 	const guide = guideData;
 
 	return (
-		<div className={fr.cx("fr-container")}>
+		<>
 			<Head>
 				<title>DITND - {guide.title}</title>
 			</Head>
-			<Breadcrumb
-				currentPageLabel={guide.title}
-				homeLinkProps={{
-					href: "/",
-				}}
-				segments={[
+			<SkipLinks
+				links={[
 					{
-						label: "Fiches Pratiques",
-						linkProps: {
-							href: "/guides",
-						},
+						anchor: "#summary",
+						label: "Sommaire",
+					},
+					{
+						anchor: "#pg-content",
+						label: "Contenu de la fiche pratique",
+					},
+					{
+						anchor: "#footer",
+						label: "Pied de page",
 					},
 				]}
 			/>
-			<PracticalGuidesDisplay guide={guide} />
-		</div>
+			<div className={fr.cx("fr-container")}>
+				<Breadcrumb
+					currentPageLabel={guide.title}
+					homeLinkProps={{
+						href: "/",
+					}}
+					segments={[
+						{
+							label: "Fiches Pratiques",
+							linkProps: {
+								href: "/guides",
+							},
+						},
+					]}
+				/>
+				<PracticalGuidesDisplay guide={guide} />
+			</div>
+		</>
 	);
 }
