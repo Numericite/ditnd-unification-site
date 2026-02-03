@@ -52,7 +52,7 @@ const ChatBot = () => {
 				...prev,
 				{
 					role: "assistant",
-					content: response.content || "",
+					content: response.content,
 					choices: response.choices || [],
 				},
 			]);

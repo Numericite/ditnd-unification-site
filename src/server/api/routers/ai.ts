@@ -13,11 +13,6 @@ import { sql } from "@payloadcms/db-postgres";
 import type { Condition } from "~/payload/payload-types";
 import type { AugmentedPracticalGuide } from "./practical-guides";
 
-const systemPrompt = readFileSync(
-	path.join(process.cwd(), "src/utils/prompts/chatbot-system.md"),
-	"utf-8",
-);
-
 export const messageSchema = z.object({
 	role: z.enum(["user", "assistant"]),
 	content: z.string(),
@@ -89,6 +84,20 @@ export const aiRouter = createTRPCRouter({
 				});
 			}
 
+			let systemPrompt = "";
+
+			try {
+				systemPrompt = readFileSync(
+					path.join(process.cwd(), "src/utils/prompts/chatbot-system.md"),
+					"utf-8",
+				);
+			} catch (_) {
+				throw new TRPCError({
+					code: "INTERNAL_SERVER_ERROR",
+					message: "Failed to load system prompt",
+				});
+			}
+
 			const payload = {
 				model: "albert-small",
 				messages: [
@@ -121,9 +130,9 @@ export const aiRouter = createTRPCRouter({
 
 			const data = (await response.json()) as { id: string; choices: any[] };
 
-			const { data: message, error: errorMessage } = messageSchema.safeParse(
-				JSON.parse(data.choices[0].message.content),
-			);
+			const { data: message, error: errorMessage } = messageSchema
+				.omit({ role: true })
+				.safeParse(JSON.parse(data.choices[0].message.content));
 
 			if (!message || errorMessage) {
 				throw new TRPCError({
