@@ -14,6 +14,10 @@ import { PracticalGuides } from "./collections/PracticalGuides";
 import { Themes } from "./collections/Themes";
 import { Journeys } from "./collections/Journeys";
 import { Medias } from "./collections/Medias";
+import {
+	addPracticalGuidesTable,
+	addPracticalGuidesTableVector,
+} from "./hooks";
 
 const filename = fileURLToPath(import.meta.url);
 const dirname = path.dirname(filename);
@@ -41,6 +45,8 @@ export default buildConfig({
 		outputFile: path.resolve(dirname, "payload-types.ts"),
 	},
 	db: postgresAdapter({
+		beforeSchemaInit: [addPracticalGuidesTable],
+		afterSchemaInit: [addPracticalGuidesTableVector],
 		pool: {
 			connectionString: process.env.POSTGRESQL_ADDON_URI || "",
 		},

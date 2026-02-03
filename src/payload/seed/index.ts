@@ -6,6 +6,7 @@ import { seedPracticalGuides } from "./tasks/practical-guide";
 import { seedCourses } from "./tasks/courses";
 import { seedJourneys } from "./tasks/journeys";
 import { seedMedia } from "./tasks/medias";
+import { seedPersonas } from "./tasks/persona";
 
 const seedData = async () => {
 	try {
@@ -38,7 +39,7 @@ const seedData = async () => {
 		await seedTheme(payload);
 		await seedMedia(payload);
 		await seedConditions(payload);
-		// await seedPersonas(payload);
+		await seedPersonas(payload);
 		await seedCourses(payload);
 		await seedPracticalGuides(payload);
 		await seedJourneys(payload);

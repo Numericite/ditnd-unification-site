@@ -17,6 +17,8 @@ import SubMenuCustom from "~/components/ui/Navigation/SubMenuCustom";
 import { useState } from "react";
 import { fr } from "@codegouvfr/react-dsfr";
 import { personas } from ".";
+import ChatBot from "~/components/Chatbot/Chatbot";
+import "~/utils/styles/keyframes.css";
 
 declare module "@codegouvfr/react-dsfr/next-pagesdir" {
 	interface RegisterLink {
@@ -50,6 +52,8 @@ function App({ Component, pageProps }: AppProps) {
 	const { classes, cx } = useStyles();
 
 	const router = useRouter();
+
+	const { displayTmpChatbot } = router.query as { displayTmpChatbot?: string };
 
 	function isRouteActive(item: MainNavigationProps.Item, path: string) {
 		const href = item.linkProps?.href;
@@ -178,9 +182,9 @@ function App({ Component, pageProps }: AppProps) {
 					serviceTitle="DI-TND"
 					serviceTagline="Délégation interministérielle pour les troubles du neurodéveloppement"
 				/>
-
 				<main>
 					{isLoadingHomePage ? <Loader /> : <Component {...pageProps} />}
+					{displayTmpChatbot === "true" && <ChatBot />}
 				</main>
 				<Footer
 					accessibility="non compliant"
