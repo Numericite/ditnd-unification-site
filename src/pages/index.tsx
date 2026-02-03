@@ -1,10 +1,7 @@
 import Head from "next/head";
 import { tss } from "tss-react";
 import { fr } from "@codegouvfr/react-dsfr";
-import {
-	PersonaTiles,
-	type PersonaTile,
-} from "~/components/HomePage/PersonaTiles";
+import { PersonaTiles } from "~/components/HomePage/PersonaTiles";
 import Breadcrumb from "@codegouvfr/react-dsfr/Breadcrumb";
 import SearchBar from "@codegouvfr/react-dsfr/SearchBar";
 import { api } from "~/utils/api";
@@ -19,7 +16,7 @@ import { useRouter } from "next/router";
 import Image from "next/image";
 import { EmptyScreenZone } from "~/components/ui/EmptyScreenZone";
 import SkipLinks from "@codegouvfr/react-dsfr/SkipLinks";
-import { homeCMSStore } from "~/state/store";
+import { homeCMSStore, personStore } from "~/state/store";
 
 export const personas: PersonaTile[] = [
 	{
@@ -62,9 +59,11 @@ export default function Home() {
 	const { data: mostViewedGuides, isLoading: isLoadingViewedGuides } =
 		api.practicalGuide.getByViews.useQuery();
 
+	const persons = personStore.get();
+
 	const homeCMS = homeCMSStore.get();
 
-	if (isLoadingViewedGuides) return <Loader />;
+	if (isLoadingViewedGuides || !persons) return <Loader />;
 
 	if (!homeCMS)
 		return (
@@ -161,7 +160,25 @@ export default function Home() {
 					<div className={fr.cx("fr-container")}>
 						<div className={fr.cx("fr-py-6w")}>
 							<div className={fr.cx("fr-grid-row")}>
-								<PersonaTiles tiles={personas} />
+								{persons ? (
+									<PersonaTiles
+										tiles={[
+											...persons.map((persona) => ({
+												...persona,
+												name: `Je suis ${persona.name}`,
+											})),
+											{
+												name: "Je suis un professionnel",
+												description: "Description type",
+												slug: "professional",
+												display: "professional",
+												pictogram: "CityHall",
+											},
+										]}
+									/>
+								) : (
+									"Aucun persona trouvé"
+								)}
 							</div>
 						</div>
 					</div>

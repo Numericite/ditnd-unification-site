@@ -9,7 +9,7 @@ const personas = [
 		pictogram: "HumanCooperation",
 	},
 	{
-		name: "une Personne concernée par un TND",
+		name: "une Personne concernée",
 		description: "Description d'une personne concernée",
 		slug: "pe",
 		pictogram: "Avatar",

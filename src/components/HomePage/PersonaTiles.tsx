@@ -1,12 +1,12 @@
 import { fr } from "@codegouvfr/react-dsfr";
 import { useState } from "react";
-import { homeCMSStore, tdhStore, type TDH } from "~/state/store";
+import { homeCMSStore, proStore, tdhStore, type TDH } from "~/state/store";
 import { PersonaGrid } from "../ui/HomePage/PersonaGrid";
-import { api } from "~/utils/api";
 import Tag from "@codegouvfr/react-dsfr/Tag";
 import { useRouter } from "next/router";
 import { tss } from "tss-react";
-import type { PictoProps } from "@codegouvfr/react-dsfr/picto/utils/PictoWrapper";
+import type { Persona } from "~/payload/payload-types";
+import type { PictogramName } from "~/pages";
 
 export type PersonaTypes =
 	| "person"
@@ -15,14 +15,11 @@ export type PersonaTypes =
 	| "condition"
 	| "default";
 
-export type PersonaTile = {
-	id?: number;
-	name: string;
-	description: string;
-	slug: string;
+export interface PersonaTile
+	extends Omit<Persona, "updatedAt" | "createdAt" | "id"> {
 	display: PersonaTypes;
-	pictogram?: PictoProps;
-};
+	pictogram?: PictogramName | null;
+}
 
 export type TagItem = {
 	label: string;
@@ -67,7 +64,7 @@ export const PersonaTiles = ({
 	const [tags, setTags] = useState<TagItem[]>(defaultTags || []);
 	const [title, setTitle] = useState(titleByDisplay.default);
 
-	const { data: professionalPersonas } = api.persona.professionals.useQuery();
+	const professionalPersonas = proStore.get();
 
 	const router = useRouter();
 
