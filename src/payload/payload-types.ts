@@ -218,6 +218,7 @@ export interface Theme {
 export interface Media {
   id: number;
   alt: string;
+  prefix?: string | null;
   updatedAt: string;
   createdAt: string;
   url?: string | null;
@@ -507,6 +508,7 @@ export interface JourneysSelect<T extends boolean = true> {
  */
 export interface MediasSelect<T extends boolean = true> {
   alt?: T;
+  prefix?: T;
   updatedAt?: T;
   createdAt?: T;
   url?: T;
