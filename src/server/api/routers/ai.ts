@@ -18,20 +18,13 @@ const systemPrompt = readFileSync(
 	"utf-8",
 );
 
-// 2) CONCERNED DISORDER (choose exactly one):
-// - DYS (Troubles cognitifs spécifiques qui affectent certaines fonctions humaines) (e.g. dyslexia, dyspraxia, dyscalculia)
-// - TSA (Trouble du spectre de l'autisme) (Autism Spectrum Disorder)
-// - TDI (Trouble du développement intellectuel) (Intellectual developmental disorder)
-// - TDAH (Trouble du déficit de l'attention avec ou sans hyperactivité) (Attention Deficit / Hyperactivity Disorder)
-
 export const messageSchema = z.object({
 	role: z.enum(["user", "assistant"]),
 	content: z.string(),
 	choices: z.array(z.string()).optional(),
 	userChoices: z.array(z.string()).optional(),
+	useRetrieval: z.boolean().optional(),
 });
-
-type Message = z.infer<typeof messageSchema>;
 
 const retrieveDocsFromUserPrompt = async ({
 	payload,
@@ -128,13 +121,18 @@ export const aiRouter = createTRPCRouter({
 
 			const data = (await response.json()) as { id: string; choices: any[] };
 
-			const message = JSON.parse(data.choices[0].message.content) as Message & {
-				useRetrieval: boolean;
-			};
+			const { data: message, error: errorMessage } = messageSchema.safeParse(
+				JSON.parse(data.choices[0].message.content),
+			);
 
-			const isRetrievalNeeded = message.useRetrieval;
+			if (!message || errorMessage) {
+				throw new TRPCError({
+					code: "INTERNAL_SERVER_ERROR",
+					message: `Invalid response format from Albert API`,
+				});
+			}
 
-			if (isRetrievalNeeded === true) {
+			if (message?.useRetrieval) {
 				const practicalGuides = await retrieveDocsFromUserPrompt({
 					payload: ctx.payload,
 					userPrompt: input
