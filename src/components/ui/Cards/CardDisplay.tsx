@@ -6,13 +6,14 @@ import { shortenDescription } from "~/utils/tools";
 
 type Props = {
 	title: string;
-	description: string;
+	description?: string;
 	type?: "Webinaire" | "MOOC" | "Présentiel";
 	imageUrl?: string;
 	imageAlt?: string;
+	noImg?: boolean;
 	conditions: Condition[];
 	themes: Theme[];
-	kind?: "Guides" | "Courses";
+	kind?: "guides" | "courses";
 	redirect: string;
 	titleAs?: "h2" | "h3" | "h4" | "h5" | "h6" | undefined;
 };
@@ -23,12 +24,22 @@ export default function CardDisplay({
 	type,
 	imageUrl,
 	imageAlt,
+	noImg,
 	conditions,
 	themes,
-	kind = "Guides",
+	kind = "guides",
 	redirect = "/",
 	titleAs = "h4",
 }: Props) {
+	const imgProps = !noImg
+		? {
+				imageUrl:
+					imageUrl ??
+					"https://www.systeme-de-design.gouv.fr/v1.14/storybook/img/placeholder.16x9.png",
+				imageAlt: imageAlt ?? "",
+			}
+		: { imageComponent: undefined };
+
 	return (
 		<Card
 			background
@@ -40,18 +51,14 @@ export default function CardDisplay({
 				) : null
 			}
 			border
-			desc={shortenDescription(description)}
-			imageAlt={imageAlt ?? ""}
-			imageUrl={
-				imageUrl ??
-				"https://www.systeme-de-design.gouv.fr/v1.14/storybook/img/placeholder.16x9.png"
-			}
+			desc={description ? shortenDescription(description) : undefined}
+			{...imgProps}
 			footer={
 				<a
 					className="fr-link fr-icon-arrow-right-line fr-link--icon-right"
 					href={redirect}
 				>
-					{kind === "Courses" ? "Voir la formation" : "Voir la fiche"}
+					{kind === "courses" ? "Voir la formation" : "Voir la fiche"}
 				</a>
 			}
 			size="medium"

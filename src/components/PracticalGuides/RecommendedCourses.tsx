@@ -23,7 +23,7 @@ export default function RecommendedCourses({
 								"fr-col-lg-6",
 							)}
 							courses={courses}
-							kind="Courses"
+							kind="courses"
 						/>
 					</div>
 				</div>

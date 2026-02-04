@@ -18,7 +18,7 @@ export default function RecommendedGuides({
 						<CardsDisplayGroup
 							className={fr.cx("fr-col-lg-6")}
 							guides={guides}
-							kind="Guides"
+							kind="guides"
 						/>
 					</div>
 				</div>

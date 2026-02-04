@@ -42,7 +42,7 @@ export default function Courses() {
 						label: "Filtres de recherche",
 					},
 					{
-						anchor: "#search",
+						anchor: "#search-global",
 						label: "Recherche",
 					},
 					{

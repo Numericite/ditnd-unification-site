@@ -47,7 +47,7 @@ export const SearchCoursesDisplay = ({
 							"fr-col-lg-6",
 						)}
 						courses={coursesData}
-						kind="Courses"
+						kind="courses"
 					/>
 				</div>
 			)}

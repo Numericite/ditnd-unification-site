@@ -31,13 +31,13 @@ export default function PersonaContent({
 					<CardsDisplayGroup
 						className={fr.cx("fr-col-12", "fr-col-sm-6")}
 						courses={courses}
-						kind="Courses"
+						kind="courses"
 					/>
 				) : (
 					<CardsDisplayGroup
 						className={fr.cx("fr-col-12", "fr-col-sm-6")}
 						guides={guides}
-						kind="Guides"
+						kind="guides"
 					/>
 				)}
 			</div>

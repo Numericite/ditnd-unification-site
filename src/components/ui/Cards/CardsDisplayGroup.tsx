@@ -8,7 +8,7 @@ type Props = {
 	courses?: AugmentedCourse[];
 	className?: string;
 	titleAs?: "h2" | "h3" | "h4" | "h5" | "h6" | undefined;
-	kind: "Courses" | "Guides";
+	kind: "guides" | "courses";
 };
 
 export default function CardsDisplayGroup({
@@ -20,7 +20,7 @@ export default function CardsDisplayGroup({
 }: Props) {
 	const renderContent = () => {
 		switch (kind) {
-			case "Courses":
+			case "courses":
 				return (
 					<>
 						{courses?.map((course) => (
@@ -43,7 +43,7 @@ export default function CardsDisplayGroup({
 						))}
 					</>
 				);
-			case "Guides":
+			case "guides":
 				return (
 					<>
 						{guides?.map((guide) => (

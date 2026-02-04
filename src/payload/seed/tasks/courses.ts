@@ -1,5 +1,4 @@
 import type { Payload } from "payload";
-import { TRPCError } from "@trpc/server";
 
 const courses = [
 	{
@@ -53,10 +52,7 @@ async function createCourses(
 			draft: true,
 		});
 	} catch (error) {
-		throw new TRPCError({
-			message: `Error creating courses error ${error}`,
-			code: "INTERNAL_SERVER_ERROR",
-		});
+		throw new Error(`Error creating courses error ${error}`);
 	}
 }
 
