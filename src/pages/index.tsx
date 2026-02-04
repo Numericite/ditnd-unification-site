@@ -11,6 +11,11 @@ import Avatar from "@codegouvfr/react-dsfr/picto/Avatar";
 import HumanCooperation from "@codegouvfr/react-dsfr/picto/HumanCooperation";
 import CityHall from "@codegouvfr/react-dsfr/picto/CityHall";
 import SelfTraining from "@codegouvfr/react-dsfr/picto/SelfTraining";
+import Hospital from "@codegouvfr/react-dsfr/picto/Hospital";
+import School from "@codegouvfr/react-dsfr/picto/School";
+import Companie from "@codegouvfr/react-dsfr/picto/Companie";
+import Ecosystem from "@codegouvfr/react-dsfr/picto/Ecosystem";
+
 import { useState } from "react";
 import { useRouter } from "next/router";
 import Image from "next/image";
@@ -23,6 +28,10 @@ export const pictogramMap = {
 	HumanCooperation,
 	CityHall,
 	SelfTraining,
+	Hospital,
+	School,
+	Companie,
+	Ecosystem,
 };
 
 export type PictogramName = keyof typeof pictogramMap;
@@ -210,6 +219,6 @@ const useStyles = tss.withName(Home.name).create({
 	},
 	viewMoreLink: {
 		marginLeft: "auto",
-		marginTop: fr.spacing("2w"),
+		marginTop: fr.spacing("3w"),
 	},
 });

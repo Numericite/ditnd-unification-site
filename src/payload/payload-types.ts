@@ -170,7 +170,9 @@ export interface Persona {
   name: string;
   description: string;
   slug: string;
-  pictogram?: ('Avatar' | 'HumanCooperation' | 'CityHall' | 'SelfTraining') | null;
+  pictogram?:
+    | ('Avatar' | 'HumanCooperation' | 'CityHall' | 'SelfTraining' | 'Hospital' | 'School' | 'Companie' | 'Ecosystem')
+    | null;
   updatedAt: string;
   createdAt: string;
 }
