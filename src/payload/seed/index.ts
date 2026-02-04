@@ -6,8 +6,8 @@ import { seedPracticalGuides } from "./tasks/practical-guide";
 import { seedCourses } from "./tasks/courses";
 import { seedJourneys } from "./tasks/journeys";
 import { seedMedia } from "./tasks/medias";
+import { seedPersonas } from "./tasks/persona";
 import homeTask from "./tasks/home";
-import { seedPersonas } from "./tasks/personas";
 import footerTask from "./tasks/footer";
 
 const seedData = async () => {

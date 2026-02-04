@@ -9,7 +9,10 @@ import { api } from "~/utils/api";
 import { homeCMSStore, tdhStore } from "~/state/store";
 import { Loader } from "~/components/ui/Loader";
 import { tss } from "tss-react";
+import ChatBot from "~/components/Chatbot/Chatbot";
+import "~/utils/styles/keyframes.css";
 import MainNavigation from "~/components/ui/Navigation/MainNavigation";
+import { useRouter } from "next/router";
 
 declare module "@codegouvfr/react-dsfr/next-pagesdir" {
 	interface RegisterLink {
@@ -42,6 +45,10 @@ export { augmentDocumentWithEmotionCache, dsfrDocumentApi };
 function App({ Component, pageProps }: AppProps) {
 	const { classes, cx } = useStyles();
 
+	const router = useRouter();
+
+	const { displayTmpChatbot } = router.query as { displayTmpChatbot?: string };
+
 	const { data: conditions, isLoading: isLoadingHomePage } =
 		api.condition.all.useQuery();
 
@@ -73,6 +80,9 @@ function App({ Component, pageProps }: AppProps) {
 						<Component {...pageProps} />
 					)}
 				</main>
+
+				{displayTmpChatbot === "true" && <ChatBot />}
+
 				<Footer
 					id="footer"
 					accessibility="non compliant"

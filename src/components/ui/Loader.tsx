@@ -30,7 +30,7 @@ const useStyles = tss.withName(Loader.name).create(() => ({
 		justifyContent: "center",
 		i: {
 			display: "inline-block",
-			animation: "spin 1s linear infinite;",
+			animation: "spin 1s linear infinite",
 			color: fr.colors.decisions.background.actionHigh.blueFrance.default,
 			"&::before": {
 				"--icon-size": "2rem",
