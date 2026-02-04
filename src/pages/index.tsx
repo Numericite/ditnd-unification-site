@@ -138,27 +138,25 @@ export default function Home() {
 				<div className={cx(classes.coloredContainer)} id="who">
 					<div className={fr.cx("fr-container")}>
 						<div className={fr.cx("fr-py-6w")}>
-							<div className={fr.cx("fr-grid-row")}>
-								{persons ? (
-									<PersonaTiles
-										tiles={[
-											...persons.map((persona) => ({
-												...persona,
-												name: `Je suis ${persona.name}`,
-											})),
-											{
-												name: "Je suis un professionnel",
-												description: "Description type",
-												slug: "professional",
-												display: "professional",
-												pictogram: "CityHall",
-											},
-										]}
-									/>
-								) : (
-									"Aucun persona trouvé"
-								)}
-							</div>
+							{persons ? (
+								<PersonaTiles
+									tiles={[
+										...persons.map((persona) => ({
+											...persona,
+											name: `Je suis ${persona.name}`,
+										})),
+										{
+											name: "Je suis un professionnel",
+											description: "Description type",
+											slug: "professional",
+											display: "professional",
+											pictogram: "CityHall",
+										},
+									]}
+								/>
+							) : (
+								"Aucun persona trouvé"
+							)}
 						</div>
 					</div>
 				</div>
