@@ -56,8 +56,8 @@ export default buildConfig({
 		outputFile: path.resolve(dirname, "payload-types.ts"),
 	},
 	db: postgresAdapter({
-		beforeSchemaInit: [addPracticalGuidesTable],
-		afterSchemaInit: [addPracticalGuidesTableVector],
+		//beforeSchemaInit: [addPracticalGuidesTable],
+		//afterSchemaInit: [addPracticalGuidesTableVector],
 		pool: {
 			connectionString: process.env.POSTGRESQL_ADDON_URI || "",
 		},

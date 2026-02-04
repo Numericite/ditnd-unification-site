@@ -2,49 +2,6 @@
   "version": "7",
   "dialect": "postgresql",
   "tables": {
-    "public.practical_guide_vectors": {
-      "name": "practical_guide_vectors",
-      "schema": "",
-      "columns": {
-        "id": {
-          "name": "id",
-          "type": "integer",
-          "primaryKey": true,
-          "notNull": true
-        },
-        "doc_id": {
-          "name": "doc_id",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": true
-        },
-        "chunk_index": {
-          "name": "chunk_index",
-          "type": "integer",
-          "primaryKey": false,
-          "notNull": true
-        },
-        "text": {
-          "name": "text",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": true
-        },
-        "embedding": {
-          "name": "embedding",
-          "type": "vector(384)",
-          "primaryKey": false,
-          "notNull": true
-        }
-      },
-      "indexes": {},
-      "foreignKeys": {},
-      "compositePrimaryKeys": {},
-      "uniqueConstraints": {},
-      "policies": {},
-      "checkConstraints": {},
-      "isRLSEnabled": false
-    },
     "public.users_sessions": {
       "name": "users_sessions",
       "schema": "",
@@ -3397,6 +3354,6 @@
     "tables": {},
     "columns": {}
   },
-  "id": "ff2ca618-373c-48ba-9ff9-bd636dcee49d",
+  "id": "66c965f5-cc47-429a-b945-83f1586119f5",
   "prevId": "00000000-0000-0000-0000-000000000000"
 }

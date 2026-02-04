@@ -1,16 +1,8 @@
-import { MigrateUpArgs, MigrateDownArgs, sql } from '@payloadcms/db-postgres'
+import { type MigrateUpArgs, type MigrateDownArgs, sql } from '@payloadcms/db-postgres'
 
 export async function up({ db, payload, req }: MigrateUpArgs): Promise<void> {
   await db.execute(sql`
-   CREATE TABLE "practical_guide_vectors" (
-  	"id" integer PRIMARY KEY NOT NULL,
-  	"doc_id" text NOT NULL,
-  	"chunk_index" integer NOT NULL,
-  	"text" text NOT NULL,
-  	"embedding" vector(384) NOT NULL
-  );
-  
-  CREATE TABLE "home" (
+   CREATE TABLE "home" (
   	"id" serial PRIMARY KEY NOT NULL,
   	"header_title" varchar NOT NULL,
   	"header_description" varchar NOT NULL,
@@ -44,7 +36,6 @@ export async function up({ db, payload, req }: MigrateUpArgs): Promise<void> {
 
 export async function down({ db, payload, req }: MigrateDownArgs): Promise<void> {
   await db.execute(sql`
-   DROP TABLE "practical_guide_vectors" CASCADE;
-  DROP TABLE "home" CASCADE;
+   DROP TABLE "home" CASCADE;
   DROP TABLE "footer" CASCADE;`)
 }
