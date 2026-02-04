@@ -9,6 +9,7 @@ export const Conditions: CollectionConfig = {
 		singular: "Trouble du neurodéveloppement",
 		plural: "Troubles du neurodéveloppement",
 	},
+	orderable: true,
 	fields: [
 		{
 			name: "name",

@@ -5,6 +5,7 @@ export const Personas: CollectionConfig = {
 	admin: {
 		useAsTitle: "name",
 	},
+	orderable: true,
 	fields: [
 		{
 			name: "name",
