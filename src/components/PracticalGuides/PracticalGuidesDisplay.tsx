@@ -7,7 +7,6 @@ import RecommendedCourses from "./RecommendedCourses";
 import type { AugmentedPracticalGuide } from "~/server/api/routers/practical-guides";
 import generateSummary from "~/utils/tools";
 import SummaryContent from "../ui/PracticalGuides/SummaryContent";
-import Image from "next/image";
 
 export default function PracticalGuidesDisplay({
 	guide,
@@ -38,10 +37,10 @@ export default function PracticalGuidesDisplay({
 		<div className={fr.cx("fr-grid-row", "fr-grid-row--gutters")}>
 			{image?.url && (
 				<div className={fr.cx("fr-col-12")}>
-					<Image
+					<img
 						className={cx(fr.cx("fr-responsive-img"), classes.imageBanner)}
-						alt={image?.alt}
-						src={image?.url}
+						alt={image.alt}
+						src={image.url}
 					/>
 				</div>
 			)}
