@@ -101,7 +101,6 @@ export const PersonaTiles = ({
 			setTitle(titleByDisplay.afterProfessional);
 		},
 		condition: (tile) => {
-			console.log(tags);
 			const personaSlug = tags
 				.filter((tag) => tag.slug !== "professional")
 				.map((tag) => tag.slug);

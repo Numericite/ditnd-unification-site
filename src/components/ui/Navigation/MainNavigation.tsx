@@ -77,7 +77,6 @@ export default function MainNavigation({
 						persona.slug === "professional"
 							? (e) => {
 									e.preventDefault();
-									console.log(persona.slug);
 									setCurrentSubMenuPersona(
 										currentSubMenuPersona !== persona.slug
 											? persona.slug
@@ -89,7 +88,6 @@ export default function MainNavigation({
 						persona.slug === "professional"
 							? (e) => {
 									e.preventDefault();
-									console.log(persona.slug);
 									setCurrentSubMenuPersona(
 										currentSubMenuPersona !== persona.slug
 											? persona.slug
