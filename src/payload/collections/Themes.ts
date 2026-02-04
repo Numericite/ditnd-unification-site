@@ -1,4 +1,5 @@
 import type { CollectionConfig } from "payload";
+import { standardFields } from "../fields/standards";
 
 export const Themes: CollectionConfig = {
 	slug: "themes",
@@ -16,12 +17,7 @@ export const Themes: CollectionConfig = {
 			required: true,
 			label: { fr: "Nom" },
 		},
-		{
-			name: "description",
-			type: "text",
-			required: true,
-			label: { fr: "Description" },
-		},
+		standardFields.description,
 		{
 			name: "slug",
 			type: "text",

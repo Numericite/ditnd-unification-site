@@ -28,6 +28,7 @@ export const PracticalGuides: CollectionConfig = {
 			required: true,
 			label: { fr: "Identifiant texte" },
 			admin: {
+				position: "sidebar",
 				readOnly: true,
 			},
 			hooks: {
@@ -39,12 +40,7 @@ export const PracticalGuides: CollectionConfig = {
 				],
 			},
 		},
-		{
-			name: "description",
-			type: "text",
-			required: true,
-			label: { fr: "Description" },
-		},
+		standardFields.description,
 		{
 			name: "conditions",
 			type: "relationship",
@@ -52,6 +48,9 @@ export const PracticalGuides: CollectionConfig = {
 			relationTo: "conditions",
 			hasMany: true,
 			label: { fr: "Troubles du neurodéveloppement" },
+			admin: {
+				position: "sidebar",
+			},
 		},
 		standardFields.wysiwyg,
 		standardFields.html,
@@ -62,6 +61,9 @@ export const PracticalGuides: CollectionConfig = {
 			relationTo: "personas",
 			hasMany: true,
 			label: { fr: "Persona" },
+			admin: {
+				position: "sidebar",
+			},
 		},
 		{
 			name: "themes",
@@ -70,6 +72,9 @@ export const PracticalGuides: CollectionConfig = {
 			relationTo: "themes",
 			hasMany: true,
 			label: { fr: "Thèmes" },
+			admin: {
+				position: "sidebar",
+			},
 		},
 		{
 			name: "practical-guides",
@@ -78,6 +83,9 @@ export const PracticalGuides: CollectionConfig = {
 			relationTo: "practical-guides",
 			hasMany: true,
 			label: { fr: "Fiches pratiques" },
+			admin: {
+				position: "sidebar",
+			},
 		},
 		{
 			name: "courses",
@@ -86,6 +94,9 @@ export const PracticalGuides: CollectionConfig = {
 			relationTo: "courses",
 			hasMany: true,
 			label: { fr: "Formations" },
+			admin: {
+				position: "sidebar",
+			},
 		},
 		{
 			name: "viewCount",
@@ -94,6 +105,7 @@ export const PracticalGuides: CollectionConfig = {
 			defaultValue: 0,
 			label: { fr: "Nombre de vues" },
 			admin: {
+				position: "sidebar",
 				readOnly: true,
 			},
 		},
@@ -103,6 +115,9 @@ export const PracticalGuides: CollectionConfig = {
 			relationTo: "medias",
 			required: false,
 			label: { fr: "Image de la fiche pratique" },
+			admin: {
+				position: "sidebar",
+			},
 		},
 		{
 			name: "imageBanner",
@@ -110,6 +125,9 @@ export const PracticalGuides: CollectionConfig = {
 			relationTo: "medias",
 			required: false,
 			label: { fr: "Image de la bannière" },
+			admin: {
+				position: "sidebar",
+			},
 		},
 	],
 };
