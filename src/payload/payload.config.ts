@@ -26,6 +26,8 @@ const hasAwsCreds = Boolean(
 		process.env.S3_BUCKET &&
 		process.env.S3_REGION,
 );
+import { CMSHome } from "./globals/cms/Home";
+import { CMSFooter } from "./globals/cms/Footer";
 
 const filename = fileURLToPath(import.meta.url);
 const dirname = path.dirname(filename);
@@ -47,6 +49,7 @@ export default buildConfig({
 		Journeys,
 		Medias,
 	],
+	globals: [CMSHome, CMSFooter],
 	editor: lexicalEditor(),
 	secret: process.env.PAYLOAD_SECRET || "",
 	typescript: {

@@ -1,4 +1,3 @@
-import { useObservable } from "@legendapp/state/react";
 import type { Dispatch, SetStateAction } from "react";
 import { tdhStore } from "~/state/store";
 import { api } from "~/utils/api";
@@ -23,13 +22,13 @@ export type FiltersType = {
 };
 
 export const GuidesFiltersValues = () => {
-	const tdh = useObservable(tdhStore).get();
+	const tdh = tdhStore.get();
 
 	const { data: personasData } = api.persona.all.useQuery();
 
 	const { data: themesData } = api.theme.all.useQuery();
 
-	const tdhItems: FilterItem[] = tdh.get().map((condition) => ({
+	const tdhItems: FilterItem[] = tdh.map((condition) => ({
 		slug: condition.slug,
 		label: condition.name,
 	}));

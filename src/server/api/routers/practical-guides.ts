@@ -13,7 +13,6 @@ import type {
 	Theme,
 } from "~/payload/payload-types";
 import type { AugmentedCourse } from "./courses";
-import { TRPCError } from "@trpc/server";
 
 export interface AugmentedPracticalGuide extends PracticalGuide {
 	themes: Theme[];
@@ -41,10 +40,7 @@ export const practicalGuidesRouter = createTRPCRouter({
 
 			const guide = result.docs[0];
 			if (!guide)
-				throw new TRPCError({
-					code: "NOT_FOUND",
-					message: "No guides found on practicalGuidesRouter - getBySlug",
-				});
+				throw new Error("No guides found on practicalGuidesRouter - getBySlug");
 
 			await ctx.payload.update({
 				collection: "practical-guides",
@@ -57,10 +53,9 @@ export const practicalGuidesRouter = createTRPCRouter({
 			const sanitizedResult = (await Promise.all(
 				result.docs.map(async (guide) => {
 					if (!guide["practical-guides"] || !guide.courses) {
-						throw new TRPCError({
-							code: "NOT_FOUND",
-							message: "No guides found on practicalGuidesRouter - getBySlug",
-						});
+						throw new Error(
+							"No guides found on practicalGuidesRouter - getBySlug",
+						);
 					}
 					return {
 						...guide,

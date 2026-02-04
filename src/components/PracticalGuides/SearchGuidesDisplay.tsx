@@ -4,7 +4,7 @@ import type { FiltersQuery } from "./GuidesFiltersDisplay";
 import { useState } from "react";
 import { SearchBarUI } from "../ui/SearchPage/SearchBarUI";
 import { Loader } from "../ui/Loader";
-import PracticalGuidesGroup from "../ui/PracticalGuides/PracticalGuidesGroup";
+import CardsDisplayGroup from "../ui/Cards/CardsDisplayGroup";
 import { useSearchParams } from "next/navigation";
 
 export const SearchGuidesDisplay = ({ filters }: { filters: FiltersQuery }) => {
@@ -27,10 +27,12 @@ export const SearchGuidesDisplay = ({ filters }: { filters: FiltersQuery }) => {
 			) : (
 				<div
 					className={fr.cx("fr-grid-row", "fr-grid-row--gutters", "fr-pt-3w")}
+					id="contenu"
 				>
-					<PracticalGuidesGroup
+					<CardsDisplayGroup
 						className={fr.cx("fr-col-lg-6")}
-						practicalGuides={practicalGuideData}
+						guides={practicalGuideData}
+						kind="guides"
 					/>
 				</div>
 			)}

@@ -3,8 +3,8 @@ import { fr } from "@codegouvfr/react-dsfr";
 import { useState } from "react";
 import { SearchBarUI } from "../ui/SearchPage/SearchBarUI";
 import { Loader } from "../ui/Loader";
-import CoursesGroup from "../ui/Courses/CoursesGroup";
 import { useSearchParams } from "next/navigation";
+import CardsDisplayGroup from "../ui/Cards/CardsDisplayGroup";
 
 export type CoursesFiltersQuery = {
 	conditions: string[];
@@ -37,8 +37,18 @@ export const SearchCoursesDisplay = ({
 			) : (
 				<div
 					className={fr.cx("fr-grid-row", "fr-grid-row--gutters", "fr-pt-3w")}
+					id="contenu"
 				>
-					<CoursesGroup courses={coursesData} />
+					<CardsDisplayGroup
+						className={fr.cx(
+							"fr-col-12",
+							"fr-col-sm-6",
+							"fr-col-md-12",
+							"fr-col-lg-6",
+						)}
+						courses={coursesData}
+						kind="courses"
+					/>
 				</div>
 			)}
 		</>

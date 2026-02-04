@@ -1,6 +1,6 @@
 import { fr } from "@codegouvfr/react-dsfr";
 import type { AugmentedPracticalGuide } from "~/server/api/routers/practical-guides";
-import PracticalGuidesGroup from "../ui/PracticalGuides/PracticalGuidesGroup";
+import CardsDisplayGroup from "../ui/Cards/CardsDisplayGroup";
 
 export default function MostViewedGuides({
 	guides,
@@ -9,9 +9,11 @@ export default function MostViewedGuides({
 }) {
 	return (
 		<div className={fr.cx("fr-grid-row", "fr-grid-row--gutters")}>
-			<PracticalGuidesGroup
+			<CardsDisplayGroup
 				className={fr.cx("fr-col-lg-4")}
-				practicalGuides={guides}
+				guides={guides}
+				titleAs="h3"
+				kind="guides"
 			/>
 		</div>
 	);

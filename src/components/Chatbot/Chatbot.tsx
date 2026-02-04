@@ -5,8 +5,8 @@ import { tss } from "tss-react";
 import { Input } from "@codegouvfr/react-dsfr/Input";
 import { api } from "~/utils/api";
 import { Loader } from "~/components/ui/Loader";
-import CardDisplay from "~/components/ui/Courses/CardDisplay";
 import type { AugmentedPracticalGuide } from "~/server/api/routers/practical-guides";
+import CardDisplay from "../ui/Cards/CardDisplay";
 
 type Message = {
 	role: "user" | "assistant";

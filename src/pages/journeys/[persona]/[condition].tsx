@@ -1,10 +1,12 @@
 import { fr } from "@codegouvfr/react-dsfr";
 import Breadcrumb from "@codegouvfr/react-dsfr/Breadcrumb";
+import SkipLinks from "@codegouvfr/react-dsfr/SkipLinks";
 import Head from "next/head";
 import { useRouter } from "next/router";
 import { useState } from "react";
 import { tss } from "tss-react";
 import PersonaDisplay from "~/components/PersonaPage/PersonaDisplay";
+import { EmptyScreenZone } from "~/components/ui/EmptyScreenZone";
 import { Loader } from "~/components/ui/Loader";
 import InfoOrCoursesButtons from "~/components/ui/PersonaPage/InfoOrCoursesButtons";
 import type { AugmentedJourney } from "~/server/api/routers/journeys";
@@ -26,7 +28,7 @@ export default function JourneyPage() {
 	if (isLoadingJourney) return <Loader />;
 
 	if (!journeyData || journeyData.length === 0) {
-		return <div>Parcours introuvable</div>;
+		return <EmptyScreenZone>Parcours introuvable</EmptyScreenZone>;
 	}
 
 	const journey = journeyData[0] as AugmentedJourney;
@@ -36,6 +38,27 @@ export default function JourneyPage() {
 			<Head>
 				<title>DITND - {journey.journey_name}</title>
 			</Head>
+			<SkipLinks
+				links={[
+					{
+						anchor: "#summary",
+						label: "Sommaire",
+					},
+
+					{
+						anchor: "#search-global",
+						label: "Recherche",
+					},
+					{
+						anchor: "#contenu",
+						label: "Contenu",
+					},
+					{
+						anchor: "#footer",
+						label: "Pied de page",
+					},
+				]}
+			/>
 			<div className={fr.cx("fr-container")}>
 				<Breadcrumb
 					currentPageLabel={`Je suis un ${journey.persona.name.toLowerCase()} interessé par le ${condition.toUpperCase()}`}

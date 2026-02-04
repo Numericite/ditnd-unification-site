@@ -1,5 +1,4 @@
 import type { Payload } from "payload";
-import { TRPCError } from "@trpc/server";
 
 const conditions = [
 	{
@@ -55,10 +54,9 @@ async function createConditions(
 			data,
 		});
 	} catch (error) {
-		throw new TRPCError({
-			message: `Error creating conditions ${data.acronym} with error ${error}`,
-			code: "INTERNAL_SERVER_ERROR",
-		});
+		throw new Error(
+			`Error creating conditions ${data.acronym} with error ${error}`,
+		);
 	}
 }
 

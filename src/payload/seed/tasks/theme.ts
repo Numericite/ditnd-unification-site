@@ -1,5 +1,4 @@
 import type { Payload } from "payload";
-import { TRPCError } from "@trpc/server";
 
 const theme = [
 	{
@@ -54,10 +53,7 @@ async function createTheme(
 			data,
 		});
 	} catch (error) {
-		throw new TRPCError({
-			message: `Error creating themes ${data.name} with error ${error}`,
-			code: "INTERNAL_SERVER_ERROR",
-		});
+		throw new Error(`Error creating themes ${data.name} with error ${error}`);
 	}
 }
 

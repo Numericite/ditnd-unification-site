@@ -1,11 +1,6 @@
 import type { CollectionConfig } from "payload";
-import {
-	lexicalEditor,
-	FixedToolbarFeature,
-	HeadingFeature,
-} from "@payloadcms/richtext-lexical";
-import { convertLexicalToHTML } from "@payloadcms/richtext-lexical/html";
 import { slugify } from "~/utils/tools";
+import { standardFields } from "../fields/standards";
 
 export const PracticalGuides: CollectionConfig = {
 	slug: "practical-guides",
@@ -58,43 +53,8 @@ export const PracticalGuides: CollectionConfig = {
 			hasMany: true,
 			label: { fr: "Troubles du neurodéveloppement" },
 		},
-		{
-			name: "content",
-			type: "richText",
-			required: true,
-			label: { fr: "Contenu" },
-			editor: lexicalEditor({
-				admin: {
-					placeholder: "Content of the practical guide",
-					hideGutter: false,
-				},
-
-				features: ({ defaultFeatures }) => [
-					...defaultFeatures,
-					FixedToolbarFeature(),
-					HeadingFeature({
-						enabledHeadingSizes: ["h2", "h3", "h4", "h5", "h6"],
-					}),
-				],
-			}),
-		},
-		{
-			name: "html",
-			type: "text",
-			required: true,
-			label: { fr: "html" },
-			admin: {
-				readOnly: true,
-			},
-			hooks: {
-				beforeChange: [
-					async ({ siblingData }) => {
-						if (!siblingData?.content) return "";
-						return convertLexicalToHTML({ data: siblingData.content });
-					},
-				],
-			},
-		},
+		standardFields.wysiwyg,
+		standardFields.html,
 		{
 			name: "persona",
 			type: "relationship",

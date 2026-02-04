@@ -7,6 +7,8 @@ import { seedCourses } from "./tasks/courses";
 import { seedJourneys } from "./tasks/journeys";
 import { seedMedia } from "./tasks/medias";
 import { seedPersonas } from "./tasks/persona";
+import homeTask from "./tasks/home";
+import footerTask from "./tasks/footer";
 
 const seedData = async () => {
 	try {
@@ -35,7 +37,8 @@ const seedData = async () => {
 				role: "editor",
 			},
 		});
-
+		await homeTask(payload);
+		await footerTask(payload);
 		await seedTheme(payload);
 		await seedMedia(payload);
 		await seedConditions(payload);

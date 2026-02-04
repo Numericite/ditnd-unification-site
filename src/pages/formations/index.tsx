@@ -11,6 +11,7 @@ import type { FiltersQuery } from "~/components/PracticalGuides/GuidesFiltersDis
 import { tss } from "tss-react";
 import { useRouter } from "next/router";
 import { deserialize } from "~/utils/tools";
+import SkipLinks from "@codegouvfr/react-dsfr/SkipLinks";
 
 export default function Courses() {
 	const { classes, cx } = useStyles();
@@ -26,53 +27,76 @@ export default function Courses() {
 	});
 
 	return (
-		<div className={fr.cx("fr-container", "fr-pb-8w")}>
-			<Breadcrumb
-				currentPageLabel="Formations"
-				homeLinkProps={{
-					href: "/",
-				}}
-				segments={[]}
-			/>
+		<>
 			<Head>
 				<title>DITND - Formations</title>
 			</Head>
+			<SkipLinks
+				links={[
+					{
+						anchor: "#contenu",
+						label: "Contenu",
+					},
+					{
+						anchor: "#filters",
+						label: "Filtres de recherche",
+					},
+					{
+						anchor: "#search-global",
+						label: "Recherche",
+					},
+					{
+						anchor: "#footer",
+						label: "Pied de page",
+					},
+				]}
+			/>
+			<div className={fr.cx("fr-container", "fr-pb-8w")}>
+				<Breadcrumb
+					currentPageLabel="Formations"
+					homeLinkProps={{
+						href: "/",
+					}}
+					segments={[]}
+				/>
+				<div>
+					<h1 className={fr.cx("fr-mb-4w")}>Formations</h1>
 
-			<div>
-				<h1 className={fr.cx("fr-mb-4w")}>Formations</h1>
-
-				<div className={fr.cx("fr-grid-row", "fr-grid-row--gutters")}>
-					<aside
-						className={cx(
-							fr.cx("fr-col-12", "fr-col-md-4"),
-							classes.borderRight,
-						)}
-					>
-						<div className={fr.cx("fr-p-3w")}>
-							<h2 className={fr.cx("fr-h4")}>Affiner la recherche</h2>
-							<div className={fr.cx("fr-mt-2w")}>
-								<CoursesFiltersDisplay
-									setFilters={
-										setFilters as Dispatch<SetStateAction<FiltersQuery>>
-									}
-								/>
+					<div className={fr.cx("fr-grid-row", "fr-grid-row--gutters")}>
+						<aside
+							className={cx(
+								fr.cx("fr-col-12", "fr-col-md-4"),
+								classes.borderRight,
+							)}
+						>
+							<div className={fr.cx("fr-p-3w")}>
+								<h2 className={fr.cx("fr-h4")} id="filters">
+									Affiner la recherche
+								</h2>
+								<div className={fr.cx("fr-mt-2w")}>
+									<CoursesFiltersDisplay
+										setFilters={
+											setFilters as Dispatch<SetStateAction<FiltersQuery>>
+										}
+									/>
+								</div>
 							</div>
-						</div>
-					</aside>
+						</aside>
 
-					<div
-						className={fr.cx(
-							"fr-col-12",
-							"fr-col-md-8",
-							"fr-px-0",
-							"fr-px-md-4w",
-						)}
-					>
-						<SearchCoursesDisplay filters={filters} />
+						<div
+							className={fr.cx(
+								"fr-col-12",
+								"fr-col-md-8",
+								"fr-px-0",
+								"fr-px-md-4w",
+							)}
+						>
+							<SearchCoursesDisplay filters={filters} />
+						</div>
 					</div>
 				</div>
 			</div>
-		</div>
+		</>
 	);
 }
 

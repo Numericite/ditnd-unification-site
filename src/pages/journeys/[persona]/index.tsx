@@ -80,11 +80,8 @@ export default function JourneyPage() {
 					}}
 					segments={[]}
 				/>
-				<h2>{persona?.name}</h2>
-				<div
-					className={fr.cx("fr-pb-4w")}
-					style={{ marginRight: "-12px", marginLeft: "-12px" }}
-				>
+				<h1>{persona?.name}</h1>
+				<div className={fr.cx("fr-pb-4w")}>
 					<PersonaTiles
 						key={persona_slug}
 						tiles={personas}

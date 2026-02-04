@@ -17,6 +17,9 @@ import SelfTraining from "@codegouvfr/react-dsfr/picto/SelfTraining";
 import { useState } from "react";
 import { useRouter } from "next/router";
 import Image from "next/image";
+import { EmptyScreenZone } from "~/components/ui/EmptyScreenZone";
+import SkipLinks from "@codegouvfr/react-dsfr/SkipLinks";
+import { homeCMSStore } from "~/state/store";
 
 export const personas: PersonaTile[] = [
 	{
@@ -59,13 +62,46 @@ export default function Home() {
 	const { data: mostViewedGuides, isLoading: isLoadingViewedGuides } =
 		api.practicalGuide.getByViews.useQuery();
 
+	const homeCMS = homeCMSStore.get();
+
 	if (isLoadingViewedGuides) return <Loader />;
+
+	if (!homeCMS)
+		return (
+			<EmptyScreenZone>
+				<p>
+					Erreur lors du chargement des variables globales sur payload CMS,
+					veuillez revoir la configuration de votre instance Payload.{" "}
+				</p>
+			</EmptyScreenZone>
+		);
 
 	return (
 		<>
 			<Head>
 				<title>DITND - Accueil</title>
 			</Head>
+			<SkipLinks
+				links={[
+					{
+						anchor: "#search-global",
+						label: "Recherche",
+					},
+					{
+						anchor: "#who",
+						label: "Qui êtes vous",
+					},
+					{
+						anchor: "#mostViewed",
+						label: "Fiches Pratiques les plus lues",
+					},
+
+					{
+						anchor: "#footer",
+						label: "Pied de page",
+					},
+				]}
+			/>
 			<div className={fr.cx("fr-container")}>
 				<Breadcrumb
 					currentPageLabel=""
@@ -83,16 +119,10 @@ export default function Home() {
 							style={{ alignContent: "center" }}
 						>
 							<div className={fr.cx("fr-col-12", "fr-col-md-6")}>
-								<h1>
-									Plateforme nationale du TSA et des troubles du
-									neuro-développement
-								</h1>
-								<p>
-									La plateforme nationale au service des personnes concernées
-									par un trouble du neurodéveloppement, les parents, et les
-									professionnels.
-								</p>
+								<h1>{homeCMS.header.title}</h1>
+								<p>{homeCMS.header.description}</p>
 								<SearchBar
+									id="search-global"
 									big
 									onButtonClick={() => router.push(`/guides?search=${search}`)}
 									renderInput={({ className, id, placeholder, type }) => (
@@ -122,13 +152,12 @@ export default function Home() {
 									width={400}
 									height={400}
 									src={"/HomePageIllustration.svg"}
-									unoptimized
 								/>
 							</div>
 						</div>
 					</div>
 				</div>
-				<div className={cx(classes.coloredContainer)}>
+				<div className={cx(classes.coloredContainer)} id="who">
 					<div className={fr.cx("fr-container")}>
 						<div className={fr.cx("fr-py-6w")}>
 							<div className={fr.cx("fr-grid-row")}>
@@ -142,14 +171,11 @@ export default function Home() {
 						<div className={fr.cx("fr-grid-row", "fr-grid-row--gutters")}>
 							<div
 								className={cx(fr.cx("fr-col-12"), classes.mostViewedContainer)}
+								id="mostViewed"
 							>
-								<h2>Fiches pratiques les plus lues</h2>
+								<h2>{homeCMS?.mostViewedGuides.title}</h2>
 								<div className={fr.cx("fr-text--sm")}>
-									Cyncentrism kontrakemi. Perlogi proaktiv. Emsocial
-									transfiering. Medeltism androstik stereomodern beteendedesign.
-									Realogi transdiktisk om än posttyp. Pseudotiv kontradiktisk.
-									Mytofiering FAR det heteropod suprapatologi. Kvasitris
-									agnostigyn absion anamatisk.
+									{homeCMS?.mostViewedGuides.description}
 								</div>
 
 								{mostViewedGuides?.length === 0 || !mostViewedGuides ? (

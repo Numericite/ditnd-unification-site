@@ -13,7 +13,7 @@ export default function WysiwygContent({
 	const { classes, cx } = useStyles();
 
 	return (
-		<div className={cx(classes.wysiwig)}>
+		<div className={cx(classes.wysiwig)} id="wysiwig-content">
 			<h1>{title}</h1>
 			<div
 				dangerouslySetInnerHTML={{

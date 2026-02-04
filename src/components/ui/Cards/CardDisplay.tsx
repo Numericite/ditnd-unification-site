@@ -13,8 +13,9 @@ type Props = {
 	noImg?: boolean;
 	conditions: Condition[];
 	themes: Theme[];
-	kind?: "PracticalGuides" | "Courses";
+	kind?: "guides" | "courses";
 	redirect: string;
+	titleAs?: "h2" | "h3" | "h4" | "h5" | "h6" | undefined;
 };
 
 export default function CardDisplay({
@@ -26,8 +27,9 @@ export default function CardDisplay({
 	noImg,
 	conditions,
 	themes,
-	kind = "PracticalGuides",
+	kind = "guides",
 	redirect = "/",
+	titleAs = "h4",
 }: Props) {
 	const imgProps = !noImg
 		? {
@@ -56,7 +58,7 @@ export default function CardDisplay({
 					className="fr-link fr-icon-arrow-right-line fr-link--icon-right"
 					href={redirect}
 				>
-					{kind === "Courses" ? "Voir la formation" : "Voir la fiche"}
+					{kind === "courses" ? "Voir la formation" : "Voir la fiche"}
 				</a>
 			}
 			size="medium"
@@ -84,7 +86,7 @@ export default function CardDisplay({
 				</ul>
 			}
 			title={title}
-			titleAs="h4"
+			titleAs={titleAs}
 		/>
 	);
 }

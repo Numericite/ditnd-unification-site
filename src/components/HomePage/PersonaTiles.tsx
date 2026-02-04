@@ -1,7 +1,6 @@
 import { fr } from "@codegouvfr/react-dsfr";
 import { useState } from "react";
-import { useObservable } from "@legendapp/state/react";
-import { tdhStore, type TDH } from "~/state/store";
+import { homeCMSStore, tdhStore, type TDH } from "~/state/store";
 import { PersonaGrid } from "../ui/HomePage/PersonaGrid";
 import { api } from "~/utils/api";
 import Tag from "@codegouvfr/react-dsfr/Tag";
@@ -47,17 +46,19 @@ const titleByDisplay: Record<PersonaTypes, string> = {
 	condition: "",
 };
 
+type Props = {
+	tiles: PersonaTile[];
+	defaultDisplay?: PersonaTypes;
+	defaultTags?: TagItem[];
+	hideTags?: boolean;
+};
+
 export const PersonaTiles = ({
 	tiles,
 	defaultDisplay,
 	defaultTags,
 	hideTags = false,
-}: {
-	tiles: PersonaTile[];
-	defaultDisplay?: PersonaTypes;
-	defaultTags?: TagItem[];
-	hideTags?: boolean;
-}) => {
+}: Props) => {
 	const { classes, cx } = useStyles();
 
 	const [display, setDisplay] = useState<PersonaTypes>(
@@ -69,9 +70,11 @@ export const PersonaTiles = ({
 	const { data: professionalPersonas } = api.persona.professionals.useQuery();
 
 	const router = useRouter();
-	const tdh = useObservable(tdhStore).get();
 
-	const tdhTiles = [unknownTile, ...tdh.get()];
+	const tdh = tdhStore.get();
+	const homeCMS = homeCMSStore.get();
+
+	const tdhTiles = [unknownTile, ...tdh];
 
 	const handleClick = (tile: PersonaTile, prevDisplay: PersonaTypes) => {
 		setTags((prev) => [
@@ -137,7 +140,7 @@ export const PersonaTiles = ({
 				);
 
 			case "afterProfessional":
-				return <PersonaGrid tiles={tdh.get()} onClick={tileDispatchTable} />;
+				return <PersonaGrid tiles={tdh} onClick={tileDispatchTable} />;
 
 			default:
 				return (
@@ -156,12 +159,7 @@ export const PersonaTiles = ({
 		<>
 			<div className={fr.cx("fr-col-12")}>
 				<h2>{title}</h2>
-				<div className={fr.cx("fr-text--sm")}>
-					Cyncentrism kontrakemi. Perlogi proaktiv. Emsocial transfiering.
-					Medeltism androstik stereomodern beteendedesign. Realogi transdiktisk
-					om än posttyp. Pseudotiv kontradiktisk. Mytofiering FAR det heteropod
-					suprapatologi. Kvasitris agnostigyn absion anamatisk.
-				</div>
+				<div className={fr.cx("fr-text--sm")}>{homeCMS.tiles.description}</div>
 			</div>
 			{!hideTags && (
 				<div className={cx(fr.cx("fr-grid-row", "fr-grid-row--gutters"))}>
@@ -179,12 +177,7 @@ export const PersonaTiles = ({
 					))}
 				</div>
 			)}
-			<div
-				className={cx(
-					fr.cx("fr-grid-row", "fr-grid-row--gutters"),
-					classes.renderContentContainer,
-				)}
-			>
+			<div className={fr.cx("fr-grid-row", "fr-grid-row--gutters")}>
 				{renderContent()}
 			</div>
 		</>
@@ -192,13 +185,8 @@ export const PersonaTiles = ({
 };
 
 const useStyles = tss.withName(PersonaTiles.name).create(() => ({
-	renderContentContainer: {
-		width: "100%",
-		alignItems: "stretch",
-		marginLeft: 0,
-	},
 	tagStyles: {
 		marginLeft: fr.spacing("3v"),
-		marginBottom: fr.spacing("5v"),
+		marginBottom: fr.spacing("8v"),
 	},
 }));

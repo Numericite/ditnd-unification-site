@@ -1,18 +1,14 @@
 import { fr } from "@codegouvfr/react-dsfr";
 import { SearchBarUI } from "../ui/SearchPage/SearchBarUI";
 import { useMemo, useState } from "react";
-import { slugify } from "~/utils/tools";
+import { courseQuery, practicalGuideQuery, slugify } from "~/utils/tools";
 import type { AugmentedJourney } from "~/server/api/routers/journeys";
 import { useRouter } from "next/router";
-import PersonaGuidesContent, {
-	practicalGuideQuery,
-} from "../ui/PersonaPage/PersonaGuidesContent";
 import { tss } from "tss-react";
-import PersonaCoursesContent, {
-	courseQuery,
-} from "../ui/PersonaPage/PersonaCoursesContent";
 import SummaryContent from "../ui/PracticalGuides/SummaryContent";
 import { useSearchParams } from "next/navigation";
+import { EmptyScreenZone } from "../ui/EmptyScreenZone";
+import PersonaContent from "../ui/PersonaPage/PersonaContent";
 
 export default function PersonaDisplay({
 	journey,
@@ -47,7 +43,7 @@ export default function PersonaDisplay({
 	}, [query]);
 
 	if (!filteredChapters || filteredChapters.length === 0)
-		return <div>Parcours introuvable</div>;
+		return <EmptyScreenZone>Parcours introuvable</EmptyScreenZone>;
 
 	const currentList = viewCourses
 		? filteredChapters.filter((chap) => chap.courses.length > 0)
@@ -72,17 +68,19 @@ export default function PersonaDisplay({
 				{viewCourses
 					? currentList.map((chap) => (
 							<div key={`Course ${chap.name}`}>
-								<PersonaCoursesContent
-									value={chap.courses}
+								<PersonaContent
+									courses={chap.courses}
 									chapterName={chap.name}
+									viewCourse={viewCourses}
 								/>
 							</div>
 						))
 					: currentList.map((chap) => (
 							<div key={`Guides ${chap.name}`}>
-								<PersonaGuidesContent
-									value={chap.guides}
+								<PersonaContent
+									guides={chap.guides}
 									chapterName={chap.name}
+									viewCourse={viewCourses}
 								/>
 							</div>
 						))}
