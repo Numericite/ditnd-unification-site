@@ -128,6 +128,7 @@ export default function Home() {
 									alt=""
 									width={400}
 									height={400}
+									loading="eager"
 									src={"/HomePageIllustration.svg"}
 								/>
 							</div>
