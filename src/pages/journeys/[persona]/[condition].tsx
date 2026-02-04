@@ -2,6 +2,7 @@ import { fr } from "@codegouvfr/react-dsfr";
 import Breadcrumb from "@codegouvfr/react-dsfr/Breadcrumb";
 import SkipLinks from "@codegouvfr/react-dsfr/SkipLinks";
 import Head from "next/head";
+import Image from "next/image";
 import { useRouter } from "next/router";
 import { useState } from "react";
 import { tss } from "tss-react";
@@ -89,9 +90,9 @@ export default function JourneyPage() {
 							</p>
 						</div>
 						<div className={fr.cx("fr-col-12", "fr-col-lg-6")}>
-							<img
+							<Image
 								className={fr.cx("fr-responsive-img")}
-								alt=""
+								alt={journey.image?.alt}
 								src={
 									journey.image?.url ??
 									"https://www.systeme-de-design.gouv.fr/v1.14/storybook/img/placeholder.16x9.png"
