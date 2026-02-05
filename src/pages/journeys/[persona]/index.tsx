@@ -5,8 +5,9 @@ import { useRouter } from "next/router";
 import { useMemo } from "react";
 import { PersonaTiles, type TagItem } from "~/components/HomePage/PersonaTiles";
 import { Loader } from "~/components/ui/Loader";
+import { personStore, proStore } from "~/state/store";
 import { api } from "~/utils/api";
-import { personas } from "~/utils/personas";
+import { personsAndProTiles } from "~/utils/tools";
 
 export default function JourneyPage() {
 	const router = useRouter();
@@ -15,10 +16,9 @@ export default function JourneyPage() {
 	const { data: conditions, isLoading: isLoadingConditions } =
 		api.condition.all.useQuery();
 
-	const {
-		data: professionalPersonas,
-		isLoading: isLoadingProfessionalPersonas,
-	} = api.persona.professionals.useQuery();
+	const professionalPersonas = proStore.get();
+
+	const personas = personsAndProTiles(personStore.get());
 
 	const persona = persona_slug.startsWith("pro")
 		? professionalPersonas?.find((c) => c.slug === persona_slug)
@@ -51,7 +51,7 @@ export default function JourneyPage() {
 
 	if (
 		isLoadingConditions &&
-		isLoadingProfessionalPersonas &&
+		!professionalPersonas &&
 		!conditions &&
 		!professionalPersonas
 	)
@@ -74,7 +74,7 @@ export default function JourneyPage() {
 			<div className={fr.cx("fr-container")}>
 				<Breadcrumb
 					className={fr.cx("fr-mb-2v")}
-					currentPageLabel={persona?.name.toLowerCase()}
+					currentPageLabel={persona?.name}
 					homeLinkProps={{
 						href: "/",
 					}}

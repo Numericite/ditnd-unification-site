@@ -2,6 +2,7 @@ import { Tile } from "@codegouvfr/react-dsfr/Tile";
 import { fr } from "@codegouvfr/react-dsfr";
 import type { PersonaTile } from "../../HomePage/PersonaTiles";
 import type { PersonaTypes } from "../../HomePage/PersonaTiles";
+import { pictogramMap } from "~/utils/tools";
 
 type Props = {
 	tiles: PersonaTile[];
@@ -11,8 +12,9 @@ type Props = {
 
 export const PersonaGrid = ({ tiles, onClick }: Props) => {
 	return tiles.map((tile, index) => {
-		let pictogramProp = {};
-		if (tile.pictogram) pictogramProp = { pictogram: tile.pictogram };
+		const PictogramComponent = tile.pictogram
+			? pictogramMap[tile.pictogram]
+			: null;
 
 		return (
 			<div
@@ -25,7 +27,7 @@ export const PersonaGrid = ({ tiles, onClick }: Props) => {
 				)}
 			>
 				<Tile
-					{...pictogramProp}
+					pictogram={PictogramComponent ? <PictogramComponent /> : undefined}
 					buttonProps={{
 						onClick: () => onClick[tile.display](tile),
 					}}

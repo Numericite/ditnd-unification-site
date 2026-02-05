@@ -3,11 +3,11 @@ import type { MainNavigationProps } from "@codegouvfr/react-dsfr/MainNavigation"
 import { useRouter } from "next/router";
 import { useState } from "react";
 import { tss } from "tss-react";
-import { personas } from "~/pages";
 import SubMenuCustom from "./SubMenuCustom";
 import type { PersonaTile } from "~/components/HomePage/PersonaTiles";
 import Button from "@codegouvfr/react-dsfr/Button";
 import Header from "@codegouvfr/react-dsfr/Header";
+import { personStore } from "~/state/store";
 
 function isRouteActive(item: MainNavigationProps.Item, path: string) {
 	const href = item.linkProps?.href;
@@ -34,6 +34,20 @@ export default function MainNavigation({
 		string | null
 	>(null);
 
+	const personas = [
+		...personStore.get().map((persona) => ({
+			...persona,
+			name: `Je suis ${persona.name}`,
+		})),
+		{
+			name: "Je suis un professionnel",
+			description: "Description type",
+			slug: "professional",
+			display: "professional" as const,
+			pictogram: "CityHall" as const,
+		},
+	];
+
 	const userNavigationItems: MainNavigationProps.Item[] = [
 		{ text: "Accueil", linkProps: { href: "/" } },
 		{
@@ -46,7 +60,7 @@ export default function MainNavigation({
 				text: (
 					<SubMenuCustom
 						key={persona.slug}
-						persona={persona}
+						persona={{ ...persona }}
 						personaPros={personaPros || []}
 						isActive={currentSubMenuPersona === persona.slug}
 					/>
@@ -60,6 +74,17 @@ export default function MainNavigation({
 								: "inherit",
 					},
 					onClick:
+						persona.slug === "professional"
+							? (e) => {
+									e.preventDefault();
+									setCurrentSubMenuPersona(
+										currentSubMenuPersona !== persona.slug
+											? persona.slug
+											: null,
+									);
+								}
+							: undefined,
+					onKeyDownCapture:
 						persona.slug === "professional"
 							? (e) => {
 									e.preventDefault();

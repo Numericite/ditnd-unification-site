@@ -170,6 +170,7 @@ export interface Persona {
   name: string;
   description: string;
   slug: string;
+  pictogram?: ('Avatar' | 'HumanCooperation' | 'CityHall' | 'SelfTraining') | null;
   updatedAt: string;
   createdAt: string;
 }
@@ -422,6 +423,7 @@ export interface PersonasSelect<T extends boolean = true> {
   name?: T;
   description?: T;
   slug?: T;
+  pictogram?: T;
   updatedAt?: T;
   createdAt?: T;
 }

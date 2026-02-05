@@ -91,7 +91,7 @@ export default function JourneyPage() {
 						<div className={fr.cx("fr-col-12", "fr-col-lg-6")}>
 							<img
 								className={fr.cx("fr-responsive-img")}
-								alt=""
+								alt={journey.image?.alt}
 								src={
 									journey.image?.url ??
 									"https://www.systeme-de-design.gouv.fr/v1.14/storybook/img/placeholder.16x9.png"
