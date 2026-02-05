@@ -6,6 +6,7 @@ import Avatar from "@codegouvfr/react-dsfr/picto/Avatar";
 import HumanCooperation from "@codegouvfr/react-dsfr/picto/HumanCooperation";
 import CityHall from "@codegouvfr/react-dsfr/picto/CityHall";
 import SelfTraining from "@codegouvfr/react-dsfr/picto/SelfTraining";
+import type { PersonaTile } from "~/components/HomePage/PersonaTiles";
 
 export type Link = {
 	text: string;
@@ -109,3 +110,19 @@ export const pictogramMap = {
 };
 
 export type PictogramName = keyof typeof pictogramMap;
+
+export const personsAndProTiles = (personas: PersonaTile[]) => {
+	return [
+		...personas.map((persona) => ({
+			...persona,
+			name: `Je suis ${persona.name}`,
+		})),
+		{
+			name: "Je suis un professionnel",
+			description: "Description type",
+			slug: "professional",
+			display: "professional" as const,
+			pictogram: "CityHall" as const,
+		},
+	];
+};

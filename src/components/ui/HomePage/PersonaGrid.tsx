@@ -2,7 +2,7 @@ import { Tile } from "@codegouvfr/react-dsfr/Tile";
 import { fr } from "@codegouvfr/react-dsfr";
 import type { PersonaTile } from "../../HomePage/PersonaTiles";
 import type { PersonaTypes } from "../../HomePage/PersonaTiles";
-import { pictogramMap } from "~/pages";
+import { pictogramMap } from "~/utils/tools";
 
 type Props = {
 	tiles: PersonaTile[];

@@ -13,6 +13,7 @@ import Image from "next/image";
 import { EmptyScreenZone } from "~/components/ui/EmptyScreenZone";
 import SkipLinks from "@codegouvfr/react-dsfr/SkipLinks";
 import { homeCMSStore, personStore } from "~/state/store";
+import { personsAndProTiles } from "~/utils/tools";
 
 export default function Home() {
 	const { classes, cx } = useStyles();
@@ -27,6 +28,8 @@ export default function Home() {
 	const persons = personStore.get();
 
 	const homeCMS = homeCMSStore.get();
+
+	const tiles = personsAndProTiles(persons);
 
 	if (isLoadingViewedGuides || !persons) return <Loader />;
 
@@ -127,21 +130,7 @@ export default function Home() {
 						<div className={fr.cx("fr-py-6w")}>
 							<div className={fr.cx("fr-grid-row")}>
 								{persons ? (
-									<PersonaTiles
-										tiles={[
-											...persons.map((persona) => ({
-												...persona,
-												name: `Je suis ${persona.name}`,
-											})),
-											{
-												name: "Je suis un professionnel",
-												description: "Description type",
-												slug: "professional",
-												display: "professional",
-												pictogram: "CityHall",
-											},
-										]}
-									/>
+									<PersonaTiles tiles={tiles} />
 								) : (
 									"Aucun persona trouvé"
 								)}
