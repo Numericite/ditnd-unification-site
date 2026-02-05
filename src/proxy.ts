@@ -21,6 +21,14 @@ export const isAuthorized = (authHeader: string | null): boolean => {
 
 export function proxy(req: NextRequest) {
 	const authHeader = req.headers.get("authorization");
+	const { pathname } = req.nextUrl;
+	const isFromAdmin = req.headers.get("referer")?.includes("/admin");
+
+	if (
+		pathname.startsWith("/admin") ||
+		(isFromAdmin && pathname.startsWith("/api"))
+	)
+		return NextResponse.next();
 
 	if (isAuthorized(authHeader)) return NextResponse.next();
 
