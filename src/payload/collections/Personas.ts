@@ -21,5 +21,12 @@ export const Personas: CollectionConfig = {
 			unique: true,
 			label: { fr: "Identifiant texte" },
 		},
+		{
+			name: "pictogram",
+			type: "select",
+			required: false,
+			options: ["Avatar", "HumanCooperation", "CityHall", "SelfTraining"],
+			label: { fr: "Pictogramme du Persona" },
+		},
 	],
 };

@@ -2,14 +2,16 @@ import type { Payload } from "payload";
 
 const personas = [
 	{
-		name: "Parent ou proche",
+		name: "un Parent ou proche",
 		description: "Description d'un parent ou d'un proche",
 		slug: "pp",
+		pictogram: "HumanCooperation",
 	},
 	{
-		name: "Personne concernée par un TND",
+		name: "une Personne concernée",
 		description: "Description d'une personne concernée",
 		slug: "pe",
+		pictogram: "Avatar",
 	},
 	{
 		name: "Professionnel dans le médico-social",
@@ -32,9 +34,10 @@ const personas = [
 		slug: "pro-e-tnd",
 	},
 	{
-		name: "Grand public",
+		name: "le Grand public",
 		description: "Description du grand public",
 		slug: "gp",
+		pictogram: "SelfTraining",
 	},
 ];
 

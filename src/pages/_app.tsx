@@ -6,7 +6,7 @@ import Head from "next/head";
 import Link from "next/link";
 import { createEmotionSsrAdvancedApproach } from "tss-react/next/pagesDir";
 import { api } from "~/utils/api";
-import { homeCMSStore, tdhStore } from "~/state/store";
+import { homeCMSStore, personStore, proStore, tdhStore } from "~/state/store";
 import { Loader } from "~/components/ui/Loader";
 import { tss } from "tss-react";
 import ChatBot from "~/components/Chatbot/Chatbot";
@@ -55,13 +55,21 @@ function App({ Component, pageProps }: AppProps) {
 	const { data: personaPros, isLoading: isLoadingPersona } =
 		api.persona.professionals.useQuery();
 
+	const { data: persons, isLoading: isLoadingPersons } =
+		api.persona.persons.useQuery();
+
 	const { data: homeCMS, isLoading: isLoadingHomeCMS } =
 		api.cms.home.useQuery();
 
 	const { data: footerTitle, isLoading: isLoadingFooterTitle } =
 		api.cms.footerTitle.useQuery();
 
+	const { data: professionalPersonas } = api.persona.professionals.useQuery();
+
 	if (homeCMS && !isLoadingHomeCMS) homeCMSStore.set(homeCMS);
+
+	if (professionalPersonas) proStore.set(professionalPersonas);
+	if (persons) personStore.set(persons);
 
 	tdhStore.set(conditions);
 
@@ -74,7 +82,10 @@ function App({ Component, pageProps }: AppProps) {
 				<MainNavigation personaPros={personaPros} />
 
 				<main>
-					{isLoadingHomePage || isLoadingPersona || isLoadingFooterTitle ? (
+					{isLoadingHomePage ||
+					isLoadingPersona ||
+					isLoadingFooterTitle ||
+					isLoadingPersons ? (
 						<Loader />
 					) : (
 						<Component {...pageProps} />
