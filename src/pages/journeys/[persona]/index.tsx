@@ -7,6 +7,7 @@ import { PersonaTiles, type TagItem } from "~/components/HomePage/PersonaTiles";
 import { Loader } from "~/components/ui/Loader";
 import { personStore, proStore } from "~/state/store";
 import { api } from "~/utils/api";
+import { personsAndProTiles } from "~/utils/tools";
 
 export default function JourneyPage() {
 	const router = useRouter();
@@ -17,19 +18,7 @@ export default function JourneyPage() {
 
 	const professionalPersonas = proStore.get();
 
-	const personas = [
-		...personStore.get().map((persona) => ({
-			...persona,
-			name: `Je suis ${persona.name}`,
-		})),
-		{
-			name: "Je suis un professionnel",
-			description: "Description type",
-			slug: "professional",
-			display: "professional" as const,
-			pictogram: "CityHall" as const,
-		},
-	];
+	const personas = personsAndProTiles(personStore.get());
 
 	const persona = persona_slug.startsWith("pro")
 		? professionalPersonas?.find((c) => c.slug === persona_slug)

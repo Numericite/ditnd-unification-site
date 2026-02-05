@@ -7,34 +7,13 @@ import SearchBar from "@codegouvfr/react-dsfr/SearchBar";
 import { api } from "~/utils/api";
 import MostViewedGuides from "~/components/HomePage/MostViewedGuides";
 import { Loader } from "~/components/ui/Loader";
-import Avatar from "@codegouvfr/react-dsfr/picto/Avatar";
-import HumanCooperation from "@codegouvfr/react-dsfr/picto/HumanCooperation";
-import CityHall from "@codegouvfr/react-dsfr/picto/CityHall";
-import SelfTraining from "@codegouvfr/react-dsfr/picto/SelfTraining";
-import Hospital from "@codegouvfr/react-dsfr/picto/Hospital";
-import School from "@codegouvfr/react-dsfr/picto/School";
-import Companie from "@codegouvfr/react-dsfr/picto/Companie";
-import Ecosystem from "@codegouvfr/react-dsfr/picto/Ecosystem";
-
 import { useState } from "react";
 import { useRouter } from "next/router";
 import Image from "next/image";
 import { EmptyScreenZone } from "~/components/ui/EmptyScreenZone";
 import SkipLinks from "@codegouvfr/react-dsfr/SkipLinks";
 import { homeCMSStore, personStore } from "~/state/store";
-
-export const pictogramMap = {
-	Avatar,
-	HumanCooperation,
-	CityHall,
-	SelfTraining,
-	Hospital,
-	School,
-	Companie,
-	Ecosystem,
-};
-
-export type PictogramName = keyof typeof pictogramMap;
+import { personsAndProTiles } from "~/utils/tools";
 
 export default function Home() {
 	const { classes, cx } = useStyles();
@@ -49,6 +28,8 @@ export default function Home() {
 	const persons = personStore.get();
 
 	const homeCMS = homeCMSStore.get();
+
+	const tiles = personsAndProTiles(persons);
 
 	if (isLoadingViewedGuides || !persons) return <Loader />;
 
@@ -147,25 +128,13 @@ export default function Home() {
 				<div className={cx(classes.coloredContainer)} id="who">
 					<div className={fr.cx("fr-container")}>
 						<div className={fr.cx("fr-py-6w")}>
-							{persons ? (
-								<PersonaTiles
-									tiles={[
-										...persons.map((persona) => ({
-											...persona,
-											name: `Je suis ${persona.name}`,
-										})),
-										{
-											name: "Je suis un professionnel",
-											description: "Description type",
-											slug: "professional",
-											display: "professional",
-											pictogram: "CityHall",
-										},
-									]}
-								/>
-							) : (
-								"Aucun persona trouvé"
-							)}
+							<div className={fr.cx("fr-grid-row")}>
+								{persons ? (
+									<PersonaTiles tiles={tiles} />
+								) : (
+									"Aucun persona trouvé"
+								)}
+							</div>
 						</div>
 					</div>
 				</div>

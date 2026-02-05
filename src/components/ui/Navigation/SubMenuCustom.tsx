@@ -2,7 +2,7 @@ import { fr } from "@codegouvfr/react-dsfr";
 import { useRouter } from "next/router";
 import { tss } from "tss-react";
 import type { PersonaTile } from "~/components/HomePage/PersonaTiles";
-import { pictogramMap } from "~/pages";
+import { pictogramMap } from "~/utils/tools";
 
 type SubMenuCustomProps = {
 	persona: PersonaTile;
