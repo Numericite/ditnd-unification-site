@@ -6,7 +6,7 @@ import Tag from "@codegouvfr/react-dsfr/Tag";
 import { useRouter } from "next/router";
 import { tss } from "tss-react";
 import type { Persona } from "~/payload/payload-types";
-import type { PictogramName } from "~/pages";
+import type { PictogramName } from "~/utils/tools";
 
 export type PersonaTypes =
 	| "person"

@@ -7,25 +7,12 @@ import SearchBar from "@codegouvfr/react-dsfr/SearchBar";
 import { api } from "~/utils/api";
 import MostViewedGuides from "~/components/HomePage/MostViewedGuides";
 import { Loader } from "~/components/ui/Loader";
-import Avatar from "@codegouvfr/react-dsfr/picto/Avatar";
-import HumanCooperation from "@codegouvfr/react-dsfr/picto/HumanCooperation";
-import CityHall from "@codegouvfr/react-dsfr/picto/CityHall";
-import SelfTraining from "@codegouvfr/react-dsfr/picto/SelfTraining";
 import { useState } from "react";
 import { useRouter } from "next/router";
 import Image from "next/image";
 import { EmptyScreenZone } from "~/components/ui/EmptyScreenZone";
 import SkipLinks from "@codegouvfr/react-dsfr/SkipLinks";
 import { homeCMSStore, personStore } from "~/state/store";
-
-export const pictogramMap = {
-	Avatar,
-	HumanCooperation,
-	CityHall,
-	SelfTraining,
-};
-
-export type PictogramName = keyof typeof pictogramMap;
 
 export default function Home() {
 	const { classes, cx } = useStyles();

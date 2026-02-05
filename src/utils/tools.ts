@@ -2,6 +2,10 @@ import type { RegisteredLinkProps } from "@codegouvfr/react-dsfr/link";
 import sanitize from "sanitize-html";
 import type { AugmentedCourse } from "~/server/api/routers/courses";
 import type { AugmentedPracticalGuide } from "~/server/api/routers/practical-guides";
+import Avatar from "@codegouvfr/react-dsfr/picto/Avatar";
+import HumanCooperation from "@codegouvfr/react-dsfr/picto/HumanCooperation";
+import CityHall from "@codegouvfr/react-dsfr/picto/CityHall";
+import SelfTraining from "@codegouvfr/react-dsfr/picto/SelfTraining";
 
 export type Link = {
 	text: string;
@@ -96,3 +100,12 @@ export function practicalGuideQuery(
 			pg.themes.some((theme) => theme.name.toLowerCase().includes(query)))
 	);
 }
+
+export const pictogramMap = {
+	Avatar,
+	HumanCooperation,
+	CityHall,
+	SelfTraining,
+};
+
+export type PictogramName = keyof typeof pictogramMap;
