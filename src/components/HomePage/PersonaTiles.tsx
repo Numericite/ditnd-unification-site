@@ -7,6 +7,7 @@ import { useRouter } from "next/router";
 import { tss } from "tss-react";
 import type { Persona } from "~/payload/payload-types";
 import type { PictogramName } from "~/utils/tools";
+import Breadcrumb from "@codegouvfr/react-dsfr/Breadcrumb";
 
 export type PersonaTypes =
 	| "person"
@@ -25,6 +26,7 @@ export type TagItem = {
 	label: string;
 	display: PersonaTypes;
 	slug: string;
+	dismissible?: boolean;
 };
 
 const unknownTile: TDH = {
@@ -48,6 +50,7 @@ type Props = {
 	defaultDisplay?: PersonaTypes;
 	defaultTags?: TagItem[];
 	hideTags?: boolean;
+	unique?: boolean;
 };
 
 export const PersonaTiles = ({
@@ -55,6 +58,7 @@ export const PersonaTiles = ({
 	defaultDisplay,
 	defaultTags,
 	hideTags = false,
+	unique = false,
 }: Props) => {
 	const { classes, cx } = useStyles();
 
@@ -62,7 +66,9 @@ export const PersonaTiles = ({
 		defaultDisplay || "default",
 	);
 	const [tags, setTags] = useState<TagItem[]>(defaultTags || []);
-	const [title, setTitle] = useState(titleByDisplay.default);
+	const [subTitle, setSubTitle] = useState(
+		titleByDisplay[defaultDisplay || "default"],
+	);
 
 	const professionalPersonas = proStore.get();
 
@@ -88,17 +94,17 @@ export const PersonaTiles = ({
 		person: (tile) => {
 			handleClick(tile, "default");
 			setDisplay("person");
-			setTitle(titleByDisplay.person);
+			setSubTitle(titleByDisplay.person);
 		},
 		professional: (tile) => {
 			handleClick(tile, "default");
 			setDisplay("professional");
-			setTitle(titleByDisplay.professional);
+			setSubTitle(titleByDisplay.professional);
 		},
 		afterProfessional: (tile) => {
 			handleClick(tile, "professional");
 			setDisplay("afterProfessional");
-			setTitle(titleByDisplay.afterProfessional);
+			setSubTitle(titleByDisplay.afterProfessional);
 		},
 		condition: (tile) => {
 			const personaSlug = tags
@@ -112,11 +118,25 @@ export const PersonaTiles = ({
 	};
 
 	function deleteTag(tag: TagItem) {
+		const isDismissible = tag.dismissible ?? true;
+		if (isDismissible) {
+			setDisplay(tag.display);
+			setSubTitle(titleByDisplay[tag.display]);
+			tag.display === "default"
+				? setTags([])
+				: setTags([...tags].filter((t) => t.slug !== tag.slug));
+		}
+	}
+
+	function navigateBreadcrumb(tag: TagItem) {
+		setTags((prev) => {
+			const index = prev.findIndex((t) => t.slug === tag.slug);
+			if (index === -1) return prev;
+			return prev.slice(0, index + 1);
+		});
+
 		setDisplay(tag.display);
-		setTitle(titleByDisplay[tag.display]);
-		tag.display === "default"
-			? setTags([])
-			: setTags([...tags].filter((t) => t.slug !== tag.slug));
+		setSubTitle(titleByDisplay[tag.display]);
 	}
 
 	const renderContent = () => {
@@ -126,7 +146,7 @@ export const PersonaTiles = ({
 
 			case "professional":
 				if (!professionalPersonas)
-					return <div>No professional persona found</div>;
+					return <div>Aucun persona professionnel trouvé</div>;
 
 				return (
 					<PersonaGrid
@@ -139,31 +159,52 @@ export const PersonaTiles = ({
 				return <PersonaGrid tiles={tdh} onClick={tileDispatchTable} />;
 
 			default:
-				return (
-					<PersonaGrid
-						tiles={tiles}
-						imageUrl={
-							"https://www.systeme-de-design.gouv.fr/v1.14/storybook/img/placeholder.4x3.png"
-						}
-						onClick={tileDispatchTable}
-					/>
-				);
+				return <PersonaGrid tiles={tiles} onClick={tileDispatchTable} />;
 		}
 	};
 
 	return (
 		<>
+			{unique && (
+				<Breadcrumb
+					className={cx(classes.customBreadcrumb)}
+					currentPageLabel={tags.at(-1)?.label}
+					homeLinkProps={{
+						href: "/",
+					}}
+					segments={
+						tags.at(-1)?.slug.startsWith("pro")
+							? tags.slice(0, -1).map((tag) => ({
+									label: tag.label,
+									linkProps: {
+										href: `/journeys/professional`,
+										onClick: () => navigateBreadcrumb(tag),
+									},
+								}))
+							: []
+					}
+				/>
+			)}
+
 			<div className={fr.cx("fr-col-12")}>
-				<h2>{title}</h2>
+				{unique && (
+					<h1 className={cx(classes.coloredTitle)}>
+						{tags.at(-1)?.slug === "professional"
+							? undefined
+							: tags.at(-1)?.label}
+					</h1>
+				)}
+				<h2>{subTitle}</h2>
 				<div className={fr.cx("fr-text--sm")}>{homeCMS.tiles.description}</div>
 			</div>
+
 			{!hideTags && (
 				<div className={cx(fr.cx("fr-grid-row", "fr-grid-row--gutters"))}>
 					{tags.map((tag, index) => (
 						<Tag
 							key={index}
 							className={cx(classes.tagStyles)}
-							dismissible
+							dismissible={tag.dismissible ?? true}
 							nativeButtonProps={{
 								onClick: () => deleteTag(tag),
 							}}
@@ -173,6 +214,7 @@ export const PersonaTiles = ({
 					))}
 				</div>
 			)}
+
 			<div className={fr.cx("fr-grid-row", "fr-grid-row--gutters")}>
 				{renderContent()}
 			</div>
@@ -183,6 +225,14 @@ export const PersonaTiles = ({
 const useStyles = tss.withName(PersonaTiles.name).create(() => ({
 	tagStyles: {
 		marginLeft: fr.spacing("3v"),
-		marginBottom: fr.spacing("8v"),
+		marginBottom: fr.spacing("3v"),
+	},
+	coloredTitle: {
+		color: fr.colors.decisions.artwork.major.blueFrance.default,
+	},
+	customBreadcrumb: {
+		paddingTop: fr.spacing("2w"),
+		marginBottom: fr.spacing("2v"),
+		marginTop: "0",
 	},
 }));

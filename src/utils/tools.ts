@@ -6,6 +6,11 @@ import Avatar from "@codegouvfr/react-dsfr/picto/Avatar";
 import HumanCooperation from "@codegouvfr/react-dsfr/picto/HumanCooperation";
 import CityHall from "@codegouvfr/react-dsfr/picto/CityHall";
 import SelfTraining from "@codegouvfr/react-dsfr/picto/SelfTraining";
+import Hospital from "@codegouvfr/react-dsfr/picto/Hospital";
+import School from "@codegouvfr/react-dsfr/picto/School";
+import Companie from "@codegouvfr/react-dsfr/picto/Companie";
+import Ecosystem from "@codegouvfr/react-dsfr/picto/Ecosystem";
+
 import type { PersonaTile } from "~/components/HomePage/PersonaTiles";
 
 export type Link = {
@@ -107,6 +112,10 @@ export const pictogramMap = {
 	HumanCooperation,
 	CityHall,
 	SelfTraining,
+	Hospital,
+	School,
+	Companie,
+	Ecosystem,
 };
 
 export type PictogramName = keyof typeof pictogramMap;

@@ -1,15 +1,21 @@
 import { fr } from "@codegouvfr/react-dsfr";
-import Breadcrumb from "@codegouvfr/react-dsfr/Breadcrumb";
 import Head from "next/head";
 import { useRouter } from "next/router";
 import { useMemo } from "react";
+import { tss } from "tss-react";
 import { PersonaTiles, type TagItem } from "~/components/HomePage/PersonaTiles";
 import { Loader } from "~/components/ui/Loader";
 import { personStore, proStore } from "~/state/store";
 import { api } from "~/utils/api";
 import { personsAndProTiles } from "~/utils/tools";
 
+function isProfessional(persona_slug: string) {
+	return persona_slug === "professional";
+}
+
 export default function JourneyPage() {
+	const { classes, cx } = useStyles();
+
 	const router = useRouter();
 	const persona_slug = router.query.persona as string;
 
@@ -20,30 +26,15 @@ export default function JourneyPage() {
 
 	const personas = personsAndProTiles(personStore.get());
 
-	const persona = persona_slug.startsWith("pro")
-		? professionalPersonas?.find((c) => c.slug === persona_slug)
-		: personas.find((p) => p.slug === persona_slug);
+	const persona = useMemo(() => {
+		return personas.find((p) => p.slug === persona_slug);
+	}, [persona_slug]);
 
 	const defaultTags: TagItem[] = useMemo(() => {
-		if (persona_slug.startsWith("pro")) {
-			return [
-				{
-					display: "default",
-					label: "",
-					slug: "professional",
-				},
-				{
-					display: "professional",
-					label: "",
-					slug: persona_slug,
-				},
-			];
-		}
-
 		return [
 			{
-				display: "default",
-				label: "",
+				display: isProfessional(persona_slug) ? "professional" : "default",
+				label: persona?.name ?? "",
 				slug: persona_slug,
 			},
 		];
@@ -62,35 +53,44 @@ export default function JourneyPage() {
 		!professionalPersonas ||
 		conditions.length === 0 ||
 		professionalPersonas.length === 0
-	) {
+	)
 		return <div>Conditions ou personas introuvables</div>;
-	}
 
 	return (
 		<>
 			<Head>
 				<title>DITND - Page du persona</title>
 			</Head>
-			<div className={fr.cx("fr-container")}>
-				<Breadcrumb
-					className={fr.cx("fr-mb-2v")}
-					currentPageLabel={persona?.name}
-					homeLinkProps={{
-						href: "/",
-					}}
-					segments={[]}
-				/>
-				<h1>{persona?.name}</h1>
-				<div className={fr.cx("fr-pb-4w")}>
-					<PersonaTiles
-						key={persona_slug}
-						tiles={personas}
-						defaultDisplay="person"
-						defaultTags={defaultTags}
-						hideTags
-					/>
+			<div className={cx(classes.coloredContainer)}>
+				<div className={fr.cx("fr-pb-4w", "fr-container")}>
+					{isProfessional(persona_slug) ? (
+						<PersonaTiles
+							key={persona_slug}
+							tiles={personas}
+							defaultDisplay="professional"
+							defaultTags={defaultTags}
+							hideTags
+							unique
+						/>
+					) : (
+						<PersonaTiles
+							key={persona_slug}
+							tiles={personas}
+							defaultDisplay="person"
+							defaultTags={defaultTags}
+							hideTags
+							unique
+						/>
+					)}
 				</div>
 			</div>
 		</>
 	);
 }
+
+const useStyles = tss.withName(JourneyPage.name).create({
+	coloredContainer: {
+		height: "auto",
+		backgroundColor: fr.colors.decisions.background.alt.blueFrance.default,
+	},
+});
