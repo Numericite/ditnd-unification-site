@@ -128,13 +128,11 @@ export default function Home() {
 				<div className={cx(classes.coloredContainer)} id="who">
 					<div className={fr.cx("fr-container")}>
 						<div className={fr.cx("fr-py-6w")}>
-							<div className={fr.cx("fr-grid-row")}>
-								{persons ? (
-									<PersonaTiles tiles={tiles} />
-								) : (
-									"Aucun persona trouvé"
-								)}
-							</div>
+							{persons ? (
+								<PersonaTiles tiles={tiles} />
+							) : (
+								"Aucun persona trouvé"
+							)}
 						</div>
 					</div>
 				</div>
@@ -188,6 +186,6 @@ const useStyles = tss.withName(Home.name).create({
 	},
 	viewMoreLink: {
 		marginLeft: "auto",
-		marginTop: fr.spacing("2w"),
+		marginTop: fr.spacing("3w"),
 	},
 });

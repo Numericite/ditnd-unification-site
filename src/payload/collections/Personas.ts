@@ -6,6 +6,7 @@ export const Personas: CollectionConfig = {
 	admin: {
 		useAsTitle: "name",
 	},
+	orderable: true,
 	fields: [
 		{
 			name: "name",
@@ -25,7 +26,16 @@ export const Personas: CollectionConfig = {
 			name: "pictogram",
 			type: "select",
 			required: false,
-			options: ["Avatar", "HumanCooperation", "CityHall", "SelfTraining"],
+			options: [
+				"Avatar",
+				"HumanCooperation",
+				"CityHall",
+				"SelfTraining",
+				"Hospital",
+				"School",
+				"Companie",
+				"Ecosystem",
+			],
 			label: { fr: "Pictogramme du Persona" },
 		},
 	],
