@@ -1,7 +1,6 @@
 import { fr } from "@codegouvfr/react-dsfr";
 import Head from "next/head";
 import { useRouter } from "next/router";
-import { useMemo } from "react";
 import { tss } from "tss-react";
 import { PersonaTiles, type TagItem } from "~/components/HomePage/PersonaTiles";
 import { Loader } from "~/components/ui/Loader";
@@ -26,19 +25,19 @@ export default function JourneyPage() {
 
 	const personas = personsAndProTiles(personStore.get());
 
-	const persona = useMemo(() => {
-		return personas.find((p) => p.slug === persona_slug);
-	}, [persona_slug]);
+	const persona = personas.find((p) => p.slug === persona_slug);
 
-	const defaultTags: TagItem[] = useMemo(() => {
-		return [
-			{
-				display: isProfessional(persona_slug) ? "professional" : "default",
-				label: persona?.name ?? "",
-				slug: persona_slug,
-			},
-		];
-	}, [persona_slug]);
+	const defaultTags: TagItem[] = [
+		{
+			display: isProfessional(persona_slug) ? "professional" : "default",
+			label: persona?.name ?? "",
+			slug: persona_slug,
+		},
+	];
+
+	const defaultDisplay = isProfessional(persona_slug)
+		? "professional"
+		: "person";
 
 	if (
 		isLoadingConditions &&
@@ -63,25 +62,14 @@ export default function JourneyPage() {
 			</Head>
 			<div className={cx(classes.coloredContainer)}>
 				<div className={fr.cx("fr-pb-4w", "fr-container")}>
-					{isProfessional(persona_slug) ? (
-						<PersonaTiles
-							key={persona_slug}
-							tiles={personas}
-							defaultDisplay="professional"
-							defaultTags={defaultTags}
-							hideTags
-							unique
-						/>
-					) : (
-						<PersonaTiles
-							key={persona_slug}
-							tiles={personas}
-							defaultDisplay="person"
-							defaultTags={defaultTags}
-							hideTags
-							unique
-						/>
-					)}
+					<PersonaTiles
+						key={persona_slug}
+						tiles={personas}
+						defaultDisplay={defaultDisplay}
+						defaultTags={defaultTags}
+						hideTags
+						unique
+					/>
 				</div>
 			</div>
 		</>

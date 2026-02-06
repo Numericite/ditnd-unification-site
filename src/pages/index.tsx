@@ -128,13 +128,11 @@ export default function Home() {
 				<div className={cx(classes.coloredContainer)} id="who">
 					<div className={fr.cx("fr-container")}>
 						<div className={fr.cx("fr-py-6w")}>
-							<div className={fr.cx("fr-grid-row")}>
-								{persons ? (
-									<PersonaTiles tiles={tiles} />
-								) : (
-									"Aucun persona trouvé"
-								)}
-							</div>
+							{persons ? (
+								<PersonaTiles tiles={tiles} />
+							) : (
+								"Aucun persona trouvé"
+							)}
 						</div>
 					</div>
 				</div>

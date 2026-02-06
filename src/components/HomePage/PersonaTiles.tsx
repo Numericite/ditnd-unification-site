@@ -75,6 +75,7 @@ export const PersonaTiles = ({
 	const router = useRouter();
 
 	const tdh = tdhStore.get();
+
 	const homeCMS = homeCMSStore.get();
 
 	const tdhTiles = [unknownTile, ...tdh];
@@ -163,39 +164,40 @@ export const PersonaTiles = ({
 		}
 	};
 
+	const lastTag = tags.at(-1);
+
 	return (
 		<>
-			{unique && (
-				<Breadcrumb
-					className={cx(classes.customBreadcrumb)}
-					currentPageLabel={tags.at(-1)?.label}
-					homeLinkProps={{
-						href: "/",
-					}}
-					segments={
-						tags.at(-1)?.slug.startsWith("pro")
-							? tags.slice(0, -1).map((tag) => ({
-									label: tag.label,
-									linkProps: {
-										href: `/journeys/professional`,
-										onClick: () => navigateBreadcrumb(tag),
-									},
-								}))
-							: []
-					}
-				/>
-			)}
-
 			<div className={fr.cx("fr-col-12")}>
 				{unique && (
-					<h1 className={cx(classes.coloredTitle)}>
-						{tags.at(-1)?.slug === "professional"
-							? undefined
-							: tags.at(-1)?.label}
-					</h1>
+					<>
+						<Breadcrumb
+							className={cx(classes.customBreadcrumb)}
+							currentPageLabel={lastTag?.label}
+							homeLinkProps={{
+								href: "/",
+							}}
+							segments={
+								lastTag?.slug.startsWith("pro")
+									? tags.slice(0, -1).map((tag) => ({
+											label: tag.label,
+											linkProps: {
+												href: `/journeys/professional`,
+												onClick: () => navigateBreadcrumb(tag),
+											},
+										}))
+									: []
+							}
+						/>
+						<h1 className={cx(classes.coloredTitle)}>
+							{lastTag?.slug !== "professional" && lastTag?.label}
+						</h1>
+					</>
 				)}
 				<h2>{subTitle}</h2>
-				<div className={fr.cx("fr-text--sm")}>{homeCMS.tiles.description}</div>
+				<div className={fr.cx("fr-text--sm", "fr-mb-8v")}>
+					{homeCMS.tiles.description}
+				</div>
 			</div>
 
 			{!hideTags && (
@@ -204,7 +206,7 @@ export const PersonaTiles = ({
 						<Tag
 							key={index}
 							className={cx(classes.tagStyles)}
-							dismissible={tag.dismissible ?? true}
+							dismissible
 							nativeButtonProps={{
 								onClick: () => deleteTag(tag),
 							}}
@@ -215,7 +217,7 @@ export const PersonaTiles = ({
 				</div>
 			)}
 
-			<div className={fr.cx("fr-grid-row", "fr-grid-row--gutters")}>
+			<div className={fr.cx("fr-grid-row", "fr-grid-row--gutters", "fr-mt-6v")}>
 				{renderContent()}
 			</div>
 		</>
@@ -225,7 +227,7 @@ export const PersonaTiles = ({
 const useStyles = tss.withName(PersonaTiles.name).create(() => ({
 	tagStyles: {
 		marginLeft: fr.spacing("3v"),
-		marginBottom: fr.spacing("3v"),
+		marginBottom: fr.spacing("1v"),
 	},
 	coloredTitle: {
 		color: fr.colors.decisions.artwork.major.blueFrance.default,
