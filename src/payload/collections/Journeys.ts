@@ -22,6 +22,9 @@ export const Journeys: CollectionConfig = {
 			relationTo: "personas",
 			required: true,
 			label: { fr: "Persona" },
+			admin: {
+				position: "sidebar",
+			},
 		},
 		{
 			name: "image",
@@ -29,6 +32,9 @@ export const Journeys: CollectionConfig = {
 			relationTo: "medias",
 			required: false,
 			label: { fr: "Image de la formation" },
+			admin: {
+				position: "sidebar",
+			},
 		},
 		{
 			name: "chapter",

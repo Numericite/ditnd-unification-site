@@ -1,4 +1,5 @@
 import type { CollectionConfig } from "payload";
+import { standardFields } from "../fields/standards";
 
 export const Conditions: CollectionConfig = {
 	slug: "conditions",
@@ -17,12 +18,7 @@ export const Conditions: CollectionConfig = {
 			required: true,
 			label: { fr: "Nom" },
 		},
-		{
-			name: "description",
-			type: "text",
-			required: true,
-			label: { fr: "Description" },
-		},
+		standardFields.description,
 		{
 			name: "acronym",
 			type: "text",
