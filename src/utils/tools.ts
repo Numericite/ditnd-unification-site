@@ -121,17 +121,18 @@ export const pictogramMap = {
 export type PictogramName = keyof typeof pictogramMap;
 
 export const personsAndProTiles = (personas: PersonaTile[]) => {
-	return [
-		...personas.map((persona) => ({
-			...persona,
-			name: `Je suis ${persona.name}`,
-		})),
-		{
-			name: "Je suis un professionnel",
-			description: "Description type",
-			slug: "professional",
-			display: "professional" as const,
-			pictogram: "CityHall" as const,
-		},
-	];
+	const mapped = personas.map((persona) => ({
+		...persona,
+		name: `Je suis ${persona.name}`,
+	}));
+
+	const professionalTile: PersonaTile = {
+		name: "Je suis un professionnel",
+		description: "Description type",
+		slug: "professional",
+		display: "professional",
+		pictogram: "CityHall",
+	};
+
+	return [...mapped.slice(0, 2), professionalTile, ...mapped.slice(2)];
 };

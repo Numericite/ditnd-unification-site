@@ -1,31 +1,15 @@
 import type { MainNavigationProps } from "@codegouvfr/react-dsfr/MainNavigation";
 import { useRouter } from "next/router";
 import SubMenuCustom from "./SubMenuCustom";
-import type { PersonaTile } from "~/components/HomePage/PersonaTiles";
 import Button from "@codegouvfr/react-dsfr/Button";
 import Header from "@codegouvfr/react-dsfr/Header";
 import { personStore } from "~/state/store";
+import { personsAndProTiles } from "~/utils/tools";
 
-export default function MainNavigation({
-	personaPros,
-}: {
-	personaPros?: PersonaTile[];
-}) {
+export default function MainNavigation() {
 	const router = useRouter();
 
-	const personas = [
-		...personStore.get().map((persona) => ({
-			...persona,
-			name: `Je suis ${persona.name}`,
-		})),
-		{
-			name: "Je suis un professionnel",
-			description: "Description type",
-			slug: "professional",
-			display: "professional" as const,
-			pictogram: "CityHall" as const,
-		},
-	];
+	const personas = personsAndProTiles(personStore.get());
 
 	const userNavigationItems: MainNavigationProps.Item[] = [
 		{
@@ -37,13 +21,7 @@ export default function MainNavigation({
 			text: "Je suis",
 			isActive: router.pathname.startsWith("/journeys"),
 			menuLinks: personas.map((persona) => ({
-				text: (
-					<SubMenuCustom
-						key={persona.slug}
-						persona={{ ...persona }}
-						personaPros={personaPros || []}
-					/>
-				),
+				text: <SubMenuCustom key={persona.slug} persona={{ ...persona }} />,
 				isActive: router.asPath.startsWith(`/journeys/${persona.slug}`),
 				linkProps: {
 					href: `/journeys/${persona.slug}`,

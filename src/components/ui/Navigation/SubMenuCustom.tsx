@@ -3,12 +3,7 @@ import { tss } from "tss-react";
 import type { PersonaTile } from "~/components/HomePage/PersonaTiles";
 import { pictogramMap } from "~/utils/tools";
 
-type SubMenuCustomProps = {
-	persona: PersonaTile;
-	personaPros: PersonaTile[];
-};
-
-const SubMenuCustom = ({ persona }: SubMenuCustomProps) => {
+const SubMenuCustom = ({ persona }: { persona: PersonaTile }) => {
 	const { classes } = useStyles();
 
 	const PictogramComponent = persona.pictogram

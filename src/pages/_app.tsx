@@ -52,9 +52,6 @@ function App({ Component, pageProps }: AppProps) {
 	const { data: conditions, isLoading: isLoadingHomePage } =
 		api.condition.all.useQuery();
 
-	const { data: personaPros, isLoading: isLoadingPersona } =
-		api.persona.professionals.useQuery();
-
 	const { data: persons, isLoading: isLoadingPersons } =
 		api.persona.persons.useQuery();
 
@@ -64,7 +61,8 @@ function App({ Component, pageProps }: AppProps) {
 	const { data: footerTitle, isLoading: isLoadingFooterTitle } =
 		api.cms.footerTitle.useQuery();
 
-	const { data: professionalPersonas } = api.persona.professionals.useQuery();
+	const { data: professionalPersonas, isLoading: isLoadingPersona } =
+		api.persona.professionals.useQuery();
 
 	if (homeCMS && !isLoadingHomeCMS) homeCMSStore.set(homeCMS);
 
@@ -79,7 +77,7 @@ function App({ Component, pageProps }: AppProps) {
 				<title>DITND</title>
 			</Head>
 			<div className={cx(classes.headerContainer)}>
-				<MainNavigation personaPros={personaPros} />
+				<MainNavigation />
 
 				<main>
 					{isLoadingHomePage ||
