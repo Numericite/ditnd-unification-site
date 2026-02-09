@@ -68,7 +68,8 @@ export default function JourneyPage() {
 						defaultDisplay={defaultDisplay}
 						defaultTags={defaultTags}
 						hideTags
-						unique
+						breadCrumb
+						mainTitle
 					/>
 				</div>
 			</div>

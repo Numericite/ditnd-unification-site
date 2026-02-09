@@ -50,7 +50,8 @@ type Props = {
 	defaultDisplay?: PersonaTypes;
 	defaultTags?: TagItem[];
 	hideTags?: boolean;
-	unique?: boolean;
+	breadCrumb?: boolean;
+	mainTitle?: boolean;
 };
 
 export const PersonaTiles = ({
@@ -58,7 +59,8 @@ export const PersonaTiles = ({
 	defaultDisplay,
 	defaultTags,
 	hideTags = false,
-	unique = false,
+	breadCrumb = false,
+	mainTitle = false,
 }: Props) => {
 	const { classes, cx } = useStyles();
 
@@ -169,30 +171,30 @@ export const PersonaTiles = ({
 	return (
 		<>
 			<div className={fr.cx("fr-col-12")}>
-				{unique && (
-					<>
-						<Breadcrumb
-							className={cx(classes.customBreadcrumb)}
-							currentPageLabel={lastTag?.label}
-							homeLinkProps={{
-								href: "/",
-							}}
-							segments={
-								lastTag?.slug.startsWith("pro")
-									? tags.slice(0, -1).map((tag) => ({
-											label: tag.label,
-											linkProps: {
-												href: `/journeys/professional`,
-												onClick: () => navigateBreadcrumb(tag),
-											},
-										}))
-									: []
-							}
-						/>
-						<h1 className={cx(classes.coloredTitle)}>
-							{lastTag?.slug !== "professional" && lastTag?.label}
-						</h1>
-					</>
+				{breadCrumb && (
+					<Breadcrumb
+						className={cx(classes.customBreadcrumb)}
+						currentPageLabel={lastTag?.label}
+						homeLinkProps={{
+							href: "/",
+						}}
+						segments={
+							lastTag?.slug.startsWith("pro")
+								? tags.slice(0, -1).map((tag) => ({
+										label: tag.label,
+										linkProps: {
+											href: `/journeys/professional`,
+											onClick: () => navigateBreadcrumb(tag),
+										},
+									}))
+								: []
+						}
+					/>
+				)}
+				{mainTitle && (
+					<h1 className={cx(classes.coloredTitle)}>
+						{lastTag?.slug !== "professional" && lastTag?.label}
+					</h1>
 				)}
 				<h2>{subTitle}</h2>
 				<div className={fr.cx("fr-text--sm", "fr-mb-8v")}>
