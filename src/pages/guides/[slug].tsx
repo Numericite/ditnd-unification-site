@@ -35,6 +35,7 @@ export default function PracticalGuidePage() {
 			<Head>
 				<title>DITND - {guide.title}</title>
 			</Head>
+			<meta name="description" content={`Fiche pratique sur ${guide.title} `} />
 			<SkipLinks
 				links={[
 					{

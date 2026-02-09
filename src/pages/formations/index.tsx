@@ -31,6 +31,10 @@ export default function Courses() {
 			<Head>
 				<title>DITND - Formations</title>
 			</Head>
+			<meta
+				name="description"
+				content={`Page sur la recherche de formations liés au troubles du neurodéveloppement`}
+			/>
 			<SkipLinks
 				links={[
 					{

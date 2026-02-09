@@ -65,6 +65,10 @@ export default function JourneyPage() {
 			<Head>
 				<title>DITND - Page du persona</title>
 			</Head>
+			<meta
+				name="description"
+				content={`Formulaire pour déterminer quelles ressources vous correspondent le mieux`}
+			/>
 			<div className={cx(classes.coloredContainer)}>
 				<div className={fr.cx("fr-pb-4w", "fr-container")}>
 					<PersonaTiles

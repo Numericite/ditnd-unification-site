@@ -52,6 +52,10 @@ export default function Home() {
 			<Head>
 				<title>DITND - Accueil</title>
 			</Head>
+			<meta
+				name="description"
+				content="Page d'accueil de la plateforme de la délégation interministérielle pour les troubles du neurodéveloppement, où vous trouverez des informations, diagnostics et formations sur les troubles du neurodéveloppement"
+			/>
 			<SkipLinks
 				links={[
 					{
