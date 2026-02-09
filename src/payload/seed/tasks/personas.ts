@@ -1,14 +1,15 @@
 import type { Payload } from "payload";
+import { TRPCError } from "@trpc/server";
 
 const personas = [
 	{
-		name: "un Parent ou proche",
+		name: "Parent ou proche",
 		description: "Description d'un parent ou d'un proche",
 		slug: "pp",
 		pictogram: "HumanCooperation",
 	},
 	{
-		name: "une Personne concernée",
+		name: "Personne concernée par un TND",
 		description: "Description d'une personne concernée",
 		slug: "pe",
 		pictogram: "Avatar",
@@ -17,24 +18,28 @@ const personas = [
 		name: "Professionnel dans le médico-social",
 		description: "Description des Professionnels dans le médico-social",
 		slug: "pro-m",
+		pictogram: "Hospital",
 	},
 	{
 		name: "Professionnel dans l'éducation",
 		description: "Description des Professionnels dans l'éducation",
 		slug: "pro-e",
+		pictogram: "School",
 	},
 	{
 		name: "Professionnel employant des personnes TND",
 		description: "Description des Professionnels employant des personnes TND",
 		slug: "pro-a-tnd",
+		pictogram: "Companie",
 	},
 	{
 		name: "Professionnel accueillant des personnes TND",
 		description: "Description des Professionnels accueillant des personnes TND",
 		slug: "pro-e-tnd",
+		pictogram: "Ecosystem",
 	},
 	{
-		name: "le Grand public",
+		name: "Grand public",
 		description: "Description du grand public",
 		slug: "gp",
 		pictogram: "SelfTraining",
@@ -51,7 +56,10 @@ async function createPersonas(
 			data,
 		});
 	} catch (error) {
-		throw new Error(`Error creating persona ${data.name} with error ${error}`);
+		throw new TRPCError({
+			message: `Error creating persona ${data.name} with error ${error}`,
+			code: "INTERNAL_SERVER_ERROR",
+		});
 	}
 }
 

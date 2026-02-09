@@ -57,7 +57,7 @@ async function createTheme(
 	}
 }
 
-export async function seedTheme(payload: Payload) {
+export async function seedThemes(payload: Payload) {
 	for (const condition of theme) {
 		await createTheme(payload, condition);
 	}

@@ -1,14 +1,14 @@
 import config from "@payload-config";
 import { getPayload } from "payload";
 import { seedConditions } from "./tasks/conditions";
-import { seedTheme } from "./tasks/theme";
-import { seedPracticalGuides } from "./tasks/practical-guide";
+import { seedThemes } from "./tasks/themes";
+import { seedPracticalGuides } from "./tasks/practical-guides";
 import { seedCourses } from "./tasks/courses";
 import { seedJourneys } from "./tasks/journeys";
 import { seedMedia } from "./tasks/medias";
-import { seedPersonas } from "./tasks/persona";
 import homeTask from "./tasks/home";
 import footerTask from "./tasks/footer";
+import { seedPersonas } from "./tasks/personas";
 
 const seedData = async () => {
 	try {
@@ -39,7 +39,7 @@ const seedData = async () => {
 		});
 		await homeTask(payload);
 		await footerTask(payload);
-		await seedTheme(payload);
+		await seedThemes(payload);
 		await seedMedia(payload);
 		await seedConditions(payload);
 		await seedPersonas(payload);
