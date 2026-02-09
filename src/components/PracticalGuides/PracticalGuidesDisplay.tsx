@@ -39,6 +39,7 @@ export default function PracticalGuidesDisplay({
 				<div className={fr.cx("fr-col-12")}>
 					<img
 						className={cx(fr.cx("fr-responsive-img"), classes.imageBanner)}
+						fetchPriority="high"
 						alt={image.alt}
 						src={image.url}
 					/>
