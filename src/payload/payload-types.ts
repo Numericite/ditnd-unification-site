@@ -167,10 +167,13 @@ export interface User {
  */
 export interface Persona {
   id: number;
+  _order?: string | null;
   name: string;
   description: string;
   slug: string;
-  pictogram?: ('Avatar' | 'HumanCooperation' | 'CityHall' | 'SelfTraining') | null;
+  pictogram?:
+    | ('Avatar' | 'HumanCooperation' | 'CityHall' | 'SelfTraining' | 'Hospital' | 'School' | 'Companie' | 'Ecosystem')
+    | null;
   updatedAt: string;
   createdAt: string;
 }
@@ -180,6 +183,7 @@ export interface Persona {
  */
 export interface Condition {
   id: number;
+  _order?: string | null;
   name: string;
   description: string;
   acronym: string;
@@ -420,6 +424,7 @@ export interface UsersSelect<T extends boolean = true> {
  * via the `definition` "personas_select".
  */
 export interface PersonasSelect<T extends boolean = true> {
+  _order?: T;
   name?: T;
   description?: T;
   slug?: T;
@@ -432,6 +437,7 @@ export interface PersonasSelect<T extends boolean = true> {
  * via the `definition` "conditions_select".
  */
 export interface ConditionsSelect<T extends boolean = true> {
+  _order?: T;
   name?: T;
   description?: T;
   acronym?: T;
