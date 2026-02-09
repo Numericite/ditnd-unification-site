@@ -31,7 +31,12 @@ export default function Home() {
 
 	const tiles = personsAndProTiles(persons);
 
-	if (isLoadingViewedGuides || !persons) return <Loader />;
+	if (isLoadingViewedGuides || !persons)
+		return (
+			<EmptyScreenZone>
+				<Loader />
+			</EmptyScreenZone>
+		);
 
 	if (!homeCMS)
 		return (

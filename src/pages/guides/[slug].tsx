@@ -17,7 +17,12 @@ export default function PracticalGuidePage() {
 			slug: slug,
 		});
 
-	if (isLoadingData) return <Loader />;
+	if (isLoadingData)
+		return (
+			<EmptyScreenZone>
+				<Loader />
+			</EmptyScreenZone>
+		);
 
 	if (!guideData) {
 		return <EmptyScreenZone>Fiche introuvable</EmptyScreenZone>;

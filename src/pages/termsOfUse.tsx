@@ -9,7 +9,12 @@ export default function TermsOfUse() {
 	const { data: pageContent, isLoading: isLoadingData } =
 		api.cms.termsOfUse.useQuery();
 
-	if (isLoadingData) return <Loader />;
+	if (isLoadingData)
+		return (
+			<EmptyScreenZone>
+				<Loader />
+			</EmptyScreenZone>
+		);
 
 	if (!pageContent) return <EmptyScreenZone>Missing content</EmptyScreenZone>;
 

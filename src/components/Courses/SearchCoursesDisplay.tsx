@@ -5,6 +5,7 @@ import { SearchBarUI } from "../ui/SearchPage/SearchBarUI";
 import { Loader } from "../ui/Loader";
 import { useSearchParams } from "next/navigation";
 import CardsDisplayGroup from "../ui/Cards/CardsDisplayGroup";
+import { EmptyScreenZone } from "../ui/EmptyScreenZone";
 
 export type CoursesFiltersQuery = {
 	conditions: string[];
@@ -31,7 +32,9 @@ export const SearchCoursesDisplay = ({
 		<>
 			<SearchBarUI value={query} onClick={(query) => setQuery(query)} />
 			{isLoadingCourses ? (
-				<Loader />
+				<EmptyScreenZone>
+					<Loader />
+				</EmptyScreenZone>
 			) : coursesData?.length === 0 || !coursesData ? (
 				<div className={fr.cx("fr-my-2w")}>Aucune formation trouvée</div>
 			) : (

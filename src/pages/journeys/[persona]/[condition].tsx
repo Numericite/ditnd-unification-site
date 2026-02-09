@@ -25,7 +25,12 @@ export default function JourneyPage() {
 			persona: persona,
 		});
 
-	if (isLoadingJourney) return <Loader />;
+	if (isLoadingJourney)
+		return (
+			<EmptyScreenZone>
+				<Loader />
+			</EmptyScreenZone>
+		);
 
 	if (!journeyData || journeyData.length === 0) {
 		return <EmptyScreenZone>Parcours introuvable</EmptyScreenZone>;

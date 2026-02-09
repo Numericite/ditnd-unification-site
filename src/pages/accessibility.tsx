@@ -9,7 +9,12 @@ export default function Accessibility() {
 	const { data: pageContent, isLoading: isLoadingData } =
 		api.cms.accessibility.useQuery();
 
-	if (isLoadingData) return <Loader />;
+	if (isLoadingData)
+		return (
+			<EmptyScreenZone>
+				<Loader />
+			</EmptyScreenZone>
+		);
 
 	if (!pageContent) return <EmptyScreenZone>Missing content</EmptyScreenZone>;
 

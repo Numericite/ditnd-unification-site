@@ -6,6 +6,7 @@ import { SearchBarUI } from "../ui/SearchPage/SearchBarUI";
 import { Loader } from "../ui/Loader";
 import CardsDisplayGroup from "../ui/Cards/CardsDisplayGroup";
 import { useSearchParams } from "next/navigation";
+import { EmptyScreenZone } from "../ui/EmptyScreenZone";
 
 export const SearchGuidesDisplay = ({ filters }: { filters: FiltersQuery }) => {
 	const searchParams = useSearchParams();
@@ -21,7 +22,9 @@ export const SearchGuidesDisplay = ({ filters }: { filters: FiltersQuery }) => {
 		<>
 			<SearchBarUI value={query} onClick={(query) => setQuery(query)} />
 			{isLoadingGuides ? (
-				<Loader />
+				<EmptyScreenZone>
+					<Loader />
+				</EmptyScreenZone>
 			) : practicalGuideData?.length === 0 || !practicalGuideData ? (
 				<div className={fr.cx("fr-my-2w")}>Aucune fiche pratique trouvée</div>
 			) : (
