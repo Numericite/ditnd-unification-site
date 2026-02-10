@@ -42,11 +42,12 @@ export default function JourneyPage() {
 		<>
 			<Head>
 				<title>DITND - {journey.journey_name}</title>
+				<meta
+					name="description"
+					content={`Page de parcours en tant que ${journey.persona.name.toLowerCase()}, où vous trouverez des ressources sur le ${condition.toUpperCase()}`}
+				/>
 			</Head>
-			<meta
-				name="description"
-				content={`Page de parcours en tant que ${journey.persona.name.toLowerCase()}, où vous trouverez des ressources sur le ${condition.toUpperCase()}`}
-			/>
+
 			<SkipLinks
 				links={[
 					{
