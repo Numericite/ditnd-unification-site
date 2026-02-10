@@ -62,6 +62,7 @@ export const standardFields = {
 						feature.key !== "checklist" &&
 						feature.key !== "inlineCode" &&
 						feature.key !== "horizontalRule" &&
+						feature.key !== "indent" &&
 						feature.key !== "blockquote",
 				),
 				FixedToolbarFeature(),
