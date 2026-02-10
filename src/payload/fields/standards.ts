@@ -2,8 +2,12 @@ import {
 	FixedToolbarFeature,
 	HeadingFeature,
 	lexicalEditor,
+	RelationshipFeature,
 } from "@payloadcms/richtext-lexical";
-import { convertLexicalToHTML } from "@payloadcms/richtext-lexical/html";
+import {
+	convertLexicalToHTML,
+	defaultHTMLConverters,
+} from "@payloadcms/richtext-lexical/html";
 import type { Field } from "payload";
 
 export const standardFields = {
@@ -64,6 +68,15 @@ export const standardFields = {
 				HeadingFeature({
 					enabledHeadingSizes: ["h2", "h3", "h4", "h5", "h6"],
 				}),
+				RelationshipFeature({
+					disabledCollections: [
+						"users",
+						"personas",
+						"conditions",
+						"journeys",
+						"themes",
+					],
+				}),
 			],
 		}),
 	},
@@ -78,9 +91,36 @@ export const standardFields = {
 		},
 		hooks: {
 			beforeChange: [
-				async ({ siblingData }) => {
+				async ({ siblingData, req: { payload } }) => {
 					if (!siblingData?.content) return "";
-					return convertLexicalToHTML({ data: siblingData.content });
+
+					const uploadNodes = siblingData.content.root.children.filter(
+						(child: any) => child.type === "upload",
+					);
+
+					const mediaMap: Record<string, any> = {};
+					for (const node of uploadNodes) {
+						const mediaId = node.value;
+						if (mediaId && !mediaMap[mediaId]) {
+							const media = await payload.findByID({
+								collection: "medias",
+								id: mediaId,
+							});
+							if (media) mediaMap[mediaId] = media;
+						}
+					}
+
+					return convertLexicalToHTML({
+						data: siblingData.content,
+						converters: {
+							...defaultHTMLConverters,
+							upload: ({ node }) => {
+								const media = mediaMap[node.value as number];
+								if (!media) return "";
+								return `<div style="display:flex; justify-content:${node.format};"><img src="${media.url}" alt="${media.alt || ""}" width="${media.width || ""}" height="${media.height || ""}" /></div>`;
+							},
+						},
+					});
 				},
 			],
 		},
