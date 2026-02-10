@@ -17,7 +17,12 @@ export default function PracticalGuidePage() {
 			slug: slug,
 		});
 
-	if (isLoadingData) return <Loader />;
+	if (isLoadingData)
+		return (
+			<EmptyScreenZone>
+				<Loader />
+			</EmptyScreenZone>
+		);
 
 	if (!guideData) {
 		return <EmptyScreenZone>Fiche introuvable</EmptyScreenZone>;
@@ -29,6 +34,10 @@ export default function PracticalGuidePage() {
 		<>
 			<Head>
 				<title>DITND - {guide.title}</title>
+				<meta
+					name="description"
+					content={`Fiche pratique sur ${guide.title} `}
+				/>
 			</Head>
 			<SkipLinks
 				links={[

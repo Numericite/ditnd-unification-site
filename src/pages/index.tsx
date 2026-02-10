@@ -9,7 +9,6 @@ import MostViewedGuides from "~/components/HomePage/MostViewedGuides";
 import { Loader } from "~/components/ui/Loader";
 import { useState } from "react";
 import { useRouter } from "next/router";
-import Image from "next/image";
 import { EmptyScreenZone } from "~/components/ui/EmptyScreenZone";
 import SkipLinks from "@codegouvfr/react-dsfr/SkipLinks";
 import { homeCMSStore, personStore } from "~/state/store";
@@ -31,7 +30,12 @@ export default function Home() {
 
 	const tiles = personsAndProTiles(persons);
 
-	if (isLoadingViewedGuides || !persons) return <Loader />;
+	if (isLoadingViewedGuides || !persons)
+		return (
+			<EmptyScreenZone>
+				<Loader />
+			</EmptyScreenZone>
+		);
 
 	if (!homeCMS)
 		return (
@@ -48,6 +52,10 @@ export default function Home() {
 			<Head>
 				<title>DITND - Accueil</title>
 			</Head>
+			<meta
+				name="description"
+				content="Page d'accueil de la plateforme de la délégation interministérielle pour les troubles du neurodéveloppement, où vous trouverez des informations, diagnostics et formations sur les troubles du neurodéveloppement"
+			/>
 			<SkipLinks
 				links={[
 					{
@@ -114,10 +122,11 @@ export default function Home() {
 									justifyContent: "center",
 								}}
 							>
-								<Image
+								<img
 									alt=""
 									width={400}
 									height={400}
+									fetchPriority="high"
 									loading="eager"
 									src={"/HomePageIllustration.svg"}
 								/>

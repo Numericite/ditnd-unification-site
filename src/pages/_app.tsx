@@ -13,6 +13,7 @@ import ChatBot from "~/components/Chatbot/Chatbot";
 import "~/utils/styles/keyframes.css";
 import MainNavigation from "~/components/ui/Navigation/MainNavigation";
 import { useRouter } from "next/router";
+import { EmptyScreenZone } from "~/components/ui/EmptyScreenZone";
 
 declare module "@codegouvfr/react-dsfr/next-pagesdir" {
 	interface RegisterLink {
@@ -84,7 +85,9 @@ function App({ Component, pageProps }: AppProps) {
 					isLoadingPersona ||
 					isLoadingFooterTitle ||
 					isLoadingPersons ? (
-						<Loader />
+						<EmptyScreenZone>
+							<Loader />
+						</EmptyScreenZone>
 					) : (
 						<Component {...pageProps} />
 					)}

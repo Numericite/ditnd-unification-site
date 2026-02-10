@@ -3,6 +3,7 @@ import Head from "next/head";
 import { useRouter } from "next/router";
 import { tss } from "tss-react";
 import { PersonaTiles, type TagItem } from "~/components/HomePage/PersonaTiles";
+import { EmptyScreenZone } from "~/components/ui/EmptyScreenZone";
 import { Loader } from "~/components/ui/Loader";
 import { personStore, proStore } from "~/state/store";
 import { api } from "~/utils/api";
@@ -45,7 +46,11 @@ export default function JourneyPage() {
 		!conditions &&
 		!professionalPersonas
 	)
-		return <Loader />;
+		return (
+			<EmptyScreenZone>
+				<Loader />
+			</EmptyScreenZone>
+		);
 
 	if (
 		!conditions ||
@@ -59,7 +64,12 @@ export default function JourneyPage() {
 		<>
 			<Head>
 				<title>DITND - Page du persona</title>
+				<meta
+					name="description"
+					content={`Formulaire pour déterminer quelles ressources vous correspondent le mieux`}
+				/>
 			</Head>
+
 			<div className={cx(classes.coloredContainer)}>
 				<div className={fr.cx("fr-pb-4w", "fr-container")}>
 					<PersonaTiles

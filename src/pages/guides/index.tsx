@@ -28,6 +28,10 @@ export default function PracticalGuides() {
 		<>
 			<Head>
 				<title>DITND - Fiches Pratiques</title>
+				<meta
+					name="description"
+					content={`Page sur la recherche de fiches pratiques liés au troubles du neurodéveloppement`}
+				/>
 			</Head>
 			<SkipLinks
 				links={[

@@ -25,7 +25,12 @@ export default function JourneyPage() {
 			persona: persona,
 		});
 
-	if (isLoadingJourney) return <Loader />;
+	if (isLoadingJourney)
+		return (
+			<EmptyScreenZone>
+				<Loader />
+			</EmptyScreenZone>
+		);
 
 	if (!journeyData || journeyData.length === 0) {
 		return <EmptyScreenZone>Parcours introuvable</EmptyScreenZone>;
@@ -37,7 +42,12 @@ export default function JourneyPage() {
 		<>
 			<Head>
 				<title>DITND - {journey.journey_name}</title>
+				<meta
+					name="description"
+					content={`Page de parcours en tant que ${journey.persona.name.toLowerCase()}, où vous trouverez des ressources sur le ${condition.toUpperCase()}`}
+				/>
 			</Head>
+
 			<SkipLinks
 				links={[
 					{
@@ -91,6 +101,7 @@ export default function JourneyPage() {
 						<div className={fr.cx("fr-col-12", "fr-col-lg-6")}>
 							<img
 								className={fr.cx("fr-responsive-img")}
+								fetchPriority="high"
 								alt={journey.image?.alt}
 								src={
 									journey.image?.url ??

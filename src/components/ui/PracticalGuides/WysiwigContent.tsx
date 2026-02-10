@@ -17,7 +17,46 @@ export default function WysiwygContent({
 			<h1>{title}</h1>
 			<div
 				dangerouslySetInnerHTML={{
-					__html: addAnchors(sanitizeHtml(html)),
+					__html: addAnchors(
+						sanitizeHtml(html, {
+							allowedTags: [
+								"p",
+								"h6",
+								"h5",
+								"h4",
+								"h3",
+								"h2",
+								"h1",
+								"a",
+								"strong",
+								"em",
+								"ul",
+								"li",
+								"img",
+								"br",
+								"span",
+								"sub",
+								"sup",
+								"div",
+							],
+							allowedAttributes: {
+								a: ["href", "name", "target"],
+								h1: ["style"],
+								h2: ["style"],
+								span: ["style"],
+								div: ["style"],
+								img: ["src", "alt", "title", "width", "height"],
+							},
+							allowedStyles: {
+								"*": {
+									"text-align": [/^left$/, /^right$/, /^center$/],
+									"text-decoration": [/^underline$/, /^line-through$/],
+									display: [/^flex$/],
+									"justify-content": [/^center$/, /^right$/, /^left$/],
+								},
+							},
+						}),
+					),
 				}}
 			/>
 		</div>
