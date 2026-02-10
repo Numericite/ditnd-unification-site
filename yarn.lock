@@ -2012,6 +2012,13 @@
   dependencies:
     date-fns "4.1.0"
 
+"@payloadcms/translations@^3.76.0":
+  version "3.76.0"
+  resolved "https://registry.yarnpkg.com/@payloadcms/translations/-/translations-3.76.0.tgz#58556a992e55c31623699fddd25e0436179cc60e"
+  integrity sha512-Mny6IXOQS2nXIyOwKkWtenHs/3aBt8evc1AoMxGU/hQLe8Lcmbi8ua4lsTAY+vMXoL3z+7ns20EbBqM2Ld3eNA==
+  dependencies:
+    date-fns "4.1.0"
+
 "@payloadcms/ui@3.69.0":
   version "3.69.0"
   resolved "https://registry.yarnpkg.com/@payloadcms/ui/-/ui-3.69.0.tgz#0134f43ad457bc9661391c8ae415b3a347afe63c"

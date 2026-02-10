@@ -15,6 +15,9 @@ import { PracticalGuides } from "./collections/PracticalGuides";
 import { Themes } from "./collections/Themes";
 import { Journeys } from "./collections/Journeys";
 import { Medias } from "./collections/Medias";
+import { en } from "@payloadcms/translations/languages/en";
+import { fr } from "@payloadcms/translations/languages/fr";
+
 import {
 	addPracticalGuidesTable,
 	addPracticalGuidesTableVector,
@@ -51,6 +54,9 @@ export default buildConfig({
 	],
 	globals: [CMSHome, CMSFooter],
 	editor: lexicalEditor(),
+	i18n: {
+		supportedLanguages: { en, fr },
+	},
 	secret: process.env.PAYLOAD_SECRET || "",
 	typescript: {
 		outputFile: path.resolve(dirname, "payload-types.ts"),
