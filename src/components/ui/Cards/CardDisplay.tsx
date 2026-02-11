@@ -1,6 +1,8 @@
+import { fr } from "@codegouvfr/react-dsfr";
 import Badge from "@codegouvfr/react-dsfr/Badge";
 import Card from "@codegouvfr/react-dsfr/Card";
 import Tag from "@codegouvfr/react-dsfr/Tag";
+import { tss } from "tss-react";
 import type { Condition, Theme } from "~/payload/payload-types";
 import { shortenDescription } from "~/utils/tools";
 
@@ -31,6 +33,8 @@ export default function CardDisplay({
 	redirect = "/",
 	titleAs = "h4",
 }: Props) {
+	const { classes, cx } = useStyles();
+
 	const imgProps = !noImg
 		? {
 				imageUrl:
@@ -63,30 +67,40 @@ export default function CardDisplay({
 			}
 			size="medium"
 			start={
-				<ul className="fr-tags-group">
-					{conditions.map((condition, index) => (
-						<li key={index}>
-							<Tag
-								style={{
-									color: condition.textColor,
-									backgroundColor: condition.backgroundColor,
-								}}
-							>
-								<strong>{condition.slug.toUpperCase()}</strong>
-							</Tag>
-						</li>
-					))}
-					{themes.map((theme, index) => (
-						<li key={index}>
-							<Tag>
-								<strong>{theme.name}</strong>
-							</Tag>
-						</li>
-					))}
-				</ul>
+				<div className={cx(classes.tags)}>
+					<ul className={cx(fr.cx("fr-tags-group"), classes.tags)}>
+						{conditions.map((condition, index) => (
+							<li key={index}>
+								<Tag
+									style={{
+										color: condition.textColor,
+										backgroundColor: condition.backgroundColor,
+									}}
+								>
+									<strong>{condition.slug.toUpperCase()}</strong>
+								</Tag>
+							</li>
+						))}
+						{themes.map((theme, index) => (
+							<li key={index}>
+								<Tag>
+									<strong>{theme.name}</strong>
+								</Tag>
+							</li>
+						))}
+					</ul>
+				</div>
 			}
 			title={title}
 			titleAs={titleAs}
 		/>
 	);
 }
+
+const useStyles = tss.withName(CardDisplay.name).create(() => ({
+	tags: {
+		ul: {
+			paddingInlineStart: "0rem!important" as "0rem",
+		},
+	},
+}));
