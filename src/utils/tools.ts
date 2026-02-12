@@ -1,5 +1,4 @@
 import type { RegisteredLinkProps } from "@codegouvfr/react-dsfr/link";
-import sanitize from "sanitize-html";
 import type { AugmentedCourse } from "~/server/api/routers/courses";
 import type { AugmentedPracticalGuide } from "~/server/api/routers/practical-guides";
 import Avatar from "@codegouvfr/react-dsfr/picto/Avatar";
@@ -12,19 +11,14 @@ import Companie from "@codegouvfr/react-dsfr/picto/Companie";
 import Ecosystem from "@codegouvfr/react-dsfr/picto/Ecosystem";
 
 import type { PersonaTile } from "~/components/HomePage/PersonaTiles";
+import type { DefaultTypedEditorState } from "@payloadcms/richtext-lexical";
+import type { SerializedLexicalNodeWithParent } from "@payloadcms/richtext-lexical/html";
 
 export type Link = {
 	text: string;
 	linkProps: RegisteredLinkProps;
 	subLinks?: Link[];
 };
-
-function extractText(html: string): string {
-	return sanitize(html, {
-		allowedTags: [],
-		allowedAttributes: {},
-	});
-}
 
 const MAX_DESCRIPTION_LENGTH = 120;
 
@@ -44,30 +38,35 @@ export function slugify(text: string): string {
 		.replace(/^-+|-+$/g, "");
 }
 
-export default function generateSummary(html: string): Link[] {
-	const sanitizedHTML = sanitize(html, {
-		allowedTags: ["h2"],
-		allowedAttributes: {},
-	});
+export function generateSummaryFromRichText(
+	content: DefaultTypedEditorState,
+): Link[] {
+	const h2FromNodes = (nodes: any[]) => {
+		const links: Link[] = [];
 
-	const matches = [...sanitizedHTML.matchAll(/<h2>(.*?)<\/h2>/gi)];
+		nodes.forEach((node) => {
+			if (node.tag === "h2") {
+				const text = extractTextFromNodes(node.children ?? []);
 
-	const res = [
-		...matches.map(([, title]) => ({
-			linkProps: { href: `#${title ? slugify(title) : ""}` },
-			text: title,
-		})),
-	] as Link[];
+				links.push({
+					linkProps: { href: `#${slugify(text)}` },
+					text,
+				});
+			}
 
-	return res;
+			if (node.children) {
+				h2FromNodes(node.children);
+			}
+		});
+
+		return links;
+	};
+
+	return h2FromNodes(content.root.children);
 }
 
-export function addAnchors(html: string) {
-	return html.replace(/<h2([^>]*)>(.*?)<\/h2>/gi, (_, attrs, innerHTML) => {
-		const text = extractText(innerHTML);
-		const id = slugify(text);
-		return `<h2${attrs} id="${id}">${innerHTML}</h2>`;
-	});
+export function extractTextFromNodes(node: SerializedLexicalNodeWithParent[]) {
+	return node.map((child: any) => child.text ?? "").join(" ");
 }
 
 export const sanitizeArray = (values: string[]): string[] =>

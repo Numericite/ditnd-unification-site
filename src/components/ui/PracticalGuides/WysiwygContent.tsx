@@ -6,6 +6,7 @@ import {
 	RichText,
 } from "@payloadcms/richtext-lexical/react";
 import type { DefaultTypedEditorState } from "@payloadcms/richtext-lexical";
+import { useEffect, type Dispatch, type SetStateAction } from "react";
 import {
 	headingConverter,
 	relationshipConverter,
@@ -15,11 +16,19 @@ import {
 export default function WysiwygContent({
 	title,
 	content,
+	setMenuLinks,
 }: {
 	title: string;
 	content: DefaultTypedEditorState;
+	setMenuLinks?: Dispatch<SetStateAction<Link[]>>;
 }) {
 	const { classes, cx } = useStyles();
+
+	useEffect(() => {
+		if (!setMenuLinks) return;
+
+		setMenuLinks(generateSummaryFromRichText(content));
+	}, [content, setMenuLinks]);
 
 	return (
 		<div className={cx(classes.wysiwig)} id="wysiwig-content">
