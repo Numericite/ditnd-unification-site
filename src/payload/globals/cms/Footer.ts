@@ -12,38 +12,22 @@ export const CMSFooter: GlobalConfig = {
 				{
 					label: "Accessibilité",
 					name: "accessibility",
-					fields: [
-						standardFields.title,
-						standardFields.wysiwyg,
-						standardFields.html,
-					],
+					fields: [standardFields.title, standardFields.wysiwyg],
 				},
 				{
 					label: "Mention légales",
 					name: "legalNotice",
-					fields: [
-						standardFields.title,
-						standardFields.wysiwyg,
-						standardFields.html,
-					],
+					fields: [standardFields.title, standardFields.wysiwyg],
 				},
 				{
 					label: "Politique de confidentialité",
 					name: "cgu",
-					fields: [
-						standardFields.title,
-						standardFields.wysiwyg,
-						standardFields.html,
-					],
+					fields: [standardFields.title, standardFields.wysiwyg],
 				},
 				{
 					label: "Modalités d'utilisation",
 					name: "termsOfUse",
-					fields: [
-						standardFields.title,
-						standardFields.wysiwyg,
-						standardFields.html,
-					],
+					fields: [standardFields.title, standardFields.wysiwyg],
 				},
 			],
 		},

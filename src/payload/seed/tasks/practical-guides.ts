@@ -1,6 +1,5 @@
 import type { Payload } from "payload";
 import type { DefaultTypedEditorState } from "@payloadcms/richtext-lexical";
-import { convertLexicalToHTML } from "@payloadcms/richtext-lexical/html";
 import { PracticalGuidesContent } from "~/utils/wysiwyg-content";
 
 const content = PracticalGuidesContent;
@@ -96,7 +95,6 @@ async function createPracticalGuide(
 		description: string;
 		conditions?: number[];
 		content: DefaultTypedEditorState;
-		html: string;
 		persona: number[];
 		themes: number[];
 		practicalGuides?: number[];
@@ -134,7 +132,6 @@ export async function seedPracticalGuides(payload: Payload) {
 		await createPracticalGuide(payload, {
 			...guide,
 			content: textContent,
-			html: convertLexicalToHTML({ data: textContent }),
 		});
 	}
 }

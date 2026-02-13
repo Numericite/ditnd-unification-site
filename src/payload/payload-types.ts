@@ -266,7 +266,6 @@ export interface PracticalGuide {
     };
     [k: string]: unknown;
   };
-  html: string;
   persona: (number | Persona)[];
   themes: (number | Theme)[];
   'practical-guides'?: (number | PracticalGuide)[] | null;
@@ -473,7 +472,6 @@ export interface PracticalGuidesSelect<T extends boolean = true> {
   description?: T;
   conditions?: T;
   content?: T;
-  html?: T;
   persona?: T;
   themes?: T;
   'practical-guides'?: T;
@@ -617,7 +615,6 @@ export interface Footer {
       };
       [k: string]: unknown;
     };
-    html: string;
   };
   legalNotice: {
     title: string;
@@ -636,7 +633,6 @@ export interface Footer {
       };
       [k: string]: unknown;
     };
-    html: string;
   };
   cgu: {
     title: string;
@@ -655,7 +651,6 @@ export interface Footer {
       };
       [k: string]: unknown;
     };
-    html: string;
   };
   termsOfUse: {
     title: string;
@@ -674,7 +669,6 @@ export interface Footer {
       };
       [k: string]: unknown;
     };
-    html: string;
   };
   updatedAt?: string | null;
   createdAt?: string | null;
@@ -716,28 +710,24 @@ export interface FooterSelect<T extends boolean = true> {
     | {
         title?: T;
         content?: T;
-        html?: T;
       };
   legalNotice?:
     | T
     | {
         title?: T;
         content?: T;
-        html?: T;
       };
   cgu?:
     | T
     | {
         title?: T;
         content?: T;
-        html?: T;
       };
   termsOfUse?:
     | T
     | {
         title?: T;
         content?: T;
-        html?: T;
       };
   updatedAt?: T;
   createdAt?: T;

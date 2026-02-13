@@ -30,6 +30,7 @@ export const PracticalGuides: CollectionConfig = {
 			admin: {
 				position: "sidebar",
 				readOnly: true,
+				hidden: true,
 			},
 			hooks: {
 				beforeChange: [
@@ -53,7 +54,6 @@ export const PracticalGuides: CollectionConfig = {
 			},
 		},
 		standardFields.wysiwyg,
-		standardFields.html,
 		{
 			name: "persona",
 			type: "relationship",
