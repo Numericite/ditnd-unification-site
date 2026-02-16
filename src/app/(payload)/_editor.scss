@@ -83,7 +83,7 @@
 
 .LexicalEditorTheme__relationship{
   background: #fff;
-  display: inline-flex;
+  display: flex;
   width: 100%;
   max-width: fit-content;
   border-radius: 0px;
@@ -95,4 +95,20 @@
         background-color: #161616;
         
   }
+  .LexicalEditorTheme__relationship__label {
+    visibility: hidden;
+  }
+}
+.LexicalEditorTheme__quote {
+    color: #161616;
+    margin:0;
+    font-size: 18px;
+    border-left-color:none;
+    border-left-width: 0;
+    padding: 2rem 3rem;
+}
+
+.LexicalEditorTheme__hr:after {
+  background-color: #ddd;
+  height: 1px;
 }
