@@ -41,6 +41,7 @@ export const Journeys: CollectionConfig = {
 			type: "array",
 			required: true,
 			label: { fr: "Chapitres" },
+			labels: { plural: "Chapitres", singular: "Chapitre" },
 			fields: [
 				{
 					name: "chapter-name",
