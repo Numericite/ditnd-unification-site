@@ -47,7 +47,10 @@ export const uploadConverter: JSXConverters<DefaultNodeTypes>["upload"] = ({
 
 	if (!value?.url) return null;
 	return (
-		<div style={{ display: "flex", justifyContent: `${node.format}` }}>
+		<div
+			className={fr.cx("fr-my-3v")}
+			style={{ display: "flex", justifyContent: `${node.format}` }}
+		>
 			<img
 				fetchPriority="high"
 				src={`${value.url}`}
@@ -68,7 +71,7 @@ export const relationshipConverter: JSXConverters<DefaultNodeTypes>["relationshi
 				const value = relationshipNode.value as AugmentedPracticalGuide;
 
 				return (
-					<div className={fr.cx("fr-col-12", "fr-col-md-6")}>
+					<div className={fr.cx("fr-col-12", "fr-col-md-6", "fr-my-3v")}>
 						<CardDisplay
 							title={value.title}
 							conditions={value.conditions ?? []}
