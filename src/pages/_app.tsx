@@ -80,7 +80,7 @@ function App({ Component, pageProps }: AppProps) {
 			<div className={cx(classes.headerContainer)}>
 				<MainNavigation />
 
-				<main>
+				<main id="main">
 					{isLoadingHomePage ||
 					isLoadingPersona ||
 					isLoadingFooterTitle ||

@@ -11,7 +11,6 @@ import type { FiltersQuery } from "~/components/PracticalGuides/GuidesFiltersDis
 import { tss } from "tss-react";
 import { useRouter } from "next/router";
 import { deserialize } from "~/utils/tools";
-import SkipLinks from "@codegouvfr/react-dsfr/SkipLinks";
 
 export default function Courses() {
 	const { classes, cx } = useStyles();
@@ -34,26 +33,6 @@ export default function Courses() {
 			<meta
 				name="description"
 				content={`Page sur la recherche de formations liés au troubles du neurodéveloppement`}
-			/>
-			<SkipLinks
-				links={[
-					{
-						anchor: "#contenu",
-						label: "Contenu",
-					},
-					{
-						anchor: "#filters",
-						label: "Filtres de recherche",
-					},
-					{
-						anchor: "#search-global",
-						label: "Recherche",
-					},
-					{
-						anchor: "#footer",
-						label: "Pied de page",
-					},
-				]}
 			/>
 			<div className={fr.cx("fr-container", "fr-pb-8w")}>
 				<Breadcrumb

@@ -10,7 +10,6 @@ import { Loader } from "~/components/ui/Loader";
 import { useState } from "react";
 import { useRouter } from "next/router";
 import { EmptyScreenZone } from "~/components/ui/EmptyScreenZone";
-import SkipLinks from "@codegouvfr/react-dsfr/SkipLinks";
 import { homeCMSStore, personStore } from "~/state/store";
 import { personsAndProTiles } from "~/utils/tools";
 
@@ -55,27 +54,6 @@ export default function Home() {
 			<meta
 				name="description"
 				content="Page d'accueil de la plateforme de la délégation interministérielle pour les troubles du neurodéveloppement, où vous trouverez des informations, diagnostics et formations sur les troubles du neurodéveloppement"
-			/>
-			<SkipLinks
-				links={[
-					{
-						anchor: "#search-global",
-						label: "Recherche",
-					},
-					{
-						anchor: "#who",
-						label: "Qui êtes vous",
-					},
-					{
-						anchor: "#mostViewed",
-						label: "Fiches Pratiques les plus lues",
-					},
-
-					{
-						anchor: "#footer",
-						label: "Pied de page",
-					},
-				]}
 			/>
 			<div className={fr.cx("fr-container")}>
 				<Breadcrumb

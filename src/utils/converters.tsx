@@ -53,7 +53,7 @@ export const uploadConverter: JSXConverters<DefaultNodeTypes>["upload"] = ({
 		>
 			<img
 				fetchPriority="high"
-				src={`${value.url}`}
+				src={`${process.env.S3_BUCKET ?? ""}${value.url}`}
 				alt={`${value.alt || ""}`}
 				width={`${value.width || ""}`}
 				height={`${value.height || ""}`}

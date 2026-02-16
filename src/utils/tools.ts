@@ -20,6 +20,12 @@ export type Link = {
 	subLinks?: Link[];
 };
 
+export type SkipLinkType = {
+	label: string;
+	anchor: string;
+	id?: string | undefined;
+};
+
 const MAX_DESCRIPTION_LENGTH = 120;
 
 export const shortenDescription = (string: string) => {
@@ -136,4 +142,103 @@ export const personsAndProTiles = (personas: PersonaTile[]) => {
 	};
 
 	return [...mapped.slice(0, 2), professionalTile, ...mapped.slice(2)];
+};
+
+const searchPageLinks: SkipLinkType[] = [
+	{
+		anchor: "#contenu",
+		label: "Contenu",
+	},
+	{
+		anchor: "#filters",
+		label: "Filtres de recherche",
+	},
+	{
+		anchor: "#search-global",
+		label: "Recherche",
+	},
+	{
+		anchor: "#footer",
+		label: "Pied de page",
+	},
+];
+
+export const defaultSkipLinks: SkipLinkType[] = [
+	{
+		anchor: "#main",
+		label: "Contenu",
+	},
+	{
+		anchor: "#footer",
+		label: "Pied de page",
+	},
+];
+
+export const skipLinks: Record<string, SkipLinkType[]> = {
+	"/": [
+		{
+			anchor: "#search-global",
+			label: "Recherche",
+		},
+		{
+			anchor: "#who",
+			label: "Qui êtes vous",
+		},
+		{
+			anchor: "#mostViewed",
+			label: "Fiches Pratiques les plus lues",
+		},
+
+		{
+			anchor: "#footer",
+			label: "Pied de page",
+		},
+	],
+	"/guides": searchPageLinks,
+	"/guides/...": [
+		{
+			anchor: "#summary",
+			label: "Sommaire",
+		},
+		{
+			anchor: "#wysiwig-content",
+			label: "Contenu de la fiche pratique",
+		},
+		{
+			anchor: "#footer",
+			label: "Pied de page",
+		},
+	],
+	"/formations": searchPageLinks,
+	"/journeys": defaultSkipLinks,
+	"/journeys/.../...": [
+		{
+			anchor: "#summary",
+			label: "Sommaire",
+		},
+
+		{
+			anchor: "#search-global",
+			label: "Recherche",
+		},
+		{
+			anchor: "#contenu",
+			label: "Contenu",
+		},
+		{
+			anchor: "#footer",
+			label: "Pied de page",
+		},
+	],
+};
+
+export const getPathNameForSkipLinks = (pathname: string) => {
+	const isTwoLevelJourney = /^\/journeys\/[^/]+\/[^/]+$/.test(pathname);
+	const isOneLevelJourney = /^\/journeys\/[^/]+$/.test(pathname);
+	const isOneLevelGuide = /^\/guides\/[^/]+$/.test(pathname);
+
+	if (isTwoLevelJourney) return "/journeys/.../...";
+	if (isOneLevelJourney) return "/journeys";
+	if (isOneLevelGuide) return "/guides/...";
+	return pathname;
 };

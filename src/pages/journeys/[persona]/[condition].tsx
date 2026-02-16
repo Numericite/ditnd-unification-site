@@ -1,6 +1,5 @@
 import { fr } from "@codegouvfr/react-dsfr";
 import Breadcrumb from "@codegouvfr/react-dsfr/Breadcrumb";
-import SkipLinks from "@codegouvfr/react-dsfr/SkipLinks";
 import Head from "next/head";
 import { useRouter } from "next/router";
 import { useState } from "react";
@@ -46,27 +45,6 @@ export default function JourneyPage() {
 			<meta
 				name="description"
 				content={`Page de parcours en tant que ${journey.persona.name.toLowerCase()}, où vous trouverez des ressources sur le ${condition.toUpperCase()}`}
-			/>
-			<SkipLinks
-				links={[
-					{
-						anchor: "#summary",
-						label: "Sommaire",
-					},
-
-					{
-						anchor: "#search-global",
-						label: "Recherche",
-					},
-					{
-						anchor: "#contenu",
-						label: "Contenu",
-					},
-					{
-						anchor: "#footer",
-						label: "Pied de page",
-					},
-				]}
 			/>
 			<div className={fr.cx("fr-container")}>
 				<Breadcrumb
