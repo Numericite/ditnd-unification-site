@@ -60,7 +60,7 @@ export default function PersonaDisplay({
 		<div className={fr.cx("fr-grid-row", "fr-grid-row--gutters")}>
 			<SummaryContent
 				className={cx(classes.whiteSummarySticky)}
-				title="Thématiques"
+				title="Chapitrages"
 				menuLinks={chapterLinks ?? []}
 			/>
 			<div className={fr.cx("fr-col-12", "fr-col-lg-8")}>
