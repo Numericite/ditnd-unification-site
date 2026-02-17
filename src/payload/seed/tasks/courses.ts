@@ -49,7 +49,7 @@ async function createCourses(
 		await payload.create({
 			collection: "courses",
 			data,
-			draft: true,
+			draft: false,
 		});
 	} catch (error) {
 		throw new Error(`Error creating courses error ${error}`);
