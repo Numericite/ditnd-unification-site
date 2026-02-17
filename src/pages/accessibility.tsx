@@ -2,7 +2,7 @@ import { fr } from "@codegouvfr/react-dsfr";
 import Head from "next/head";
 import { EmptyScreenZone } from "~/components/ui/EmptyScreenZone";
 import { Loader } from "~/components/ui/Loader";
-import WysiwygContent from "~/components/ui/PracticalGuides/WysiwigContent";
+import WysiwygContent from "~/components/ui/PracticalGuides/WysiwygContent";
 import { api } from "~/utils/api";
 
 export default function Accessibility() {
@@ -25,7 +25,10 @@ export default function Accessibility() {
 				<meta name="description" content={`DITND - Accessibilité`} />
 			</Head>
 			<div className={fr.cx("fr-container", "fr-py-10w")}>
-				<WysiwygContent title={pageContent.title} html={pageContent.html} />
+				<WysiwygContent
+					title={pageContent.title}
+					content={pageContent.content}
+				/>
 			</div>
 		</>
 	);

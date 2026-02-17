@@ -31,7 +31,7 @@ export const Journeys: CollectionConfig = {
 			type: "upload",
 			relationTo: "medias",
 			required: false,
-			label: { fr: "Image de la formation" },
+			label: { fr: "Image du parcours" },
 			admin: {
 				position: "sidebar",
 			},
@@ -41,6 +41,7 @@ export const Journeys: CollectionConfig = {
 			type: "array",
 			required: true,
 			label: { fr: "Chapitres" },
+			labels: { plural: "Chapitres", singular: "Chapitre" },
 			fields: [
 				{
 					name: "chapter-name",

@@ -1,7 +1,7 @@
 import { fr } from "@codegouvfr/react-dsfr";
 import Head from "next/head";
 import { useRouter } from "next/router";
-import { tss } from "tss-react";
+import { tss } from "tss-react/dsfr";
 import { PersonaTiles, type TagItem } from "~/components/HomePage/PersonaTiles";
 import { EmptyScreenZone } from "~/components/ui/EmptyScreenZone";
 import { Loader } from "~/components/ui/Loader";

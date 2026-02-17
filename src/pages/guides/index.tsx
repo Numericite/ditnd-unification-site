@@ -7,10 +7,9 @@ import {
 import { SearchGuidesDisplay } from "~/components/PracticalGuides/SearchGuidesDisplay";
 import { useState } from "react";
 import Breadcrumb from "@codegouvfr/react-dsfr/Breadcrumb";
-import { tss } from "tss-react";
+import { tss } from "tss-react/dsfr";
 import { useRouter } from "next/router";
 import { deserialize } from "~/utils/tools";
-import SkipLinks from "@codegouvfr/react-dsfr/SkipLinks";
 
 export default function PracticalGuides() {
 	const { classes, cx } = useStyles();
@@ -33,26 +32,6 @@ export default function PracticalGuides() {
 					content={`Page sur la recherche de fiches pratiques liés au troubles du neurodéveloppement`}
 				/>
 			</Head>
-			<SkipLinks
-				links={[
-					{
-						anchor: "#contenu",
-						label: "Contenu",
-					},
-					{
-						anchor: "#filters",
-						label: "Filtres de recherche",
-					},
-					{
-						anchor: "#search-global",
-						label: "Recherche",
-					},
-					{
-						anchor: "#footer",
-						label: "Pied de page",
-					},
-				]}
-			/>
 			<div className={fr.cx("fr-container", "fr-pb-8w")}>
 				<Breadcrumb
 					currentPageLabel="Fiches Pratiques"

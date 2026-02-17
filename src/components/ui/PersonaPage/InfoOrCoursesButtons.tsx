@@ -1,7 +1,7 @@
 import { fr } from "@codegouvfr/react-dsfr";
 import Button from "@codegouvfr/react-dsfr/Button";
 import type { Dispatch, SetStateAction } from "react";
-import { tss } from "tss-react";
+import { tss } from "tss-react/dsfr";
 
 export default function InfoOrCoursesButtons({
 	viewCourses,

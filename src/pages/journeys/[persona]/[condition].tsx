@@ -1,21 +1,17 @@
 import { fr } from "@codegouvfr/react-dsfr";
 import Breadcrumb from "@codegouvfr/react-dsfr/Breadcrumb";
-import SkipLinks from "@codegouvfr/react-dsfr/SkipLinks";
 import Head from "next/head";
 import { useRouter } from "next/router";
-import { useState } from "react";
-import { tss } from "tss-react";
+import { tss } from "tss-react/dsfr";
 import PersonaDisplay from "~/components/PersonaPage/PersonaDisplay";
 import { EmptyScreenZone } from "~/components/ui/EmptyScreenZone";
 import { Loader } from "~/components/ui/Loader";
-import InfoOrCoursesButtons from "~/components/ui/PersonaPage/InfoOrCoursesButtons";
 import type { AugmentedJourney } from "~/server/api/routers/journeys";
 import { api } from "~/utils/api";
 
 export default function JourneyPage() {
 	const { classes, cx } = useStyles();
 
-	const [viewCourses, setViewCourses] = useState<boolean>(false);
 	const router = useRouter();
 	const persona = router.query.persona as string;
 	const condition = router.query.condition as string;
@@ -47,28 +43,6 @@ export default function JourneyPage() {
 					content={`Page de parcours en tant que ${journey.persona.name.toLowerCase()}, où vous trouverez des ressources sur le ${condition.toUpperCase()}`}
 				/>
 			</Head>
-
-			<SkipLinks
-				links={[
-					{
-						anchor: "#summary",
-						label: "Sommaire",
-					},
-
-					{
-						anchor: "#search-global",
-						label: "Recherche",
-					},
-					{
-						anchor: "#contenu",
-						label: "Contenu",
-					},
-					{
-						anchor: "#footer",
-						label: "Pied de page",
-					},
-				]}
-			/>
 			<div className={fr.cx("fr-container")}>
 				<Breadcrumb
 					currentPageLabel={`Je suis un ${journey.persona.name.toLowerCase()} interessé par le ${condition.toUpperCase()}`}
@@ -113,22 +87,7 @@ export default function JourneyPage() {
 				</div>
 			</div>
 			<div className={cx(classes.coloredContainer)}>
-				<InfoOrCoursesButtons
-					viewCourses={viewCourses}
-					setViewCourses={setViewCourses}
-				/>
-				<div className={fr.cx("fr-container", "fr-py-4w")}>
-					<h2>Fiches pratiques</h2>
-					<p className={fr.cx("fr-text--md")}>
-						Ces fiches pratiques vous accompagnent pour comprendre l’autisme,
-						repérer les besoins de votre proche et connaître les démarches et
-						soutiens existants. Les contenus sont classés par thématiques afin
-						de faciliter vos recherches : santé, scolarité, vie quotidienne,
-						droits et accompagnement. Vous y trouverez également des ressources
-						concrètes pour vous aider au quotidien.
-					</p>
-					<PersonaDisplay journey={journey} viewCourses={viewCourses} />
-				</div>
+				<PersonaDisplay journey={journey} />
 			</div>
 		</>
 	);

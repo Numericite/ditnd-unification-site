@@ -1,4 +1,4 @@
-import { tss } from "tss-react";
+import { tss } from "tss-react/dsfr";
 import type { ReactNode } from "react";
 
 type Props = {

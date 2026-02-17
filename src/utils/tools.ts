@@ -1,5 +1,4 @@
 import type { RegisteredLinkProps } from "@codegouvfr/react-dsfr/link";
-import sanitize from "sanitize-html";
 import type { AugmentedCourse } from "~/server/api/routers/courses";
 import type { AugmentedPracticalGuide } from "~/server/api/routers/practical-guides";
 import Avatar from "@codegouvfr/react-dsfr/picto/Avatar";
@@ -12,6 +11,8 @@ import Companie from "@codegouvfr/react-dsfr/picto/Companie";
 import Ecosystem from "@codegouvfr/react-dsfr/picto/Ecosystem";
 
 import type { PersonaTile } from "~/components/HomePage/PersonaTiles";
+import type { DefaultTypedEditorState } from "@payloadcms/richtext-lexical";
+import type { SerializedLexicalNodeWithParent } from "@payloadcms/richtext-lexical/html";
 
 export type Link = {
 	text: string;
@@ -19,18 +20,19 @@ export type Link = {
 	subLinks?: Link[];
 };
 
-function extractText(html: string): string {
-	return sanitize(html, {
-		allowedTags: [],
-		allowedAttributes: {},
-	});
-}
+export type SkipLinkType = {
+	label: string;
+	anchor: string;
+	id?: string | undefined;
+};
 
-const MAX_DESCRIPTION_LENGTH = 250;
+const MAX_DESCRIPTION_LENGTH = 120;
 
 export const shortenDescription = (string: string) => {
 	const isLongerThan = string.length >= MAX_DESCRIPTION_LENGTH;
-	return isLongerThan ? `${string.substring(0, 250)}...` : string;
+	return isLongerThan
+		? `${string.substring(0, MAX_DESCRIPTION_LENGTH)}...`
+		: string;
 };
 
 export function slugify(text: string): string {
@@ -42,30 +44,35 @@ export function slugify(text: string): string {
 		.replace(/^-+|-+$/g, "");
 }
 
-export default function generateSummary(html: string): Link[] {
-	const sanitizedHTML = sanitize(html, {
-		allowedTags: ["h2"],
-		allowedAttributes: {},
-	});
+export function generateSummaryFromRichText(
+	content: DefaultTypedEditorState,
+): Link[] {
+	const h2FromNodes = (nodes: any[]) => {
+		const links: Link[] = [];
 
-	const matches = [...sanitizedHTML.matchAll(/<h2>(.*?)<\/h2>/gi)];
+		nodes.forEach((node) => {
+			if (node.tag === "h2") {
+				const text = extractTextFromNodes(node.children ?? []);
 
-	const res = [
-		...matches.map(([, title]) => ({
-			linkProps: { href: `#${title ? slugify(title) : ""}` },
-			text: title,
-		})),
-	] as Link[];
+				links.push({
+					linkProps: { href: `#${slugify(text)}` },
+					text,
+				});
+			}
 
-	return res;
+			if (node.children) {
+				h2FromNodes(node.children);
+			}
+		});
+
+		return links;
+	};
+
+	return h2FromNodes(content.root.children);
 }
 
-export function addAnchors(html: string) {
-	return html.replace(/<h2([^>]*)>(.*?)<\/h2>/gi, (_, attrs, innerHTML) => {
-		const text = extractText(innerHTML);
-		const id = slugify(text);
-		return `<h2${attrs} id="${id}">${innerHTML}</h2>`;
-	});
+export function extractTextFromNodes(node: SerializedLexicalNodeWithParent[]) {
+	return node.map((child: any) => child.text ?? "").join(" ");
 }
 
 export const sanitizeArray = (values: string[]): string[] =>
@@ -135,4 +142,103 @@ export const personsAndProTiles = (personas: PersonaTile[]) => {
 	};
 
 	return [...mapped.slice(0, 2), professionalTile, ...mapped.slice(2)];
+};
+
+const searchPageLinks: SkipLinkType[] = [
+	{
+		anchor: "#contenu",
+		label: "Contenu",
+	},
+	{
+		anchor: "#filters",
+		label: "Filtres de recherche",
+	},
+	{
+		anchor: "#search-global",
+		label: "Recherche",
+	},
+	{
+		anchor: "#footer",
+		label: "Pied de page",
+	},
+];
+
+export const defaultSkipLinks: SkipLinkType[] = [
+	{
+		anchor: "#main",
+		label: "Contenu",
+	},
+	{
+		anchor: "#footer",
+		label: "Pied de page",
+	},
+];
+
+export const skipLinks: Record<string, SkipLinkType[]> = {
+	"/": [
+		{
+			anchor: "#search-global",
+			label: "Recherche",
+		},
+		{
+			anchor: "#who",
+			label: "Qui êtes vous",
+		},
+		{
+			anchor: "#mostViewed",
+			label: "Fiches Pratiques les plus lues",
+		},
+
+		{
+			anchor: "#footer",
+			label: "Pied de page",
+		},
+	],
+	"/guides": searchPageLinks,
+	"/guides/...": [
+		{
+			anchor: "#summary",
+			label: "Sommaire",
+		},
+		{
+			anchor: "#wysiwig-content",
+			label: "Contenu de la fiche pratique",
+		},
+		{
+			anchor: "#footer",
+			label: "Pied de page",
+		},
+	],
+	"/formations": searchPageLinks,
+	"/journeys": defaultSkipLinks,
+	"/journeys/.../...": [
+		{
+			anchor: "#summary",
+			label: "Sommaire",
+		},
+
+		{
+			anchor: "#search-global",
+			label: "Recherche",
+		},
+		{
+			anchor: "#contenu",
+			label: "Contenu",
+		},
+		{
+			anchor: "#footer",
+			label: "Pied de page",
+		},
+	],
+};
+
+export const getPathNameForSkipLinks = (pathname: string) => {
+	const isTwoLevelJourney = /^\/journeys\/[^/]+\/[^/]+$/.test(pathname);
+	const isOneLevelJourney = /^\/journeys\/[^/]+$/.test(pathname);
+	const isOneLevelGuide = /^\/guides\/[^/]+$/.test(pathname);
+
+	if (isTwoLevelJourney) return "/journeys/.../...";
+	if (isOneLevelJourney) return "/journeys";
+	if (isOneLevelGuide) return "/guides/...";
+	return pathname;
 };

@@ -4,7 +4,13 @@ import SubMenuCustom from "./SubMenuCustom";
 import Button from "@codegouvfr/react-dsfr/Button";
 import Header from "@codegouvfr/react-dsfr/Header";
 import { personStore } from "~/state/store";
-import { personsAndProTiles } from "~/utils/tools";
+import {
+	defaultSkipLinks,
+	getPathNameForSkipLinks,
+	personsAndProTiles,
+	skipLinks,
+} from "~/utils/tools";
+import SkipLinks from "@codegouvfr/react-dsfr/SkipLinks";
 
 export default function MainNavigation() {
 	const router = useRouter();
@@ -53,40 +59,45 @@ export default function MainNavigation() {
 		},
 	];
 
+	const pathName = getPathNameForSkipLinks(router.pathname);
+
 	return (
-		<Header
-			brandTop={
-				<>
-					RÉPUBLIQUE
-					<br />
-					FRANÇAISE
-				</>
-			}
-			homeLinkProps={{
-				href: "/",
-				title: "Accueil DITND",
-			}}
-			id="fr-header-with-horizontal-operator-logo"
-			navigation={userNavigationItems}
-			quickAccessItems={[
-				{
-					iconId: "fr-icon-add-circle-line",
-					linkProps: {
-						href: "#",
+		<>
+			<SkipLinks links={skipLinks[pathName] ?? defaultSkipLinks} />
+			<Header
+				brandTop={
+					<>
+						RÉPUBLIQUE
+						<br />
+						FRANÇAISE
+					</>
+				}
+				homeLinkProps={{
+					href: "/",
+					title: "Accueil DITND",
+				}}
+				id="fr-header-with-horizontal-operator-logo"
+				navigation={userNavigationItems}
+				quickAccessItems={[
+					{
+						iconId: "fr-icon-add-circle-line",
+						linkProps: {
+							href: "#",
+						},
+						text: "Besoin de vérifier une information ?",
 					},
-					text: "Besoin de vérifier une information ?",
-				},
-				<Button
-					key={"button-question"}
-					iconId={"fr-icon-message-2-line"}
-					priority="secondary"
-					size="large"
-				>
-					Posez votre question
-				</Button>,
-			]}
-			serviceTitle="DI-TND"
-			serviceTagline="Délégation interministérielle pour les troubles du neurodéveloppement"
-		/>
+					<Button
+						key={"button-question"}
+						iconId={"fr-icon-message-2-line"}
+						priority="secondary"
+						size="large"
+					>
+						Posez votre question
+					</Button>,
+				]}
+				serviceTitle="DI-TND"
+				serviceTagline="Délégation interministérielle pour les troubles du neurodéveloppement"
+			/>
+		</>
 	);
 }

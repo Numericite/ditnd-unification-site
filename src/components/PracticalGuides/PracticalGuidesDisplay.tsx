@@ -1,12 +1,13 @@
 import { fr } from "@codegouvfr/react-dsfr";
-import WysiwygContent from "../ui/PracticalGuides/WysiwigContent";
+import WysiwygContent from "../ui/PracticalGuides/WysiwygContent";
 import ShareSocials from "../ui/PracticalGuides/ShareSocials";
 import RecommendedGuides from "./RecommendedGuides";
-import { tss } from "tss-react";
+import { tss } from "tss-react/dsfr";
 import RecommendedCourses from "./RecommendedCourses";
 import type { AugmentedPracticalGuide } from "~/server/api/routers/practical-guides";
-import generateSummary from "~/utils/tools";
+import type { Link } from "~/utils/tools";
 import SummaryContent from "../ui/PracticalGuides/SummaryContent";
+import { useEffect, useState } from "react";
 
 export default function PracticalGuidesDisplay({
 	guide,
@@ -15,21 +16,27 @@ export default function PracticalGuidesDisplay({
 }) {
 	const { classes, cx } = useStyles();
 
-	const menuLinks = generateSummary(guide.html).map((link) => ({
-		linkProps: link.linkProps,
-		text: link.text,
-	}));
+	const [links, setMenuLinks] = useState<Link[]>([]);
 
-	if (guide["practical-guides"].length > 0)
-		menuLinks.push({
-			linkProps: { href: `#fiches-pratiques` },
-			text: "Ces fiches pratiques qui pourraient vous intéresser",
-		});
-	if (guide.courses.length > 0)
-		menuLinks.push({
-			linkProps: { href: `#formations` },
-			text: "Ces formations qui pourraient vous intéresser",
-		});
+	useEffect(() => {
+		const optionalLinks: Link[] = [];
+
+		if (guide["practical-guides"].length > 0) {
+			optionalLinks.push({
+				linkProps: { href: "#fiches-pratiques" },
+				text: "Ces fiches pratiques qui pourraient vous intéresser",
+			});
+		}
+
+		if (guide.courses.length > 0) {
+			optionalLinks.push({
+				linkProps: { href: "#formations" },
+				text: "Ces formations qui pourraient vous intéresser",
+			});
+		}
+
+		setMenuLinks((prev) => [...prev, ...optionalLinks]);
+	}, [guide]);
 
 	const image = guide.imageBanner;
 
@@ -46,12 +53,17 @@ export default function PracticalGuidesDisplay({
 				</div>
 			)}
 			<SummaryContent
-				menuLinks={menuLinks}
+				menuLinks={links}
 				title="Sommaire"
 				className={cx(classes.summarySticky)}
 			/>
 			<div className={fr.cx("fr-col-12", "fr-col-lg-9")}>
-				<WysiwygContent title={guide.title} html={guide.html} />
+				<WysiwygContent
+					title={guide.title}
+					content={guide.content}
+					setMenuLinks={setMenuLinks}
+				/>
+
 				<div className={cx(classes.footerContent)}>
 					<div className={cx(classes.marginContent)}>
 						<p className={fr.cx("fr-text--md")}>Partager la page</p>

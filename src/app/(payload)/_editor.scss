@@ -24,6 +24,16 @@
     line-height: 2rem !important;
   }
 
+  h4 {
+    font-size: 1.25rem !important;
+    line-height: 1.75rem !important;
+  }
+
+  h5,h6 {
+    font-size: 1rem !important;
+    line-height: 1.5rem !important;
+  }
+
   img {
     max-width: none;
     display: flex;
@@ -72,5 +82,33 @@
 }
 
 .LexicalEditorTheme__relationship{
-  background: white;
+  background: #fff;
+  display: flex;
+  width: 100%;
+  max-width: fit-content;
+  border-radius: 0px;
+  .LexicalEditorTheme__relationship__title {
+    color:#161616;
+    font-size: 20px;
+  }
+  .LexicalEditorTheme__relationship__swapButton, .LexicalEditorTheme__relationship__removeButton{
+        background-color: #161616;
+        
+  }
+  .LexicalEditorTheme__relationship__label {
+    visibility: hidden;
+  }
+}
+.LexicalEditorTheme__quote {
+    color: #161616;
+    margin:0;
+    font-size: 18px;
+    border-left-color:none;
+    border-left-width: 0;
+    padding: 2rem 3rem;
+}
+
+.LexicalEditorTheme__hr:after {
+  background-color: #ddd;
+  height: 1px;
 }

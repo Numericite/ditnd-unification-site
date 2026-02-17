@@ -4,7 +4,7 @@ import { homeCMSStore, proStore, tdhStore, type TDH } from "~/state/store";
 import { PersonaGrid } from "../ui/HomePage/PersonaGrid";
 import Tag from "@codegouvfr/react-dsfr/Tag";
 import { useRouter } from "next/router";
-import { tss } from "tss-react";
+import { tss } from "tss-react/dsfr";
 import type { Persona } from "~/payload/payload-types";
 import type { PictogramName } from "~/utils/tools";
 import Breadcrumb from "@codegouvfr/react-dsfr/Breadcrumb";

@@ -6,7 +6,6 @@ import { Loader } from "~/components/ui/Loader";
 import PracticalGuidesDisplay from "~/components/PracticalGuides/PracticalGuidesDisplay";
 import { fr } from "@codegouvfr/react-dsfr";
 import { EmptyScreenZone } from "~/components/ui/EmptyScreenZone";
-import SkipLinks from "@codegouvfr/react-dsfr/SkipLinks";
 
 export default function PracticalGuidePage() {
 	const router = useRouter();
@@ -39,22 +38,6 @@ export default function PracticalGuidePage() {
 					content={`Fiche pratique sur ${guide.title} `}
 				/>
 			</Head>
-			<SkipLinks
-				links={[
-					{
-						anchor: "#summary",
-						label: "Sommaire",
-					},
-					{
-						anchor: "#wysiwig-content",
-						label: "Contenu de la fiche pratique",
-					},
-					{
-						anchor: "#footer",
-						label: "Pied de page",
-					},
-				]}
-			/>
 			<div className={fr.cx("fr-container")}>
 				<Breadcrumb
 					currentPageLabel={guide.title}

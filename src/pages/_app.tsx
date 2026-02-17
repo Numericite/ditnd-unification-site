@@ -8,7 +8,7 @@ import { createEmotionSsrAdvancedApproach } from "tss-react/next/pagesDir";
 import { api } from "~/utils/api";
 import { homeCMSStore, personStore, proStore, tdhStore } from "~/state/store";
 import { Loader } from "~/components/ui/Loader";
-import { tss } from "tss-react";
+import { tss } from "tss-react/dsfr";
 import ChatBot from "~/components/Chatbot/Chatbot";
 import "~/utils/styles/keyframes.css";
 import MainNavigation from "~/components/ui/Navigation/MainNavigation";
@@ -80,7 +80,7 @@ function App({ Component, pageProps }: AppProps) {
 			<div className={cx(classes.headerContainer)}>
 				<MainNavigation />
 
-				<main>
+				<main id="main">
 					{isLoadingHomePage ||
 					isLoadingPersona ||
 					isLoadingFooterTitle ||

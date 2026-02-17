@@ -31,6 +31,7 @@ export const practicalGuidesRouter = createTRPCRouter({
 				collection: "practical-guides",
 				limit: 0,
 				depth: 2,
+				draft: false,
 				where: {
 					slug: {
 						equals: input.slug,
@@ -45,6 +46,7 @@ export const practicalGuidesRouter = createTRPCRouter({
 			await ctx.payload.update({
 				collection: "practical-guides",
 				id: guide.id,
+				draft: false,
 				data: {
 					viewCount: (guide.viewCount ?? 0) + 1,
 				},
@@ -78,6 +80,7 @@ export const practicalGuidesRouter = createTRPCRouter({
 			limit: 6,
 			depth: 1,
 			sort: "-viewCount",
+			draft: false,
 		});
 
 		const sanitizedResult = (await Promise.all(
@@ -149,6 +152,7 @@ export const practicalGuidesRouter = createTRPCRouter({
 				collection: "practical-guides",
 				depth: 1,
 				limit: 0,
+				draft: false,
 				select: {
 					updatedAt: false,
 					createdAt: false,
@@ -156,7 +160,7 @@ export const practicalGuidesRouter = createTRPCRouter({
 					content: false,
 					courses: false,
 				},
-				where: whereConditions.length ? { and: whereConditions } : undefined,
+				where: { and: whereConditions },
 			});
 
 			return result.docs as AugmentedPracticalGuide[];
