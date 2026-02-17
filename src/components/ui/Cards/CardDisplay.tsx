@@ -2,9 +2,9 @@ import { fr } from "@codegouvfr/react-dsfr";
 import Badge from "@codegouvfr/react-dsfr/Badge";
 import Card from "@codegouvfr/react-dsfr/Card";
 import Tag from "@codegouvfr/react-dsfr/Tag";
-import { tss } from "tss-react";
 import type { Condition, Theme } from "~/payload/payload-types";
 import { shortenDescription } from "~/utils/tools";
+import { tss } from "tss-react/dsfr";
 
 type Props = {
 	title: string;
@@ -69,8 +69,8 @@ export default function CardDisplay({
 			start={
 				<div className={cx(classes.tags)}>
 					<ul className={cx(fr.cx("fr-tags-group"), classes.tags)}>
-						{conditions.map((condition, index) => (
-							<li key={index}>
+						{conditions.map((condition) => (
+							<li key={condition.id}>
 								<Tag
 									style={{
 										color: condition.textColor,

@@ -8,7 +8,7 @@ import {
 } from "~/components/Courses/SearchCoursesDisplay";
 import { CoursesFiltersDisplay } from "~/components/Courses/CoursesFiltersDisplay";
 import type { FiltersQuery } from "~/components/PracticalGuides/GuidesFiltersDisplay";
-import { tss } from "tss-react";
+import { tss } from "tss-react/dsfr";
 import { useRouter } from "next/router";
 import { deserialize } from "~/utils/tools";
 

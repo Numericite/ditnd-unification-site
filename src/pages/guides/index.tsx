@@ -7,7 +7,7 @@ import {
 import { SearchGuidesDisplay } from "~/components/PracticalGuides/SearchGuidesDisplay";
 import { useState } from "react";
 import Breadcrumb from "@codegouvfr/react-dsfr/Breadcrumb";
-import { tss } from "tss-react";
+import { tss } from "tss-react/dsfr";
 import { useRouter } from "next/router";
 import { deserialize } from "~/utils/tools";
 
