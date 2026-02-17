@@ -33,8 +33,11 @@ export default function PracticalGuidePage() {
 		<>
 			<Head>
 				<title>DITND - {guide.title}</title>
+				<meta
+					name="description"
+					content={`Fiche pratique sur ${guide.title} `}
+				/>
 			</Head>
-			<meta name="description" content={`Fiche pratique sur ${guide.title} `} />
 			<div className={fr.cx("fr-container")}>
 				<Breadcrumb
 					currentPageLabel={guide.title}

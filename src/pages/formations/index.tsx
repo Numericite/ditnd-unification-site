@@ -29,11 +29,11 @@ export default function Courses() {
 		<>
 			<Head>
 				<title>DITND - Formations</title>
+				<meta
+					name="description"
+					content={`Page sur la recherche de formations liés au troubles du neurodéveloppement`}
+				/>
 			</Head>
-			<meta
-				name="description"
-				content={`Page sur la recherche de formations liés au troubles du neurodéveloppement`}
-			/>
 			<div className={fr.cx("fr-container", "fr-pb-8w")}>
 				<Breadcrumb
 					currentPageLabel="Formations"
