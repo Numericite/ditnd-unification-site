@@ -1,5 +1,5 @@
 import { fr } from "@codegouvfr/react-dsfr";
-import { tss } from "tss-react";
+import { tss } from "tss-react/dsfr";
 import type { PersonaTile } from "~/components/HomePage/PersonaTiles";
 import { pictogramMap } from "~/utils/tools";
 

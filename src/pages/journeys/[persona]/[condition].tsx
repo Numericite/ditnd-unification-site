@@ -2,7 +2,7 @@ import { fr } from "@codegouvfr/react-dsfr";
 import Breadcrumb from "@codegouvfr/react-dsfr/Breadcrumb";
 import Head from "next/head";
 import { useRouter } from "next/router";
-import { tss } from "tss-react";
+import { tss } from "tss-react/dsfr";
 import PersonaDisplay from "~/components/PersonaPage/PersonaDisplay";
 import { EmptyScreenZone } from "~/components/ui/EmptyScreenZone";
 import { Loader } from "~/components/ui/Loader";

@@ -2,7 +2,7 @@ import { fr } from "@codegouvfr/react-dsfr";
 import WysiwygContent from "../ui/PracticalGuides/WysiwygContent";
 import ShareSocials from "../ui/PracticalGuides/ShareSocials";
 import RecommendedGuides from "./RecommendedGuides";
-import { tss } from "tss-react";
+import { tss } from "tss-react/dsfr";
 import RecommendedCourses from "./RecommendedCourses";
 import type { AugmentedPracticalGuide } from "~/server/api/routers/practical-guides";
 import type { Link } from "~/utils/tools";

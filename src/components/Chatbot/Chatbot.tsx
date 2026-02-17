@@ -1,7 +1,7 @@
 import { fr } from "@codegouvfr/react-dsfr";
 import Button from "@codegouvfr/react-dsfr/Button";
 import { useState } from "react";
-import { tss } from "tss-react";
+import { tss } from "tss-react/dsfr";
 import { Input } from "@codegouvfr/react-dsfr/Input";
 import { api } from "~/utils/api";
 import { Loader } from "~/components/ui/Loader";

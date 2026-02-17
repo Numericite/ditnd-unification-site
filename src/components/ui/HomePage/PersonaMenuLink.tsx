@@ -1,5 +1,5 @@
 import { fr } from "@codegouvfr/react-dsfr";
-import { tss } from "tss-react";
+import { tss } from "tss-react/dsfr";
 
 export const PersonaMenuLink = ({
 	title,
