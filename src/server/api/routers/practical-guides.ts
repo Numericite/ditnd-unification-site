@@ -2,6 +2,7 @@ import { z } from "zod";
 
 import {
 	createTRPCRouter,
+	fetchOrReturnRealValue,
 	publicProcedure,
 	resolveRelations,
 } from "~/server/api/trpc";
@@ -10,6 +11,7 @@ import type {
 	Condition,
 	Media,
 	PracticalGuide,
+	PracticalGuideView,
 	Theme,
 } from "~/payload/payload-types";
 import type { AugmentedCourse } from "./courses";
@@ -21,6 +23,11 @@ export interface AugmentedPracticalGuide extends PracticalGuide {
 	courses: AugmentedCourse[];
 	image: Media | undefined;
 	imageBanner: Media | undefined;
+	_status: "draft" | "published";
+}
+
+export interface AugmentedPracticalGuideViews extends PracticalGuideView {
+	guide: AugmentedPracticalGuide;
 }
 
 export const practicalGuidesRouter = createTRPCRouter({
@@ -42,15 +49,6 @@ export const practicalGuidesRouter = createTRPCRouter({
 			const guide = result.docs[0];
 			if (!guide)
 				throw new Error("No guides found on practicalGuidesRouter - getBySlug");
-
-			await ctx.payload.update({
-				collection: "practical-guides",
-				id: guide.id,
-				draft: false,
-				data: {
-					viewCount: (guide.viewCount ?? 0) + 1,
-				},
-			});
 
 			const sanitizedResult = (await Promise.all(
 				result.docs.map(async (guide) => {
@@ -76,27 +74,31 @@ export const practicalGuidesRouter = createTRPCRouter({
 
 	getByViews: publicProcedure.query(async ({ ctx }) => {
 		const result = await ctx.payload.find({
-			collection: "practical-guides",
+			collection: "practical-guide-views",
 			limit: 6,
-			depth: 1,
+			depth: 2,
 			sort: "-viewCount",
 			draft: false,
 		});
 
-		const sanitizedResult = (await Promise.all(
-			result.docs.map(async (guide) => {
-				if (guide["practical-guides"] && guide.courses)
-					return {
-						...guide,
-						themes: await resolveRelations(guide.themes, "themes"),
-						courses: await resolveRelations(guide.courses, "courses"),
-						"practical-guides": await resolveRelations(
-							guide["practical-guides"],
-							"practical-guides",
-						),
-					};
+		const sanitizedResult = await Promise.all(
+			result.docs.map(async (view) => {
+				const guide = await fetchOrReturnRealValue(
+					view.guide,
+					"practical-guides",
+				);
+				return {
+					...guide,
+					viewCount: view.viewCount,
+					themes: await resolveRelations(guide.themes ?? [], "themes"),
+					courses: await resolveRelations(guide.courses ?? [], "courses"),
+					"practical-guides": await resolveRelations(
+						guide["practical-guides"] ?? [],
+						"practical-guides",
+					),
+				} as AugmentedPracticalGuide;
 			}),
-		)) as AugmentedPracticalGuide[];
+		);
 
 		return sanitizedResult;
 	}),
@@ -164,5 +166,38 @@ export const practicalGuidesRouter = createTRPCRouter({
 			});
 
 			return result.docs as AugmentedPracticalGuide[];
+		}),
+	incrementView: publicProcedure
+		.input(z.object({ guideId: z.number() }))
+		.mutation(async ({ input, ctx }) => {
+			const guide = await ctx.payload.find({
+				collection: "practical-guide-views",
+				where: {
+					guide: {
+						equals: input.guideId,
+					},
+				},
+				limit: 1,
+			});
+
+			if (!guide.docs.length || !guide.docs[0]) {
+				await ctx.payload.create({
+					collection: "practical-guide-views",
+					data: {
+						guide: input.guideId,
+						viewCount: 1,
+					},
+				});
+			} else {
+				await ctx.payload.update({
+					collection: "practical-guide-views",
+					id: guide.docs[0].id,
+					data: {
+						viewCount: guide.docs[0].viewCount + 1,
+					},
+				});
+			}
+
+			return { success: true };
 		}),
 });

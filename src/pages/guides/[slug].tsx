@@ -6,6 +6,7 @@ import { Loader } from "~/components/ui/Loader";
 import PracticalGuidesDisplay from "~/components/PracticalGuides/PracticalGuidesDisplay";
 import { fr } from "@codegouvfr/react-dsfr";
 import { EmptyScreenZone } from "~/components/ui/EmptyScreenZone";
+import { useEffect } from "react";
 
 export default function PracticalGuidePage() {
 	const router = useRouter();
@@ -16,6 +17,16 @@ export default function PracticalGuidePage() {
 			slug: slug,
 		});
 
+	const guide = guideData;
+
+	const { mutate } = api.practicalGuide.incrementView.useMutation();
+
+	useEffect(() => {
+		if (guide?.id) {
+			mutate({ guideId: guide.id });
+		}
+	}, [guide?.id]);
+
 	if (isLoadingData)
 		return (
 			<EmptyScreenZone>
@@ -23,11 +34,9 @@ export default function PracticalGuidePage() {
 			</EmptyScreenZone>
 		);
 
-	if (!guideData) {
+	if (!guide) {
 		return <EmptyScreenZone>Fiche introuvable</EmptyScreenZone>;
 	}
-
-	const guide = guideData;
 
 	return (
 		<>

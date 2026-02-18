@@ -3,7 +3,7 @@ import type { CollectionConfig } from "payload";
 export const PracticalGuideViews: CollectionConfig = {
 	slug: "practical-guide-views",
 	admin: {
-		hidden: false,
+		hidden: true,
 	},
 	access: {
 		read: () => true,
