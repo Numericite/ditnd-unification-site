@@ -72,6 +72,7 @@ export interface Config {
     conditions: Condition;
     courses: Course;
     'practical-guides': PracticalGuide;
+    'practical-guide-views': PracticalGuideView;
     themes: Theme;
     journeys: Journey;
     medias: Media;
@@ -87,6 +88,7 @@ export interface Config {
     conditions: ConditionsSelect<false> | ConditionsSelect<true>;
     courses: CoursesSelect<false> | CoursesSelect<true>;
     'practical-guides': PracticalGuidesSelect<false> | PracticalGuidesSelect<true>;
+    'practical-guide-views': PracticalGuideViewsSelect<false> | PracticalGuideViewsSelect<true>;
     themes: ThemesSelect<false> | ThemesSelect<true>;
     journeys: JourneysSelect<false> | JourneysSelect<true>;
     medias: MediasSelect<false> | MediasSelect<true>;
@@ -279,6 +281,17 @@ export interface PracticalGuide {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "practical-guide-views".
+ */
+export interface PracticalGuideView {
+  id: number;
+  guide: number | PracticalGuide;
+  viewCount: number;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "journeys".
  */
 export interface Journey {
@@ -338,6 +351,10 @@ export interface PayloadLockedDocument {
     | ({
         relationTo: 'practical-guides';
         value: number | PracticalGuide;
+      } | null)
+    | ({
+        relationTo: 'practical-guide-views';
+        value: number | PracticalGuideView;
       } | null)
     | ({
         relationTo: 'themes';
@@ -482,6 +499,16 @@ export interface PracticalGuidesSelect<T extends boolean = true> {
   updatedAt?: T;
   createdAt?: T;
   _status?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "practical-guide-views_select".
+ */
+export interface PracticalGuideViewsSelect<T extends boolean = true> {
+  guide?: T;
+  viewCount?: T;
+  updatedAt?: T;
+  createdAt?: T;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema

@@ -31,6 +31,7 @@ const hasAwsCreds = Boolean(
 );
 import { CMSHome } from "./globals/cms/Home";
 import { CMSFooter } from "./globals/cms/Footer";
+import { PracticalGuideViews } from "./collections/PracticalGuidesViews";
 
 const filename = fileURLToPath(import.meta.url);
 const dirname = path.dirname(filename);
@@ -48,6 +49,7 @@ export default buildConfig({
 		Conditions,
 		Courses,
 		PracticalGuides,
+		PracticalGuideViews,
 		Themes,
 		Journeys,
 		Medias,
