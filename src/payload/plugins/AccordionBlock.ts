@@ -4,6 +4,9 @@ import { defaultWysiwygFeatures } from "../fields/defaultWysiwygFeatures";
 
 export const AccordionBlock: Block = {
 	slug: "accordion",
+	admin: {
+		disableBlockName: true,
+	},
 	fields: [
 		{
 			name: "title",
