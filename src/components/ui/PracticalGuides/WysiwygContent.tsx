@@ -1,17 +1,9 @@
 import { tss } from "tss-react/dsfr";
 import { fr } from "@codegouvfr/react-dsfr";
 import { type Link, generateSummaryFromRichText } from "~/utils/tools";
-import {
-	defaultJSXConverters,
-	RichText,
-} from "@payloadcms/richtext-lexical/react";
 import type { DefaultTypedEditorState } from "@payloadcms/richtext-lexical";
 import { useEffect, type Dispatch, type SetStateAction } from "react";
-import {
-	headingConverter,
-	relationshipConverter,
-	uploadConverter,
-} from "~/utils/converters";
+import { RichTextRenderer } from "./RichTextRenderer";
 
 export default function WysiwygContent({
 	title,
@@ -33,15 +25,7 @@ export default function WysiwygContent({
 	return (
 		<div className={cx(classes.wysiwig)} id="wysiwig-content">
 			<h1>{title}</h1>
-			<RichText
-				data={content}
-				converters={{
-					...defaultJSXConverters,
-					heading: headingConverter,
-					relationship: relationshipConverter,
-					upload: uploadConverter,
-				}}
-			/>
+			<RichTextRenderer content={content} />
 		</div>
 	);
 }

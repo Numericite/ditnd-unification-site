@@ -1,11 +1,13 @@
 import type {
 	DefaultNodeTypes,
+	SerializedBlockNode,
 	SerializedHeadingNode,
 	SerializedRelationshipNode,
 	SerializedUploadNode,
 } from "@payloadcms/richtext-lexical";
 import {
 	defaultJSXConverters,
+	type JSXConverter,
 	type JSXConverters,
 } from "@payloadcms/richtext-lexical/react";
 import { extractTextFromNodes, slugify } from "./tools";
@@ -14,6 +16,7 @@ import type { AugmentedCourse } from "~/server/api/routers/courses";
 import CardDisplay from "~/components/ui/Cards/CardDisplay";
 import { fr } from "@codegouvfr/react-dsfr";
 import type { AugmentedPracticalGuide } from "~/server/api/routers/practical-guides";
+import WysiwygAccordion from "~/components/ui/PracticalGuides/WysiwygAccordion";
 
 export const headingConverter: JSXConverters<DefaultNodeTypes>["heading"] = (
 	args,
@@ -58,6 +61,20 @@ export const uploadConverter: JSXConverters<DefaultNodeTypes>["upload"] = ({
 				width={`${value.width || ""}`}
 				height={`${value.height || ""}`}
 			/>
+		</div>
+	);
+};
+
+export const accordionConverter: JSXConverter<SerializedBlockNode> = ({
+	node,
+}) => {
+	const value = node.fields;
+
+	if (!value?.title) return null;
+
+	return (
+		<div className={fr.cx("fr-my-3v")}>
+			<WysiwygAccordion title={value.title} content={value.content} />
 		</div>
 	);
 };

@@ -14,7 +14,7 @@ export interface AugmentedCourse extends Course {
 	persona: Persona;
 	condition: Condition;
 	image: Media;
-	_status: "draft" | "published";
+	_status?: "draft" | "published";
 }
 
 export const courseRouter = createTRPCRouter({
