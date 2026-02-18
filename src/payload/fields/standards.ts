@@ -1,10 +1,7 @@
-import {
-	FixedToolbarFeature,
-	HeadingFeature,
-	lexicalEditor,
-	RelationshipFeature,
-} from "@payloadcms/richtext-lexical";
+import { BlocksFeature, lexicalEditor } from "@payloadcms/richtext-lexical";
 import type { Field } from "payload";
+import { AccordionBlock } from "../plugins/AccordionBlock";
+import { defaultWysiwygFeatures } from "./defaultWysiwygFeatures";
 
 export const standardFields = {
 	title: {
@@ -53,24 +50,9 @@ export const standardFields = {
 			},
 
 			features: ({ defaultFeatures }) => [
-				...defaultFeatures.filter(
-					(feature) =>
-						feature.key !== "checklist" &&
-						feature.key !== "inlineCode" &&
-						feature.key !== "indent",
-				),
-				FixedToolbarFeature(),
-				HeadingFeature({
-					enabledHeadingSizes: ["h2", "h3", "h4", "h5", "h6"],
-				}),
-				RelationshipFeature({
-					disabledCollections: [
-						"users",
-						"personas",
-						"conditions",
-						"journeys",
-						"themes",
-					],
+				...defaultWysiwygFeatures({ defaultFeatures }),
+				BlocksFeature({
+					blocks: [AccordionBlock],
 				}),
 			],
 		}),
