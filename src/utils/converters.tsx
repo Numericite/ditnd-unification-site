@@ -10,13 +10,14 @@ import {
 	type JSXConverter,
 	type JSXConverters,
 } from "@payloadcms/richtext-lexical/react";
-import { extractTextFromNodes, slugify } from "./tools";
+import { extractTextFromNodes, ImageSizes, slugify } from "./tools";
 import type { Media } from "~/payload/payload-types";
 import type { AugmentedCourse } from "~/server/api/routers/courses";
 import CardDisplay from "~/components/ui/Cards/CardDisplay";
 import { fr } from "@codegouvfr/react-dsfr";
 import type { AugmentedPracticalGuide } from "~/server/api/routers/practical-guides";
 import WysiwygAccordion from "~/components/ui/PracticalGuides/WysiwygAccordion";
+import Image from "next/image";
 
 export const headingConverter: JSXConverters<DefaultNodeTypes>["heading"] = (
 	args,
@@ -48,18 +49,19 @@ export const uploadConverter: JSXConverters<DefaultNodeTypes>["upload"] = ({
 
 	const value = uploadNode.value as Media;
 
-	if (!value?.url) return null;
+	if (!value?.url || !value?.width || !value?.height) return null;
 	return (
 		<div
 			className={fr.cx("fr-my-3v")}
 			style={{ display: "flex", justifyContent: `${node.format}` }}
 		>
-			<img
+			<Image
 				fetchPriority="high"
+				priority
 				src={`${process.env.S3_BUCKET ?? ""}${value.url}`}
 				alt={`${value.alt || ""}`}
-				width={`${value.width || ""}`}
-				height={`${value.height || ""}`}
+				width={value.width}
+				height={value.height}
 			/>
 		</div>
 	);
@@ -75,6 +77,45 @@ export const accordionConverter: JSXConverter<SerializedBlockNode> = ({
 	return (
 		<div className={fr.cx("fr-my-3v")}>
 			<WysiwygAccordion title={value.title} content={value.content} />
+		</div>
+	);
+};
+
+export const customImageSizeConverter: JSXConverter<SerializedBlockNode> = ({
+	node,
+}) => {
+	const value = node.fields;
+
+	if (!value?.image) return null;
+
+	const image = value.image;
+	const size = value.size;
+
+	const currentSize = ImageSizes.filter((imgSize) => imgSize.name === size)[0];
+
+	if (!currentSize) return null;
+
+	const width = currentSize.width;
+	let height = currentSize.height;
+
+	if (width && !height) {
+		const ratio = image.height / image.width;
+		height = Math.round(width * ratio);
+	}
+
+	return (
+		<div
+			className={fr.cx("fr-my-3v")}
+			style={{ display: "flex", justifyContent: `${node.format}` }}
+		>
+			<Image
+				fetchPriority="high"
+				priority
+				src={`${process.env.S3_BUCKET ?? ""}${image.url}`}
+				alt={`${image.alt || ""}`}
+				width={width}
+				height={height}
+			/>
 		</div>
 	);
 };

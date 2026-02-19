@@ -5,6 +5,7 @@ import {
 } from "@payloadcms/richtext-lexical/react";
 import {
 	accordionConverter,
+	customImageSizeConverter,
 	headingConverter,
 	relationshipConverter,
 	uploadConverter,
@@ -25,6 +26,7 @@ export function RichTextRenderer({
 				upload: uploadConverter,
 				blocks: {
 					accordion: accordionConverter,
+					image: customImageSizeConverter,
 				},
 			}}
 		/>

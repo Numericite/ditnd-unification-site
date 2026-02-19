@@ -59,6 +59,7 @@
 .editor {
   &-container {
     @extend .editor-content;
+    padding-right: 3rem;
   }
 
   .add-block-menu .icon {
@@ -112,3 +113,4 @@
   background-color: #ddd;
   height: 1px;
 }
+
