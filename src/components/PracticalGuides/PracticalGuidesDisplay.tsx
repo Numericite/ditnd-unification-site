@@ -8,6 +8,7 @@ import type { AugmentedPracticalGuide } from "~/server/api/routers/practical-gui
 import type { Link } from "~/utils/tools";
 import SummaryContent from "../ui/PracticalGuides/SummaryContent";
 import { useEffect, useState } from "react";
+import Image from "next/image";
 
 export default function PracticalGuidesDisplay({
 	guide,
@@ -44,11 +45,14 @@ export default function PracticalGuidesDisplay({
 		<div className={fr.cx("fr-grid-row", "fr-grid-row--gutters")}>
 			{image?.url && (
 				<div className={fr.cx("fr-col-12")}>
-					<img
+					<Image
 						className={cx(fr.cx("fr-responsive-img"), classes.imageBanner)}
 						fetchPriority="high"
+						priority
 						alt={image.alt}
 						src={image.url}
+						width={1200}
+						height={240}
 					/>
 				</div>
 			)}
