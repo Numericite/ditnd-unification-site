@@ -283,6 +283,14 @@ export interface Media {
       filesize?: number | null;
       filename?: string | null;
     };
+    banner?: {
+      url?: string | null;
+      width?: number | null;
+      height?: number | null;
+      mimeType?: string | null;
+      filesize?: number | null;
+      filename?: string | null;
+    };
     xlarge?: {
       url?: string | null;
       width?: number | null;
@@ -657,6 +665,16 @@ export interface MediasSelect<T extends boolean = true> {
               filename?: T;
             };
         large?:
+          | T
+          | {
+              url?: T;
+              width?: T;
+              height?: T;
+              mimeType?: T;
+              filesize?: T;
+              filename?: T;
+            };
+        banner?:
           | T
           | {
               url?: T;
