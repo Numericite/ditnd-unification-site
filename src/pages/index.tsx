@@ -12,6 +12,7 @@ import { useRouter } from "next/router";
 import { EmptyScreenZone } from "~/components/ui/EmptyScreenZone";
 import { homeCMSStore, personStore } from "~/state/store";
 import { personsAndProTiles } from "~/utils/tools";
+import Image from "next/image";
 
 export default function Home() {
 	const { classes, cx } = useStyles();
@@ -100,11 +101,12 @@ export default function Home() {
 									justifyContent: "center",
 								}}
 							>
-								<img
+								<Image
 									alt=""
 									width={400}
 									height={400}
 									fetchPriority="high"
+									priority
 									loading="eager"
 									src={"/HomePageIllustration.svg"}
 								/>

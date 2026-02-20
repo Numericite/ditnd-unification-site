@@ -63,7 +63,7 @@ async function createMedia(
 				name: data.filename,
 				size: fileBuffer.length,
 			},
-			draft: true,
+			draft: false,
 		});
 	} catch (error) {
 		throw new Error(`Error creating media: ${error}`);

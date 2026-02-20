@@ -23,47 +23,51 @@ export default function CardsDisplayGroup({
 			case "courses":
 				return (
 					<>
-						{courses?.map((course) => (
-							<div
-								key={course.id}
-								className={className}
-								style={{ display: "flex" }}
-							>
-								<CardDisplay
-									{...course}
-									imageUrl={course.image?.url ?? undefined}
-									imageAlt={course.image?.alt}
-									conditions={[course.condition]}
-									themes={[course.theme]}
-									redirect={`/`}
-									titleAs={titleAs}
-									kind={kind}
-								/>
-							</div>
-						))}
+						{courses?.map((course) =>
+							course._status !== "draft" ? (
+								<div
+									key={course.id}
+									className={className}
+									style={{ display: "flex" }}
+								>
+									<CardDisplay
+										{...course}
+										imageUrl={course.image?.url ?? undefined}
+										imageAlt={course.image?.alt}
+										conditions={[course.condition]}
+										themes={[course.theme]}
+										redirect={`/`}
+										titleAs={titleAs}
+										kind={kind}
+									/>
+								</div>
+							) : null,
+						)}
 					</>
 				);
 			case "guides":
 				return (
 					<>
-						{guides?.map((guide) => (
-							<div
-								key={guide.id}
-								className={className}
-								style={{ display: "flex" }}
-							>
-								<CardDisplay
-									{...guide}
-									imageUrl={guide.image?.url ?? undefined}
-									imageAlt={guide.image?.alt}
-									conditions={guide.conditions ?? []}
-									themes={guide.themes}
-									redirect={`/guides/${guide.slug}`}
-									titleAs={titleAs}
-									kind={kind}
-								/>
-							</div>
-						))}
+						{guides?.map((guide) =>
+							guide._status !== "draft" ? (
+								<div
+									key={guide.id}
+									className={className}
+									style={{ display: "flex" }}
+								>
+									<CardDisplay
+										{...guide}
+										imageUrl={guide.image?.url ?? undefined}
+										imageAlt={guide.image?.alt}
+										conditions={guide.conditions ?? []}
+										themes={guide.themes}
+										redirect={`/guides/${guide.slug}`}
+										titleAs={titleAs}
+										kind={kind}
+									/>
+								</div>
+							) : null,
+						)}
 					</>
 				);
 		}

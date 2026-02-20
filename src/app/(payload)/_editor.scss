@@ -59,6 +59,7 @@
 .editor {
   &-container {
     @extend .editor-content;
+    padding-right: 3rem;
   }
 
   .add-block-menu .icon {
@@ -101,14 +102,20 @@
 }
 .LexicalEditorTheme__quote {
     color: #161616;
-    margin:0;
+    margin: 0;
     font-size: 18px;
-    border-left-color:none;
-    border-left-width: 0;
-    padding: 2rem 3rem;
+   padding-left: 2.25rem;
+   border-left: 4px solid #6a6af4;
 }
 
 .LexicalEditorTheme__hr:after {
   background-color: #ddd;
   height: 1px;
+}
+
+.LexicalEditorTheme__upload__media {
+  img {
+    max-width: 100%;
+    height: auto;
+  }
 }

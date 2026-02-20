@@ -44,8 +44,8 @@ export default function MainNavigation() {
 			linkProps: { href: "/formations" },
 			isActive: router.pathname.startsWith("/formations"),
 		},
-		{ text: "Actualités", linkProps: { href: "/actualite" } },
-		{ text: "Annuaire", linkProps: { href: "/annuaire" } },
+		{ text: "Actualités", linkProps: { href: "/" } },
+		{ text: "Annuaire", linkProps: { href: "/" } },
 		{
 			menuLinks: [
 				{

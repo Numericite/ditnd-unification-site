@@ -72,6 +72,7 @@ export interface Config {
     conditions: Condition;
     courses: Course;
     'practical-guides': PracticalGuide;
+    'practical-guide-views': PracticalGuideView;
     themes: Theme;
     journeys: Journey;
     medias: Media;
@@ -87,6 +88,7 @@ export interface Config {
     conditions: ConditionsSelect<false> | ConditionsSelect<true>;
     courses: CoursesSelect<false> | CoursesSelect<true>;
     'practical-guides': PracticalGuidesSelect<false> | PracticalGuidesSelect<true>;
+    'practical-guide-views': PracticalGuideViewsSelect<false> | PracticalGuideViewsSelect<true>;
     themes: ThemesSelect<false> | ThemesSelect<true>;
     journeys: JourneysSelect<false> | JourneysSelect<true>;
     medias: MediasSelect<false> | MediasSelect<true>;
@@ -240,6 +242,56 @@ export interface Media {
   height?: number | null;
   focalX?: number | null;
   focalY?: number | null;
+  sizes?: {
+    thumbnail?: {
+      url?: string | null;
+      width?: number | null;
+      height?: number | null;
+      mimeType?: string | null;
+      filesize?: number | null;
+      filename?: string | null;
+    };
+    square?: {
+      url?: string | null;
+      width?: number | null;
+      height?: number | null;
+      mimeType?: string | null;
+      filesize?: number | null;
+      filename?: string | null;
+    };
+    small?: {
+      url?: string | null;
+      width?: number | null;
+      height?: number | null;
+      mimeType?: string | null;
+      filesize?: number | null;
+      filename?: string | null;
+    };
+    medium?: {
+      url?: string | null;
+      width?: number | null;
+      height?: number | null;
+      mimeType?: string | null;
+      filesize?: number | null;
+      filename?: string | null;
+    };
+    large?: {
+      url?: string | null;
+      width?: number | null;
+      height?: number | null;
+      mimeType?: string | null;
+      filesize?: number | null;
+      filename?: string | null;
+    };
+    banner?: {
+      url?: string | null;
+      width?: number | null;
+      height?: number | null;
+      mimeType?: string | null;
+      filesize?: number | null;
+      filename?: string | null;
+    };
+  };
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -270,12 +322,22 @@ export interface PracticalGuide {
   themes: (number | Theme)[];
   'practical-guides'?: (number | PracticalGuide)[] | null;
   courses?: (number | Course)[] | null;
-  viewCount: number;
   image?: (number | null) | Media;
   imageBanner?: (number | null) | Media;
   updatedAt: string;
   createdAt: string;
   _status?: ('draft' | 'published') | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "practical-guide-views".
+ */
+export interface PracticalGuideView {
+  id: number;
+  guide: number | PracticalGuide;
+  viewCount: number;
+  updatedAt: string;
+  createdAt: string;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -338,6 +400,10 @@ export interface PayloadLockedDocument {
     | ({
         relationTo: 'practical-guides';
         value: number | PracticalGuide;
+      } | null)
+    | ({
+        relationTo: 'practical-guide-views';
+        value: number | PracticalGuideView;
       } | null)
     | ({
         relationTo: 'themes';
@@ -476,12 +542,21 @@ export interface PracticalGuidesSelect<T extends boolean = true> {
   themes?: T;
   'practical-guides'?: T;
   courses?: T;
-  viewCount?: T;
   image?: T;
   imageBanner?: T;
   updatedAt?: T;
   createdAt?: T;
   _status?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "practical-guide-views_select".
+ */
+export interface PracticalGuideViewsSelect<T extends boolean = true> {
+  guide?: T;
+  viewCount?: T;
+  updatedAt?: T;
+  createdAt?: T;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -530,6 +605,70 @@ export interface MediasSelect<T extends boolean = true> {
   height?: T;
   focalX?: T;
   focalY?: T;
+  sizes?:
+    | T
+    | {
+        thumbnail?:
+          | T
+          | {
+              url?: T;
+              width?: T;
+              height?: T;
+              mimeType?: T;
+              filesize?: T;
+              filename?: T;
+            };
+        square?:
+          | T
+          | {
+              url?: T;
+              width?: T;
+              height?: T;
+              mimeType?: T;
+              filesize?: T;
+              filename?: T;
+            };
+        small?:
+          | T
+          | {
+              url?: T;
+              width?: T;
+              height?: T;
+              mimeType?: T;
+              filesize?: T;
+              filename?: T;
+            };
+        medium?:
+          | T
+          | {
+              url?: T;
+              width?: T;
+              height?: T;
+              mimeType?: T;
+              filesize?: T;
+              filename?: T;
+            };
+        large?:
+          | T
+          | {
+              url?: T;
+              width?: T;
+              height?: T;
+              mimeType?: T;
+              filesize?: T;
+              filename?: T;
+            };
+        banner?:
+          | T
+          | {
+              url?: T;
+              width?: T;
+              height?: T;
+              mimeType?: T;
+              filesize?: T;
+              filename?: T;
+            };
+      };
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema

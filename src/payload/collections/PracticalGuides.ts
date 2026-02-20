@@ -99,17 +99,6 @@ export const PracticalGuides: CollectionConfig = {
 			},
 		},
 		{
-			name: "viewCount",
-			type: "number",
-			required: true,
-			defaultValue: 0,
-			label: { fr: "Nombre de vues" },
-			admin: {
-				position: "sidebar",
-				readOnly: true,
-			},
-		},
-		{
 			name: "image",
 			type: "upload",
 			relationTo: "medias",
