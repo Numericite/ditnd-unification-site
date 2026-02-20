@@ -35,14 +35,36 @@ export const Conditions: CollectionConfig = {
 		{
 			name: "textColor",
 			type: "text",
-			required: true,
-			label: { fr: "Couleur du texte" },
+			label: "Couleur du texte",
+			defaultValue: "#162316",
+			admin: {
+				components: {
+					Field: { path: "../payload/components/ColorPicker" },
+				},
+			},
+			validate: (value: unknown) => {
+				if (typeof value !== "string" || value.length === 0) return true;
+				return /^#([0-9a-fA-F]{3}|[0-9a-fA-F]{6})$/.test(value)
+					? true
+					: "Format de couleur invalide. Utilisez le format #RRGGBB ou #RGB.";
+			},
 		},
 		{
 			name: "backgroundColor",
 			type: "text",
-			required: true,
-			label: { fr: "Couleur de fond" },
+			label: "Couleur de fond",
+			defaultValue: "#F4F5F0",
+			admin: {
+				components: {
+					Field: { path: "../payload/components/ColorPicker" },
+				},
+			},
+			validate: (value: unknown) => {
+				if (typeof value !== "string" || value.length === 0) return true;
+				return /^#([0-9a-fA-F]{3}|[0-9a-fA-F]{6})$/.test(value)
+					? true
+					: "Format de couleur invalide. Utilisez le format #RRGGBB ou #RGB.";
+			},
 		},
 	],
 };
