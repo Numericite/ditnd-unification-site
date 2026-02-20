@@ -18,6 +18,7 @@ import { fr } from "@codegouvfr/react-dsfr";
 import type { AugmentedPracticalGuide } from "~/server/api/routers/practical-guides";
 import WysiwygAccordion from "~/components/ui/PracticalGuides/WysiwygAccordion";
 import Image from "next/image";
+import { tss } from "tss-react/dsfr";
 
 export const headingConverter: JSXConverters<DefaultNodeTypes>["heading"] = (
 	args,
@@ -45,6 +46,8 @@ export const headingConverter: JSXConverters<DefaultNodeTypes>["heading"] = (
 export const uploadConverter: JSXConverters<DefaultNodeTypes>["upload"] = ({
 	node,
 }) => {
+	const { classes, cx } = useStyles();
+
 	const uploadNode = node as SerializedUploadNode;
 
 	const value = uploadNode.value as Media;
@@ -52,10 +55,11 @@ export const uploadConverter: JSXConverters<DefaultNodeTypes>["upload"] = ({
 	if (!value?.url || !value?.width || !value?.height) return null;
 	return (
 		<div
-			className={fr.cx("fr-my-3v")}
-			style={{ display: "flex", justifyContent: `${node.format}` }}
+			className={fr.cx("fr-my-3v", "fr-col-12")}
+			style={{ justifyContent: `${node.format}` }}
 		>
 			<Image
+				className={cx(classes.image)}
 				fetchPriority="high"
 				priority
 				src={`${process.env.S3_BUCKET ?? ""}${value.url}`}
@@ -84,6 +88,8 @@ export const accordionConverter: JSXConverter<SerializedBlockNode> = ({
 export const customImageSizeConverter: JSXConverter<SerializedBlockNode> = ({
 	node,
 }) => {
+	const { classes, cx } = useStyles();
+
 	const value = node.fields;
 
 	if (!value?.image) return null;
@@ -105,10 +111,13 @@ export const customImageSizeConverter: JSXConverter<SerializedBlockNode> = ({
 
 	return (
 		<div
-			className={fr.cx("fr-my-3v")}
-			style={{ display: "flex", justifyContent: `${node.format}` }}
+			className={fr.cx("fr-my-3v", "fr-col-12")}
+			style={{
+				justifyContent: `${node.format}`,
+			}}
 		>
 			<Image
+				className={cx(classes.image)}
 				fetchPriority="high"
 				priority
 				src={`${process.env.S3_BUCKET ?? ""}${image.url}`}
@@ -163,3 +172,10 @@ export const relationshipConverter: JSXConverters<DefaultNodeTypes>["relationshi
 			return null;
 		}
 	};
+
+const useStyles = tss.create(() => ({
+	image: {
+		maxWidth: "100%",
+		height: "auto",
+	},
+}));
