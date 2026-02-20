@@ -7,6 +7,7 @@ import {
 	accordionConverter,
 	customImageSizeConverter,
 	headingConverter,
+	quoteConverter,
 	relationshipConverter,
 	uploadConverter,
 } from "~/utils/converters";
@@ -24,6 +25,7 @@ export function RichTextRenderer({
 				heading: headingConverter,
 				relationship: relationshipConverter,
 				upload: uploadConverter,
+				quote: quoteConverter,
 				blocks: {
 					accordion: accordionConverter,
 					image: customImageSizeConverter,

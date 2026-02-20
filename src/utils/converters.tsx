@@ -2,6 +2,7 @@ import type {
 	DefaultNodeTypes,
 	SerializedBlockNode,
 	SerializedHeadingNode,
+	SerializedQuoteNode,
 	SerializedRelationshipNode,
 	SerializedUploadNode,
 } from "@payloadcms/richtext-lexical";
@@ -68,6 +69,29 @@ export const uploadConverter: JSXConverters<DefaultNodeTypes>["upload"] = ({
 				height={value.height}
 			/>
 		</div>
+	);
+};
+export const quoteConverter: JSXConverters<DefaultNodeTypes>["quote"] = (
+	args,
+) => {
+	const { classes, cx } = useStyles();
+
+	const { node, nodesToJSX, converters } = args;
+
+	const quoteNode = node as SerializedQuoteNode;
+
+	const childrenJSX = nodesToJSX({
+		nodes: quoteNode.children ?? [],
+		converters,
+	});
+
+	return (
+		<blockquote
+			className={fr.cx("fr-my-3v", "fr-col-12", "fr-highlight")}
+			style={{ justifyContent: `${node.format}` }}
+		>
+			{childrenJSX}
+		</blockquote>
 	);
 };
 

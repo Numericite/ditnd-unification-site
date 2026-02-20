@@ -36,7 +36,7 @@ export default function PracticalGuidePage() {
 				<title>DITND - {guide.title}</title>
 				<meta
 					name="description"
-					content={`Fiche pratique sur ${guide.title} `}
+					content={`Brouillon Fiche pratique sur ${guide.title} `}
 				/>
 			</Head>
 			<div className={fr.cx("fr-container")}>

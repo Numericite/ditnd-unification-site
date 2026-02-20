@@ -102,11 +102,10 @@
 }
 .LexicalEditorTheme__quote {
     color: #161616;
-    margin:0;
+    margin: 0;
     font-size: 18px;
-    border-left-color:none;
-    border-left-width: 0;
-    padding: 2rem 3rem;
+   padding-left: 2.25rem;
+   border-left: 4px solid #6a6af4;
 }
 
 .LexicalEditorTheme__hr:after {
