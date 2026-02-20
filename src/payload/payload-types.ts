@@ -190,8 +190,8 @@ export interface Condition {
   description: string;
   acronym: string;
   slug: string;
-  textColor: string;
-  backgroundColor: string;
+  textColor?: string | null;
+  backgroundColor?: string | null;
   updatedAt: string;
   createdAt: string;
 }
