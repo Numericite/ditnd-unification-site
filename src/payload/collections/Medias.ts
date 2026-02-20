@@ -25,7 +25,7 @@ export const Medias: CollectionConfig = {
 		},
 	],
 	upload: {
-		adminThumbnail: "og",
+		adminThumbnail: "medium",
 		focalPoint: true,
 		imageSizes: ImageSizes,
 	},

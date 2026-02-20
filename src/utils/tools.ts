@@ -270,14 +270,4 @@ export const ImageSizes = [
 		width: 1240,
 		height: 240,
 	},
-	{
-		name: "xlarge",
-		width: 1920,
-	},
-	{
-		name: "og",
-		width: 1200,
-		height: 630,
-		crop: "center",
-	},
 ];
