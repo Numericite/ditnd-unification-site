@@ -42,6 +42,27 @@ export default buildConfig({
 		importMap: {
 			baseDir: path.resolve(dirname),
 		},
+		livePreview: {
+			url: ({ data, collectionConfig }) => {
+				if (!data || collectionConfig?.slug !== "practical-guides") return;
+
+				const basePath =
+					data._status === "draft"
+						? `/draft/${data.slug}`
+						: `/guides/${data.slug}`;
+
+				return `${basePath}?v=${data.updatedAt}`;
+			},
+			breakpoints: [
+				{
+					label: "Mobile",
+					name: "mobile",
+					width: 375,
+					height: 667,
+				},
+			],
+			collections: ["practical-guides"],
+		},
 	},
 	collections: [
 		Users,

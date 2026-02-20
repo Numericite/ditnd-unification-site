@@ -1,8 +1,8 @@
 import { BlocksFeature, lexicalEditor } from "@payloadcms/richtext-lexical";
 import type { Field } from "payload";
-import { AccordionBlock } from "../plugins/AccordionBlock";
+import { AccordionBlock } from "../plugins/blocks/AccordionBlock";
 import { defaultWysiwygFeatures } from "./defaultWysiwygFeatures";
-import { CustomImageBlock } from "../plugins/CustomImageBlock";
+import { CustomImageBlock } from "../plugins/blocks/CustomImageBlock";
 
 export const standardFields = {
 	title: {

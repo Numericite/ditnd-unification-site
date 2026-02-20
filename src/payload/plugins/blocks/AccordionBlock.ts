@@ -1,6 +1,6 @@
 import { lexicalEditor } from "@payloadcms/richtext-lexical";
 import type { Block } from "payload";
-import { defaultWysiwygFeatures } from "../fields/defaultWysiwygFeatures";
+import { defaultWysiwygFeatures } from "../../fields/defaultWysiwygFeatures";
 
 export const AccordionBlock: Block = {
 	slug: "accordion",
