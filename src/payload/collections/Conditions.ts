@@ -37,6 +37,7 @@ export const Conditions: CollectionConfig = {
 			type: "text",
 			label: "Couleur du texte",
 			defaultValue: "#162316",
+			required: true,
 			admin: {
 				components: {
 					Field: { path: "../payload/components/ColorPicker" },
@@ -54,6 +55,8 @@ export const Conditions: CollectionConfig = {
 			type: "text",
 			label: "Couleur de fond",
 			defaultValue: "#F4F5F0",
+			required: true,
+
 			admin: {
 				components: {
 					Field: { path: "../payload/components/ColorPicker" },
