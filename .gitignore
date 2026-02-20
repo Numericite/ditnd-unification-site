@@ -49,3 +49,5 @@ yarn-error.log*
 
 # scripts
 /scripts/.venv
+/scripts/.deepeval
+/scripts/testing/__pycache__/
