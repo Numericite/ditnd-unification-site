@@ -7,6 +7,7 @@ import {
 	accordionConverter,
 	customImageSizeConverter,
 	headingConverter,
+	linkConverter,
 	quoteConverter,
 	relationshipConverter,
 	uploadConverter,
@@ -30,6 +31,7 @@ export function RichTextRenderer({
 					accordion: accordionConverter,
 					image: customImageSizeConverter,
 				},
+				link: linkConverter,
 			}}
 		/>
 	);

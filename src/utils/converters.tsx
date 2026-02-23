@@ -1,10 +1,6 @@
 import type {
 	DefaultNodeTypes,
 	SerializedBlockNode,
-	SerializedHeadingNode,
-	SerializedQuoteNode,
-	SerializedRelationshipNode,
-	SerializedUploadNode,
 } from "@payloadcms/richtext-lexical";
 import {
 	defaultJSXConverters,
@@ -26,7 +22,7 @@ export const headingConverter: JSXConverters<DefaultNodeTypes>["heading"] = (
 ) => {
 	const { node, nodesToJSX, converters } = args;
 
-	const headingNode = node as SerializedHeadingNode;
+	const headingNode = node;
 
 	if (headingNode.tag === "h2") {
 		const childrenJSX = nodesToJSX({
@@ -39,9 +35,11 @@ export const headingConverter: JSXConverters<DefaultNodeTypes>["heading"] = (
 		return <h2 id={slugify(headingText)}>{childrenJSX}</h2>;
 	}
 
-	const defaultHeading = defaultJSXConverters.heading;
+	const defaultHeadingConverter = defaultJSXConverters.heading;
 
-	return typeof defaultHeading === "function" ? defaultHeading(args) : null;
+	return typeof defaultHeadingConverter === "function"
+		? defaultHeadingConverter(args)
+		: null;
 };
 
 export const uploadConverter: JSXConverters<DefaultNodeTypes>["upload"] = ({
@@ -49,7 +47,7 @@ export const uploadConverter: JSXConverters<DefaultNodeTypes>["upload"] = ({
 }) => {
 	const { classes, cx } = useStyles();
 
-	const uploadNode = node as SerializedUploadNode;
+	const uploadNode = node;
 
 	const value = uploadNode.value as Media;
 
@@ -74,11 +72,9 @@ export const uploadConverter: JSXConverters<DefaultNodeTypes>["upload"] = ({
 export const quoteConverter: JSXConverters<DefaultNodeTypes>["quote"] = (
 	args,
 ) => {
-	const { classes, cx } = useStyles();
-
 	const { node, nodesToJSX, converters } = args;
 
-	const quoteNode = node as SerializedQuoteNode;
+	const quoteNode = node;
 
 	const childrenJSX = nodesToJSX({
 		nodes: quoteNode.children ?? [],
@@ -93,6 +89,37 @@ export const quoteConverter: JSXConverters<DefaultNodeTypes>["quote"] = (
 			{childrenJSX}
 		</blockquote>
 	);
+};
+export const linkConverter: JSXConverters<DefaultNodeTypes>["link"] = (
+	args,
+) => {
+	const { node } = args;
+
+	const linkNode = node;
+
+	const url = linkNode.fields.url;
+
+	if (url?.includes("youtube.com") || url?.includes("youtu.be")) {
+		const videoId = url.split("/").at(-1);
+
+		if (!videoId) return null;
+		return (
+			<iframe
+				width="560"
+				height="315"
+				src={`https://www.youtube.com/embed/${videoId}`}
+				title="YouTube video player"
+				allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+				allowFullScreen
+				style={{ maxWidth: "100%" }}
+			/>
+		);
+	}
+	const defaultLinkConverter = defaultJSXConverters.link;
+
+	return typeof defaultLinkConverter === "function"
+		? defaultLinkConverter(args)
+		: null;
 };
 
 export const accordionConverter: JSXConverter<SerializedBlockNode> = ({
@@ -156,7 +183,7 @@ export const customImageSizeConverter: JSXConverter<SerializedBlockNode> = ({
 export const relationshipConverter: JSXConverters<DefaultNodeTypes>["relationship"] =
 	({ node }) => {
 		{
-			const relationshipNode = node as SerializedRelationshipNode;
+			const relationshipNode = node;
 
 			if (relationshipNode.relationTo === "practical-guides") {
 				const value = relationshipNode.value as AugmentedPracticalGuide;
