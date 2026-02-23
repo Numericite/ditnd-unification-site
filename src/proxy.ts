@@ -30,7 +30,8 @@ export function proxy(req: NextRequest) {
 	)
 		return NextResponse.next();
 
-	if (isAuthorized(authHeader)) return NextResponse.next();
+	if (process.env.NODE_ENV === "development" || isAuthorized(authHeader))
+		return NextResponse.next();
 
 	return new Response("Auth Required", {
 		status: 401,
