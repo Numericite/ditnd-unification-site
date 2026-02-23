@@ -54,12 +54,13 @@
     text-decoration: underline;
     color: #1212ff;
   }
+
 }
 
 .editor {
   &-container {
     @extend .editor-content;
-    padding-right: 3rem;
+        padding-right: 3rem;
   }
 
   .add-block-menu .icon {
@@ -99,13 +100,17 @@
   .LexicalEditorTheme__relationship__label {
     visibility: hidden;
   }
+  .LexicalEditorTheme__relationship__contents {
+        max-width: 100%;
+
+  }
 }
 .LexicalEditorTheme__quote {
     color: #161616;
     margin: 0;
     font-size: 18px;
-   padding-left: 2.25rem;
    border-left: 4px solid #6a6af4;
+   padding: 2rem 3rem 2.25rem 2.25rem;
 }
 
 .LexicalEditorTheme__hr:after {

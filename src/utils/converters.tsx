@@ -51,22 +51,29 @@ export const uploadConverter: JSXConverters<DefaultNodeTypes>["upload"] = ({
 
 	const value = uploadNode.value as Media;
 
-	if (!value?.url || !value?.width || !value?.height) return null;
+	if (!value?.url) return null;
+
+	if (value.width && value.height)
+		return (
+			<div
+				className={fr.cx("fr-my-3v", "fr-col-12")}
+				style={{ justifyContent: `${node.format}` }}
+			>
+				<Image
+					className={cx(classes.image)}
+					fetchPriority="high"
+					priority
+					src={`${process.env.S3_BUCKET ?? ""}${value.url}`}
+					alt={`${value.alt || ""}`}
+					width={value.width}
+					height={value.height}
+				/>
+			</div>
+		);
 	return (
-		<div
-			className={fr.cx("fr-my-3v", "fr-col-12")}
-			style={{ justifyContent: `${node.format}` }}
-		>
-			<Image
-				className={cx(classes.image)}
-				fetchPriority="high"
-				priority
-				src={`${process.env.S3_BUCKET ?? ""}${value.url}`}
-				alt={`${value.alt || ""}`}
-				width={value.width}
-				height={value.height}
-			/>
-		</div>
+		<a target="_blank" rel="noopener noreferrer" href={value.url ?? ""}>
+			{value.alt}
+		</a>
 	);
 };
 export const quoteConverter: JSXConverters<DefaultNodeTypes>["quote"] = (
