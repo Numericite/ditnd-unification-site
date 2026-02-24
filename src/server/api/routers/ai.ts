@@ -99,7 +99,7 @@ export const aiRouter = createTRPCRouter({
 			}
 
 			const payload = {
-				model: "albert-small",
+				model: "albert-large",
 				messages: [
 					{
 						role: "system",

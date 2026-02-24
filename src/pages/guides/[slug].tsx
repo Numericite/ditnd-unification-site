@@ -19,11 +19,12 @@ export default function PracticalGuidePage() {
 
 	const guide = guideData;
 
-	const { mutate } = api.practicalGuide.incrementView.useMutation();
+	const { mutate: incremenView } =
+		api.practicalGuide.incrementView.useMutation();
 
 	useEffect(() => {
 		if (guide?.id) {
-			mutate({ guideId: guide.id });
+			incremenView({ guideId: guide.id });
 		}
 	}, [guide?.id]);
 
