@@ -6,6 +6,7 @@ import { buildConfig } from "payload";
 import { fileURLToPath } from "url";
 import sharp from "sharp";
 import { s3Storage } from "@payloadcms/storage-s3";
+import { mediaGalleryPlugin } from "@sitebytom/payload-media-gallery";
 
 import { Users } from "./collections/Users";
 import { Personas } from "./collections/Personas";
@@ -106,6 +107,29 @@ export default buildConfig({
 				},
 				region: process.env.S3_REGION || "",
 			},
+		}),
+		mediaGalleryPlugin({
+			collections: {
+				medias: true,
+			},
+			defaultView: "justified",
+			layouts: {
+				justified: {
+					enabled: true,
+					footer: "always",
+				},
+				masonry: {
+					enabled: true,
+					footer: "always",
+				},
+				grid: {
+					enabled: true,
+					footer: "always",
+				},
+			},
+			lightbox: true,
+			edit: true,
+			disabled: false,
 		}),
 	],
 });
