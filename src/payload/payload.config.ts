@@ -31,6 +31,7 @@ const hasAwsCreds = Boolean(
 );
 import { CMSHome } from "./globals/cms/Home";
 import { CMSFooter } from "./globals/cms/Footer";
+import { PracticalGuideViews } from "./collections/PracticalGuidesViews";
 
 const filename = fileURLToPath(import.meta.url);
 const dirname = path.dirname(filename);
@@ -41,6 +42,27 @@ export default buildConfig({
 		importMap: {
 			baseDir: path.resolve(dirname),
 		},
+		livePreview: {
+			url: ({ data, collectionConfig }) => {
+				if (!data || collectionConfig?.slug !== "practical-guides") return;
+
+				const basePath =
+					data._status === "draft"
+						? `/draft/${data.slug}`
+						: `/guides/${data.slug}`;
+
+				return `${basePath}?v=${data.updatedAt}`;
+			},
+			breakpoints: [
+				{
+					label: "Mobile",
+					name: "mobile",
+					width: 375,
+					height: 667,
+				},
+			],
+			collections: ["practical-guides"],
+		},
 	},
 	collections: [
 		Users,
@@ -48,6 +70,7 @@ export default buildConfig({
 		Conditions,
 		Courses,
 		PracticalGuides,
+		PracticalGuideViews,
 		Themes,
 		Journeys,
 		Medias,

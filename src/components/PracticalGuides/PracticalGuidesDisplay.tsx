@@ -1,13 +1,13 @@
 import { fr } from "@codegouvfr/react-dsfr";
 import WysiwygContent from "../ui/PracticalGuides/WysiwygContent";
 import ShareSocials from "../ui/PracticalGuides/ShareSocials";
-import RecommendedGuides from "./RecommendedGuides";
 import { tss } from "tss-react/dsfr";
-import RecommendedCourses from "./RecommendedCourses";
 import type { AugmentedPracticalGuide } from "~/server/api/routers/practical-guides";
 import type { Link } from "~/utils/tools";
 import SummaryContent from "../ui/PracticalGuides/SummaryContent";
 import { useEffect, useState } from "react";
+import Image from "next/image";
+import RecommendedContent from "./RecommendedContent";
 
 export default function PracticalGuidesDisplay({
 	guide,
@@ -44,45 +44,46 @@ export default function PracticalGuidesDisplay({
 		<div className={fr.cx("fr-grid-row", "fr-grid-row--gutters")}>
 			{image?.url && (
 				<div className={fr.cx("fr-col-12")}>
-					<img
+					<Image
 						className={cx(fr.cx("fr-responsive-img"), classes.imageBanner)}
 						fetchPriority="high"
+						priority
 						alt={image.alt}
 						src={image.url}
+						width={1200}
+						height={240}
 					/>
 				</div>
 			)}
-			<SummaryContent
-				menuLinks={links}
-				title="Sommaire"
-				className={cx(classes.summarySticky)}
-			/>
-			<div className={fr.cx("fr-col-12", "fr-col-lg-9")}>
-				<WysiwygContent
-					title={guide.title}
-					content={guide.content}
-					setMenuLinks={setMenuLinks}
-				/>
+			{guide.content ? (
+				<>
+					<SummaryContent
+						menuLinks={links}
+						title="Sommaire"
+						className={cx(classes.summarySticky)}
+					/>
+					<div className={fr.cx("fr-col-12", "fr-col-lg-9")}>
+						<WysiwygContent
+							title={guide.title}
+							content={guide.content}
+							setMenuLinks={setMenuLinks}
+						/>
 
-				<div className={cx(classes.footerContent)}>
-					<div className={cx(classes.marginContent)}>
-						<p className={fr.cx("fr-text--md")}>Partager la page</p>
-						<ShareSocials />
-					</div>
-				</div>
-				<div className={cx(classes.footerContent)}>
-					{guide["practical-guides"] && (
-						<RecommendedGuides guides={guide["practical-guides"]} />
-					)}
-				</div>
-				<div className={cx(classes.footerContent)}>
-					{guide.courses && (
-						<div className={cx(classes.marginContent)}>
-							<RecommendedCourses courses={guide.courses} />
+						<div className={cx(classes.footerContent)}>
+							<div className={cx(classes.marginContent)}>
+								<p className={fr.cx("fr-text--md")}>Partager la page</p>
+								<ShareSocials />
+							</div>
 						</div>
-					)}
-				</div>
-			</div>
+						<RecommendedContent
+							guides={guide["practical-guides"]}
+							courses={guide.courses}
+						/>
+					</div>
+				</>
+			) : (
+				<p>Aucun contenu, veuillez bien remplir le contenu back office</p>
+			)}
 		</div>
 	);
 }

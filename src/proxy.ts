@@ -30,7 +30,8 @@ export function proxy(req: NextRequest) {
 	)
 		return NextResponse.next();
 
-	if (isAuthorized(authHeader)) return NextResponse.next();
+	if (process.env.NODE_ENV === "development" || isAuthorized(authHeader))
+		return NextResponse.next();
 
 	return new Response("Auth Required", {
 		status: 401,
@@ -39,5 +40,6 @@ export function proxy(req: NextRequest) {
 }
 
 export const config = {
-	matcher: "/((?!_next).*)",
+	matcher:
+		"/((?!api|_next/static|_next/image|favicon.ico|sitemap.xml|robots.txt|placeholder.16x9.png).*)",
 };

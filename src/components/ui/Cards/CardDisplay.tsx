@@ -37,9 +37,7 @@ export default function CardDisplay({
 
 	const imgProps = !noImg
 		? {
-				imageUrl:
-					imageUrl ??
-					"https://www.systeme-de-design.gouv.fr/v1.14/storybook/img/placeholder.16x9.png",
+				imageUrl: imageUrl ?? "/placeholder.16x9.png",
 				imageAlt: imageAlt ?? "",
 			}
 		: { imageComponent: undefined };
@@ -100,7 +98,7 @@ export default function CardDisplay({
 const useStyles = tss.withName(CardDisplay.name).create(() => ({
 	tags: {
 		ul: {
-			paddingInlineStart: "0rem!important" as "0rem",
+			paddingInlineStart: "0rem!important",
 		},
 	},
 }));

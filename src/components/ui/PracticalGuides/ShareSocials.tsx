@@ -1,5 +1,6 @@
-import type { FrIconClassName } from "@codegouvfr/react-dsfr";
+import { fr, type FrIconClassName } from "@codegouvfr/react-dsfr";
 import Button from "@codegouvfr/react-dsfr/Button";
+import { tss } from "tss-react/dsfr";
 
 type SocialProps = {
 	icon: FrIconClassName;
@@ -41,8 +42,10 @@ const socials: SocialProps[] = [
 ];
 
 export default function ShareSocials() {
+	const { classes, cx } = useStyles();
+
 	return (
-		<>
+		<div className={cx(classes.buttonContainer)}>
 			{socials.map((social, index) => (
 				<Button
 					key={index}
@@ -52,6 +55,13 @@ export default function ShareSocials() {
 					title={social.title}
 				/>
 			))}
-		</>
+		</div>
 	);
 }
+
+const useStyles = tss.withName(ShareSocials.name).create(() => ({
+	buttonContainer: {
+		gap: fr.spacing("3v"),
+		display: "flex",
+	},
+}));

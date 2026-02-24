@@ -1,4 +1,5 @@
 import type { CollectionConfig } from "payload";
+import { ImageSizes } from "~/utils/tools";
 
 export const Medias: CollectionConfig = {
 	slug: "medias",
@@ -23,5 +24,9 @@ export const Medias: CollectionConfig = {
 			required: true,
 		},
 	],
-	upload: true,
+	upload: {
+		adminThumbnail: "medium",
+		focalPoint: true,
+		imageSizes: ImageSizes,
+	},
 };

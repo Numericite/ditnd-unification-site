@@ -1,5 +1,6 @@
 import type { CollectionConfig } from "payload";
 import { standardFields } from "../fields/standards";
+import { validateHexColor } from "~/utils/tools";
 
 export const Conditions: CollectionConfig = {
 	slug: "conditions",
@@ -35,14 +36,28 @@ export const Conditions: CollectionConfig = {
 		{
 			name: "textColor",
 			type: "text",
+			label: "Couleur du texte",
+			defaultValue: "#162316",
 			required: true,
-			label: { fr: "Couleur du texte" },
+			admin: {
+				components: {
+					Field: { path: "../payload/components/ColorPicker" },
+				},
+			},
+			validate: (value: unknown) => validateHexColor(value),
 		},
 		{
 			name: "backgroundColor",
 			type: "text",
+			label: "Couleur de fond",
+			defaultValue: "#F4F5F0",
 			required: true,
-			label: { fr: "Couleur de fond" },
+			admin: {
+				components: {
+					Field: { path: "../payload/components/ColorPicker" },
+				},
+			},
+			validate: (value: unknown) => validateHexColor(value),
 		},
 	],
 };
