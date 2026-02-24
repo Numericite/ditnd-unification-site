@@ -1,5 +1,6 @@
 import type { CollectionConfig } from "payload";
 import { standardFields } from "../fields/standards";
+import { validateHexColor } from "~/utils/tools";
 
 export const Conditions: CollectionConfig = {
 	slug: "conditions",
@@ -43,12 +44,7 @@ export const Conditions: CollectionConfig = {
 					Field: { path: "../payload/components/ColorPicker" },
 				},
 			},
-			validate: (value: unknown) => {
-				if (typeof value !== "string" || value.length === 0) return true;
-				return /^#([0-9a-fA-F]{3}|[0-9a-fA-F]{6})$/.test(value)
-					? true
-					: "Format de couleur invalide. Utilisez le format #RRGGBB ou #RGB.";
-			},
+			validate: (value: unknown) => validateHexColor(value),
 		},
 		{
 			name: "backgroundColor",
@@ -56,18 +52,12 @@ export const Conditions: CollectionConfig = {
 			label: "Couleur de fond",
 			defaultValue: "#F4F5F0",
 			required: true,
-
 			admin: {
 				components: {
 					Field: { path: "../payload/components/ColorPicker" },
 				},
 			},
-			validate: (value: unknown) => {
-				if (typeof value !== "string" || value.length === 0) return true;
-				return /^#([0-9a-fA-F]{3}|[0-9a-fA-F]{6})$/.test(value)
-					? true
-					: "Format de couleur invalide. Utilisez le format #RRGGBB ou #RGB.";
-			},
+			validate: (value: unknown) => validateHexColor(value),
 		},
 	],
 };

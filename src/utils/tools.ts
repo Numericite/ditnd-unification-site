@@ -243,6 +243,19 @@ export const getPathNameForSkipLinks = (pathname: string) => {
 	return pathname;
 };
 
+const HEX_COLOR_REGEX = /^#([0-9a-f]{3}|[0-9a-f]{6})$/i;
+
+export function isHexColor(value: unknown): boolean {
+	return typeof value === "string" && HEX_COLOR_REGEX.test(value);
+}
+
+export const validateHexColor = (value: unknown) => {
+	if (typeof value !== "string" || value.length === 0) return true;
+	return isHexColor(value)
+		? true
+		: "Format de couleur invalide. Utilisez le format #RRGGBB ou #RGB.";
+};
+
 export const ImageSizes = [
 	{
 		name: "thumbnail",

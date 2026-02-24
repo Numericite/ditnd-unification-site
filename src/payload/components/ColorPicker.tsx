@@ -1,20 +1,15 @@
 "use client";
-import { TextInput, useField } from "@payloadcms/ui";
+import { FieldLabel, TextInput, useField } from "@payloadcms/ui";
+import type { TextFieldClientComponent } from "payload";
 
-const ColorPicker = ({
-	field: { label, required = false },
-	path,
-}: {
-	field: { label: string; required?: boolean };
-	path: string;
-}) => {
+const ColorPicker: TextFieldClientComponent = ({ field, path }) => {
 	const { value, setValue } = useField<string>({ path });
+
+	const { label, required } = field;
 
 	return (
 		<div>
-			<div>
-				{label} {required && <span className="required">*</span>}
-			</div>
+			<FieldLabel label={label} required={required} />
 			<div
 				style={{
 					marginTop: "8px",
