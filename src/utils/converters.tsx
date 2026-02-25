@@ -22,6 +22,7 @@ import WysiwygAccordion from "~/components/ui/PracticalGuides/WysiwygAccordion";
 import Image from "next/image";
 import { tss } from "tss-react/dsfr";
 import LiteYouTube from "~/components/ui/PracticalGuides/LiteYoutube";
+import { Table } from "@codegouvfr/react-dsfr/Table";
 
 export const headingConverter: JSXConverters<DefaultNodeTypes>["heading"] = (
 	args,
@@ -103,6 +104,31 @@ export const quoteConverter: JSXConverters<DefaultNodeTypes>["quote"] = (
 		</blockquote>
 	);
 };
+export const tableConverter: JSXConverter<any> = ({ node }) => {
+	if (!node?.children) return null;
+
+	const rows = node.children.map((row: any) => {
+		return row.children.map((cell: any) => {
+			const paragraphs = cell.children ?? [];
+
+			const text = paragraphs
+				.map((paragraph: any) =>
+					(paragraph.children ?? [])
+						.map((textNode: any) => textNode.text ?? "")
+						.join(""),
+				)
+				.join("\n");
+
+			return text;
+		});
+	});
+
+	const headers = rows[0];
+	const data = rows.slice(1);
+
+	return <Table data={[...data]} headers={headers} />;
+};
+
 export const linkConverter: JSXConverters<DefaultNodeTypes>["link"] = (
 	args,
 ) => {

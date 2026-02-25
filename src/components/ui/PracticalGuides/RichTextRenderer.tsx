@@ -10,6 +10,7 @@ import {
 	linkConverter,
 	quoteConverter,
 	relationshipConverter,
+	tableConverter,
 	uploadConverter,
 } from "~/utils/converters";
 
@@ -32,6 +33,7 @@ export function RichTextRenderer({
 					image: customImageSizeConverter,
 				},
 				link: linkConverter,
+				table: tableConverter,
 			}}
 		/>
 	);
