@@ -284,3 +284,21 @@ export const ImageSizes = [
 		height: 240,
 	},
 ];
+
+export function extractYouTubeId(url: string): string | null {
+	try {
+		const parsed = new URL(url);
+
+		if (parsed.hostname === "youtu.be") {
+			return parsed.pathname.split("/")[1] || null;
+		}
+
+		if (parsed.searchParams.get("v")) {
+			return parsed.searchParams.get("v");
+		}
+
+		return null;
+	} catch {
+		return null;
+	}
+}

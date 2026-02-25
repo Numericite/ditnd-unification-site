@@ -10,8 +10,8 @@ type Props = {
 	title: string;
 	content: DefaultTypedEditorState;
 	setMenuLinks?: Dispatch<SetStateAction<Link[]>>;
-	createdAt: string;
-	updatedAt: string;
+	createdAt?: string;
+	updatedAt?: string;
 };
 
 export default function WysiwygContent({
@@ -36,9 +36,11 @@ export default function WysiwygContent({
 	return (
 		<div className={cx(classes.wysiwig)} id="wysiwig-content">
 			<h1 className={classes.wysiwygTitle}>{title}</h1>
-			<p
-				className={fr.cx("fr-text--sm")}
-			>{`Publié le ${createdAtFormatted} - Modifié le ${updatedAtFormatted}`}</p>
+			{createdAt && updatedAt && (
+				<p
+					className={fr.cx("fr-text--sm")}
+				>{`Publié le ${createdAtFormatted} - Modifié le ${updatedAtFormatted}`}</p>
+			)}
 			<RichTextRenderer content={content} />
 		</div>
 	);

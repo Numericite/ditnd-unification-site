@@ -91,7 +91,8 @@ export default buildConfig({
 			connectionString: process.env.POSTGRESQL_ADDON_URI || "",
 		},
 	}),
-	sharp,
+	sharp: (inputFile, options) =>
+		sharp(inputFile, { ...options, failOn: "none" }),
 	plugins: [
 		s3Storage({
 			enabled: hasAwsCreds && process.env.NODE_ENV === "production",

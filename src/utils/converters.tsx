@@ -7,7 +7,12 @@ import {
 	type JSXConverter,
 	type JSXConverters,
 } from "@payloadcms/richtext-lexical/react";
-import { extractTextFromNodes, ImageSizes, slugify } from "./tools";
+import {
+	extractTextFromNodes,
+	extractYouTubeId,
+	ImageSizes,
+	slugify,
+} from "./tools";
 import type { Media } from "~/payload/payload-types";
 import type { AugmentedCourse } from "~/server/api/routers/courses";
 import CardDisplay from "~/components/ui/Cards/CardDisplay";
@@ -16,6 +21,7 @@ import type { AugmentedPracticalGuide } from "~/server/api/routers/practical-gui
 import WysiwygAccordion from "~/components/ui/PracticalGuides/WysiwygAccordion";
 import Image from "next/image";
 import { tss } from "tss-react/dsfr";
+import LiteYouTube from "~/components/ui/PracticalGuides/LiteYoutube";
 
 export const headingConverter: JSXConverters<DefaultNodeTypes>["heading"] = (
 	args,
@@ -107,20 +113,10 @@ export const linkConverter: JSXConverters<DefaultNodeTypes>["link"] = (
 	const url = linkNode.fields.url;
 
 	if (url?.includes("youtube.com") || url?.includes("youtu.be")) {
-		const videoId = url.split("/").at(-1);
-
+		const videoId = extractYouTubeId(url);
 		if (!videoId) return null;
-		return (
-			<iframe
-				width="560"
-				height="315"
-				src={`https://www.youtube.com/embed/${videoId}`}
-				title="YouTube video player"
-				allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-				allowFullScreen
-				style={{ maxWidth: "100%" }}
-			/>
-		);
+
+		return <LiteYouTube videoId={videoId} />;
 	}
 	const defaultLinkConverter = defaultJSXConverters.link;
 
