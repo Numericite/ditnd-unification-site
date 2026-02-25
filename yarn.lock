@@ -837,7 +837,7 @@
   resolved "https://registry.yarnpkg.com/@date-fns/tz/-/tz-1.2.0.tgz#81cb3211693830babaf3b96aff51607e143030a6"
   integrity sha512-LBrd7MiJZ9McsOgxqWX7AaxrDjcFVjWH/tIKJd7pnR7McaslGYOP1QmmiBXdJH/H/yLCT+rcQ7FaPBUxRGUtrg==
 
-"@dnd-kit/accessibility@^3.0.0", "@dnd-kit/accessibility@^3.1.1":
+"@dnd-kit/accessibility@^3.0.0":
   version "3.1.1"
   resolved "https://registry.yarnpkg.com/@dnd-kit/accessibility/-/accessibility-3.1.1.tgz#3b4202bd6bb370a0730f6734867785919beac6af"
   integrity sha512-2P+YgaXF+gRsIihwwY1gCsQSYnu9Zyj2py8kY5fFvUM1qm2WA2u639R6YNVfU4GWr+ZM5mqEsfHZZLoRONbemw==
@@ -851,15 +851,6 @@
   dependencies:
     "@dnd-kit/accessibility" "^3.0.0"
     "@dnd-kit/utilities" "^3.2.1"
-    tslib "^2.0.0"
-
-"@dnd-kit/core@^6.3.1":
-  version "6.3.1"
-  resolved "https://registry.yarnpkg.com/@dnd-kit/core/-/core-6.3.1.tgz#4c36406a62c7baac499726f899935f93f0e6d003"
-  integrity sha512-xkGBRQQab4RLwgXxoqETICr6S5JlogafbhNsidmrkVv2YRs5MLwpjoF2qpiGjQt8S9AoxtIV603s0GIUpY5eYQ==
-  dependencies:
-    "@dnd-kit/accessibility" "^3.1.1"
-    "@dnd-kit/utilities" "^3.2.2"
     tslib "^2.0.0"
 
 "@dnd-kit/modifiers@9.0.0":
@@ -876,14 +867,6 @@
   integrity sha512-wDkBHHf9iCi1veM834Gbk1429bd4lHX4RpAwT0y2cHLf246GAvU2sVw/oxWNpPKQNQRQaeGXhAVgrOl1IT+iyA==
   dependencies:
     "@dnd-kit/utilities" "^3.2.0"
-    tslib "^2.0.0"
-
-"@dnd-kit/sortable@^10.0.0":
-  version "10.0.0"
-  resolved "https://registry.yarnpkg.com/@dnd-kit/sortable/-/sortable-10.0.0.tgz#1f9382b90d835cd5c65d92824fa9dafb78c4c3e8"
-  integrity sha512-+xqhmIIzvAYMGfBYYnbKuNicfSsk4RksY2XdmJhT+HAC01nix6fHCztU68jooFiMUB01Ky3F0FyOvhG/BZrWkg==
-  dependencies:
-    "@dnd-kit/utilities" "^3.2.2"
     tslib "^2.0.0"
 
 "@dnd-kit/utilities@3.2.2", "@dnd-kit/utilities@^3.2.0", "@dnd-kit/utilities@^3.2.1", "@dnd-kit/utilities@^3.2.2":
@@ -2301,21 +2284,6 @@
     "@peculiar/asn1-schema" "^2.3.8"
     "@peculiar/asn1-x509" "^2.3.8"
     "@peculiar/x509" "^1.13.0"
-
-"@sitebytom/payload-media-gallery@^1.2.0":
-  version "1.2.0"
-  resolved "https://registry.yarnpkg.com/@sitebytom/payload-media-gallery/-/payload-media-gallery-1.2.0.tgz#b579a0645ae89a3802d27101a7484134f3ea0bc5"
-  integrity sha512-J5bTPJJhgWu/oh8eF2HBthYZcEBX0v71HvSGw6Uhk8AM8tlNqCRno3nri30Y/lxUYGYWc3bBJi9RfRS7vtkomg==
-  dependencies:
-    "@dnd-kit/core" "^6.3.1"
-    "@dnd-kit/sortable" "^10.0.0"
-    "@dnd-kit/utilities" "^3.2.2"
-    "@sitebytom/use-zoom-pan" "^1.0.5"
-
-"@sitebytom/use-zoom-pan@^1.0.5":
-  version "1.0.5"
-  resolved "https://registry.yarnpkg.com/@sitebytom/use-zoom-pan/-/use-zoom-pan-1.0.5.tgz#2c89a598870c75b276a52c12c45a2b93d132ca82"
-  integrity sha512-CQTGVHAWWkWKR/eiEZEzmKcPqFQcHFkkJnulKBt2rxclxqaB+RVseENlPhWeN8bcyQXXNrsqIsYaiPtUoaCnBQ==
 
 "@smithy/abort-controller@^4.2.8":
   version "4.2.8"

@@ -29,4 +29,5 @@ export const Medias: CollectionConfig = {
 		focalPoint: true,
 		imageSizes: ImageSizes,
 	},
+	folders: true,
 };
