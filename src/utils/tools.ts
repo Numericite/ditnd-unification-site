@@ -260,28 +260,34 @@ export const ImageSizes = [
 	{
 		name: "thumbnail",
 		width: 300,
+		withoutEnlargement: true,
 	},
 	{
 		name: "square",
 		width: 500,
 		height: 500,
+		withoutEnlargement: true,
 	},
 	{
 		name: "small",
 		width: 600,
+		withoutEnlargement: true,
 	},
 	{
 		name: "medium",
 		width: 900,
+		withoutEnlargement: true,
 	},
 	{
 		name: "large",
 		width: 1400,
+		withoutEnlargement: true,
 	},
 	{
 		name: "banner",
 		width: 1240,
 		height: 240,
+		withoutEnlargement: true,
 	},
 ];
 
