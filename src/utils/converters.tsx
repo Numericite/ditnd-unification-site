@@ -60,6 +60,16 @@ export const uploadConverter: JSXConverters<DefaultNodeTypes>["upload"] = ({
 
 	if (!value?.url) return null;
 
+	if (value.url.endsWith("mov") || value.url.endsWith("mp4"))
+		return (
+			<div className={classes.videoWrapper}>
+				{/** biome-ignore lint/a11y/useMediaCaption: <explanation> */}
+				<video controls preload="metadata">
+					<source src={value.url} type="video/mp4" />
+				</video>
+			</div>
+		);
+
 	if (value.width && value.height)
 		return (
 			<div
@@ -257,5 +267,14 @@ const useStyles = tss.create(() => ({
 	image: {
 		maxWidth: "100%",
 		height: "auto",
+	},
+	videoWrapper: {
+		width: "100%",
+		height: "100%",
+		video: {
+			width: "100%",
+			height: "100%",
+			objectFit: "cover",
+		},
 	},
 }));
