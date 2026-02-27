@@ -21,6 +21,8 @@ export const messageSchema = z.object({
 	useRetrieval: z.boolean().optional(),
 });
 
+export type TMessage = z.infer<typeof messageSchema>;
+
 const retrieveDocsFromUserPrompt = async ({
 	payload,
 	userPrompt,
@@ -72,8 +74,15 @@ const retrieveDocsFromUserPrompt = async ({
 
 export const aiRouter = createTRPCRouter({
 	chatbotSend: publicProcedure
-		.input(z.array(messageSchema))
+		.input(
+			z.object({
+				messages: z.array(messageSchema),
+				promptName: z.string().optional(),
+			}),
+		)
 		.mutation(async ({ input, ctx }) => {
+			const { messages, promptName } = input;
+
 			const apiKey = process.env.ALBERT_API_KEY;
 			const apiUrl = process.env.ALBERT_API_URL;
 
@@ -88,7 +97,10 @@ export const aiRouter = createTRPCRouter({
 
 			try {
 				systemPrompt = readFileSync(
-					path.join(process.cwd(), "src/utils/prompts/chatbot-system.md"),
+					path.join(
+						process.cwd(),
+						`src/utils/prompts/${promptName || "chatbot-system.md"}`,
+					),
 					"utf-8",
 				);
 			} catch (_) {
@@ -98,6 +110,12 @@ export const aiRouter = createTRPCRouter({
 				});
 			}
 
+			// Albert's API only accepts `role` and `content` on message objects.
+			const sanitizedMessages = messages.map(({ role, content }) => ({
+				role,
+				content,
+			}));
+
 			const payload = {
 				model: "albert-large",
 				messages: [
@@ -105,7 +123,7 @@ export const aiRouter = createTRPCRouter({
 						role: "system",
 						content: systemPrompt,
 					},
-					...input,
+					...sanitizedMessages,
 				],
 				temperature: 0.1,
 				response_format: { type: "json_object" },
@@ -122,6 +140,7 @@ export const aiRouter = createTRPCRouter({
 			});
 
 			if (!response.ok) {
+				console.error("Albert API error response:", await response.text());
 				throw new TRPCError({
 					code: "BAD_REQUEST",
 					message: `Error from Albert API: ${response.statusText}`,
@@ -144,7 +163,7 @@ export const aiRouter = createTRPCRouter({
 			if (message?.useRetrieval) {
 				const practicalGuides = await retrieveDocsFromUserPrompt({
 					payload: ctx.payload,
-					userPrompt: input
+					userPrompt: messages
 						.filter((msg) => msg.role === "user")
 						.map((msg) => msg.content)
 						.join("\n"),

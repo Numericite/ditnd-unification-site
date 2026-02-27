@@ -16,7 +16,9 @@
 		"typecheck": "tsc --noEmit",
 		"payload": "PAYLOAD_CONFIG_PATH=src/payload/payload.config.ts payload",
 		"seed:prod": "PAYLOAD_CONFIG_PATH=./src/payload/payload.config.ts payload run ./src/payload/seed/index.ts",
-		"seed:dev": "NODE_ENV=development PAYLOAD_CONFIG_PATH=./src/payload/payload.config.ts PAYLOAD_DROP_DATABASE=true payload run ./src/payload/seed/index.ts"
+		"seed:dev": "NODE_ENV=development PAYLOAD_CONFIG_PATH=./src/payload/payload.config.ts PAYLOAD_DROP_DATABASE=true payload run ./src/payload/seed/index.ts",
+		"test-chatbot:ab": "payload run tests/chabot/eval.ts -- --ab",
+		"test-chatbot:prompt": "payload run tests/chabot/eval.ts -- --prompt="
 	},
 	"dependencies": {
 		"@codegouvfr/react-dsfr": "1.29.0",

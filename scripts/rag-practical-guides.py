@@ -16,24 +16,25 @@ TABLE_NAME = "practical_guide_vectors"
 DEVICE = "cuda" if torch.cuda.is_available() else "cpu"
 
 conn = psycopg2.connect(
-  database=os.getenv("POSTGRES_DB"),
-  user=os.getenv("POSTGRES_USER"),
-  password=os.getenv("POSTGRES_PASSWORD"),
-  host=os.getenv("POSTGRES_HOST"),
-  port=os.getenv("POSTGRES_PORT")
+    database=os.getenv("POSTGRES_DB"),
+    user=os.getenv("POSTGRES_USER"),
+    password=os.getenv("POSTGRES_PASSWORD"),
+    host=os.getenv("POSTGRES_HOST"),
+    port=os.getenv("POSTGRES_PORT"),
 )
 
 # connect to a pg vector database
 cur = conn.cursor()
-cur.execute('CREATE EXTENSION IF NOT EXISTS vector')
+cur.execute("CREATE EXTENSION IF NOT EXISTS vector")
 
 register_vector(conn)
 
-cur.execute('SELECT id, html, title, description FROM practical_guides')
+cur.execute("SELECT id, html, title, description FROM practical_guides")
 practical_guides = cur.fetchall()
 
+
 def html_to_docling_doc(html: str):
-    with tempfile.NamedTemporaryFile(mode='w', suffix='.html', delete=True) as f:
+    with tempfile.NamedTemporaryFile(mode="w", suffix=".html", delete=True) as f:
         f.write(html)
         f.flush()
         converter = DocumentConverter()
@@ -60,7 +61,7 @@ if __name__ == "__main__":
 
         for doc in serialized_chunks:
             rows.append((doc_id, doc))
-        
+
     if not rows:
         print("No chunks produced. Check conversion/chunking.")
 
@@ -69,8 +70,8 @@ if __name__ == "__main__":
     embeddings = modelEmbedding.encode(texts, device=DEVICE, show_progress_bar=True)
 
     dim = embeddings.shape[1]
-    
-   # Ensure extension
+
+    # Ensure extension
     cur.execute("CREATE EXTENSION IF NOT EXISTS vector")
 
     # Drop + create table (same as your script, but with doc_id + chunk_index)
@@ -119,4 +120,3 @@ if __name__ == "__main__":
 #     for rank in rowsRanked:
 #         print(f"- #{rank['corpus_id']} ({rank['score']:.2f})")
 #     return [row['text'] for row in rowsRanked]
-

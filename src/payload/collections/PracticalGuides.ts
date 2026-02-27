@@ -1,6 +1,7 @@
 import type { CollectionConfig } from "payload";
 import { slugify } from "~/utils/tools";
 import { standardFields } from "../fields/standards";
+import { convertLexicalToHTML } from "@payloadcms/richtext-lexical/html";
 
 export const PracticalGuides: CollectionConfig = {
 	slug: "practical-guides",
@@ -54,6 +55,21 @@ export const PracticalGuides: CollectionConfig = {
 			},
 		},
 		standardFields.wysiwyg,
+		{
+			name: "html",
+			type: "text",
+			required: true,
+			label: { fr: "html" },
+			admin: { readOnly: true },
+			hooks: {
+				beforeChange: [
+					async ({ siblingData }) => {
+						if (!siblingData?.content) return "";
+						return convertLexicalToHTML({ data: siblingData.content });
+					},
+				],
+			},
+		},
 		{
 			name: "persona",
 			type: "relationship",

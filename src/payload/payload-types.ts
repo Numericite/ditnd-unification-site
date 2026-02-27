@@ -318,6 +318,7 @@ export interface PracticalGuide {
     };
     [k: string]: unknown;
   };
+  html: string;
   persona: (number | Persona)[];
   themes: (number | Theme)[];
   'practical-guides'?: (number | PracticalGuide)[] | null;
@@ -538,6 +539,7 @@ export interface PracticalGuidesSelect<T extends boolean = true> {
   description?: T;
   conditions?: T;
   content?: T;
+  html?: T;
   persona?: T;
   themes?: T;
   'practical-guides'?: T;
