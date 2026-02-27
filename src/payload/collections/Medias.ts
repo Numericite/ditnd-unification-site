@@ -9,6 +9,7 @@ export const Medias: CollectionConfig = {
 		width: true,
 		height: true,
 		alt: true,
+		sizes: true,
 	},
 	labels: {
 		singular: "Media",

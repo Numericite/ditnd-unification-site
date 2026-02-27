@@ -67,6 +67,8 @@ export default function PracticalGuidesDisplay({
 							title={guide.title}
 							content={guide.content}
 							setMenuLinks={setMenuLinks}
+							createdAt={guide.createdAt}
+							updatedAt={guide.updatedAt}
 						/>
 
 						<div className={cx(classes.footerContent)}>
