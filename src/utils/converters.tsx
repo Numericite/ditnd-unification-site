@@ -269,12 +269,16 @@ const useStyles = tss.create(() => ({
 		height: "auto",
 	},
 	videoWrapper: {
-		width: "100%",
-		height: "100%",
+		maxWidth: "100%",
+		maxHeight: "100%",
+		cursor: "auto!important",
+
 		video: {
 			width: "100%",
 			height: "100%",
 			objectFit: "cover",
+			pointerEvents: "auto",
+			cursor: "pointer!important",
 		},
 	},
 }));
