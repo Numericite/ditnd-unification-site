@@ -1,6 +1,5 @@
 import { tss } from "tss-react/dsfr";
 import { fr } from "@codegouvfr/react-dsfr";
-import moment from "moment";
 import { type Link, generateSummaryFromRichText } from "~/utils/tools";
 import type { DefaultTypedEditorState } from "@payloadcms/richtext-lexical";
 import { useEffect, type Dispatch, type SetStateAction } from "react";
@@ -29,9 +28,13 @@ export default function WysiwygContent({
 		setMenuLinks(generateSummaryFromRichText(content));
 	}, [content, setMenuLinks]);
 
-	const createdAtFormatted = moment(createdAt).format("DD/MM/YYYY");
+	const createdAtFormatted = createdAt
+		? new Date(createdAt).toLocaleDateString("fr-FR")
+		: null;
 
-	const updatedAtFormatted = moment(updatedAt).format("DD/MM/YYYY");
+	const updatedAtFormatted = updatedAt
+		? new Date(updatedAt).toLocaleDateString("fr-FR")
+		: null;
 
 	return (
 		<div className={cx(classes.wysiwig)} id="wysiwig-content">

@@ -29,15 +29,13 @@ export const headingConverter: JSXConverters<DefaultNodeTypes>["heading"] = (
 ) => {
 	const { node, nodesToJSX, converters } = args;
 
-	const headingNode = node;
-
-	if (headingNode.tag === "h2") {
+	if (node.tag === "h2") {
 		const childrenJSX = nodesToJSX({
-			nodes: headingNode.children ?? [],
+			nodes: node.children ?? [],
 			converters,
 		});
 
-		const headingText = extractTextFromNodes(headingNode.children ?? []);
+		const headingText = extractTextFromNodes(node.children ?? []);
 
 		return <h2 id={slugify(headingText)}>{childrenJSX}</h2>;
 	}
@@ -52,18 +50,16 @@ export const headingConverter: JSXConverters<DefaultNodeTypes>["heading"] = (
 export const uploadConverter: JSXConverters<DefaultNodeTypes>["upload"] = ({
 	node,
 }) => {
-	const { classes, cx } = useStyles();
+	const { classes } = useStyles();
 
-	const uploadNode = node;
-
-	const value = uploadNode.value as Media;
+	const value = node.value as Media;
 
 	if (!value?.url) return null;
 
 	if (value.url.endsWith("mov") || value.url.endsWith("mp4"))
 		return (
 			<div className={classes.videoWrapper}>
-				{/** biome-ignore lint/a11y/useMediaCaption: <explanation> */}
+				{/** biome-ignore lint/a11y/useMediaCaption: <no captions> */}
 				<video controls preload="metadata">
 					<source src={value.url} type="video/mp4" />
 				</video>
@@ -77,31 +73,31 @@ export const uploadConverter: JSXConverters<DefaultNodeTypes>["upload"] = ({
 				style={{ justifyContent: `${node.format}` }}
 			>
 				<Image
-					className={cx(classes.image)}
+					className={classes.image}
 					fetchPriority="high"
 					priority
 					src={`${process.env.S3_BUCKET ?? ""}${value.url}`}
-					alt={`${value.alt || ""}`}
+					alt={value.alt ?? ""}
 					width={value.width}
 					height={value.height}
 				/>
 			</div>
 		);
+
 	return (
 		<a target="_blank" rel="noopener noreferrer" href={value.url ?? ""}>
 			{value.alt}
 		</a>
 	);
 };
+
 export const quoteConverter: JSXConverters<DefaultNodeTypes>["quote"] = (
 	args,
 ) => {
 	const { node, nodesToJSX, converters } = args;
 
-	const quoteNode = node;
-
 	const childrenJSX = nodesToJSX({
-		nodes: quoteNode.children ?? [],
+		nodes: node.children ?? [],
 		converters,
 	});
 
@@ -114,6 +110,7 @@ export const quoteConverter: JSXConverters<DefaultNodeTypes>["quote"] = (
 		</blockquote>
 	);
 };
+
 export const tableConverter: JSXConverter<any> = ({ node }) => {
 	if (!node?.children) return null;
 
@@ -144,9 +141,7 @@ export const linkConverter: JSXConverters<DefaultNodeTypes>["link"] = (
 ) => {
 	const { node } = args;
 
-	const linkNode = node;
-
-	const url = linkNode.fields.url;
+	const url = node.fields.url;
 
 	if (url?.includes("youtube.com") || url?.includes("youtu.be")) {
 		const videoId = extractYouTubeId(url);
@@ -154,6 +149,7 @@ export const linkConverter: JSXConverters<DefaultNodeTypes>["link"] = (
 
 		return <LiteYouTube videoId={videoId} />;
 	}
+
 	const defaultLinkConverter = defaultJSXConverters.link;
 
 	return typeof defaultLinkConverter === "function"
@@ -221,46 +217,42 @@ export const customImageSizeConverter: JSXConverter<SerializedBlockNode> = ({
 
 export const relationshipConverter: JSXConverters<DefaultNodeTypes>["relationship"] =
 	({ node }) => {
-		{
-			const relationshipNode = node;
+		if (node.relationTo === "practical-guides") {
+			const value = node.value as AugmentedPracticalGuide;
 
-			if (relationshipNode.relationTo === "practical-guides") {
-				const value = relationshipNode.value as AugmentedPracticalGuide;
-
-				return (
-					<div className={fr.cx("fr-col-12", "fr-col-md-6", "fr-my-3v")}>
-						<CardDisplay
-							title={value.title}
-							conditions={value.conditions ?? []}
-							themes={value.themes}
-							redirect={`/guides/${value.slug}`}
-							titleAs="h3"
-							noImg
-						/>
-					</div>
-				);
-			}
-
-			if (relationshipNode.relationTo === "courses") {
-				const value = relationshipNode.value as AugmentedCourse;
-
-				return (
-					<div className={fr.cx("fr-col-sm-12", "fr-col-md-6")}>
-						<CardDisplay
-							title={value.title}
-							conditions={[value.condition]}
-							themes={[value.theme]}
-							redirect={value.link}
-							titleAs="h3"
-							noImg
-							kind="courses"
-						/>
-					</div>
-				);
-			}
-
-			return null;
+			return (
+				<div className={fr.cx("fr-col-12", "fr-col-md-6", "fr-my-3v")}>
+					<CardDisplay
+						title={value.title}
+						conditions={value.conditions ?? []}
+						themes={value.themes}
+						redirect={`/guides/${value.slug}`}
+						titleAs="h3"
+						noImg
+					/>
+				</div>
+			);
 		}
+
+		if (node.relationTo === "courses") {
+			const value = node.value as AugmentedCourse;
+
+			return (
+				<div className={fr.cx("fr-col-sm-12", "fr-col-md-6")}>
+					<CardDisplay
+						title={value.title}
+						conditions={[value.condition]}
+						themes={[value.theme]}
+						redirect={value.link}
+						titleAs="h3"
+						noImg
+						kind="courses"
+					/>
+				</div>
+			);
+		}
+
+		return null;
 	};
 
 const useStyles = tss.create(() => ({

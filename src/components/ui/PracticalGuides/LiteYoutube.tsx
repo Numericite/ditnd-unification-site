@@ -1,3 +1,4 @@
+import { fr } from "@codegouvfr/react-dsfr";
 import { useState } from "react";
 import { tss } from "tss-react/dsfr";
 
@@ -18,7 +19,7 @@ export default function LiteYouTube({ videoId }: { videoId: string }) {
 						backgroundImage: `url(https://i.ytimg.com/vi/${videoId}/hqdefault.jpg)`,
 					}}
 				>
-					▶
+					<i className="fr-icon-play-fill" />
 				</div>
 			</button>
 		);
@@ -27,8 +28,8 @@ export default function LiteYouTube({ videoId }: { videoId: string }) {
 	return (
 		<iframe
 			className={classes.iframeWrapper}
-			width="560px"
-			height="315px"
+			width="560"
+			height="315"
 			title="YouTube video player"
 			src={`https://www.youtube-nocookie.com/embed/${videoId}?autoplay=1`}
 			allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture"
@@ -43,7 +44,7 @@ const useStyles = tss.withName(LiteYouTube.name).create(() => ({
 		display: "block",
 		width: "100%",
 		maxWidth: "560px",
-		margin: "1rem 0",
+		margin: `${fr.spacing("4v")} 0`,
 		cursor: "pointer",
 	},
 	ytThumbnail: {
@@ -54,8 +55,10 @@ const useStyles = tss.withName(LiteYouTube.name).create(() => ({
 		alignItems: "center",
 		backgroundSize: "cover",
 		backgroundPosition: "center",
-		fontSize: "48px",
 		color: "white",
+		"& i:before": {
+			"--icon-size": "clamp(24px, 10vw, 64px)",
+		},
 	},
 	iframeWrapper: {
 		width: "100%",
