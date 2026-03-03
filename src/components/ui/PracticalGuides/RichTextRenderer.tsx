@@ -7,8 +7,10 @@ import {
 	accordionConverter,
 	customImageSizeConverter,
 	headingConverter,
+	linkConverter,
 	quoteConverter,
 	relationshipConverter,
+	tableConverter,
 	uploadConverter,
 } from "~/utils/converters";
 
@@ -30,6 +32,8 @@ export function RichTextRenderer({
 					accordion: accordionConverter,
 					image: customImageSizeConverter,
 				},
+				link: linkConverter,
+				table: tableConverter,
 			}}
 		/>
 	);

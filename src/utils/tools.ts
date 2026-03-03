@@ -260,27 +260,51 @@ export const ImageSizes = [
 	{
 		name: "thumbnail",
 		width: 300,
+		withoutEnlargement: true,
 	},
 	{
 		name: "square",
 		width: 500,
 		height: 500,
+		withoutEnlargement: true,
 	},
 	{
 		name: "small",
 		width: 600,
+		withoutEnlargement: true,
 	},
 	{
 		name: "medium",
 		width: 900,
+		withoutEnlargement: true,
 	},
 	{
 		name: "large",
 		width: 1400,
+		withoutEnlargement: true,
 	},
 	{
 		name: "banner",
 		width: 1240,
 		height: 240,
+		withoutEnlargement: true,
 	},
 ];
+
+export function extractYouTubeId(url: string): string | null {
+	try {
+		const parsed = new URL(url);
+
+		if (parsed.hostname === "youtu.be") {
+			return parsed.pathname.split("/")[1] || null;
+		}
+
+		if (parsed.searchParams.get("v")) {
+			return parsed.searchParams.get("v");
+		}
+
+		return null;
+	} catch {
+		return null;
+	}
+}

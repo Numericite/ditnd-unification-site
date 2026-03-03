@@ -12,7 +12,12 @@ export const PracticalGuides: CollectionConfig = {
 		plural: "Fiches pratiques",
 	},
 	versions: {
-		drafts: true,
+		drafts: {
+			autosave: {
+				interval: 60000,
+				showSaveDraftButton: true,
+			},
+		},
 	},
 	fields: [
 		{

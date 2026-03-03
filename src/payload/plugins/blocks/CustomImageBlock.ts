@@ -12,12 +12,14 @@ export const CustomImageBlock: Block = {
 			type: "upload",
 			relationTo: "medias",
 			required: true,
+			label: { fr: "Image" },
 		},
 		{
 			name: "size",
 			type: "select",
 			required: true,
 			defaultValue: "medium",
+			label: { fr: "Taille" },
 			options: [
 				{ label: "Miniature", value: "thumbnail" },
 				{ label: "Carré", value: "square" },

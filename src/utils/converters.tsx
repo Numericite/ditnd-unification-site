@@ -1,17 +1,18 @@
 import type {
 	DefaultNodeTypes,
 	SerializedBlockNode,
-	SerializedHeadingNode,
-	SerializedQuoteNode,
-	SerializedRelationshipNode,
-	SerializedUploadNode,
 } from "@payloadcms/richtext-lexical";
 import {
 	defaultJSXConverters,
 	type JSXConverter,
 	type JSXConverters,
 } from "@payloadcms/richtext-lexical/react";
-import { extractTextFromNodes, ImageSizes, slugify } from "./tools";
+import {
+	extractTextFromNodes,
+	extractYouTubeId,
+	ImageSizes,
+	slugify,
+} from "./tools";
 import type { Media } from "~/payload/payload-types";
 import type { AugmentedCourse } from "~/server/api/routers/courses";
 import CardDisplay from "~/components/ui/Cards/CardDisplay";
@@ -20,68 +21,83 @@ import type { AugmentedPracticalGuide } from "~/server/api/routers/practical-gui
 import WysiwygAccordion from "~/components/ui/PracticalGuides/WysiwygAccordion";
 import Image from "next/image";
 import { tss } from "tss-react/dsfr";
+import LiteYouTube from "~/components/ui/PracticalGuides/LiteYoutube";
+import { Table } from "@codegouvfr/react-dsfr/Table";
 
 export const headingConverter: JSXConverters<DefaultNodeTypes>["heading"] = (
 	args,
 ) => {
 	const { node, nodesToJSX, converters } = args;
 
-	const headingNode = node as SerializedHeadingNode;
-
-	if (headingNode.tag === "h2") {
+	if (node.tag === "h2") {
 		const childrenJSX = nodesToJSX({
-			nodes: headingNode.children ?? [],
+			nodes: node.children ?? [],
 			converters,
 		});
 
-		const headingText = extractTextFromNodes(headingNode.children ?? []);
+		const headingText = extractTextFromNodes(node.children ?? []);
 
 		return <h2 id={slugify(headingText)}>{childrenJSX}</h2>;
 	}
 
-	const defaultHeading = defaultJSXConverters.heading;
+	const defaultHeadingConverter = defaultJSXConverters.heading;
 
-	return typeof defaultHeading === "function" ? defaultHeading(args) : null;
+	return typeof defaultHeadingConverter === "function"
+		? defaultHeadingConverter(args)
+		: null;
 };
 
 export const uploadConverter: JSXConverters<DefaultNodeTypes>["upload"] = ({
 	node,
 }) => {
-	const { classes, cx } = useStyles();
+	const { classes } = useStyles();
 
-	const uploadNode = node as SerializedUploadNode;
+	const value = node.value as Media;
 
-	const value = uploadNode.value as Media;
+	if (!value?.url) return null;
 
-	if (!value?.url || !value?.width || !value?.height) return null;
+	if (value.url.endsWith("mov") || value.url.endsWith("mp4"))
+		return (
+			<div className={classes.videoWrapper}>
+				{/** biome-ignore lint/a11y/useMediaCaption: <no captions> */}
+				<video controls preload="metadata">
+					<source src={value.url} type="video/mp4" />
+				</video>
+			</div>
+		);
+
+	if (value.width && value.height)
+		return (
+			<div
+				className={fr.cx("fr-my-3v", "fr-col-12")}
+				style={{ justifyContent: `${node.format}` }}
+			>
+				<Image
+					className={classes.image}
+					fetchPriority="high"
+					priority
+					src={`${process.env.S3_BUCKET ?? ""}${value.url}`}
+					alt={value.alt ?? ""}
+					width={value.width}
+					height={value.height}
+				/>
+			</div>
+		);
+
 	return (
-		<div
-			className={fr.cx("fr-my-3v", "fr-col-12")}
-			style={{ justifyContent: `${node.format}` }}
-		>
-			<Image
-				className={cx(classes.image)}
-				fetchPriority="high"
-				priority
-				src={`${process.env.S3_BUCKET ?? ""}${value.url}`}
-				alt={`${value.alt || ""}`}
-				width={value.width}
-				height={value.height}
-			/>
-		</div>
+		<a target="_blank" rel="noopener noreferrer" href={value.url ?? ""}>
+			{value.alt}
+		</a>
 	);
 };
+
 export const quoteConverter: JSXConverters<DefaultNodeTypes>["quote"] = (
 	args,
 ) => {
-	const { classes, cx } = useStyles();
-
 	const { node, nodesToJSX, converters } = args;
 
-	const quoteNode = node as SerializedQuoteNode;
-
 	const childrenJSX = nodesToJSX({
-		nodes: quoteNode.children ?? [],
+		nodes: node.children ?? [],
 		converters,
 	});
 
@@ -93,6 +109,52 @@ export const quoteConverter: JSXConverters<DefaultNodeTypes>["quote"] = (
 			{childrenJSX}
 		</blockquote>
 	);
+};
+
+export const tableConverter: JSXConverter<any> = ({ node }) => {
+	if (!node?.children) return null;
+
+	const rows = node.children.map((row: any) => {
+		return row.children.map((cell: any) => {
+			const paragraphs = cell.children ?? [];
+
+			const text = paragraphs
+				.map((paragraph: any) =>
+					(paragraph.children ?? [])
+						.map((textNode: any) => textNode.text ?? "")
+						.join(""),
+				)
+				.join("\n");
+
+			return text;
+		});
+	});
+
+	const headers = rows[0];
+	const data = rows.slice(1);
+
+	return <Table data={[...data]} headers={headers} />;
+};
+
+export const linkConverter: JSXConverters<DefaultNodeTypes>["link"] = (
+	args,
+) => {
+	const { node } = args;
+
+	const url = node.fields.url;
+
+	if (url?.includes("youtube.com") || url?.includes("youtu.be")) {
+		const videoId = extractYouTubeId(url);
+		if (!videoId) return null;
+
+		return <LiteYouTube videoId={videoId} />;
+	}
+
+	const defaultLinkConverter = defaultJSXConverters.link;
+
+	return typeof defaultLinkConverter === "function"
+		? defaultLinkConverter(args)
+		: null;
 };
 
 export const accordionConverter: JSXConverter<SerializedBlockNode> = ({
@@ -155,51 +217,60 @@ export const customImageSizeConverter: JSXConverter<SerializedBlockNode> = ({
 
 export const relationshipConverter: JSXConverters<DefaultNodeTypes>["relationship"] =
 	({ node }) => {
-		{
-			const relationshipNode = node as SerializedRelationshipNode;
+		if (node.relationTo === "practical-guides") {
+			const value = node.value as AugmentedPracticalGuide;
 
-			if (relationshipNode.relationTo === "practical-guides") {
-				const value = relationshipNode.value as AugmentedPracticalGuide;
-
-				return (
-					<div className={fr.cx("fr-col-12", "fr-col-md-6", "fr-my-3v")}>
-						<CardDisplay
-							title={value.title}
-							conditions={value.conditions ?? []}
-							themes={value.themes}
-							redirect={`/guides/${value.slug}`}
-							titleAs="h3"
-							noImg
-						/>
-					</div>
-				);
-			}
-
-			if (relationshipNode.relationTo === "courses") {
-				const value = relationshipNode.value as AugmentedCourse;
-
-				return (
-					<div className={fr.cx("fr-col-sm-12", "fr-col-md-6")}>
-						<CardDisplay
-							title={value.title}
-							conditions={[value.condition]}
-							themes={[value.theme]}
-							redirect={value.link}
-							titleAs="h3"
-							noImg
-							kind="courses"
-						/>
-					</div>
-				);
-			}
-
-			return null;
+			return (
+				<div className={fr.cx("fr-col-12", "fr-col-md-6", "fr-my-3v")}>
+					<CardDisplay
+						title={value.title}
+						conditions={value.conditions ?? []}
+						themes={value.themes}
+						redirect={`/guides/${value.slug}`}
+						titleAs="h3"
+						noImg
+					/>
+				</div>
+			);
 		}
+
+		if (node.relationTo === "courses") {
+			const value = node.value as AugmentedCourse;
+
+			return (
+				<div className={fr.cx("fr-col-sm-12", "fr-col-md-6")}>
+					<CardDisplay
+						title={value.title}
+						conditions={[value.condition]}
+						themes={[value.theme]}
+						redirect={value.link}
+						titleAs="h3"
+						noImg
+						kind="courses"
+					/>
+				</div>
+			);
+		}
+
+		return null;
 	};
 
 const useStyles = tss.create(() => ({
 	image: {
 		maxWidth: "100%",
 		height: "auto",
+	},
+	videoWrapper: {
+		maxWidth: "100%",
+		maxHeight: "100%",
+		cursor: "auto!important",
+
+		video: {
+			width: "100%",
+			height: "100%",
+			objectFit: "cover",
+			pointerEvents: "auto",
+			cursor: "pointer!important",
+		},
 	},
 }));
