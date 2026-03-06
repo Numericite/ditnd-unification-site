@@ -21,6 +21,7 @@ jobs:
         uses: anthropics/claude-code-action@beta
         with:
           anthropic_api_key: ${{ secrets.ANTHROPIC_API_KEY }}
+          allowed_tools: "Bash"
           direct_prompt: |
             Tu es un expert en accessibilité web. Effectue une revue de code axée sur l'accessibilité des fichiers modifiés dans cette pull request.
 
@@ -70,3 +71,33 @@ jobs:
             - Classe les problèmes par sévérité : 🔴 Critique (bloquant RGAA) | 🟡 Important | 🟢 Suggestion
             - Si aucun problème n'est trouvé, indique-le clairement
             - Termine par un résumé synthétique du niveau d'accessibilité du diff
+
+            **ACTION OBLIGATOIRE — à faire en dernier :**
+            Après avoir posté le commentaire sur la PR, tu DOIS écrire le fichier `accessibility-result.json`
+            en exécutant exactement l'une de ces commandes bash selon tes conclusions :
+
+            - Au moins un problème 🔴 Critique trouvé :
+              `echo '{"status":"FAIL"}' > accessibility-result.json`
+
+            - Uniquement des problèmes 🟡 Important (aucun Critique) :
+              `echo '{"status":"WARN"}' > accessibility-result.json`
+
+            - Aucun problème ou uniquement des 🟢 Suggestions :
+              `echo '{"status":"PASS"}' > accessibility-result.json`
+
+      - name: Evaluate accessibility result
+        run: |
+          if [ ! -f "accessibility-result.json" ]; then
+            echo "::warning::Fichier de résultat introuvable, review ignorée."
+            exit 0
+          fi
+          STATUS=$(python3 -c "import json; print(json.load(open('accessibility-result.json'))['status'])")
+          echo "Résultat de la review accessibilité : $STATUS"
+          if [ "$STATUS" = "FAIL" ]; then
+            echo "::error::Des problèmes d'accessibilité critiques (RGAA) ont été détectés. Correction requise avant le merge."
+            exit 1
+          elif [ "$STATUS" = "WARN" ]; then
+            echo "::warning::Des problèmes d'accessibilité importants ont été détectés. Il est fortement recommandé de les corriger."
+          else
+            echo "Review accessibilité : aucun problème bloquant détecté."
+          fi
