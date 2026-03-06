@@ -39,6 +39,7 @@ export default function PracticalGuidePage() {
 					content={`Brouillon Fiche pratique sur ${guide.title} `}
 				/>
 			</Head>
+			<h2 className={fr.cx("fr-h2")}>{guide.title}</h2>
 			<h1 className={fr.cx("fr-h1")}>{guide.title}</h1>
 			<div className={fr.cx("fr-container")}>
 				<Breadcrumb
