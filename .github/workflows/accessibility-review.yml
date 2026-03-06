@@ -1,0 +1,72 @@
+name: Accessibility Review
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+
+jobs:
+  accessibility-review:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pull-requests: write
+      id-token: write
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Run Accessibility Review with Claude
+        uses: anthropics/claude-code-action@beta
+        with:
+          anthropic_api_key: ${{ secrets.ANTHROPIC_API_KEY }}
+          direct_prompt: |
+            Tu es un expert en accessibilité web. Effectue une revue de code axée sur l'accessibilité des fichiers modifiés dans cette pull request.
+
+            Contexte du projet :
+            - Framework : Next.js 16 + React 19
+            - Système de design : DSFR (@codegouvfr/react-dsfr) — conforme RGAA/WCAG 2.1 AA
+            - Langage : TypeScript
+
+            Pour chaque fichier modifié (`.tsx`, `.ts`, `.jsx`, `.js`, `.css`), analyse et commente sur :
+
+            **1. Sémantique HTML**
+            - Utilisation correcte des balises sémantiques (nav, main, section, article, header, footer, h1-h6)
+            - Hiérarchie des titres cohérente
+            - Listes et tableaux correctement structurés
+
+            **2. ARIA & Rôles**
+            - Attributs `aria-label`, `aria-labelledby`, `aria-describedby` présents et pertinents
+            - Rôles ARIA utilisés correctement (ne pas redéfinir la sémantique native inutilement)
+            - États ARIA (`aria-expanded`, `aria-selected`, `aria-hidden`, etc.) mis à jour dynamiquement si nécessaire
+
+            **3. Navigation clavier**
+            - Tous les éléments interactifs sont atteignables au clavier (pas de `tabIndex` négatif abusif)
+            - Gestion du focus explicite lors de changements de contenu dynamique (modals, alertes, navigation SPA)
+            - Ordre de tabulation logique
+
+            **4. Contraste & Visibilité**
+            - Signaler si des couleurs sont définies en dur sans passer par les tokens du DSFR
+            - Textes avec couleurs personnalisées susceptibles de ne pas respecter le ratio WCAG (4.5:1 pour le texte normal, 3:1 pour le grand texte)
+
+            **5. Images & Médias**
+            - Attribut `alt` présent et descriptif sur toutes les images (`<img>`, `<Image>` Next.js)
+            - Images décoratives avec `alt=""`
+            - Vidéos avec sous-titres ou transcription si possible
+
+            **6. Formulaires**
+            - Chaque `<input>`, `<select>`, `<textarea>` associé à un `<label>` explicite
+            - Messages d'erreur liés au champ concerné via `aria-describedby`
+            - Pas de placeholder utilisé comme seul label
+
+            **7. Usage du DSFR**
+            - Composants DSFR utilisés correctement (ne pas recréer ce qui existe déjà dans le design system)
+            - Props d'accessibilité des composants DSFR bien renseignées
+
+            **Format de la réponse :**
+            - Poste un commentaire de review structuré directement sur la PR
+            - Pour chaque problème : indique le fichier, la ligne approximative, le problème, et une suggestion de correction concrète
+            - Classe les problèmes par sévérité : 🔴 Critique (bloquant RGAA) | 🟡 Important | 🟢 Suggestion
+            - Si aucun problème n'est trouvé, indique-le clairement
+            - Termine par un résumé synthétique du niveau d'accessibilité du diff
