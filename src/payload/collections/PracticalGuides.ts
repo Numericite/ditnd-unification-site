@@ -29,7 +29,6 @@ export const PracticalGuides: CollectionConfig = {
 		{
 			name: "slug",
 			type: "text",
-			unique: true,
 			required: true,
 			label: { fr: "Identifiant texte" },
 			admin: {
