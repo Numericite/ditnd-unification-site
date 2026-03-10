@@ -171,6 +171,70 @@ export const accordionConverter: JSXConverter<SerializedBlockNode> = ({
 	);
 };
 
+export const citationConverter: JSXConverter<SerializedBlockNode> = ({
+	node,
+}) => {
+	const value = node.fields;
+
+	if (!value?.quote) return null;
+
+	return (
+		<figure className={fr.cx("fr-quote", "fr-my-3v")}>
+			<blockquote>
+				<p>{value.quote}</p>
+			</blockquote>
+			{(value.author || value.source) && (
+				<figcaption>
+					{value.author && (
+						<p className="fr-quote__author">{value.author}</p>
+					)}
+					{value.source && (
+						<ul className="fr-quote__source">
+							<li>{value.source}</li>
+						</ul>
+					)}
+				</figcaption>
+			)}
+		</figure>
+	);
+};
+
+export const highlightConverter: JSXConverter<SerializedBlockNode> = ({
+	node,
+}) => {
+	const value = node.fields;
+
+	if (!value?.content) return null;
+
+	const sizeClass =
+		value.size === "sm"
+			? "fr-text--sm"
+			: value.size === "lg"
+				? "fr-text--lg"
+				: "";
+
+	return (
+		<div className={fr.cx("fr-highlight", "fr-my-3v")}>
+			<p className={sizeClass || undefined}>{value.content}</p>
+		</div>
+	);
+};
+
+export const calloutConverter: JSXConverter<SerializedBlockNode> = ({
+	node,
+}) => {
+	const value = node.fields;
+
+	if (!value?.title) return null;
+
+	return (
+		<div className={fr.cx("fr-callout", "fr-my-3v")}>
+			<h3 className="fr-callout__title">{value.title}</h3>
+			<p className="fr-callout__text">{value.content}</p>
+		</div>
+	);
+};
+
 export const customImageSizeConverter: JSXConverter<SerializedBlockNode> = ({
 	node,
 }) => {
