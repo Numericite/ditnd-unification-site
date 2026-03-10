@@ -62,6 +62,18 @@ export default buildConfig({
           width: 375,
           height: 667,
         },
+        {
+          label: "Tablette",
+          name: "tablet",
+          width: 768,
+          height: 1024,
+        },
+        {
+          label: "Bureau",
+          name: "desktop",
+          width: 1440,
+          height: 900,
+        },
       ],
       collections: ["practical-guides"],
     },
