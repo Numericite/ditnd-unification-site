@@ -56,12 +56,20 @@ export const uploadConverter: JSXConverters<DefaultNodeTypes>["upload"] = ({
 
 	if (!value?.url) return null;
 
-	if (value.url.endsWith("mov") || value.url.endsWith("mp4"))
+	const isVideo =
+		value.mimeType?.startsWith("video/") ||
+		value.url.endsWith(".mov") ||
+		value.url.endsWith(".mp4");
+
+	if (isVideo)
 		return (
-			<div className={classes.videoWrapper}>
+			<div className={fr.cx("fr-responsive-vid")}>
 				{/** biome-ignore lint/a11y/useMediaCaption: <no captions> */}
-				<video controls preload="metadata">
-					<source src={value.url} type="video/mp4" />
+				<video controls preload="metadata" style={{ width: "100%" }}>
+					<source
+						src={value.url}
+						type={value.mimeType || "video/mp4"}
+					/>
 				</video>
 			</div>
 		);
