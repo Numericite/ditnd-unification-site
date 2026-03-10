@@ -10,6 +10,7 @@ export const Medias: CollectionConfig = {
 		height: true,
 		alt: true,
 		sizes: true,
+		mimeType: true,
 	},
 	labels: {
 		singular: "Media",
