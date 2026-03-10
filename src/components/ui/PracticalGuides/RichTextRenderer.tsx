@@ -5,8 +5,11 @@ import {
 } from "@payloadcms/richtext-lexical/react";
 import {
 	accordionConverter,
+	calloutConverter,
+	citationConverter,
 	customImageSizeConverter,
 	headingConverter,
+	highlightConverter,
 	linkConverter,
 	quoteConverter,
 	relationshipConverter,
@@ -31,6 +34,9 @@ export function RichTextRenderer({
 				blocks: {
 					accordion: accordionConverter,
 					image: customImageSizeConverter,
+					citation: citationConverter,
+					highlight: highlightConverter,
+					callout: calloutConverter,
 				},
 				link: linkConverter,
 				table: tableConverter,
