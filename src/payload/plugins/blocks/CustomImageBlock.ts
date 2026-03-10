@@ -13,6 +13,10 @@ export const CustomImageBlock: Block = {
 			relationTo: "medias",
 			required: true,
 			label: { fr: "Image" },
+			validate: (val: string | undefined | null) => {
+				if (!val) return "L'image est obligatoire";
+				return true;
+			},
 		},
 		{
 			name: "size",
@@ -20,6 +24,9 @@ export const CustomImageBlock: Block = {
 			required: true,
 			defaultValue: "medium",
 			label: { fr: "Taille" },
+			admin: {
+				description: "Choisissez la taille d'affichage de l'image",
+			},
 			options: [
 				{ label: "Miniature", value: "thumbnail" },
 				{ label: "Carré", value: "square" },
