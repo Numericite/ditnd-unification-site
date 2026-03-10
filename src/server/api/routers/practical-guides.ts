@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { sql } from "@payloadcms/db-postgres";
 
 import {
   createTRPCRouter,
@@ -7,6 +8,7 @@ import {
   resolveRelations,
 } from "~/server/api/trpc";
 import type { Where } from "payload";
+import { generateEmbedding } from "~/payload/services/embedding";
 import type {
   Condition,
   Media,
@@ -138,32 +140,53 @@ export const practicalGuidesRouter = createTRPCRouter({
       const trimmedText = text?.trim();
 
       if (trimmedText) {
-        const searchResults = await ctx.payload.find({
-          collection: "search-results" as any,
-          limit: 0,
-          where: {
-            or: [
-              { title: { contains: trimmedText } },
-              { description: { contains: trimmedText } },
-              { contentText: { contains: trimmedText } },
-              { conditionNames: { contains: trimmedText } },
-              { themeNames: { contains: trimmedText } },
-              { personaNames: { contains: trimmedText } },
-            ],
-          },
-        });
+        let matchingIds: number[] = [];
 
-        const matchingIds = (searchResults.docs as Record<string, any>[])
-          .map((doc) => {
-            const ref = doc.doc;
-            if (!ref) return null;
-            return typeof ref.value === "number"
-              ? ref.value
-              : typeof ref.value === "object" && ref.value !== null
-                ? (ref.value as { id: number }).id
-                : null;
-          })
-          .filter((id): id is number => id !== null);
+        // 1. Try pgvector semantic similarity search
+        try {
+          const queryEmbedding = await generateEmbedding(trimmedText);
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          const vectorResults = await (ctx.payload.db as any).drizzle.execute(sql`
+            SELECT doc_id
+            FROM practical_guide_vectors
+            ORDER BY embedding <-> ${JSON.stringify(queryEmbedding)}::vector
+            LIMIT 50
+          `);
+          matchingIds = (vectorResults.rows as { doc_id: string }[])
+            .map((row) => parseInt(row.doc_id, 10))
+            .filter((id) => !isNaN(id));
+        } catch (_) {
+          // Vector table may not exist yet — fall through to text search
+        }
+
+        // 2. Fallback to keyword search if vector search returned nothing
+        if (matchingIds.length === 0) {
+          const searchResults = await ctx.payload.find({
+            collection: "search-results" as any,
+            limit: 0,
+            where: {
+              or: [
+                { title: { contains: trimmedText } },
+                { description: { contains: trimmedText } },
+                { contentText: { contains: trimmedText } },
+                { conditionNames: { contains: trimmedText } },
+                { themeNames: { contains: trimmedText } },
+                { personaNames: { contains: trimmedText } },
+              ],
+            },
+          });
+          matchingIds = (searchResults.docs as Record<string, any>[])
+            .map((doc) => {
+              const ref = doc.doc;
+              if (!ref) return null;
+              return typeof ref.value === "number"
+                ? ref.value
+                : typeof ref.value === "object" && ref.value !== null
+                  ? (ref.value as { id: number }).id
+                  : null;
+            })
+            .filter((id): id is number => id !== null);
+        }
 
         if (matchingIds.length === 0) {
           return [];
