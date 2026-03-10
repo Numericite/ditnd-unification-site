@@ -1,9 +1,12 @@
 import { BlocksFeature, lexicalEditor } from "@payloadcms/richtext-lexical";
 import type { Field } from "payload";
 import { AccordionBlock } from "../plugins/blocks/AccordionBlock";
-import { defaultWysiwygFeatures } from "./defaultWysiwygFeatures";
+import { CalloutBlock } from "../plugins/blocks/CalloutBlock";
+import { CitationBlock } from "../plugins/blocks/CitationBlock";
 import { CustomImageBlock } from "../plugins/blocks/CustomImageBlock";
 import { YouTubeBlock } from "../plugins/blocks/YouTubeBlock";
+import { HighlightBlock } from "../plugins/blocks/HighlightBlock";
+import { defaultWysiwygFeatures } from "./defaultWysiwygFeatures";
 
 export const standardFields = {
   title: {
@@ -68,7 +71,14 @@ export const standardFields = {
       features: ({ defaultFeatures }) => [
         ...defaultWysiwygFeatures({ defaultFeatures }),
         BlocksFeature({
-          blocks: [AccordionBlock, CustomImageBlock, YouTubeBlock],
+          blocks: [
+            AccordionBlock,
+            CustomImageBlock,
+            YouTubeBlock,
+            CitationBlock,
+            HighlightBlock,
+            CalloutBlock,
+          ],
         }),
       ],
     }),
