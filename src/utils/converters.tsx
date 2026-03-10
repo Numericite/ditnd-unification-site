@@ -182,6 +182,7 @@ export const customImageSizeConverter: JSXConverter<SerializedBlockNode> = ({
 
 	const image = value.image;
 	const size = value.size;
+	const alignment = value.alignment || "center";
 
 	const currentSize = ImageSizes.filter((imgSize) => imgSize.name === size)[0];
 
@@ -195,12 +196,17 @@ export const customImageSizeConverter: JSXConverter<SerializedBlockNode> = ({
 		height = Math.round(width * ratio);
 	}
 
+	const alignmentStyle =
+		alignment === "left"
+			? ({ display: "flex", justifyContent: "flex-start" } as const)
+			: alignment === "right"
+				? ({ display: "flex", justifyContent: "flex-end" } as const)
+				: ({ display: "flex", justifyContent: "center" } as const);
+
 	return (
 		<div
 			className={fr.cx("fr-my-3v", "fr-col-12")}
-			style={{
-				justifyContent: `${node.format}`,
-			}}
+			style={alignmentStyle}
 		>
 			<Image
 				className={cx(classes.image)}
