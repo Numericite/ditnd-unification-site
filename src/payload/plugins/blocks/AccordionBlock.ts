@@ -4,6 +4,10 @@ import { defaultWysiwygFeatures } from "../../fields/defaultWysiwygFeatures";
 
 export const AccordionBlock: Block = {
 	slug: "accordion",
+	labels: {
+		singular: "Accordéon",
+		plural: "Accordéons",
+	},
 	admin: {
 		disableBlockName: true,
 	},
@@ -13,6 +17,10 @@ export const AccordionBlock: Block = {
 			label: "Titre",
 			type: "text",
 			required: true,
+			validate: (val: string | undefined | null) => {
+				if (!val) return "Le titre de l'accordéon est obligatoire";
+				return true;
+			},
 		},
 		{
 			name: "content",
