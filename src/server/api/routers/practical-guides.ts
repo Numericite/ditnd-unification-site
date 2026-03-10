@@ -142,7 +142,7 @@ export const practicalGuidesRouter = createTRPCRouter({
 					or: [
 						{ title: { contains: trimmedText } },
 						{ description: { contains: trimmedText } },
-						{ html: { contains: trimmedText } },
+						{ content: { contains: trimmedText } },
 						{ "conditions.acronym": { contains: trimmedText } },
 						{ "themes.name": { contains: trimmedText } },
 						{ "persona.name": { contains: trimmedText } },
