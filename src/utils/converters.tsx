@@ -335,6 +335,45 @@ export const relationshipConverter: JSXConverters<DefaultNodeTypes>["relationshi
 			);
 		}
 
+		if (node.relationTo === "medias") {
+			const media = node.value as Media;
+
+			if (!media?.url) return null;
+
+			if (
+				media.mimeType === "application/pdf" ||
+				media.url?.endsWith(".pdf")
+			) {
+				return (
+					<div className={fr.cx("fr-download", "fr-my-3v")}>
+						<p>
+							<a
+								href={media.url}
+								download
+								className="fr-download__link"
+							>
+								Télécharger{" "}
+								{media.alt || media.filename || "le document"}
+								<span className="fr-download__detail">
+									PDF
+								</span>
+							</a>
+						</p>
+					</div>
+				);
+			}
+
+			return (
+				<a
+					href={media.url}
+					target="_blank"
+					rel="noopener noreferrer"
+				>
+					{media.alt || media.filename || "Document"}
+				</a>
+			);
+		}
+
 		return null;
 	};
 
