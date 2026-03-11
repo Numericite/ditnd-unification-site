@@ -37,9 +37,9 @@ export default function CardDisplay({
 
 	const imgProps = !noImg
 		? {
-				imageUrl: imageUrl ?? "/placeholder.16x9.png",
-				imageAlt: imageAlt ?? "",
-			}
+			imageUrl: imageUrl ?? "/placeholder.16x9.png",
+			imageAlt: imageAlt ?? "",
+		}
 		: { imageComponent: undefined };
 
 	return (
@@ -59,6 +59,7 @@ export default function CardDisplay({
 				<a
 					className="fr-link fr-icon-arrow-right-line fr-link--icon-right"
 					href={redirect}
+					{...(kind === "courses" ? { target: "_blank", rel: "noopener noreferrer" } : {})}
 				>
 					{kind === "courses" ? "Voir la formation" : "Voir la fiche"}
 				</a>
