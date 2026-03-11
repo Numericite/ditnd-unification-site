@@ -16,6 +16,17 @@ export const standardFields = {
 		label: "Description",
 		type: "textarea",
 		required: true,
+		maxLength: 120,
+		admin: {
+			description:
+				"Description courte affichée sur les cards (120 caractères max)",
+		},
+		validate: (val: string | undefined | null) => {
+			if (val && val.length > 120) {
+				return `La description ne doit pas dépasser 120 caractères (actuellement ${val.length})`;
+			}
+			return true;
+		},
 	},
 	button: {
 		label: "Lien associé",
