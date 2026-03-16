@@ -69,8 +69,8 @@ const DescriptionTextarea: TextareaFieldClientComponent = ({ field, path }) => {
           )}
           {charCount}/{MAX_LENGTH}
         </div>
+        {showError && <FieldError message={errorMessage} path={path} />}
       </div>
-      {showError && <FieldError message={errorMessage} path={path} />}
     </div>
   );
 };
