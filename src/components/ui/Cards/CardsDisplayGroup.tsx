@@ -36,7 +36,7 @@ export default function CardsDisplayGroup({
                     imageAlt={course.image?.alt}
                     conditions={[course.condition]}
                     themes={[course.theme]}
-                    redirect={`/`}
+                    redirect={course.link}
                     titleAs={titleAs}
                     kind={kind}
                   />
