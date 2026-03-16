@@ -223,6 +223,26 @@ export const customImageSizeConverter: JSXConverter<SerializedBlockNode> = ({
 	);
 };
 
+export const youtubeConverter: JSXConverter<SerializedBlockNode> = ({
+	node,
+}) => {
+	const url = node.fields?.url as string;
+	if (!url) return null;
+
+	const videoId = extractYouTubeId(url);
+	if (!videoId) return null;
+
+	const sizeUnit = (node.fields?.sizeUnit as string) || "percent";
+	const sizeValue = (node.fields?.sizeValue as number) ?? 100;
+	const width = sizeUnit === "percent" ? `${sizeValue}%` : `${sizeValue}px`;
+
+	return (
+		<div className={fr.cx("fr-my-3v")} style={{ width, maxWidth: "100%" }}>
+			<LiteYouTube videoId={videoId} />
+		</div>
+	);
+};
+
 export const relationshipConverter: JSXConverters<DefaultNodeTypes>["relationship"] =
 	({ node }) => {
 		if (node.relationTo === "practical-guides") {
