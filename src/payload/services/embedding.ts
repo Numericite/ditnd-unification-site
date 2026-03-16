@@ -1,28 +1,21 @@
-import { pipeline } from "@huggingface/transformers";
+import OpenAI from "openai";
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-let embeddingPipeline: any = null;
+let client: OpenAI | null = null;
 
-/**
- * Returns a singleton feature-extraction pipeline using all-MiniLM-L6-v2 (384 dims).
- * The model is downloaded once and cached by the HuggingFace library.
- */
-async function getEmbeddingPipeline() {
-	if (!embeddingPipeline) {
-		embeddingPipeline = await pipeline(
-			"feature-extraction",
-			"Xenova/all-MiniLM-L6-v2",
-		);
+function getClient(): OpenAI {
+	if (!client) {
+		client = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
 	}
-	return embeddingPipeline;
+	return client;
 }
 
 /**
- * Generates a 384-dimensional normalized embedding for the given text.
+ * Generates a 1536-dimensional embedding for the given text using OpenAI text-embedding-3-small.
  */
 export async function generateEmbedding(text: string): Promise<number[]> {
-	const pipe = await getEmbeddingPipeline();
-	// eslint-disable-next-line @typescript-eslint/no-explicit-any
-	const output = await (pipe as any)(text, { pooling: "mean", normalize: true });
-	return Array.from(output.data as Float32Array);
+	const response = await getClient().embeddings.create({
+		model: "text-embedding-3-small",
+		input: text,
+	});
+	return response.data[0]!.embedding;
 }

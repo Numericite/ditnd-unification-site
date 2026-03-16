@@ -149,14 +149,14 @@ export const practicalGuidesRouter = createTRPCRouter({
           const vectorResults = await (ctx.payload.db as any).drizzle.execute(sql`
             SELECT doc_id
             FROM practical_guide_vectors
-            ORDER BY embedding <-> ${JSON.stringify(queryEmbedding)}::vector
+            ORDER BY embedding <=> ${JSON.stringify(queryEmbedding)}::vector
             LIMIT 50
           `);
           matchingIds = (vectorResults.rows as { doc_id: string }[])
             .map((row) => parseInt(row.doc_id, 10))
             .filter((id) => !isNaN(id));
-        } catch (_) {
-          // Vector table may not exist yet — fall through to text search
+        } catch (err) {
+          console.warn("[VectorSearch] Semantic search failed, falling back to keyword search:", err);
         }
 
         // 2. Fallback to keyword search if vector search returned nothing

@@ -23,9 +23,21 @@ const afterChangePracticalGuide: CollectionAfterChangeHook = async ({
 	doc,
 	req,
 }) => {
-	// Only index published documents
-	if (doc._status !== "published") return doc;
 	if (!req?.payload?.db) return doc;
+	// eslint-disable-next-line @typescript-eslint/no-explicit-any
+	const db = req.payload.db as any;
+
+	// Remove vectors when unpublished
+	if (doc._status !== "published") {
+		try {
+			await db.drizzle.execute(
+				sql`DELETE FROM practical_guide_vectors WHERE doc_id = ${String(doc.id)}`,
+			);
+		} catch (err) {
+			console.error("[VectorSearch] Failed to remove vectors on unpublish:", doc.id, err);
+		}
+		return doc;
+	}
 
 	try {
 		const title = typeof doc.title === "string" ? doc.title : "";
@@ -41,17 +53,14 @@ const afterChangePracticalGuide: CollectionAfterChangeHook = async ({
 
 		const embedding = await generateEmbedding(fullText);
 
-		// eslint-disable-next-line @typescript-eslint/no-explicit-any
-		const db = req.payload.db as any;
-		await db.drizzle.execute(
-			sql`DELETE FROM practical_guide_vectors WHERE doc_id = ${String(doc.id)}`,
-		);
 		await db.drizzle.execute(sql`
-      INSERT INTO practical_guide_vectors (id, doc_id, chunk_index, text, embedding)
-      VALUES (${doc.id}, ${String(doc.id)}, 0, ${fullText}, ${JSON.stringify(embedding)}::vector)
-    `);
+			INSERT INTO practical_guide_vectors (doc_id, text, embedding)
+			VALUES (${String(doc.id)}, ${fullText}, ${JSON.stringify(embedding)}::vector)
+			ON CONFLICT (doc_id) DO UPDATE SET
+				text = EXCLUDED.text,
+				embedding = EXCLUDED.embedding
+		`);
 	} catch (err) {
-		// Don't fail the save if embedding generation fails
 		console.error("[VectorSearch] Failed to index guide:", doc.id, err);
 	}
 
