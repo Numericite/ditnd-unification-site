@@ -138,9 +138,9 @@ export const practicalGuidesRouter = createTRPCRouter({
       }
 
       const trimmedText = text?.trim();
+      let matchingIds: number[] = [];
 
       if (trimmedText) {
-        let matchingIds: number[] = [];
 
         // 1. Try pgvector semantic similarity search
         try {
@@ -211,6 +211,16 @@ export const practicalGuidesRouter = createTRPCRouter({
         },
         where: whereConditions.length ? { and: whereConditions } : {},
       });
+
+      // Preserve vector similarity order when text search was used
+      if (trimmedText && matchingIds.length > 0) {
+        const orderMap = new Map(matchingIds.map((id, index) => [id, index]));
+        result.docs.sort((a, b) => {
+          const posA = orderMap.get(Number(a.id)) ?? Number.MAX_SAFE_INTEGER;
+          const posB = orderMap.get(Number(b.id)) ?? Number.MAX_SAFE_INTEGER;
+          return posA - posB;
+        });
+      }
 
       return result.docs as AugmentedPracticalGuide[];
     }),
