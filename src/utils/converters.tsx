@@ -168,13 +168,21 @@ export const linkConverter: JSXConverters<DefaultNodeTypes>["link"] = (
 export const accordionConverter: JSXConverter<SerializedBlockNode> = ({
 	node,
 }) => {
-	const value = node.fields;
+	const items = node.fields?.items as
+		| { title: string; content: any }[]
+		| undefined;
 
-	if (!value?.title) return null;
+	if (!items?.length) return null;
 
 	return (
-		<div className={fr.cx("fr-my-3v")}>
-			<WysiwygAccordion title={value.title} content={value.content} />
+		<div className={fr.cx("fr-accordions-group", "fr-my-3v")}>
+			{items.map((item, index) => (
+				<WysiwygAccordion
+					key={`${item.title}-${index}`}
+					title={item.title}
+					content={item.content}
+				/>
+			))}
 		</div>
 	);
 };
