@@ -30,7 +30,7 @@ const retrieveDocsFromUserPrompt = async ({
 }) => {
 	const embedding = await generateEmbedding(userPrompt);
 	const retrieveSqlEmbedding = await payload.db.drizzle.execute(sql`
-		SELECT doc_id, text, embedding <=> ${JSON.stringify(embedding)}::vector as similarity_score FROM practical_guide_vectors
+		SELECT doc_id, text, embedding <=> ${JSON.stringify(embedding)}::vector as similarity_score FROM practical_guide_search_vectors
 		ORDER BY embedding <=> ${JSON.stringify(embedding)}::vector
 		LIMIT 10
 	`);

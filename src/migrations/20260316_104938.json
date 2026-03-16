@@ -2,8 +2,8 @@
   "version": "7",
   "dialect": "postgresql",
   "tables": {
-    "public.practical_guide_vectors": {
-      "name": "practical_guide_vectors",
+    "public.practical_guide_search_vectors": {
+      "name": "practical_guide_search_vectors",
       "schema": "",
       "columns": {
         "doc_id": {

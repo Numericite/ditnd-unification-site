@@ -20,7 +20,7 @@ export const addPracticalGuidesTable: PostgresAdapter["beforeSchemaInit"][number
 			...schema,
 			tables: {
 				...schema.tables,
-				practical_guide_vectors: pgTable("practical_guide_vectors", {
+				practical_guide_search_vectors: pgTable("practical_guide_search_vectors", {
 					doc_id: text("doc_id").primaryKey(),
 					text: text("text").notNull(),
 				}),
@@ -30,7 +30,7 @@ export const addPracticalGuidesTable: PostgresAdapter["beforeSchemaInit"][number
 
 export const addPracticalGuidesTableVector: PostgresAdapter["afterSchemaInit"][number] =
 	({ schema, extendTable }) => {
-		const practicalGuideVectorsTable = schema.tables.practical_guide_vectors;
+		const practicalGuideVectorsTable = schema.tables.practical_guide_search_vectors;
 
 		if (!practicalGuideVectorsTable) return schema;
 

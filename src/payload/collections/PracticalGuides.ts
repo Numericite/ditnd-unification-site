@@ -32,7 +32,7 @@ const afterChangePracticalGuide: CollectionAfterChangeHook = async ({
 	if (doc._status !== "published") {
 		try {
 			await db.drizzle.execute(
-				sql`DELETE FROM practical_guide_vectors WHERE doc_id = ${String(doc.id)}`,
+				sql`DELETE FROM practical_guide_search_vectors WHERE doc_id = ${String(doc.id)}`,
 			);
 		} catch (err) {
 			console.error("[VectorSearch] Failed to remove vectors on unpublish:", doc.id, err);
@@ -55,7 +55,7 @@ const afterChangePracticalGuide: CollectionAfterChangeHook = async ({
 		const embedding = await generateEmbedding(fullText);
 
 		await db.drizzle.execute(sql`
-			INSERT INTO practical_guide_vectors (doc_id, text, embedding)
+			INSERT INTO practical_guide_search_vectors (doc_id, text, embedding)
 			VALUES (${String(doc.id)}, ${fullText}, ${JSON.stringify(embedding)}::vector)
 			ON CONFLICT (doc_id) DO UPDATE SET
 				text = EXCLUDED.text,
@@ -89,7 +89,7 @@ const afterDeletePracticalGuide: CollectionAfterDeleteHook = async ({
 		// eslint-disable-next-line @typescript-eslint/no-explicit-any
 		const db = req.payload.db as any;
 		await db.drizzle.execute(
-			sql`DELETE FROM practical_guide_vectors WHERE doc_id = ${String(id)}`,
+			sql`DELETE FROM practical_guide_search_vectors WHERE doc_id = ${String(id)}`,
 		);
 	} catch (err) {
 		console.error("[VectorSearch] Failed to delete embeddings for:", id, err);

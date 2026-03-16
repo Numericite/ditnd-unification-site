@@ -148,7 +148,7 @@ export const practicalGuidesRouter = createTRPCRouter({
           // eslint-disable-next-line @typescript-eslint/no-explicit-any
           const vectorResults = await (ctx.payload.db as any).drizzle.execute(sql`
             SELECT doc_id
-            FROM practical_guide_vectors
+            FROM practical_guide_search_vectors
             ORDER BY embedding <=> ${JSON.stringify(queryEmbedding)}::vector
             LIMIT 50
           `);
