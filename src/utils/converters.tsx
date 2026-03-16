@@ -191,6 +191,53 @@ export const customImageSizeConverter: JSXConverter<SerializedBlockNode> = ({
 	const image = value.image;
 	const size = value.size;
 
+	if (size === "full") {
+		return (
+			<div
+				className={fr.cx("fr-my-3v", "fr-col-12")}
+				style={{ justifyContent: `${node.format}` }}
+			>
+				<Image
+					className={cx(classes.image)}
+					fetchPriority="high"
+					priority
+					src={`${process.env.S3_BUCKET ?? ""}${image.url}`}
+					alt={`${image.alt || ""}`}
+					width={image.width}
+					height={image.height}
+					style={{ width: "100%", height: "auto" }}
+				/>
+			</div>
+		);
+	}
+
+	if (size === "custom") {
+		const customWidth = (value.customWidth as number) || image.width;
+		const customHeight = (value.customHeight as number) || undefined;
+		let height = customHeight;
+		if (!height) {
+			const ratio = image.height / image.width;
+			height = Math.round(customWidth * ratio);
+		}
+
+		return (
+			<div
+				className={fr.cx("fr-my-3v", "fr-col-12")}
+				style={{ justifyContent: `${node.format}` }}
+			>
+				<Image
+					className={cx(classes.image)}
+					fetchPriority="high"
+					priority
+					src={`${process.env.S3_BUCKET ?? ""}${image.url}`}
+					alt={`${image.alt || ""}`}
+					width={customWidth}
+					height={height}
+				/>
+			</div>
+		);
+	}
+
 	const currentSize = ImageSizes.filter((imgSize) => imgSize.name === size)[0];
 
 	if (!currentSize) return null;
