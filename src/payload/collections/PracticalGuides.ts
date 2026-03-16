@@ -1,6 +1,7 @@
 import type {
 	CollectionAfterChangeHook,
 	CollectionAfterDeleteHook,
+	CollectionBeforeDeleteHook,
 	CollectionConfig,
 } from "payload";
 import { sql } from "@payloadcms/db-postgres";
@@ -67,6 +68,18 @@ const afterChangePracticalGuide: CollectionAfterChangeHook = async ({
 	return doc;
 };
 
+const beforeDeletePracticalGuide: CollectionBeforeDeleteHook = async ({
+	id,
+	req,
+}) => {
+	// Delete related views to avoid NOT NULL FK constraint on guide_id
+	await req.payload.delete({
+		collection: "practical-guide-views",
+		where: { guide: { equals: id } },
+		req,
+	});
+};
+
 const afterDeletePracticalGuide: CollectionAfterDeleteHook = async ({
 	id,
 	req,
@@ -89,6 +102,7 @@ export const PracticalGuides: CollectionConfig = {
 		useAsTitle: "title",
 	},
 	hooks: {
+		beforeDelete: [beforeDeletePracticalGuide],
 		afterChange: [afterChangePracticalGuide],
 		afterDelete: [afterDeletePracticalGuide],
 	},
