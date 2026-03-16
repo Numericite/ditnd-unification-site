@@ -173,6 +173,9 @@ export interface Persona {
   id: number;
   _order?: string | null;
   name: string;
+  /**
+   * Description courte affichée sur les cartes (120 caractères max)
+   */
   description: string;
   slug: string;
   pictogram?:
@@ -189,6 +192,9 @@ export interface Condition {
   id: number;
   _order?: string | null;
   name: string;
+  /**
+   * Description courte affichée sur les cartes (120 caractères max)
+   */
   description: string;
   acronym: string;
   slug: string;
@@ -204,6 +210,9 @@ export interface Condition {
 export interface Course {
   id: number;
   title: string;
+  /**
+   * Description courte affichée sur les cartes (120 caractères max)
+   */
   description: string;
   link: string;
   type: 'MOOC' | 'Webinaire' | 'Présentiel';
@@ -221,6 +230,9 @@ export interface Course {
 export interface Theme {
   id: number;
   name: string;
+  /**
+   * Description courte affichée sur les cartes (120 caractères max)
+   */
   description: string;
   slug: string;
   updatedAt: string;
@@ -303,6 +315,9 @@ export interface PracticalGuide {
   id: number;
   title: string;
   slug: string;
+  /**
+   * Description courte affichée sur les cartes (120 caractères max)
+   */
   description: string;
   conditions?: (number | Condition)[] | null;
   content: {
@@ -764,13 +779,22 @@ export interface Home {
   id: number;
   header: {
     title: string;
+    /**
+     * Description courte affichée sur les cartes (120 caractères max)
+     */
     description: string;
   };
   tiles: {
+    /**
+     * Description courte affichée sur les cartes (120 caractères max)
+     */
     description: string;
   };
   mostViewedGuides: {
     title: string;
+    /**
+     * Description courte affichée sur les cartes (120 caractères max)
+     */
     description: string;
   };
   updatedAt?: string | null;
