@@ -1,1 +1,6 @@
 @use "./editor";
+
+.live-preview-window__main {
+  overflow-x: auto;
+  overflow-y: hidden;
+}
