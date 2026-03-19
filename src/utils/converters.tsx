@@ -1,17 +1,17 @@
 import type {
-	DefaultNodeTypes,
-	SerializedBlockNode,
+  DefaultNodeTypes,
+  SerializedBlockNode,
 } from "@payloadcms/richtext-lexical";
 import {
-	defaultJSXConverters,
-	type JSXConverter,
-	type JSXConverters,
+  defaultJSXConverters,
+  type JSXConverter,
+  type JSXConverters,
 } from "@payloadcms/richtext-lexical/react";
 import {
-	extractTextFromNodes,
-	extractYouTubeId,
-	ImageSizes,
-	slugify,
+  extractTextFromNodes,
+  extractYouTubeId,
+  ImageSizes,
+  slugify,
 } from "./tools";
 import type { Media } from "~/payload/payload-types";
 import type { AugmentedCourse } from "~/server/api/routers/courses";
@@ -25,335 +25,355 @@ import LiteYouTube from "~/components/ui/PracticalGuides/LiteYoutube";
 import { Table } from "@codegouvfr/react-dsfr/Table";
 
 export const headingConverter: JSXConverters<DefaultNodeTypes>["heading"] = (
-	args,
+  args,
 ) => {
-	const { node, nodesToJSX, converters } = args;
+  const { node, nodesToJSX, converters } = args;
 
-	if (node.tag === "h2") {
-		const childrenJSX = nodesToJSX({
-			nodes: node.children ?? [],
-			converters,
-		});
+  if (node.tag === "h2") {
+    const childrenJSX = nodesToJSX({
+      nodes: node.children ?? [],
+      converters,
+    });
 
-		const headingText = extractTextFromNodes(node.children ?? []);
+    const headingText = extractTextFromNodes(node.children ?? []);
 
-		return <h2 id={slugify(headingText)}>{childrenJSX}</h2>;
-	}
+    return <h2 id={slugify(headingText)}>{childrenJSX}</h2>;
+  }
 
-	const defaultHeadingConverter = defaultJSXConverters.heading;
+  const defaultHeadingConverter = defaultJSXConverters.heading;
 
-	return typeof defaultHeadingConverter === "function"
-		? defaultHeadingConverter(args)
-		: null;
+  return typeof defaultHeadingConverter === "function"
+    ? defaultHeadingConverter(args)
+    : null;
 };
 
 export const uploadConverter: JSXConverters<DefaultNodeTypes>["upload"] = ({
-	node,
+  node,
 }) => {
-	const { classes } = useStyles();
+  const { classes } = useStyles();
 
-	const value = node.value as Media;
+  const value = node.value as Media;
 
-	if (!value?.url) return null;
+  if (!value?.url) return null;
 
-	const isVideo =
-		value.mimeType?.startsWith("video/") ||
-		value.url.endsWith(".mov") ||
-		value.url.endsWith(".mp4");
+  const isVideo =
+    value.mimeType?.startsWith("video/") ||
+    value.url.endsWith(".mov") ||
+    value.url.endsWith(".mp4");
 
-	if (isVideo)
-		return (
-			<div className={fr.cx("fr-responsive-vid")}>
-				{/** biome-ignore lint/a11y/useMediaCaption: <no captions> */}
-				<video controls preload="metadata" style={{ width: "100%" }}>
-					<source
-						src={value.url}
-						type={value.mimeType || "video/mp4"}
-					/>
-				</video>
-			</div>
-		);
+  if (isVideo)
+    return (
+      <div className={fr.cx("fr-responsive-vid")}>
+        {/** biome-ignore lint/a11y/useMediaCaption: <no captions> */}
+        <video controls preload="metadata" style={{ width: "100%" }}>
+          <source src={value.url} type={value.mimeType || "video/mp4"} />
+        </video>
+      </div>
+    );
 
-	if (value.width && value.height)
-		return (
-			<div
-				className={fr.cx("fr-my-3v", "fr-col-12")}
-				style={{ justifyContent: `${node.format}` }}
-			>
-				<Image
-					className={classes.image}
-					fetchPriority="high"
-					priority
-					src={`${process.env.S3_BUCKET ?? ""}${value.url}`}
-					alt={value.alt ?? ""}
-					width={value.width}
-					height={value.height}
-				/>
-			</div>
-		);
+  const isPdf =
+    value.mimeType === "application/pdf" || value.url.endsWith(".pdf");
 
-	return (
-		<a target="_blank" rel="noopener noreferrer" href={value.url ?? ""}>
-			{value.alt}
-		</a>
-	);
+  if (isPdf)
+    return (
+      <div className={fr.cx("fr-download", "fr-my-3v")}>
+        <p>
+          <a href={value.url} download className="fr-download__link">
+            Télécharger {value.alt || value.filename || "le document"}
+            <span className="fr-download__detail">PDF</span>
+          </a>
+        </p>
+      </div>
+    );
+
+  if (value.width && value.height)
+    return (
+      <div
+        className={fr.cx("fr-my-3v", "fr-col-12")}
+        style={{ justifyContent: `${node.format}` }}
+      >
+        <Image
+          className={classes.image}
+          fetchPriority="high"
+          priority
+          src={`${process.env.S3_BUCKET ?? ""}${value.url}`}
+          alt={value.alt ?? ""}
+          width={value.width}
+          height={value.height}
+        />
+      </div>
+    );
+
+  return (
+    <a target="_blank" rel="noopener noreferrer" href={value.url ?? ""}>
+      {value.alt}
+    </a>
+  );
 };
 
 export const quoteConverter: JSXConverters<DefaultNodeTypes>["quote"] = (
-	args,
+  args,
 ) => {
-	const { node, nodesToJSX, converters } = args;
+  const { node, nodesToJSX, converters } = args;
 
-	const childrenJSX = nodesToJSX({
-		nodes: node.children ?? [],
-		converters,
-	});
+  const childrenJSX = nodesToJSX({
+    nodes: node.children ?? [],
+    converters,
+  });
 
-	return (
-		<blockquote
-			className={fr.cx("fr-my-3v", "fr-col-12", "fr-highlight")}
-			style={{ justifyContent: `${node.format}` }}
-		>
-			{childrenJSX}
-		</blockquote>
-	);
+  return (
+    <blockquote
+      className={fr.cx("fr-my-3v", "fr-col-12", "fr-highlight")}
+      style={{ justifyContent: `${node.format}` }}
+    >
+      {childrenJSX}
+    </blockquote>
+  );
 };
 
 export const tableConverter: JSXConverter<any> = ({ node }) => {
-	if (!node?.children) return null;
+  if (!node?.children) return null;
 
-	const rows = node.children.map((row: any) => {
-		return row.children.map((cell: any) => {
-			const paragraphs = cell.children ?? [];
+  const rows = node.children.map((row: any) => {
+    return row.children.map((cell: any) => {
+      const paragraphs = cell.children ?? [];
 
-			const text = paragraphs
-				.map((paragraph: any) =>
-					(paragraph.children ?? [])
-						.map((textNode: any) => textNode.text ?? "")
-						.join(""),
-				)
-				.join("\n");
+      const text = paragraphs
+        .map((paragraph: any) =>
+          (paragraph.children ?? [])
+            .map((textNode: any) => textNode.text ?? "")
+            .join(""),
+        )
+        .join("\n");
 
-			return text;
-		});
-	});
+      return text;
+    });
+  });
 
-	const headers = rows[0];
-	const data = rows.slice(1);
+  const headers = rows[0];
+  const data = rows.slice(1);
 
-	return <Table data={[...data]} headers={headers} />;
+  return <Table data={[...data]} headers={headers} />;
 };
 
 export const linkConverter: JSXConverters<DefaultNodeTypes>["link"] = (
-	args,
+  args,
 ) => {
-	const { node } = args;
+  const { node } = args;
 
-	const url = node.fields.url;
+  const url = node.fields.url;
 
-	if (url?.includes("youtube.com") || url?.includes("youtu.be")) {
-		const videoId = extractYouTubeId(url);
-		if (!videoId) return null;
+  if (url?.includes("youtube.com") || url?.includes("youtu.be")) {
+    const videoId = extractYouTubeId(url);
+    if (!videoId) return null;
 
-		return <LiteYouTube videoId={videoId} />;
-	}
+    return <LiteYouTube videoId={videoId} />;
+  }
 
-	const defaultLinkConverter = defaultJSXConverters.link;
+  const defaultLinkConverter = defaultJSXConverters.link;
 
-	return typeof defaultLinkConverter === "function"
-		? defaultLinkConverter(args)
-		: null;
+  return typeof defaultLinkConverter === "function"
+    ? defaultLinkConverter(args)
+    : null;
 };
 
 export const accordionConverter: JSXConverter<SerializedBlockNode> = ({
-	node,
+  node,
 }) => {
-	const items = node.fields?.items as
-		| { title: string; content: any }[]
-		| undefined;
+  const items = node.fields?.items as
+    | { title: string; content: any }[]
+    | undefined;
 
-	if (!items?.length) return null;
+  if (!items?.length) return null;
 
-	return (
-		<div className={fr.cx("fr-accordions-group", "fr-my-3v")}>
-			{items.map((item, index) => (
-				<WysiwygAccordion
-					key={`${item.title}-${index}`}
-					title={item.title}
-					content={item.content}
-				/>
-			))}
-		</div>
-	);
+  return (
+    <div className={fr.cx("fr-accordions-group", "fr-my-3v")}>
+      {items.map((item, index) => (
+        <WysiwygAccordion
+          key={`${item.title}-${index}`}
+          title={item.title}
+          content={item.content}
+        />
+      ))}
+    </div>
+  );
 };
 
 export const customImageSizeConverter: JSXConverter<SerializedBlockNode> = ({
-	node,
+  node,
 }) => {
-	const { classes, cx } = useStyles();
+  const { classes, cx } = useStyles();
 
-	const value = node.fields;
+  const value = node.fields;
 
-	if (!value?.image) return null;
+  if (!value?.image) return null;
 
-	const image = value.image;
-	const size = value.size;
+  const image = value.image;
+  const size = value.size;
 
-	if (size === "full") {
-		return (
-			<div
-				className={fr.cx("fr-my-3v", "fr-col-12")}
-				style={{ justifyContent: `${node.format}` }}
-			>
-				<Image
-					className={cx(classes.image)}
-					fetchPriority="high"
-					priority
-					src={`${process.env.S3_BUCKET ?? ""}${image.url}`}
-					alt={`${image.alt || ""}`}
-					width={image.width}
-					height={image.height}
-					style={{ width: "100%", height: "auto" }}
-				/>
-			</div>
-		);
-	}
+  if (size === "full") {
+    return (
+      <div
+        className={fr.cx("fr-my-3v", "fr-col-12")}
+        style={{ justifyContent: `${node.format}` }}
+      >
+        <Image
+          className={cx(classes.image)}
+          fetchPriority="high"
+          priority
+          src={`${process.env.S3_BUCKET ?? ""}${image.url}`}
+          alt={`${image.alt || ""}`}
+          width={image.width}
+          height={image.height}
+          style={{ width: "100%", height: "auto" }}
+        />
+      </div>
+    );
+  }
 
-	if (size === "custom") {
-		const customWidth = (value.customWidth as number) || image.width;
-		const customHeight = (value.customHeight as number) || undefined;
-		let height = customHeight;
-		if (!height) {
-			const ratio = image.height / image.width;
-			height = Math.round(customWidth * ratio);
-		}
+  if (size === "custom") {
+    const customWidth = (value.customWidth as number) || image.width;
+    const customHeight = (value.customHeight as number) || undefined;
+    let height = customHeight;
+    if (!height) {
+      const ratio = image.height / image.width;
+      height = Math.round(customWidth * ratio);
+    }
 
-		return (
-			<div
-				className={fr.cx("fr-my-3v", "fr-col-12")}
-				style={{ justifyContent: `${node.format}` }}
-			>
-				<Image
-					className={cx(classes.image)}
-					fetchPriority="high"
-					priority
-					src={`${process.env.S3_BUCKET ?? ""}${image.url}`}
-					alt={`${image.alt || ""}`}
-					width={customWidth}
-					height={height}
-				/>
-			</div>
-		);
-	}
+    return (
+      <div
+        className={fr.cx("fr-my-3v", "fr-col-12")}
+        style={{ justifyContent: `${node.format}` }}
+      >
+        <Image
+          className={cx(classes.image)}
+          fetchPriority="high"
+          priority
+          src={`${process.env.S3_BUCKET ?? ""}${image.url}`}
+          alt={`${image.alt || ""}`}
+          width={customWidth}
+          height={height}
+        />
+      </div>
+    );
+  }
 
-	const currentSize = ImageSizes.filter((imgSize) => imgSize.name === size)[0];
+  const currentSize = ImageSizes.filter((imgSize) => imgSize.name === size)[0];
 
-	if (!currentSize) return null;
+  if (!currentSize) return null;
 
-	const width = currentSize.width;
-	let height = currentSize.height;
+  const width = currentSize.width;
+  let height = currentSize.height;
 
-	if (width && !height) {
-		const ratio = image.height / image.width;
-		height = Math.round(width * ratio);
-	}
+  if (width && !height) {
+    const ratio = image.height / image.width;
+    height = Math.round(width * ratio);
+  }
 
-	return (
-		<div
-			className={fr.cx("fr-my-3v", "fr-col-12")}
-			style={{
-				justifyContent: `${node.format}`,
-			}}
-		>
-			<Image
-				className={cx(classes.image)}
-				fetchPriority="high"
-				priority
-				src={`${process.env.S3_BUCKET ?? ""}${image.url}`}
-				alt={`${image.alt || ""}`}
-				width={width}
-				height={height}
-			/>
-		</div>
-	);
+  return (
+    <div
+      className={fr.cx("fr-my-3v", "fr-col-12")}
+      style={{
+        justifyContent: `${node.format}`,
+      }}
+    >
+      <Image
+        className={cx(classes.image)}
+        fetchPriority="high"
+        priority
+        src={`${process.env.S3_BUCKET ?? ""}${image.url}`}
+        alt={`${image.alt || ""}`}
+        width={width}
+        height={height}
+      />
+    </div>
+  );
 };
 
 export const youtubeConverter: JSXConverter<SerializedBlockNode> = ({
-	node,
+  node,
 }) => {
-	const url = node.fields?.url as string;
-	if (!url) return null;
+  const url = node.fields?.url as string;
+  if (!url) return null;
 
-	const videoId = extractYouTubeId(url);
-	if (!videoId) return null;
+  const videoId = extractYouTubeId(url);
+  if (!videoId) return null;
 
-	const sizeUnit = (node.fields?.sizeUnit as string) || "percent";
-	const sizeValue = (node.fields?.sizeValue as number) ?? 100;
-	const width = sizeUnit === "percent" ? `${sizeValue}%` : `${sizeValue}px`;
+  const sizeUnit = (node.fields?.sizeUnit as string) || "percent";
+  const sizeValue = (node.fields?.sizeValue as number) ?? 100;
+  const width = sizeUnit === "percent" ? `${sizeValue}%` : `${sizeValue}px`;
 
-	return (
-		<div className={fr.cx("fr-my-3v")} style={{ width, maxWidth: "100%" }}>
-			<LiteYouTube videoId={videoId} />
-		</div>
-	);
+  return (
+    <div className={fr.cx("fr-my-3v")} style={{ width, maxWidth: "100%" }}>
+      <LiteYouTube videoId={videoId} />
+    </div>
+  );
 };
 
 export const relationshipConverter: JSXConverters<DefaultNodeTypes>["relationship"] =
-	({ node }) => {
-		if (node.relationTo === "practical-guides") {
-			const value = node.value as AugmentedPracticalGuide;
+  ({ node }) => {
+    const { classes, cx } = useStyles();
 
-			return (
-				<div className={fr.cx("fr-col-12", "fr-col-md-6", "fr-my-3v")}>
-					<CardDisplay
-						title={value.title}
-						conditions={value.conditions ?? []}
-						themes={value.themes}
-						redirect={`/guides/${value.slug}`}
-						titleAs="h3"
-						noImg
-					/>
-				</div>
-			);
-		}
+    if (node.relationTo === "practical-guides") {
+      const value = node.value as AugmentedPracticalGuide;
 
-		if (node.relationTo === "courses") {
-			const value = node.value as AugmentedCourse;
+      return (
+        <div className={cx(fr.cx("fr-mb-4v"), classes.cardWrapper)}>
+          <CardDisplay
+            title={value.title}
+            imageUrl={value.image?.url ?? undefined}
+            imageAlt={value.image?.alt}
+            conditions={value.conditions ?? []}
+            themes={value.themes}
+            redirect={`/guides/${value.slug}`}
+            titleAs="h3"
+          />
+        </div>
+      );
+    }
 
-			return (
-				<div className={fr.cx("fr-col-sm-12", "fr-col-md-6")}>
-					<CardDisplay
-						title={value.title}
-						conditions={[value.condition]}
-						themes={[value.theme]}
-						redirect={value.link}
-						titleAs="h3"
-						noImg
-						kind="courses"
-					/>
-				</div>
-			);
-		}
+    if (node.relationTo === "courses") {
+      const value = node.value as AugmentedCourse;
 
-		return null;
-	};
+      return (
+        <div className={cx(fr.cx("fr-mb-4v"), classes.cardWrapper)}>
+          <CardDisplay
+            title={value.title}
+            imageUrl={value.image?.url ?? undefined}
+            imageAlt={value.image?.alt}
+            conditions={[value.condition]}
+            themes={[value.theme]}
+            redirect={value.link}
+            titleAs="h3"
+            noImg
+            kind="courses"
+          />
+        </div>
+      );
+    }
+
+    return null;
+  };
 
 const useStyles = tss.create(() => ({
-	image: {
-		maxWidth: "100%",
-		height: "auto",
-	},
-	videoWrapper: {
-		maxWidth: "100%",
-		maxHeight: "100%",
-		cursor: "auto!important",
+  image: {
+    maxWidth: "100%",
+    height: "auto",
+  },
+  cardWrapper: {
+    maxWidth: "350px",
+  },
+  videoWrapper: {
+    maxWidth: "100%",
+    maxHeight: "100%",
+    cursor: "auto!important",
 
-		video: {
-			width: "100%",
-			height: "100%",
-			objectFit: "cover",
-			pointerEvents: "auto",
-			cursor: "pointer!important",
-		},
-	},
+    video: {
+      width: "100%",
+      height: "100%",
+      objectFit: "cover",
+      pointerEvents: "auto",
+      cursor: "pointer!important",
+    },
+  },
 }));
