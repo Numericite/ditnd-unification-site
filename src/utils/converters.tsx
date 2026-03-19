@@ -56,12 +56,20 @@ export const uploadConverter: JSXConverters<DefaultNodeTypes>["upload"] = ({
 
 	if (!value?.url) return null;
 
-	if (value.url.endsWith("mov") || value.url.endsWith("mp4"))
+	const isVideo =
+		value.mimeType?.startsWith("video/") ||
+		value.url.endsWith(".mov") ||
+		value.url.endsWith(".mp4");
+
+	if (isVideo)
 		return (
-			<div className={classes.videoWrapper}>
+			<div className={fr.cx("fr-responsive-vid")}>
 				{/** biome-ignore lint/a11y/useMediaCaption: <no captions> */}
-				<video controls preload="metadata">
-					<source src={value.url} type="video/mp4" />
+				<video controls preload="metadata" style={{ width: "100%" }}>
+					<source
+						src={value.url}
+						type={value.mimeType || "video/mp4"}
+					/>
 				</video>
 			</div>
 		);
@@ -160,13 +168,21 @@ export const linkConverter: JSXConverters<DefaultNodeTypes>["link"] = (
 export const accordionConverter: JSXConverter<SerializedBlockNode> = ({
 	node,
 }) => {
-	const value = node.fields;
+	const items = node.fields?.items as
+		| { title: string; content: any }[]
+		| undefined;
 
-	if (!value?.title) return null;
+	if (!items?.length) return null;
 
 	return (
-		<div className={fr.cx("fr-my-3v")}>
-			<WysiwygAccordion title={value.title} content={value.content} />
+		<div className={fr.cx("fr-accordions-group", "fr-my-3v")}>
+			{items.map((item, index) => (
+				<WysiwygAccordion
+					key={`${item.title}-${index}`}
+					title={item.title}
+					content={item.content}
+				/>
+			))}
 		</div>
 	);
 };
@@ -182,6 +198,53 @@ export const customImageSizeConverter: JSXConverter<SerializedBlockNode> = ({
 
 	const image = value.image;
 	const size = value.size;
+
+	if (size === "full") {
+		return (
+			<div
+				className={fr.cx("fr-my-3v", "fr-col-12")}
+				style={{ justifyContent: `${node.format}` }}
+			>
+				<Image
+					className={cx(classes.image)}
+					fetchPriority="high"
+					priority
+					src={`${process.env.S3_BUCKET ?? ""}${image.url}`}
+					alt={`${image.alt || ""}`}
+					width={image.width}
+					height={image.height}
+					style={{ width: "100%", height: "auto" }}
+				/>
+			</div>
+		);
+	}
+
+	if (size === "custom") {
+		const customWidth = (value.customWidth as number) || image.width;
+		const customHeight = (value.customHeight as number) || undefined;
+		let height = customHeight;
+		if (!height) {
+			const ratio = image.height / image.width;
+			height = Math.round(customWidth * ratio);
+		}
+
+		return (
+			<div
+				className={fr.cx("fr-my-3v", "fr-col-12")}
+				style={{ justifyContent: `${node.format}` }}
+			>
+				<Image
+					className={cx(classes.image)}
+					fetchPriority="high"
+					priority
+					src={`${process.env.S3_BUCKET ?? ""}${image.url}`}
+					alt={`${image.alt || ""}`}
+					width={customWidth}
+					height={height}
+				/>
+			</div>
+		);
+	}
 
 	const currentSize = ImageSizes.filter((imgSize) => imgSize.name === size)[0];
 
@@ -211,6 +274,26 @@ export const customImageSizeConverter: JSXConverter<SerializedBlockNode> = ({
 				width={width}
 				height={height}
 			/>
+		</div>
+	);
+};
+
+export const youtubeConverter: JSXConverter<SerializedBlockNode> = ({
+	node,
+}) => {
+	const url = node.fields?.url as string;
+	if (!url) return null;
+
+	const videoId = extractYouTubeId(url);
+	if (!videoId) return null;
+
+	const sizeUnit = (node.fields?.sizeUnit as string) || "percent";
+	const sizeValue = (node.fields?.sizeValue as number) ?? 100;
+	const width = sizeUnit === "percent" ? `${sizeValue}%` : `${sizeValue}px`;
+
+	return (
+		<div className={fr.cx("fr-my-3v")} style={{ width, maxWidth: "100%" }}>
+			<LiteYouTube videoId={videoId} />
 		</div>
 	);
 };

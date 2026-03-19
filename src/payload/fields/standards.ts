@@ -3,6 +3,7 @@ import type { Field } from "payload";
 import { AccordionBlock } from "../plugins/blocks/AccordionBlock";
 import { defaultWysiwygFeatures } from "./defaultWysiwygFeatures";
 import { CustomImageBlock } from "../plugins/blocks/CustomImageBlock";
+import { YouTubeBlock } from "../plugins/blocks/YouTubeBlock";
 
 export const standardFields = {
   title: {
@@ -67,7 +68,7 @@ export const standardFields = {
       features: ({ defaultFeatures }) => [
         ...defaultWysiwygFeatures({ defaultFeatures }),
         BlocksFeature({
-          blocks: [AccordionBlock, CustomImageBlock],
+          blocks: [AccordionBlock, CustomImageBlock, YouTubeBlock],
         }),
       ],
     }),

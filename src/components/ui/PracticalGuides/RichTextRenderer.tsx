@@ -12,6 +12,7 @@ import {
 	relationshipConverter,
 	tableConverter,
 	uploadConverter,
+	youtubeConverter,
 } from "~/utils/converters";
 
 export function RichTextRenderer({
@@ -31,6 +32,7 @@ export function RichTextRenderer({
 				blocks: {
 					accordion: accordionConverter,
 					image: customImageSizeConverter,
+					youtube: youtubeConverter,
 				},
 				link: linkConverter,
 				table: tableConverter,

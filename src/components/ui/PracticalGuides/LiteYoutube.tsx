@@ -26,15 +26,14 @@ export default function LiteYouTube({ videoId }: { videoId: string }) {
 	}
 
 	return (
-		<iframe
-			className={classes.iframeWrapper}
-			width="560"
-			height="315"
-			title="YouTube video player"
-			src={`https://www.youtube-nocookie.com/embed/${videoId}?autoplay=1`}
-			allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture"
-			allowFullScreen
-		/>
+		<div className={classes.iframeWrapper}>
+			<iframe
+				title="YouTube video player"
+				src={`https://www.youtube-nocookie.com/embed/${videoId}?autoplay=1`}
+				allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture"
+				allowFullScreen
+			/>
+		</div>
 	);
 }
 
@@ -43,7 +42,6 @@ const useStyles = tss.withName(LiteYouTube.name).create(() => ({
 		all: "unset",
 		display: "block",
 		width: "100%",
-		maxWidth: "560px",
 		margin: `${fr.spacing("4v")} 0`,
 		cursor: "pointer",
 	},
@@ -62,7 +60,6 @@ const useStyles = tss.withName(LiteYouTube.name).create(() => ({
 	},
 	iframeWrapper: {
 		width: "100%",
-		maxWidth: "560px",
 		aspectRatio: "16 / 9",
 
 		"& iframe": {
