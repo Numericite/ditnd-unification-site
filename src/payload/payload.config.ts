@@ -7,6 +7,7 @@ import { fileURLToPath } from "url";
 import sharp from "sharp";
 import { s3Storage } from "@payloadcms/storage-s3";
 import { searchPlugin } from "@payloadcms/plugin-search";
+import { seoPlugin } from "@payloadcms/plugin-seo";
 import { beforeSyncPracticalGuide } from "./search";
 
 import { Users } from "./collections/Users";
@@ -143,6 +144,25 @@ export default buildConfig({
             type: "text",
           },
         ],
+      },
+    }),
+    seoPlugin({
+      collections: ["practical-guides"],
+      uploadsCollection: "medias",
+      tabbedUI: true,
+      generateTitle: ({ doc }) => {
+        const title = (doc as Record<string, unknown>)?.title;
+        return typeof title === "string" ? `${title} - DIT'ND` : "DIT'ND";
+      },
+      generateDescription: ({ doc }) => {
+        const description = (doc as Record<string, unknown>)?.description;
+        return typeof description === "string" ? description : "";
+      },
+      generateURL: ({ doc }) => {
+        const slug = (doc as Record<string, unknown>)?.slug;
+        return typeof slug === "string"
+          ? `${process.env.NEXT_PUBLIC_SITE_URL || ""}/guides/${slug}`
+          : "";
       },
     }),
     s3Storage({
