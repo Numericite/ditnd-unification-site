@@ -16,7 +16,8 @@ export const defaultWysiwygFeatures = ({
 			(feature) =>
 				feature.key !== "checklist" &&
 				feature.key !== "inlineCode" &&
-				feature.key !== "indent",
+				feature.key !== "indent" &&
+				feature.key !== "blockquote",
 		),
 		EXPERIMENTAL_TableFeature(),
 		FixedToolbarFeature(),

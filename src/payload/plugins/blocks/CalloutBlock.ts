@@ -11,11 +11,9 @@ export const CalloutBlock: Block = {
 			name: "title",
 			label: { fr: "Titre" },
 			type: "text",
-			required: true,
-			validate: (val: string | undefined | null) => {
-				if (!val)
-					return "Le titre de la mise en avant est obligatoire";
-				return true;
+			required: false,
+			admin: {
+				description: "Titre de la mise en avant (optionnel)",
 			},
 		},
 		{
@@ -30,11 +28,29 @@ export const CalloutBlock: Block = {
 			},
 		},
 		{
-			name: "image",
-			label: { fr: "Image (optionnel)" },
-			type: "upload",
-			relationTo: "medias",
+			name: "iconId",
+			label: { fr: "Icône" },
+			type: "text",
 			required: false,
+			admin: {
+				components: {
+					Description:
+						"../payload/components/IconIdDescription",
+				},
+			},
+		},
+		{
+			name: "colorVariant",
+			label: { fr: "Couleur d'accentuation" },
+			type: "select",
+			required: false,
+			options: [
+				{ label: "Vert", value: "green-emeraude" },
+				{ label: "Bleu", value: "blue-ecume" },
+			],
+			admin: {
+				description: "Couleur de la bordure latérale (optionnel)",
+			},
 		},
 	],
 };

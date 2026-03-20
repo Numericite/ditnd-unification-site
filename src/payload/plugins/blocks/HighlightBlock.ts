@@ -22,12 +22,12 @@ export const HighlightBlock: Block = {
 			name: "size",
 			label: { fr: "Taille" },
 			type: "select",
-			defaultValue: "md",
 			options: [
 				{ label: "Petit", value: "sm" },
-				{ label: "Moyen", value: "md" },
+				{ label: "Normal", value: "default" },
 				{ label: "Grand", value: "lg" },
 			],
+			defaultValue: "default",
 		},
 	],
 };
