@@ -26,6 +26,7 @@ export const Medias: CollectionConfig = {
 			required: true,
 		},
 	],
+	folders: true,
 	upload: {
 		adminThumbnail: "medium",
 		focalPoint: true,

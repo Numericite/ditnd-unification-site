@@ -106,6 +106,17 @@ export default buildConfig({
       connectionString: process.env.POSTGRESQL_ADDON_URI || "",
     },
   }),
+  folders: {
+    collectionOverrides: [
+      ({ collection }) => ({
+        ...collection,
+        labels: {
+          singular: "Dossier",
+          plural: "Dossiers",
+        },
+      }),
+    ],
+  },
   sharp: (inputFile, options) =>
     sharp(inputFile, { ...options, failOn: "none" }),
   plugins: [
