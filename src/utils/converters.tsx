@@ -20,9 +20,37 @@ import { fr } from "@codegouvfr/react-dsfr";
 import type { AugmentedPracticalGuide } from "~/server/api/routers/practical-guides";
 import WysiwygAccordion from "~/components/ui/PracticalGuides/WysiwygAccordion";
 import Image from "next/image";
-import { tss } from "tss-react/dsfr";
 import LiteYouTube from "~/components/ui/PracticalGuides/LiteYoutube";
 import { Table } from "@codegouvfr/react-dsfr/Table";
+import { Download } from "@codegouvfr/react-dsfr/Download";
+import { Quote, type QuoteProps } from "@codegouvfr/react-dsfr/Quote";
+import { Highlight } from "@codegouvfr/react-dsfr/Highlight";
+import { CallOut, type CallOutProps } from "@codegouvfr/react-dsfr/CallOut";
+
+interface CitationFields {
+  quote?: string;
+  author?: string;
+  source?: string;
+  sourceUrl?: string;
+  image?: Media;
+  size?: QuoteProps["size"];
+  accentColor?: QuoteProps["accentColor"];
+}
+
+interface HighlightFields {
+  content?: string;
+  size?: "sm" | "default" | "lg";
+}
+
+interface CalloutFields {
+  title?: string;
+  content?: string;
+  iconId?: CallOutProps["iconId"];
+  colorVariant?: CallOutProps["colorVariant"];
+}
+
+const imageStyle = { maxWidth: "100%", height: "auto" } as const;
+const cardWrapperStyle = { maxWidth: "350px" } as const;
 
 export const headingConverter: JSXConverters<DefaultNodeTypes>["heading"] = (
   args,
@@ -50,8 +78,6 @@ export const headingConverter: JSXConverters<DefaultNodeTypes>["heading"] = (
 export const uploadConverter: JSXConverters<DefaultNodeTypes>["upload"] = ({
   node,
 }) => {
-  const { classes } = useStyles();
-
   const value = node.value as Media;
 
   if (!value?.url) return null;
@@ -76,14 +102,12 @@ export const uploadConverter: JSXConverters<DefaultNodeTypes>["upload"] = ({
 
   if (isPdf)
     return (
-      <div className={fr.cx("fr-download", "fr-my-3v")}>
-        <p>
-          <a href={value.url} download className="fr-download__link">
-            Télécharger {value.alt || value.filename || "le document"}
-            <span className="fr-download__detail">PDF</span>
-          </a>
-        </p>
-      </div>
+      <Download
+        className={fr.cx("fr-my-3v")}
+        label={`Télécharger ${value.alt || value.filename || "le document"}`}
+        details="PDF"
+        linkProps={{ href: value.url, download: true }}
+      />
     );
 
   if (value.width && value.height)
@@ -93,7 +117,7 @@ export const uploadConverter: JSXConverters<DefaultNodeTypes>["upload"] = ({
         style={{ justifyContent: `${node.format}` }}
       >
         <Image
-          className={classes.image}
+          style={imageStyle}
           fetchPriority="high"
           priority
           src={`${process.env.S3_BUCKET ?? ""}${value.url}`}
@@ -199,11 +223,65 @@ export const accordionConverter: JSXConverter<SerializedBlockNode> = ({
   );
 };
 
+export const citationConverter: JSXConverter<SerializedBlockNode> = ({
+  node,
+}) => {
+  const value = node.fields as CitationFields | undefined;
+
+  if (!value?.quote) return null;
+
+  return (
+    <Quote
+      className={fr.cx("fr-my-3v")}
+      text={value.quote}
+      author={value.author}
+      source={value.source}
+      sourceUrl={value.sourceUrl}
+      imageUrl={value.image?.url ? `${process.env.S3_BUCKET ?? ""}${value.image.url}` : undefined}
+      size={value.size}
+      accentColor={value.accentColor}
+    />
+  );
+};
+
+export const highlightConverter: JSXConverter<SerializedBlockNode> = ({
+  node,
+}) => {
+  const value = node.fields as HighlightFields | undefined;
+
+  if (!value?.content) return null;
+
+  const size = value.size === "default" ? undefined : value.size;
+
+  return (
+    <Highlight className={fr.cx("fr-my-3v")} size={size}>
+      {value.content}
+    </Highlight>
+  );
+};
+
+export const calloutConverter: JSXConverter<SerializedBlockNode> = ({
+  node,
+}) => {
+  const value = node.fields as CalloutFields | undefined;
+
+  if (!value?.content) return null;
+
+  return (
+    <CallOut
+      className={fr.cx("fr-my-3v")}
+      title={value.title}
+      iconId={value.iconId}
+      colorVariant={value.colorVariant}
+    >
+      {value.content}
+    </CallOut>
+  );
+};
+
 export const customImageSizeConverter: JSXConverter<SerializedBlockNode> = ({
   node,
 }) => {
-  const { classes, cx } = useStyles();
-
   const value = node.fields;
 
   if (!value?.image) return null;
@@ -218,14 +296,13 @@ export const customImageSizeConverter: JSXConverter<SerializedBlockNode> = ({
         style={{ justifyContent: `${node.format}` }}
       >
         <Image
-          className={cx(classes.image)}
+          style={{ ...imageStyle, width: "100%" }}
           fetchPriority="high"
           priority
           src={`${process.env.S3_BUCKET ?? ""}${image.url}`}
           alt={`${image.alt || ""}`}
           width={image.width}
           height={image.height}
-          style={{ width: "100%", height: "auto" }}
         />
       </div>
     );
@@ -246,7 +323,7 @@ export const customImageSizeConverter: JSXConverter<SerializedBlockNode> = ({
         style={{ justifyContent: `${node.format}` }}
       >
         <Image
-          className={cx(classes.image)}
+          style={imageStyle}
           fetchPriority="high"
           priority
           src={`${process.env.S3_BUCKET ?? ""}${image.url}`}
@@ -258,7 +335,7 @@ export const customImageSizeConverter: JSXConverter<SerializedBlockNode> = ({
     );
   }
 
-  const currentSize = ImageSizes.filter((imgSize) => imgSize.name === size)[0];
+  const currentSize = ImageSizes.find((imgSize) => imgSize.name === size);
 
   if (!currentSize) return null;
 
@@ -273,12 +350,10 @@ export const customImageSizeConverter: JSXConverter<SerializedBlockNode> = ({
   return (
     <div
       className={fr.cx("fr-my-3v", "fr-col-12")}
-      style={{
-        justifyContent: `${node.format}`,
-      }}
+      style={{ justifyContent: `${node.format}` }}
     >
       <Image
-        className={cx(classes.image)}
+        style={imageStyle}
         fetchPriority="high"
         priority
         src={`${process.env.S3_BUCKET ?? ""}${image.url}`}
@@ -312,13 +387,11 @@ export const youtubeConverter: JSXConverter<SerializedBlockNode> = ({
 
 export const relationshipConverter: JSXConverters<DefaultNodeTypes>["relationship"] =
   ({ node }) => {
-    const { classes, cx } = useStyles();
-
     if (node.relationTo === "practical-guides") {
       const value = node.value as AugmentedPracticalGuide;
 
       return (
-        <div className={cx(fr.cx("fr-mb-4v"), classes.cardWrapper)}>
+        <div className={fr.cx("fr-mb-4v")} style={cardWrapperStyle}>
           <CardDisplay
             title={value.title}
             imageUrl={value.image?.url ?? undefined}
@@ -336,7 +409,7 @@ export const relationshipConverter: JSXConverters<DefaultNodeTypes>["relationshi
       const value = node.value as AugmentedCourse;
 
       return (
-        <div className={cx(fr.cx("fr-mb-4v"), classes.cardWrapper)}>
+        <div className={fr.cx("fr-mb-4v")} style={cardWrapperStyle}>
           <CardDisplay
             title={value.title}
             imageUrl={value.image?.url ?? undefined}
@@ -354,26 +427,3 @@ export const relationshipConverter: JSXConverters<DefaultNodeTypes>["relationshi
 
     return null;
   };
-
-const useStyles = tss.create(() => ({
-  image: {
-    maxWidth: "100%",
-    height: "auto",
-  },
-  cardWrapper: {
-    maxWidth: "350px",
-  },
-  videoWrapper: {
-    maxWidth: "100%",
-    maxHeight: "100%",
-    cursor: "auto!important",
-
-    video: {
-      width: "100%",
-      height: "100%",
-      objectFit: "cover",
-      pointerEvents: "auto",
-      cursor: "pointer!important",
-    },
-  },
-}));
