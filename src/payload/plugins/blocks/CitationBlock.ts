@@ -47,13 +47,14 @@ export const CitationBlock: Block = {
 			},
 		},
 		{
-			name: "imageUrl",
-			label: { fr: "URL de l'image" },
-			type: "text",
+			name: "image",
+			label: { fr: "Image" },
+			type: "upload",
+			relationTo: "medias",
 			required: false,
 			admin: {
 				description:
-					"URL d'une image associée à la citation (optionnel)",
+					"Image associée à la citation (optionnel)",
 			},
 		},
 		{

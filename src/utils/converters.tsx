@@ -32,7 +32,7 @@ interface CitationFields {
   author?: string;
   source?: string;
   sourceUrl?: string;
-  imageUrl?: string;
+  image?: Media;
   size?: QuoteProps["size"];
   accentColor?: QuoteProps["accentColor"];
 }
@@ -237,7 +237,7 @@ export const citationConverter: JSXConverter<SerializedBlockNode> = ({
       author={value.author}
       source={value.source}
       sourceUrl={value.sourceUrl}
-      imageUrl={value.imageUrl}
+      imageUrl={value.image?.url ? `${process.env.S3_BUCKET ?? ""}${value.image.url}` : undefined}
       size={value.size}
       accentColor={value.accentColor}
     />
