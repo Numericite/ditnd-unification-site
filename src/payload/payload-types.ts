@@ -854,22 +854,13 @@ export interface Home {
   id: number;
   header: {
     title: string;
-    /**
-     * Description courte affichée sur les cartes (120 caractères max)
-     */
     description: string;
   };
   tiles: {
-    /**
-     * Description courte affichée sur les cartes (120 caractères max)
-     */
     description: string;
   };
   mostViewedGuides: {
     title: string;
-    /**
-     * Description courte affichée sur les cartes (120 caractères max)
-     */
     description: string;
   };
   updatedAt?: string | null;

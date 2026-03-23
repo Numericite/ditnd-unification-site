@@ -11,18 +11,18 @@ export const CMSHome: GlobalConfig = {
 				{
 					label: "En-tête",
 					name: "header",
-					fields: [standardFields.title, standardFields.description],
+					fields: [standardFields.title, standardFields.longDescription],
 				},
 
 				{
 					label: "Persona",
 					name: "tiles",
-					fields: [standardFields.description],
+					fields: [standardFields.longDescription],
 				},
 				{
 					label: "Fiches pratiques les plus lues",
 					name: "mostViewedGuides",
-					fields: [standardFields.title, standardFields.description],
+					fields: [standardFields.title, standardFields.longDescription],
 				},
 			],
 		},

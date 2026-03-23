@@ -35,6 +35,12 @@ export const standardFields = {
       return true;
     },
   },
+  longDescription: {
+    name: "description",
+    label: "Description",
+    type: "textarea",
+    required: true,
+  },
   button: {
     label: "Lien associé",
     type: "collapsible",

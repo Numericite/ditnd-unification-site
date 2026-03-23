@@ -74,7 +74,7 @@ export default function Home() {
 						>
 							<div className={fr.cx("fr-col-12", "fr-col-md-6")}>
 								<h1>{homeCMS.header.title}</h1>
-								<p>{homeCMS.header.description}</p>
+								<p style={{ whiteSpace: "pre-line" }}>{homeCMS.header.description}</p>
 								<SearchBar
 									id="search-global"
 									big
@@ -133,7 +133,7 @@ export default function Home() {
 								id="mostViewed"
 							>
 								<h2>{homeCMS?.mostViewedGuides.title}</h2>
-								<div className={fr.cx("fr-text--sm")}>
+								<div className={fr.cx("fr-text--sm")} style={{ whiteSpace: "pre-line" }}>
 									{homeCMS?.mostViewedGuides.description}
 								</div>
 

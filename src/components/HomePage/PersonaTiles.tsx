@@ -199,7 +199,7 @@ export const PersonaTiles = ({
           </h1>
         )}
         <h2>{subTitle}</h2>
-        <div className={fr.cx("fr-text--sm", "fr-mb-8v")}>
+        <div className={fr.cx("fr-text--sm", "fr-mb-8v")} style={{ whiteSpace: "pre-line" }}>
           {homeCMS.tiles.description}
         </div>
       </div>
