@@ -31,7 +31,7 @@ export type TagItem = {
 
 const unknownTile: TDH = {
 	name: "Un trouble que je ne sais pas identifier",
-	description: "Diagnostic rapide de vos symptômes pour mieux vous comprendre",
+	description: "Description d'un trouble que je ne sais pas identifier",
 	acronym: "unknown",
 	slug: "unknown",
 	display: "condition",
