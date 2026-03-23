@@ -184,6 +184,10 @@ export interface Persona {
    */
   description: string;
   /**
+   * Texte affiché après 'Je suis' sur les tuiles (optionnel). Ex: 'une personne concernée'. Si vide, le nom du persona sera utilisé.
+   */
+  displayName?: string | null;
+  /**
    * Phrase affichée en titre sur la page parcours (optionnel). Ex: 'Je suis un parent interessé par le'
    */
   journeyIntro?: string | null;
@@ -585,6 +589,7 @@ export interface PersonasSelect<T extends boolean = true> {
   _order?: T;
   name?: T;
   description?: T;
+  displayName?: T;
   journeyIntro?: T;
   slug?: T;
   pictogram?: T;

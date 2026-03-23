@@ -16,6 +16,16 @@ export const Personas: CollectionConfig = {
 		},
 		standardFields.description,
 		{
+			name: "displayName",
+			type: "text",
+			required: false,
+			label: { fr: "Je suis" },
+			admin: {
+				description:
+					"Texte affiché après 'Je suis' sur les tuiles (optionnel). Ex: 'une personne concernée'. Si vide, le nom du persona sera utilisé.",
+			},
+		},
+		{
 			name: "journeyIntro",
 			type: "text",
 			required: false,
