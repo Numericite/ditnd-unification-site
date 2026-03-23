@@ -77,7 +77,7 @@ const useStyles = tss.withName(WysiwygContent.name).create(() => ({
       fontSize: "1rem",
       lineHeight: "1.5rem",
     },
-    "ul:not:(.fr-quote__source)": {
+    "ul:not(.fr-quote__source)": {
       paddingInlineStart: "2.5rem",
       "li:has(ul)": {
         listStyle: "none",
