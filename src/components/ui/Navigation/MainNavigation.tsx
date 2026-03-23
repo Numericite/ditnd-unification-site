@@ -44,27 +44,6 @@ export default function MainNavigation() {
 			linkProps: { href: "/formations" },
 			isActive: router.pathname.startsWith("/formations"),
 		},
-		{
-			text: "Actualités",
-			linkProps: { href: "/actus" },
-			isActive: router.pathname.startsWith("/actus"),
-		},
-		{
-			text: "Annuaire",
-			linkProps: { href: "/annuaire" },
-			isActive: router.pathname.startsWith("/annuaire"),
-		},
-		{
-			menuLinks: [
-				{
-					linkProps: {
-						href: "#",
-					},
-					text: "PH LINK",
-				},
-			],
-			text: "À propos",
-		},
 	];
 
 	const pathName = getPathNameForSkipLinks(router.pathname);

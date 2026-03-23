@@ -1,7 +1,6 @@
 import type { PostgresAdapter } from "@payloadcms/db-postgres";
 import type { PayloadRequest } from "payload";
 import {
-	integer,
 	pgTable,
 	text,
 	vector,
@@ -21,10 +20,8 @@ export const addPracticalGuidesTable: PostgresAdapter["beforeSchemaInit"][number
 			...schema,
 			tables: {
 				...schema.tables,
-				practical_guide_vectors: pgTable("practical_guide_vectors", {
-					id: integer("id").primaryKey(),
-					doc_id: text("doc_id").notNull(),
-					chunk_index: integer("chunk_index").notNull(),
+				practical_guide_search_vectors: pgTable("practical_guide_search_vectors", {
+					doc_id: text("doc_id").primaryKey(),
 					text: text("text").notNull(),
 				}),
 			},
@@ -33,21 +30,15 @@ export const addPracticalGuidesTable: PostgresAdapter["beforeSchemaInit"][number
 
 export const addPracticalGuidesTableVector: PostgresAdapter["afterSchemaInit"][number] =
 	({ schema, extendTable }) => {
-		const practicalGuideVectorsTable = schema.tables.practical_guide_vectors;
+		const practicalGuideVectorsTable = schema.tables.practical_guide_search_vectors;
 
 		if (!practicalGuideVectorsTable) return schema;
 
 		extendTable({
 			table: practicalGuideVectorsTable,
 			columns: {
-				embedding: vector("embedding", { dimensions: 384 }).notNull(),
+				embedding: vector("embedding", { dimensions: 1536 }).notNull(),
 			},
-			// extraConfig: (table) => ({
-			// 	embeddingIndex: index("embeddingIndex").using(
-			// 		"hnsw",
-			// 		table.embedding.op("vector_cosine_ops"),
-			// 	),
-			// }),
 		});
 
 		return schema;

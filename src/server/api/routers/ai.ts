@@ -8,7 +8,7 @@ import {
 import { readFileSync } from "node:fs";
 import path from "node:path";
 import type { Payload } from "payload";
-import { pipeline } from "@huggingface/transformers";
+import { generateEmbedding } from "~/payload/services/embedding";
 import { sql } from "@payloadcms/db-postgres";
 import type { Condition } from "~/payload/payload-types";
 import type { AugmentedPracticalGuide } from "./practical-guides";
@@ -30,20 +30,10 @@ const retrieveDocsFromUserPrompt = async ({
 	payload: Payload;
 	userPrompt: string;
 }) => {
-	const modelSentence = await pipeline(
-		"feature-extraction",
-		"Xenova/all-MiniLM-L6-v2",
-	);
-
-	const output = await modelSentence(userPrompt, {
-		pooling: "mean",
-		normalize: true,
-	});
-
-	const embedding = Array.from(output.data);
+	const embedding = await generateEmbedding(userPrompt);
 	const retrieveSqlEmbedding = await payload.db.drizzle.execute(sql`
-		SELECT doc_id, text, embedding <-> ${JSON.stringify(embedding)}::vector as similarity_score FROM practical_guide_vectors
-		ORDER BY embedding <-> ${JSON.stringify(embedding)}::vector
+		SELECT doc_id, text, embedding <=> ${JSON.stringify(embedding)}::vector as similarity_score FROM practical_guide_search_vectors
+		ORDER BY embedding <=> ${JSON.stringify(embedding)}::vector
 		LIMIT 10
 	`);
 

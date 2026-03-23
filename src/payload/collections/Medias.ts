@@ -9,6 +9,8 @@ export const Medias: CollectionConfig = {
 		width: true,
 		height: true,
 		alt: true,
+		sizes: true,
+		mimeType: true,
 	},
 	labels: {
 		singular: "Media",
@@ -24,6 +26,7 @@ export const Medias: CollectionConfig = {
 			required: true,
 		},
 	],
+	folders: true,
 	upload: {
 		adminThumbnail: "medium",
 		focalPoint: true,

@@ -1,4 +1,5 @@
 import {
+	EXPERIMENTAL_TableFeature,
 	FixedToolbarFeature,
 	HeadingFeature,
 	RelationshipFeature,
@@ -15,8 +16,10 @@ export const defaultWysiwygFeatures = ({
 			(feature) =>
 				feature.key !== "checklist" &&
 				feature.key !== "inlineCode" &&
-				feature.key !== "indent",
+				feature.key !== "indent" &&
+				feature.key !== "blockquote",
 		),
+		EXPERIMENTAL_TableFeature(),
 		FixedToolbarFeature(),
 		HeadingFeature({
 			enabledHeadingSizes: ["h2", "h3", "h4", "h5", "h6"],

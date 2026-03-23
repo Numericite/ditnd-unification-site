@@ -19,6 +19,11 @@ const config = {
     locales: ["fr"],
     defaultLocale: "fr",
   },
+  experimental: {
+    serverActions: {
+      bodySizeLimit: "50mb",
+    },
+  },
 };
 
 export default withPayload(config, { devBundleServerPackages: false });

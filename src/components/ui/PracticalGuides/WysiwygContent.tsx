@@ -5,15 +5,21 @@ import type { DefaultTypedEditorState } from "@payloadcms/richtext-lexical";
 import { useEffect, type Dispatch, type SetStateAction } from "react";
 import { RichTextRenderer } from "./RichTextRenderer";
 
+type Props = {
+	title: string;
+	content: DefaultTypedEditorState;
+	setMenuLinks?: Dispatch<SetStateAction<Link[]>>;
+	createdAt?: string;
+	updatedAt?: string;
+};
+
 export default function WysiwygContent({
 	title,
 	content,
 	setMenuLinks,
-}: {
-	title: string;
-	content: DefaultTypedEditorState;
-	setMenuLinks?: Dispatch<SetStateAction<Link[]>>;
-}) {
+	createdAt,
+	updatedAt,
+}: Props) {
 	const { classes, cx } = useStyles();
 
 	useEffect(() => {
@@ -22,15 +28,31 @@ export default function WysiwygContent({
 		setMenuLinks(generateSummaryFromRichText(content));
 	}, [content, setMenuLinks]);
 
+	const createdAtFormatted = createdAt
+		? new Date(createdAt).toLocaleDateString("fr-FR")
+		: null;
+
+	const updatedAtFormatted = updatedAt
+		? new Date(updatedAt).toLocaleDateString("fr-FR")
+		: null;
+
 	return (
 		<div className={cx(classes.wysiwig)} id="wysiwig-content">
-			<h1>{title}</h1>
+			<h1 className={classes.wysiwygTitle}>{title}</h1>
+			{createdAt && updatedAt && (
+				<p
+					className={fr.cx("fr-text--sm")}
+				>{`Publié le ${createdAtFormatted} - Modifié le ${updatedAtFormatted}`}</p>
+			)}
 			<RichTextRenderer content={content} />
 		</div>
 	);
 }
 
 const useStyles = tss.withName(WysiwygContent.name).create(() => ({
+	wysiwygTitle: {
+		marginBottom: fr.spacing("2v"),
+	},
 	wysiwig: {
 		h1: {
 			color: fr.colors.decisions.text.active.blueFrance.default,

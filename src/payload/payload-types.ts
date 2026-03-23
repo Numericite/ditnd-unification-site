@@ -76,12 +76,18 @@ export interface Config {
     themes: Theme;
     journeys: Journey;
     medias: Media;
+    'search-results': SearchResult;
     'payload-kv': PayloadKv;
+    'payload-folders': FolderInterface;
     'payload-locked-documents': PayloadLockedDocument;
     'payload-preferences': PayloadPreference;
     'payload-migrations': PayloadMigration;
   };
-  collectionsJoins: {};
+  collectionsJoins: {
+    'payload-folders': {
+      documentsAndFolders: 'payload-folders' | 'medias';
+    };
+  };
   collectionsSelect: {
     users: UsersSelect<false> | UsersSelect<true>;
     personas: PersonasSelect<false> | PersonasSelect<true>;
@@ -92,7 +98,9 @@ export interface Config {
     themes: ThemesSelect<false> | ThemesSelect<true>;
     journeys: JourneysSelect<false> | JourneysSelect<true>;
     medias: MediasSelect<false> | MediasSelect<true>;
+    'search-results': SearchResultsSelect<false> | SearchResultsSelect<true>;
     'payload-kv': PayloadKvSelect<false> | PayloadKvSelect<true>;
+    'payload-folders': PayloadFoldersSelect<false> | PayloadFoldersSelect<true>;
     'payload-locked-documents': PayloadLockedDocumentsSelect<false> | PayloadLockedDocumentsSelect<true>;
     'payload-preferences': PayloadPreferencesSelect<false> | PayloadPreferencesSelect<true>;
     'payload-migrations': PayloadMigrationsSelect<false> | PayloadMigrationsSelect<true>;
@@ -171,6 +179,9 @@ export interface Persona {
   id: number;
   _order?: string | null;
   name: string;
+  /**
+   * Description courte affichée sur les cartes (120 caractères max)
+   */
   description: string;
   slug: string;
   pictogram?:
@@ -187,6 +198,9 @@ export interface Condition {
   id: number;
   _order?: string | null;
   name: string;
+  /**
+   * Description courte affichée sur les cartes (120 caractères max)
+   */
   description: string;
   acronym: string;
   slug: string;
@@ -202,6 +216,9 @@ export interface Condition {
 export interface Course {
   id: number;
   title: string;
+  /**
+   * Description courte affichée sur les cartes (120 caractères max)
+   */
   description: string;
   link: string;
   type: 'MOOC' | 'Webinaire' | 'Présentiel';
@@ -219,6 +236,9 @@ export interface Course {
 export interface Theme {
   id: number;
   name: string;
+  /**
+   * Description courte affichée sur les cartes (120 caractères max)
+   */
   description: string;
   slug: string;
   updatedAt: string;
@@ -231,6 +251,7 @@ export interface Theme {
 export interface Media {
   id: number;
   alt: string;
+  folder?: (number | null) | FolderInterface;
   updatedAt: string;
   createdAt: string;
   url?: string | null;
@@ -295,12 +316,41 @@ export interface Media {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "payload-folders".
+ */
+export interface FolderInterface {
+  id: number;
+  name: string;
+  folder?: (number | null) | FolderInterface;
+  documentsAndFolders?: {
+    docs?: (
+      | {
+          relationTo?: 'payload-folders';
+          value: number | FolderInterface;
+        }
+      | {
+          relationTo?: 'medias';
+          value: number | Media;
+        }
+    )[];
+    hasNextPage?: boolean;
+    totalDocs?: number;
+  };
+  folderType?: 'medias'[] | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "practical-guides".
  */
 export interface PracticalGuide {
   id: number;
   title: string;
   slug: string;
+  /**
+   * Description courte affichée sur les cartes (120 caractères max)
+   */
   description: string;
   conditions?: (number | Condition)[] | null;
   content: {
@@ -325,6 +375,14 @@ export interface PracticalGuide {
   courses?: (number | Course)[] | null;
   image?: (number | null) | Media;
   imageBanner?: (number | null) | Media;
+  meta?: {
+    title?: string | null;
+    description?: string | null;
+    /**
+     * Maximum upload file size: 12MB. Recommended file size for images is <500KB.
+     */
+    image?: (number | null) | Media;
+  };
   updatedAt: string;
   createdAt: string;
   _status?: ('draft' | 'published') | null;
@@ -355,6 +413,29 @@ export interface Journey {
     courses?: (number | Course)[] | null;
     id?: string | null;
   }[];
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This is a collection of automatically created search results. These results are used by the global site search and will be updated automatically as documents in the CMS are created or updated.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "search-results".
+ */
+export interface SearchResult {
+  id: number;
+  title?: string | null;
+  priority?: number | null;
+  doc: {
+    relationTo: 'practical-guides';
+    value: number | PracticalGuide;
+  };
+  slug?: string | null;
+  description?: string | null;
+  contentText?: string | null;
+  conditionNames?: string | null;
+  themeNames?: string | null;
+  personaNames?: string | null;
   updatedAt: string;
   createdAt: string;
 }
@@ -417,6 +498,14 @@ export interface PayloadLockedDocument {
     | ({
         relationTo: 'medias';
         value: number | Media;
+      } | null)
+    | ({
+        relationTo: 'search-results';
+        value: number | SearchResult;
+      } | null)
+    | ({
+        relationTo: 'payload-folders';
+        value: number | FolderInterface;
       } | null);
   globalSlug?: string | null;
   user: {
@@ -546,6 +635,13 @@ export interface PracticalGuidesSelect<T extends boolean = true> {
   courses?: T;
   image?: T;
   imageBanner?: T;
+  meta?:
+    | T
+    | {
+        title?: T;
+        description?: T;
+        image?: T;
+      };
   updatedAt?: T;
   createdAt?: T;
   _status?: T;
@@ -596,6 +692,7 @@ export interface JourneysSelect<T extends boolean = true> {
  */
 export interface MediasSelect<T extends boolean = true> {
   alt?: T;
+  folder?: T;
   updatedAt?: T;
   createdAt?: T;
   url?: T;
@@ -674,11 +771,40 @@ export interface MediasSelect<T extends boolean = true> {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "search-results_select".
+ */
+export interface SearchResultsSelect<T extends boolean = true> {
+  title?: T;
+  priority?: T;
+  doc?: T;
+  slug?: T;
+  description?: T;
+  contentText?: T;
+  conditionNames?: T;
+  themeNames?: T;
+  personaNames?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "payload-kv_select".
  */
 export interface PayloadKvSelect<T extends boolean = true> {
   key?: T;
   data?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "payload-folders_select".
+ */
+export interface PayloadFoldersSelect<T extends boolean = true> {
+  name?: T;
+  folder?: T;
+  documentsAndFolders?: T;
+  folderType?: T;
+  updatedAt?: T;
+  createdAt?: T;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -720,13 +846,22 @@ export interface Home {
   id: number;
   header: {
     title: string;
+    /**
+     * Description courte affichée sur les cartes (120 caractères max)
+     */
     description: string;
   };
   tiles: {
+    /**
+     * Description courte affichée sur les cartes (120 caractères max)
+     */
     description: string;
   };
   mostViewedGuides: {
     title: string;
+    /**
+     * Description courte affichée sur les cartes (120 caractères max)
+     */
     description: string;
   };
   updatedAt?: string | null;
