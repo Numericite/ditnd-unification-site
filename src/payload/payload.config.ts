@@ -100,6 +100,7 @@ export default buildConfig({
     outputFile: path.resolve(dirname, "payload-types.ts"),
   },
   db: postgresAdapter({
+    extensions: ["vector"],
     beforeSchemaInit: [addPracticalGuidesTable],
     afterSchemaInit: [addPracticalGuidesTableVector],
     pool: {
