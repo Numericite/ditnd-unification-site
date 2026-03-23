@@ -5,7 +5,6 @@ import { tss } from "tss-react/dsfr";
 import { Input } from "@codegouvfr/react-dsfr/Input";
 import { api } from "~/utils/api";
 import type { AugmentedPracticalGuide } from "~/server/api/routers/practical-guides";
-import CardDisplay from "../ui/Cards/CardDisplay";
 
 type Message = {
 	role: "user" | "assistant";
@@ -74,8 +73,28 @@ const ChatBot = () => {
 				...prev,
 				{
 					role: "assistant",
-					content:
-						"Merci. Voici les ressources qui pourront vous être utiles :",
+					content: (
+						<div>
+							<p className={cx(classes.resourcesIntro)}>
+								Merci. Voici les ressources qui pourront vous
+								être utiles :
+							</p>
+							<ul className={cx(classes.resourcesList)}>
+								{response.map(({ id, title, slug }) => (
+									<li key={id}>
+										<a
+											className="fr-link fr-icon-external-link-line fr-link--icon-right"
+											href={`/guides/${slug}`}
+											target="_blank"
+											rel="noopener noreferrer"
+										>
+											{title}
+										</a>
+									</li>
+								))}
+							</ul>
+						</div>
+					),
 				},
 			]);
 
@@ -94,25 +113,11 @@ const ChatBot = () => {
 				/>
 			) : (
 				<div className={cx(classes.chatBotWindow)}>
-					<div
-						style={{
-							display: "flex",
-							gap: fr.spacing("1w"),
-							paddingRight: fr.spacing("2v"),
-							paddingLeft: fr.spacing("2v"),
-						}}
-					>
+					<div className={cx(classes.chatBotHeader)}>
 						<div className={cx(classes.chatBotIcon)}>
 							<i className={cx("fr-icon-message-3-fill")} />
 						</div>
-						<p
-							style={{
-								color: "white",
-								fontSize: "18px",
-								fontWeight: "500",
-								margin: 0,
-							}}
-						>
+						<p className={cx(classes.chatBotTitle)}>
 							Bonjour,
 							<br />
 							Comment pouvons-nous vous aider ?
@@ -121,77 +126,43 @@ const ChatBot = () => {
 							iconId="fr-icon-close-line"
 							title="Fermer le chatbot d'aide"
 							onClick={() => setIsOpen(!isOpen)}
-							style={{
-								position: "absolute",
-								top: fr.spacing("1v"),
-								right: fr.spacing("1v"),
-							}}
+							className={cx(classes.chatBotCloseButton)}
 						/>
 					</div>
 					<div className={cx(classes.chatBotWindowContent)}>
 						{messages.length || isPendingSendMessage ? (
-							<div
-								style={{
-									display: "flex",
-									flexDirection: "column",
-									overflowY: "scroll",
-									gap: fr.spacing("3v"),
-									maxHeight: "50vh",
-								}}
-							>
+							<div className={cx(classes.messagesContainer)}>
 								{messages.map((msg, index) => (
 									<div
 										key={index}
-										style={{
-											alignSelf: msg.role === "user" ? "end" : "start",
-											color: msg.role === "user" ? "white" : "black",
-											padding: fr.spacing("2v"),
-											maxWidth: "85%",
-										}}
+										className={cx(
+											classes.messageWrapper,
+											msg.role === "user"
+												? classes.messageWrapperUser
+												: classes.messageWrapperAssistant,
+										)}
 									>
 										<div
-											style={{
-												borderRadius: fr.spacing("2v"),
-												padding: fr.spacing("2v"),
-												backgroundColor:
-													msg.role === "user"
-														? fr.colors.options.blueCumulus.main526.default
-														: fr.colors.decisions.background.alt.blueFrance
-																.default,
-											}}
+											className={cx(
+												classes.messageBubble,
+												msg.role === "user"
+													? classes.messageBubbleUser
+													: classes.messageBubbleAssistant,
+											)}
 										>
 											{msg.content}
 										</div>
 										{documentsRetrieved.length > 0 &&
 											msg.role === "assistant" &&
 											index === messages.length - 1 && (
-												<div
-													style={{
-														marginTop: fr.spacing("2v"),
-														display: "flex",
-														flexDirection: "column",
-														gap: fr.spacing("2v"),
-													}}
-												>
-													{documentsRetrieved.map(
-														({ id, title, conditions, themes, slug }) => (
-															<CardDisplay
-																key={id}
-																title={title}
-																conditions={conditions ?? []}
-																themes={themes}
-																redirect={`/guides/${slug}`}
-																noImg
-															/>
-														),
-													)}
+												<div className={cx(classes.actionsContainer)}>
 													<Button
 														size="small"
 														onClick={onBack}
 														priority="secondary"
 														title="Retour"
 														iconId="fr-icon-arrow-left-line"
-														style={{ borderRadius: "100px" }}
+														className={cx(classes.pillButton)}
 													>
 														Retour
 													</Button>
@@ -201,14 +172,7 @@ const ChatBot = () => {
 											msg.choices.length > 0 &&
 											!isPendingSendMessage &&
 											index === messages.length - 1 && (
-												<div
-													style={{
-														marginTop: fr.spacing("2v"),
-														display: "flex",
-														flexDirection: "column",
-														gap: fr.spacing("2v"),
-													}}
-												>
+												<div className={cx(classes.actionsContainer)}>
 													{msg.choices.map((choice, choiceIndex) => (
 														<Button
 															key={choiceIndex}
@@ -217,7 +181,7 @@ const ChatBot = () => {
 															priority="secondary"
 															title={choice}
 															disabled={isPendingSendMessage}
-															style={{ borderRadius: "100px" }}
+															className={cx(classes.pillButton)}
 														>
 															{choice}
 														</Button>
@@ -228,7 +192,7 @@ const ChatBot = () => {
 														priority="secondary"
 														title="Retour"
 														iconId="fr-icon-arrow-left-line"
-														style={{ borderRadius: "100px" }}
+														className={cx(classes.pillButton)}
 													>
 														Retour
 													</Button>
@@ -237,12 +201,7 @@ const ChatBot = () => {
 									</div>
 								))}
 								{isPendingSendMessage && (
-									<div
-										style={{
-											alignSelf: "start",
-											padding: `0 ${fr.spacing("3v")}`,
-										}}
-									>
+									<div className={cx(classes.typingContainer)}>
 										<div className={cx(classes.typingIndicator)}>
 											<span />
 											<span />
@@ -272,35 +231,22 @@ const ChatBot = () => {
 											}
 										},
 										placeholder:
-											"Exemple : “Je souhaite m’informer sur le TSA”",
+											"Exemple : \u201CJe souhaite m\u2019informer sur le TSA\u201D",
 										autoFocus: true,
-										style: {
-											background: "none",
-											boxShadow: "none",
-											outline: "none",
-											resize: "none",
-										},
+										className: cx(classes.textAreaInput),
 										rows: 3,
 									}}
-									style={{
-										marginBottom: 0,
-										width: "100%",
-									}}
+									className={cx(classes.textArea)}
 								/>
-								<div style={{ marginTop: "auto" }}>
-									<hr style={{ paddingBottom: fr.spacing("3v") }} />
-									<div
-										style={{
-											display: "flex",
-											justifyContent: "end",
-										}}
-									>
+								<div className={cx(classes.sendArea)}>
+									<hr className={cx(classes.sendAreaDivider)} />
+									<div className={cx(classes.sendButtonContainer)}>
 										<Button
 											iconId="fr-icon-arrow-right-up-line"
 											disabled={message.trim() === "" || isPendingSendMessage}
 											onClick={() => sendMessage(message)}
 											title="Envoyer le message"
-											style={{ borderRadius: "100%" }}
+											className={cx(classes.sendButton)}
 										/>
 									</div>
 								</div>
@@ -336,6 +282,12 @@ const useStyles = tss.withName(ChatBot.name).create({
 			marginRight: "0!important",
 		},
 	},
+	chatBotHeader: {
+		display: "flex",
+		gap: fr.spacing("1w"),
+		paddingRight: fr.spacing("2v"),
+		paddingLeft: fr.spacing("2v"),
+	},
 	chatBotIcon: {
 		display: "flex",
 		justifyContent: "center",
@@ -354,6 +306,17 @@ const useStyles = tss.withName(ChatBot.name).create({
 				margin: 0,
 			},
 		},
+	},
+	chatBotTitle: {
+		color: "white",
+		fontSize: "18px",
+		fontWeight: "500",
+		margin: 0,
+	},
+	chatBotCloseButton: {
+		position: "absolute",
+		top: fr.spacing("1v"),
+		right: fr.spacing("1v"),
 	},
 	chatBotWindow: {
 		width: "450px",
@@ -374,6 +337,59 @@ const useStyles = tss.withName(ChatBot.name).create({
 		flexDirection: "column",
 		gap: fr.spacing("4w"),
 		padding: `${fr.spacing("3v")} ${fr.spacing("5v")}`,
+	},
+	messagesContainer: {
+		display: "flex",
+		flexDirection: "column",
+		overflowY: "scroll",
+		gap: fr.spacing("3v"),
+		maxHeight: "50vh",
+	},
+	messageWrapper: {
+		padding: fr.spacing("2v"),
+		maxWidth: "85%",
+	},
+	messageWrapperUser: {
+		alignSelf: "end",
+		color: "white",
+	},
+	messageWrapperAssistant: {
+		alignSelf: "start",
+		color: "black",
+	},
+	messageBubble: {
+		borderRadius: fr.spacing("2v"),
+		padding: fr.spacing("2v"),
+	},
+	messageBubbleUser: {
+		backgroundColor: fr.colors.options.blueCumulus.main526.default,
+	},
+	messageBubbleAssistant: {
+		backgroundColor: fr.colors.decisions.background.alt.blueFrance.default,
+	},
+	resourcesIntro: {
+		margin: 0,
+	},
+	resourcesList: {
+		listStyle: "none",
+		padding: 0,
+		marginTop: fr.spacing("2v"),
+		display: "flex",
+		flexDirection: "column",
+		gap: fr.spacing("1v"),
+	},
+	actionsContainer: {
+		marginTop: fr.spacing("2v"),
+		display: "flex",
+		flexDirection: "column",
+		gap: fr.spacing("2v"),
+	},
+	pillButton: {
+		borderRadius: "100px",
+	},
+	typingContainer: {
+		alignSelf: "start",
+		padding: `0 ${fr.spacing("3v")}`,
 	},
 	typingIndicator: {
 		display: "flex",
@@ -399,6 +415,29 @@ const useStyles = tss.withName(ChatBot.name).create({
 			"0%, 60%, 100%": { transform: "translateY(0)" },
 			"30%": { transform: "translateY(-6px)" },
 		},
+	},
+	textAreaInput: {
+		background: "none",
+		boxShadow: "none",
+		outline: "none",
+		resize: "none",
+	},
+	textArea: {
+		marginBottom: 0,
+		width: "100%",
+	},
+	sendArea: {
+		marginTop: "auto",
+	},
+	sendAreaDivider: {
+		paddingBottom: fr.spacing("3v"),
+	},
+	sendButtonContainer: {
+		display: "flex",
+		justifyContent: "end",
+	},
+	sendButton: {
+		borderRadius: "100%",
 	},
 });
 
