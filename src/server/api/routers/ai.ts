@@ -19,7 +19,6 @@ export const messageSchema = z.object({
 	choices: z.array(z.string()).optional(),
 	userChoices: z.array(z.string()).optional(),
 	useRetrieval: z.boolean().optional(),
-	searchQuery: z.string().optional(),
 });
 
 export type TMessage = z.infer<typeof messageSchema>;
@@ -31,12 +30,17 @@ const retrieveDocsFromUserPrompt = async ({
 	payload: Payload;
 	userPrompt: string;
 }) => {
+	console.log("[RAG] Requête de recherche - userPrompt:", userPrompt);
 	const embedding = await generateEmbedding(userPrompt);
+	console.log("[RAG] Embedding généré, dimension:", embedding.length);
 	const retrieveSqlEmbedding = await payload.db.drizzle.execute(sql`
 		SELECT doc_id, text, embedding <=> ${JSON.stringify(embedding)}::vector as similarity_score FROM practical_guide_search_vectors
 		ORDER BY embedding <=> ${JSON.stringify(embedding)}::vector
 		LIMIT 10
 	`);
+
+	console.log("[RAG] Résultats SQL - nombre de lignes:", retrieveSqlEmbedding.rows.length);
+	console.log("[RAG] Scores de similarité:", retrieveSqlEmbedding.rows.map(({ doc_id, similarity_score }) => ({ doc_id, similarity_score })));
 	const practicalGuides = await payload.find({
 		collection: "practical-guides",
 		where: {
@@ -151,16 +155,12 @@ export const aiRouter = createTRPCRouter({
 			}
 
 			if (message?.useRetrieval) {
-				const userPrompt =
-					message.searchQuery ||
-					messages
-						.filter((msg) => msg.role === "user")
-						.map((msg) => msg.content)
-						.join("\n");
-
 				const practicalGuides = await retrieveDocsFromUserPrompt({
 					payload: ctx.payload,
-					userPrompt,
+					userPrompt: messages
+						.filter((msg) => msg.role === "user")
+						.map((msg) => msg.content)
+						.join("\n"),
 				});
 				return practicalGuides;
 			}
