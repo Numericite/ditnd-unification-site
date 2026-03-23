@@ -130,7 +130,7 @@ export type PictogramName = keyof typeof pictogramMap;
 export const personsAndProTiles = (personas: PersonaTile[]) => {
 	const mapped = personas.map((persona) => ({
 		...persona,
-		name: `Je suis ${persona.name}`,
+		name: `Je suis ${persona.displayName ?? persona.name}`,
 	}));
 
 	const professionalTile: PersonaTile = {
