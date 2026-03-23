@@ -79,6 +79,7 @@ const useStyles = tss.withName(WysiwygContent.name).create(() => ({
     },
     "ul:not(.fr-quote__source)": {
       paddingInlineStart: "2.5rem",
+      marginBottom: "1.5rem",
       "li:has(ul)": {
         listStyle: "none",
       },
@@ -87,6 +88,9 @@ const useStyles = tss.withName(WysiwygContent.name).create(() => ({
           listStyleType: "circle",
         },
       },
+    },
+    ".fr-callout": {
+      marginBottom: "1.5rem",
     },
     a: {
       color: fr.colors.decisions.background.actionHigh.blueFrance.default,
