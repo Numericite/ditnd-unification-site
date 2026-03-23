@@ -46,7 +46,7 @@ export default function JourneyPage() {
 			</Head>
 			<div className={fr.cx("fr-container")}>
 				<Breadcrumb
-					currentPageLabel={`Je suis un ${journey.persona.name.toLowerCase()} interessé par le ${condition.toUpperCase()}`}
+					currentPageLabel={`${journey.persona.journeyIntro ?? `Je suis un ${journey.persona.name.toLowerCase()} interessé par le`} ${condition.toUpperCase()}`}
 					homeLinkProps={{
 						href: "/",
 					}}
@@ -63,7 +63,7 @@ export default function JourneyPage() {
 							className={fr.cx("fr-col-12", "fr-col-lg-6")}
 							style={{ alignContent: "center" }}
 						>
-							<h1>{`Je suis un ${journey.persona.name.toLowerCase()} interessé par le ${condition.toUpperCase()}`}</h1>
+							<h1>{`${journey.persona.journeyIntro ?? `Je suis un ${journey.persona.name.toLowerCase()} interessé par le`} ${condition.toUpperCase()}`}</h1>
 							<p>
 								Le TSA, ou trouble du spectre de l’autisme, est un trouble du
 								neurodéveloppement qui se manifeste dès l’enfance et qui

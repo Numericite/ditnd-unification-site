@@ -183,6 +183,10 @@ export interface Persona {
    * Description courte affichée sur les cartes (120 caractères max)
    */
   description: string;
+  /**
+   * Phrase affichée en titre sur la page parcours (optionnel). Ex: 'Je suis un parent interessé par le'
+   */
+  journeyIntro?: string | null;
   slug: string;
   pictogram?:
     | ('Avatar' | 'HumanCooperation' | 'CityHall' | 'SelfTraining' | 'Hospital' | 'School' | 'Companie' | 'Ecosystem')
@@ -581,6 +585,7 @@ export interface PersonasSelect<T extends boolean = true> {
   _order?: T;
   name?: T;
   description?: T;
+  journeyIntro?: T;
   slug?: T;
   pictogram?: T;
   updatedAt?: T;

@@ -16,6 +16,16 @@ export const Personas: CollectionConfig = {
 		},
 		standardFields.description,
 		{
+			name: "journeyIntro",
+			type: "text",
+			required: false,
+			label: { fr: "Phrase d'intro du parcours" },
+			admin: {
+				description:
+					"Phrase affichée en titre sur la page parcours (optionnel). Ex: 'Je suis un parent interessé par le'",
+			},
+		},
+		{
 			name: "slug",
 			type: "text",
 			required: true,
