@@ -36,7 +36,7 @@ const ChatBot = () => {
 	const onBack = () => {
 		setDocumentsRetrieved([]);
 		setMessages([]);
-	}
+	};
 
 	const sendMessage = async (text: string) => {
 		const messagesForApi = messages.filter(
@@ -102,11 +102,9 @@ const ChatBot = () => {
 							paddingLeft: fr.spacing("2v"),
 						}}
 					>
-						<Button
-							className={cx(classes.chatBotButton)}
-							iconId="fr-icon-message-3-fill"
-							title="Ouvrir le chatbot d'aide"
-						/>
+						<div className={cx(classes.chatBotIcon)}>
+							<i className={cx("fr-icon-message-3-fill")} />
+						</div>
 						<p
 							style={{
 								color: "white",
@@ -239,7 +237,12 @@ const ChatBot = () => {
 									</div>
 								))}
 								{isPendingSendMessage && (
-									<div style={{ alignSelf: "start", padding: `0 ${fr.spacing("3v")}` }}>
+									<div
+										style={{
+											alignSelf: "start",
+											padding: `0 ${fr.spacing("3v")}`,
+										}}
+									>
 										<div className={cx(classes.typingIndicator)}>
 											<span />
 											<span />
@@ -321,13 +324,36 @@ const useStyles = tss.withName(ChatBot.name).create({
 		zIndex: 1,
 	},
 	chatBotButton: {
+		justifyContent: "center",
+		marginRight: 0,
+		maxWidth: "100%!important",
+		width: "56px",
+		maxHeight: "100%!important",
+		height: "56px",
 		backgroundColor: fr.colors.decisions.artwork.minor.blueFrance.default,
 		borderRadius: "100%",
+		"::before": {
+			marginRight: "0!important",
+		},
 	},
 	chatBotIcon: {
-		color: "white",
-		width: "32px",
-		height: "32px",
+		display: "flex",
+		justifyContent: "center",
+		alignItems: "center",
+		width: "46px",
+		height: "46px",
+		minWidth: "46px",
+		borderRadius: "100%",
+		backgroundColor: fr.colors.decisions.artwork.minor.blueFrance.default,
+		"& i": {
+			display: "flex",
+			justifyContent: "center",
+			alignItems: "center",
+			color: "white",
+			"::before": {
+				margin: 0,
+			},
+		},
 	},
 	chatBotWindow: {
 		width: "450px",
@@ -362,7 +388,8 @@ const useStyles = tss.withName(ChatBot.name).create({
 			width: "6px",
 			height: "6px",
 			borderRadius: "50%",
-			backgroundColor: fr.colors.decisions.background.actionHigh.blueFrance.default,
+			backgroundColor:
+				fr.colors.decisions.background.actionHigh.blueFrance.default,
 			animation: "typingBounce 1.2s ease-in-out infinite",
 			"&:nth-child(1)": { animationDelay: "0s" },
 			"&:nth-child(2)": { animationDelay: "0.2s" },
