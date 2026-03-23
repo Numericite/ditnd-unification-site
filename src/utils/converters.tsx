@@ -1,9 +1,11 @@
 import type {
   DefaultNodeTypes,
+  DefaultTypedEditorState,
   SerializedBlockNode,
 } from "@payloadcms/richtext-lexical";
 import {
   defaultJSXConverters,
+  RichText,
   type JSXConverter,
   type JSXConverters,
 } from "@payloadcms/richtext-lexical/react";
@@ -37,13 +39,13 @@ interface CitationFields {
 }
 
 interface HighlightFields {
-  content?: string;
+  content?: DefaultTypedEditorState;
   size?: "sm" | "default" | "lg";
 }
 
 interface CalloutFields {
   title?: string;
-  content?: string;
+  content?: DefaultTypedEditorState;
   iconId?: CallOutProps["iconId"];
   colorVariant?: CallOutProps["colorVariant"];
 }
@@ -265,7 +267,7 @@ export const highlightConverter: JSXConverter<SerializedBlockNode> = ({
 
   return (
     <Highlight className={fr.cx("fr-my-3v")} size={size}>
-      {value.content}
+      <RichText data={value.content} converters={getConverters()} />
     </Highlight>
   );
 };
@@ -284,7 +286,7 @@ export const calloutConverter: JSXConverter<SerializedBlockNode> = ({
       iconId={value.iconId}
       colorVariant={value.colorVariant}
     >
-      {value.content}
+      <RichText data={value.content} converters={getConverters()} />
     </CallOut>
   );
 };
@@ -437,3 +439,21 @@ export const relationshipConverter: JSXConverters<DefaultNodeTypes>["relationshi
 
     return null;
   };
+
+export const getConverters = () => ({
+  ...defaultJSXConverters,
+  heading: headingConverter,
+  relationship: relationshipConverter,
+  upload: uploadConverter,
+  quote: quoteConverter,
+  blocks: {
+    accordion: accordionConverter,
+    image: customImageSizeConverter,
+    youtube: youtubeConverter,
+    citation: citationConverter,
+    highlight: highlightConverter,
+    callout: calloutConverter,
+  },
+  link: linkConverter,
+  table: tableConverter,
+});

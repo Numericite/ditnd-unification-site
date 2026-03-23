@@ -1,4 +1,6 @@
+import { lexicalEditor } from "@payloadcms/richtext-lexical";
 import type { Block } from "payload";
+import { defaultWysiwygFeatures } from "../../fields/defaultWysiwygFeatures";
 
 export const HighlightBlock: Block = {
 	slug: "highlight",
@@ -10,13 +12,13 @@ export const HighlightBlock: Block = {
 		{
 			name: "content",
 			label: { fr: "Contenu" },
-			type: "textarea",
+			type: "richText",
 			required: true,
-			validate: (val: string | undefined | null) => {
-				if (!val)
-					return "Le contenu de la mise en exergue est obligatoire";
-				return true;
-			},
+			editor: lexicalEditor({
+				features: ({ defaultFeatures }) => [
+					...defaultWysiwygFeatures({ defaultFeatures }),
+				],
+			}),
 		},
 		{
 			name: "size",

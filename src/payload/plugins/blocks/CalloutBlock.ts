@@ -1,5 +1,7 @@
+import { lexicalEditor } from "@payloadcms/richtext-lexical";
 import type { Block } from "payload";
 import { dsfrAccentColors } from "~/utils/dsfr-colors";
+import { defaultWysiwygFeatures } from "../../fields/defaultWysiwygFeatures";
 
 export const CalloutBlock: Block = {
 	slug: "callout",
@@ -20,13 +22,13 @@ export const CalloutBlock: Block = {
 		{
 			name: "content",
 			label: { fr: "Contenu" },
-			type: "textarea",
+			type: "richText",
 			required: true,
-			validate: (val: string | undefined | null) => {
-				if (!val)
-					return "Le contenu de la mise en avant est obligatoire";
-				return true;
-			},
+			editor: lexicalEditor({
+				features: ({ defaultFeatures }) => [
+					...defaultWysiwygFeatures({ defaultFeatures }),
+				],
+			}),
 		},
 		{
 			name: "iconId",
