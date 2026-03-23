@@ -50,7 +50,42 @@ const afterChangePracticalGuide: CollectionAfterChangeHook = async ({
       typeof doc.description === "string" ? doc.description : "";
     const contentText = extractTextFromLexical(doc.content);
 
-    const fullText = [title, description, contentText]
+    // Resolve relation names for better semantic search
+    const resolveNames = async (
+      ids: unknown[],
+      collection: "personas" | "conditions" | "themes",
+    ): Promise<string[]> => {
+      if (!Array.isArray(ids)) return [];
+      const names = await Promise.all(
+        ids.map(async (id) => {
+          if (typeof id === "object" && id !== null && "name" in id)
+            return (id as { name: string }).name;
+          try {
+            const item = await req.payload.findByID({ collection, id: id as number });
+            return (item as { name?: string }).name || "";
+          } catch {
+            return "";
+          }
+        }),
+      );
+      return names.filter(Boolean);
+    };
+
+    const [personaNames, conditionNames, themeNames] = await Promise.all([
+      resolveNames(doc.persona || [], "personas"),
+      resolveNames(doc.conditions || [], "conditions"),
+      resolveNames(doc.themes || [], "themes"),
+    ]);
+
+    const metadata: string[] = [];
+    if (personaNames.length)
+      metadata.push(`Public concerné : ${personaNames.join(", ")}`);
+    if (conditionNames.length)
+      metadata.push(`Troubles : ${conditionNames.join(", ")}`);
+    if (themeNames.length)
+      metadata.push(`Thèmes : ${themeNames.join(", ")}`);
+
+    const fullText = [title, description, ...metadata, contentText]
       .filter(Boolean)
       .join(" ")
       .trim();
