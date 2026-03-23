@@ -42,10 +42,10 @@ const ChatBot = () => {
 			},
 		]);
 
-		const response = await chatbotSendMessage([
-			...messagesForApi,
-			{ role: "user", content: text },
-		]);
+		const response = await chatbotSendMessage({
+			messages: [...messagesForApi, { role: "user", content: text }],
+			promptName: "chatbot-system-v2.md",
+		});
 
 		if ("choices" in response) {
 			setMessages((prev) => [
