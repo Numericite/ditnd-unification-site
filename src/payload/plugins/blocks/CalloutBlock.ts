@@ -1,4 +1,5 @@
 import type { Block } from "payload";
+import { dsfrAccentColors } from "~/utils/dsfr-colors";
 
 export const CalloutBlock: Block = {
 	slug: "callout",
@@ -44,10 +45,7 @@ export const CalloutBlock: Block = {
 			label: { fr: "Couleur d'accentuation" },
 			type: "select",
 			required: false,
-			options: [
-				{ label: "Vert", value: "green-emeraude" },
-				{ label: "Bleu", value: "blue-ecume" },
-			],
+			options: [...dsfrAccentColors],
 			admin: {
 				description: "Couleur de la bordure latérale (optionnel)",
 			},

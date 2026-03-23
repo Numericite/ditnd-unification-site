@@ -68,18 +68,5 @@ export const CitationBlock: Block = {
 				{ label: "Très grand", value: "xlarge" },
 			],
 		},
-		{
-			name: "accentColor",
-			label: { fr: "Couleur d'accentuation" },
-			type: "select",
-			required: false,
-			options: [
-				{ label: "Vert", value: "green-emeraude" },
-				{ label: "Bleu", value: "blue-ecume" },
-			],
-			admin: {
-				description: "Couleur de la bordure latérale (optionnel)",
-			},
-		},
 	],
 };
