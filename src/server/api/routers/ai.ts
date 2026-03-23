@@ -30,13 +30,17 @@ const retrieveDocsFromUserPrompt = async ({
 	payload: Payload;
 	userPrompt: string;
 }) => {
+	console.log("[RAG] Requête de recherche - userPrompt:", userPrompt);
 	const embedding = await generateEmbedding(userPrompt);
+	console.log("[RAG] Embedding généré, dimension:", embedding.length);
 	const retrieveSqlEmbedding = await payload.db.drizzle.execute(sql`
 		SELECT doc_id, text, embedding <=> ${JSON.stringify(embedding)}::vector as similarity_score FROM practical_guide_search_vectors
 		ORDER BY embedding <=> ${JSON.stringify(embedding)}::vector
 		LIMIT 10
 	`);
 
+	console.log("[RAG] Résultats SQL - nombre de lignes:", retrieveSqlEmbedding.rows.length);
+	console.log("[RAG] Scores de similarité:", retrieveSqlEmbedding.rows.map(({ doc_id, similarity_score }) => ({ doc_id, similarity_score })));
 	const practicalGuides = await payload.find({
 		collection: "practical-guides",
 		where: {
