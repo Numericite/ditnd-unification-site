@@ -28,6 +28,11 @@ const ChatBot = () => {
 		AugmentedPracticalGuide[]
 	>([]);
 
+	const onBack = () => {
+		setDocumentsRetrieved([]);
+		setMessages([]);
+	}
+
 	const sendMessage = async (text: string) => {
 		const messagesForApi = messages.filter(
 			(msg): msg is Message & { content: string } =>
@@ -179,7 +184,7 @@ const ChatBot = () => {
 													)}
 													<Button
 														size="small"
-														onClick={() => setMessages([])}
+														onClick={onBack}
 														priority="secondary"
 														title="Retour"
 														iconId="fr-icon-arrow-left-line"
