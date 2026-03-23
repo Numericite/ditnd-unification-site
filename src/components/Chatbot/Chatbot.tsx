@@ -1,10 +1,9 @@
 import { fr } from "@codegouvfr/react-dsfr";
 import Button from "@codegouvfr/react-dsfr/Button";
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 import { tss } from "tss-react/dsfr";
 import { Input } from "@codegouvfr/react-dsfr/Input";
 import { api } from "~/utils/api";
-import { Loader } from "~/components/ui/Loader";
 import type { AugmentedPracticalGuide } from "~/server/api/routers/practical-guides";
 import CardDisplay from "../ui/Cards/CardDisplay";
 
@@ -27,6 +26,12 @@ const ChatBot = () => {
 	const [documentsRetrieved, setDocumentsRetrieved] = useState<
 		AugmentedPracticalGuide[]
 	>([]);
+
+	const messagesEndRef = useRef<HTMLDivElement>(null);
+
+	useEffect(() => {
+		messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+	}, [messages, isPendingSendMessage]);
 
 	const onBack = () => {
 		setDocumentsRetrieved([]);
@@ -233,7 +238,16 @@ const ChatBot = () => {
 											)}
 									</div>
 								))}
-								{isPendingSendMessage && <Loader />}
+								{isPendingSendMessage && (
+									<div style={{ alignSelf: "start", padding: `0 ${fr.spacing("3v")}` }}>
+										<div className={cx(classes.typingIndicator)}>
+											<span />
+											<span />
+											<span />
+										</div>
+									</div>
+								)}
+								<div ref={messagesEndRef} />
 							</div>
 						) : (
 							<>
@@ -334,6 +348,30 @@ const useStyles = tss.withName(ChatBot.name).create({
 		flexDirection: "column",
 		gap: fr.spacing("4w"),
 		padding: `${fr.spacing("3v")} ${fr.spacing("5v")}`,
+	},
+	typingIndicator: {
+		display: "flex",
+		alignItems: "center",
+		gap: "5px",
+		padding: `${fr.spacing("2v")} ${fr.spacing("3v")}`,
+		backgroundColor: fr.colors.decisions.background.alt.blueFrance.default,
+		borderRadius: fr.spacing("2v"),
+		width: "fit-content",
+		"& span": {
+			display: "inline-block",
+			width: "6px",
+			height: "6px",
+			borderRadius: "50%",
+			backgroundColor: fr.colors.decisions.background.actionHigh.blueFrance.default,
+			animation: "typingBounce 1.2s ease-in-out infinite",
+			"&:nth-child(1)": { animationDelay: "0s" },
+			"&:nth-child(2)": { animationDelay: "0.2s" },
+			"&:nth-child(3)": { animationDelay: "0.4s" },
+		},
+		"@keyframes typingBounce": {
+			"0%, 60%, 100%": { transform: "translateY(0)" },
+			"30%": { transform: "translateY(-6px)" },
+		},
 	},
 });
 
