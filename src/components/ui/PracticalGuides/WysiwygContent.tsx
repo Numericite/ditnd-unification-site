@@ -91,10 +91,5 @@ const useStyles = tss.withName(WysiwygContent.name).create(() => ({
     a: {
       color: fr.colors.decisions.background.actionHigh.blueFrance.default,
     },
-    blockquote: {
-      padding: "2rem 3rem",
-      margin: 0,
-      fontSize: "18px",
-    },
   },
 }));

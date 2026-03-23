@@ -34,7 +34,6 @@ interface CitationFields {
   sourceUrl?: string;
   image?: Media;
   size?: QuoteProps["size"];
-  accentColor?: QuoteProps["accentColor"];
 }
 
 interface HighlightFields {
@@ -251,7 +250,6 @@ export const citationConverter: JSXConverter<SerializedBlockNode> = ({
       sourceUrl={value.sourceUrl}
       imageUrl={value.image?.url ? `${process.env.S3_BUCKET ?? ""}${value.image.url}` : undefined}
       size={value.size}
-      accentColor={value.accentColor}
     />
   );
 };
