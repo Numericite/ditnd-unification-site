@@ -230,12 +230,24 @@ export const citationConverter: JSXConverter<SerializedBlockNode> = ({
 
   if (!value?.quote) return null;
 
+  const source = value.source ? (
+    <li>
+      {value.sourceUrl ? (
+        <a href={value.sourceUrl} target="_blank" rel="noopener noreferrer">
+          {value.source}
+        </a>
+      ) : (
+        value.source
+      )}
+    </li>
+  ) : undefined;
+
   return (
     <Quote
       className={fr.cx("fr-my-3v")}
       text={value.quote}
       author={value.author}
-      source={value.source}
+      source={source}
       sourceUrl={value.sourceUrl}
       imageUrl={value.image?.url ? `${process.env.S3_BUCKET ?? ""}${value.image.url}` : undefined}
       size={value.size}
