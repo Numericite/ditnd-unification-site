@@ -107,9 +107,7 @@ export const PersonaTiles = ({
       setSubTitle(titleByDisplay.professional);
     },
     afterProfessional: (tile) => {
-      handleClick(tile, "professional");
-      setDisplay("afterProfessional");
-      setSubTitle(titleByDisplay.afterProfessional);
+      router.push(`/journeys/${tile.slug}`);
     },
     condition: (tile) => {
       const personaSlug = tags
@@ -180,17 +178,16 @@ export const PersonaTiles = ({
             homeLinkProps={{
               href: "/",
             }}
-            segments={
-              lastTag?.slug.startsWith("pro")
-                ? tags.slice(0, -1).map((tag) => ({
-                    label: tag.label,
-                    linkProps: {
-                      href: `/journeys/professional`,
-                      onClick: () => navigateBreadcrumb(tag),
-                    },
-                  }))
-                : []
-            }
+            segments={tags.slice(0, -1).map((tag) => ({
+              label: tag.label,
+              linkProps: {
+                href: `/journeys/${tag.slug}`,
+                onClick: (e: React.MouseEvent) => {
+                  e.preventDefault();
+                  navigateBreadcrumb(tag);
+                },
+              },
+            }))}
           />
         )}
         {mainTitle && (

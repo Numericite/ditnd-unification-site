@@ -10,86 +10,112 @@ import { api } from "~/utils/api";
 import { personsAndProTiles } from "~/utils/tools";
 
 function isProfessional(persona_slug: string) {
-	return persona_slug === "professional";
+  return persona_slug === "professional";
+}
+
+function isProfessionalSub(persona_slug: string) {
+  return persona_slug.startsWith("pro") && persona_slug !== "professional";
 }
 
 export default function JourneyPage() {
-	const { classes, cx } = useStyles();
+  const { classes, cx } = useStyles();
 
-	const router = useRouter();
-	const persona_slug = router.query.persona as string;
+  const router = useRouter();
+  const persona_slug = router.query.persona as string;
 
-	const { data: conditions, isLoading: isLoadingConditions } =
-		api.condition.all.useQuery();
+  const { data: conditions, isLoading: isLoadingConditions } =
+    api.condition.all.useQuery();
 
-	const professionalPersonas = proStore.get();
+  const professionalPersonas = proStore.get();
 
-	const personas = personsAndProTiles(personStore.get());
+  const personas = personsAndProTiles(personStore.get());
 
-	const persona = personas.find((p) => p.slug === persona_slug);
+  const persona = isProfessionalSub(persona_slug)
+    ? professionalPersonas.find((p) => p.slug === persona_slug)
+    : personas.find((p) => p.slug === persona_slug);
 
-	const defaultTags: TagItem[] = [
-		{
-			display: isProfessional(persona_slug) ? "professional" : "default",
-			label: persona?.name ?? "",
-			slug: persona_slug,
-		},
-	];
+  const defaultTags: TagItem[] = isProfessionalSub(persona_slug)
+    ? [
+        {
+          display: "default",
+          label: "Je suis un professionnel",
+          slug: "professional",
+          dismissible: false,
+        },
+        {
+          display: "professional",
+          label: persona?.displayName
+            ? `Je suis ${persona.displayName}`
+            : (persona?.name ?? ""),
+          slug: persona_slug,
+        },
+      ]
+    : [
+        {
+          display: isProfessional(persona_slug) ? "professional" : "default",
+          label: persona?.displayName
+            ? `Je suis ${persona.displayName}`
+            : (persona?.name ?? ""),
+          slug: persona_slug,
+        },
+      ];
 
-	const defaultDisplay = isProfessional(persona_slug)
-		? "professional"
-		: "person";
+  const defaultDisplay = isProfessional(persona_slug)
+    ? "professional"
+    : isProfessionalSub(persona_slug)
+      ? "afterProfessional"
+      : "person";
 
-	if (
-		isLoadingConditions &&
-		!professionalPersonas &&
-		!conditions &&
-		!professionalPersonas
-	)
-		return (
-			<EmptyScreenZone>
-				<Loader />
-			</EmptyScreenZone>
-		);
+  if (
+    isLoadingConditions &&
+    !professionalPersonas &&
+    !conditions &&
+    !professionalPersonas
+  )
+    return (
+      <EmptyScreenZone>
+        <Loader />
+      </EmptyScreenZone>
+    );
 
-	if (
-		!conditions ||
-		!professionalPersonas ||
-		conditions.length === 0 ||
-		professionalPersonas.length === 0
-	)
-		return <div>Conditions ou personas introuvables</div>;
+  if (
+    !conditions ||
+    !professionalPersonas ||
+    conditions.length === 0 ||
+    professionalPersonas.length === 0
+  )
+    return <div>Conditions ou personas introuvables</div>;
 
-	return (
-		<>
-			<Head>
-				<title>DITND - Page du persona</title>
-				<meta
-					name="description"
-					content={`Formulaire pour déterminer quelles ressources vous correspondent le mieux`}
-				/>
-			</Head>
+  return (
+    <>
+      <Head>
+        <title>DITND - Page du persona</title>
+        <meta
+          name="description"
+          content={`Formulaire pour déterminer quelles ressources vous correspondent le mieux`}
+        />
+      </Head>
 
-			<div className={cx(classes.coloredContainer)}>
-				<div className={fr.cx("fr-pb-4w", "fr-container")}>
-					<PersonaTiles
-						key={persona_slug}
-						tiles={personas}
-						defaultDisplay={defaultDisplay}
-						defaultTags={defaultTags}
-						hideTags
-						breadCrumb
-						mainTitle
-					/>
-				</div>
-			</div>
-		</>
-	);
+      <div className={cx(classes.coloredContainer)}>
+        <div className={fr.cx("fr-pb-4w", "fr-container")}>
+          <PersonaTiles
+            key={persona_slug}
+            tiles={personas}
+            defaultDisplay={defaultDisplay}
+            defaultTags={defaultTags}
+            hideTags
+            breadCrumb
+            mainTitle
+          />
+        </div>
+      </div>
+    </>
+  );
 }
 
 const useStyles = tss.withName(JourneyPage.name).create({
-	coloredContainer: {
-		height: "auto",
-		backgroundColor: fr.colors.decisions.background.alt.blueFrance.default,
-	},
+  coloredContainer: {
+    height: "auto",
+    backgroundColor: fr.colors.decisions.background.alt.blueFrance.default,
+  },
 });
