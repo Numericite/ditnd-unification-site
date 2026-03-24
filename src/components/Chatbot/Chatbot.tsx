@@ -161,7 +161,9 @@ const ChatBot = ({ mode = "guided" }: Props) => {
 					onClick={() => setIsOpen(!isOpen)}
 					iconId="fr-icon-message-3-fill"
 					title="Ouvrir le chatbot d'aide"
-				/>
+				>
+					{mode === "guided" ? "Guidé" : "Direct"}
+				</Button>
 			) : (
 				<div className={cx(classes.chatBotWindow)}>
 					<div className={cx(classes.chatBotHeader)}>
@@ -169,7 +171,7 @@ const ChatBot = ({ mode = "guided" }: Props) => {
 							<i className={cx("fr-icon-message-3-fill")} />
 						</div>
 						<p className={cx(classes.chatBotTitle)}>
-							Bonjour, ! ({mode === "guided" ? "mode guidé" : "mode direct"})
+							Bonjour, !
 							<br />
 							Comment pouvons-nous vous aider ?
 						</p>
@@ -315,17 +317,14 @@ const ChatBot = ({ mode = "guided" }: Props) => {
 
 const useStyles = tss.withName(ChatBot.name).create({
 	chatBotButton: {
-		justifyContent: "center",
-		marginRight: 0,
-		maxWidth: "100%!important",
-		width: "56px",
-		maxHeight: "100%!important",
-		height: "56px",
+		// justifyContent: "center",
+		// marginRight: 0,
+		// maxWidth: "100%!important",
+		// width: "56px",
+		// maxHeight: "100%!important",
+		// height: "56px",
 		backgroundColor: fr.colors.decisions.artwork.minor.blueFrance.default,
-		borderRadius: "100%",
-		"::before": {
-			marginRight: "0!important",
-		},
+		borderRadius: fr.spacing("6v"),
 	},
 	chatBotHeader: {
 		display: "flex",
