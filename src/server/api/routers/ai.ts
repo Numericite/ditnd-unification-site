@@ -36,7 +36,7 @@ const retrieveDocsFromUserPrompt = async ({
 	const retrieveSqlEmbedding = await payload.db.drizzle.execute(sql`
 		SELECT doc_id, text, embedding <=> ${JSON.stringify(embedding)}::vector as similarity_score FROM practical_guide_search_vectors
 		ORDER BY embedding <=> ${JSON.stringify(embedding)}::vector
-		LIMIT 10
+		LIMIT 3
 	`);
 
 	console.log("[RAG] Résultats SQL - nombre de lignes:", retrieveSqlEmbedding.rows.length);
@@ -48,7 +48,6 @@ const retrieveDocsFromUserPrompt = async ({
 				in: retrieveSqlEmbedding.rows.map(({ doc_id }) => doc_id),
 			},
 		},
-		limit: 2,
 		depth: 1,
 	});
 
@@ -88,7 +87,7 @@ export const aiRouter = createTRPCRouter({
 				SELECT doc_id, text, embedding <=> ${JSON.stringify(embedding)}::vector as similarity_score
 				FROM practical_guide_search_vectors
 				ORDER BY embedding <=> ${JSON.stringify(embedding)}::vector
-				LIMIT 5
+				LIMIT 3
 			`);
 
 			// 2. Fetch practical guide docs
@@ -99,7 +98,6 @@ export const aiRouter = createTRPCRouter({
 						in: retrieveSqlEmbedding.rows.map(({ doc_id }) => doc_id),
 					},
 				},
-				limit: 3,
 				depth: 1,
 			});
 
