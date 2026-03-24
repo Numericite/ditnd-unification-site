@@ -13,11 +13,23 @@ type Message = {
 	userStream?: string[];
 };
 
-const ChatBot = () => {
+type Props = {
+	mode?: "guided" | "direct";
+};
+
+const ChatBot = ({ mode = "guided" }: Props) => {
 	const { classes, cx } = useStyles();
 
 	const { mutateAsync: chatbotSendMessage, isPending: isPendingSendMessage } =
 		api.ai.chatbotSend.useMutation();
+
+	const {
+		mutateAsync: chatbotDirectSendMessage,
+		isPending: isPendingDirectSend,
+	} = api.ai.chatbotDirectSend.useMutation();
+
+	const isPending =
+		mode === "direct" ? isPendingDirectSend : isPendingSendMessage;
 
 	const [isOpen, setIsOpen] = useState(false);
 	const [message, setMessage] = useState("");
@@ -30,14 +42,54 @@ const ChatBot = () => {
 
 	useEffect(() => {
 		messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
-	}, [messages, isPendingSendMessage]);
+	}, [messages, isPending]);
 
 	const onBack = () => {
 		setDocumentsRetrieved([]);
 		setMessages([]);
 	};
 
+	const sendDirectMessage = async (text: string) => {
+		setMessages((prev) => [...prev, { role: "user", content: text }]);
+		setMessage("");
+
+		const response = await chatbotDirectSendMessage({ userMessage: text });
+
+		setMessages((prev) => [
+			...prev,
+			{
+				role: "assistant",
+				content: (
+					<div>
+						<p className={cx(classes.resourcesIntro)}>{response.content}</p>
+						{response.guides.length > 0 && (
+							<ul className={cx(classes.resourcesList)}>
+								{response.guides.map(({ id, title, slug }) => (
+									<li key={id}>
+										<a
+											className="fr-link fr-icon-external-link-line fr-link--icon-right"
+											href={`/guides/${slug}`}
+											target="_blank"
+											rel="noopener noreferrer"
+										>
+											{title}
+										</a>
+									</li>
+								))}
+							</ul>
+						)}
+					</div>
+				),
+			},
+		]);
+	};
+
 	const sendMessage = async (text: string) => {
+		if (mode === "direct") {
+			await sendDirectMessage(text);
+			return;
+		}
+
 		const messagesForApi = messages.filter(
 			(msg): msg is Message & { content: string } =>
 				typeof msg.content === "string",
@@ -76,8 +128,7 @@ const ChatBot = () => {
 					content: (
 						<div>
 							<p className={cx(classes.resourcesIntro)}>
-								Merci. Voici les ressources qui pourront vous
-								être utiles :
+								Merci. Voici les ressources qui pourront vous être utiles :
 							</p>
 							<ul className={cx(classes.resourcesList)}>
 								{response.map(({ id, title, slug }) => (
@@ -103,7 +154,7 @@ const ChatBot = () => {
 	};
 
 	return (
-		<div className={cx(classes.chatBotContainer, fr.cx("fr-container"))}>
+		<div>
 			{!isOpen ? (
 				<Button
 					className={cx(classes.chatBotButton)}
@@ -118,7 +169,7 @@ const ChatBot = () => {
 							<i className={cx("fr-icon-message-3-fill")} />
 						</div>
 						<p className={cx(classes.chatBotTitle)}>
-							Bonjour,
+							Bonjour, ! ({mode === "guided" ? "mode guidé" : "mode direct"})
 							<br />
 							Comment pouvons-nous vous aider ?
 						</p>
@@ -130,7 +181,7 @@ const ChatBot = () => {
 						/>
 					</div>
 					<div className={cx(classes.chatBotWindowContent)}>
-						{messages.length || isPendingSendMessage ? (
+						{(messages.length > 0 || isPending) && (
 							<div className={cx(classes.messagesContainer)}>
 								{messages.map((msg, index) => (
 									<div
@@ -152,55 +203,59 @@ const ChatBot = () => {
 										>
 											{msg.content}
 										</div>
-										{documentsRetrieved.length > 0 &&
-											msg.role === "assistant" &&
-											index === messages.length - 1 && (
-												<div className={cx(classes.actionsContainer)}>
-													<Button
-														size="small"
-														onClick={onBack}
-														priority="secondary"
-														title="Retour"
-														iconId="fr-icon-arrow-left-line"
-														className={cx(classes.pillButton)}
-													>
-														Retour
-													</Button>
-												</div>
-											)}
-										{msg.choices &&
-											msg.choices.length > 0 &&
-											!isPendingSendMessage &&
-											index === messages.length - 1 && (
-												<div className={cx(classes.actionsContainer)}>
-													{msg.choices.map((choice, choiceIndex) => (
-														<Button
-															key={choiceIndex}
-															size="small"
-															onClick={() => sendMessage(choice)}
-															priority="secondary"
-															title={choice}
-															disabled={isPendingSendMessage}
-															className={cx(classes.pillButton)}
-														>
-															{choice}
-														</Button>
-													))}
-													<Button
-														size="small"
-														onClick={() => setMessages([])}
-														priority="secondary"
-														title="Retour"
-														iconId="fr-icon-arrow-left-line"
-														className={cx(classes.pillButton)}
-													>
-														Retour
-													</Button>
-												</div>
-											)}
+										{mode === "guided" && (
+											<>
+												{documentsRetrieved.length > 0 &&
+													msg.role === "assistant" &&
+													index === messages.length - 1 && (
+														<div className={cx(classes.actionsContainer)}>
+															<Button
+																size="small"
+																onClick={onBack}
+																priority="secondary"
+																title="Retour"
+																iconId="fr-icon-arrow-left-line"
+																className={cx(classes.pillButton)}
+															>
+																Retour
+															</Button>
+														</div>
+													)}
+												{msg.choices &&
+													msg.choices.length > 0 &&
+													!isPending &&
+													index === messages.length - 1 && (
+														<div className={cx(classes.actionsContainer)}>
+															{msg.choices.map((choice, choiceIndex) => (
+																<Button
+																	key={choiceIndex}
+																	size="small"
+																	onClick={() => sendMessage(choice)}
+																	priority="secondary"
+																	title={choice}
+																	disabled={isPending}
+																	className={cx(classes.pillButton)}
+																>
+																	{choice}
+																</Button>
+															))}
+															<Button
+																size="small"
+																onClick={() => setMessages([])}
+																priority="secondary"
+																title="Retour"
+																iconId="fr-icon-arrow-left-line"
+																className={cx(classes.pillButton)}
+															>
+																Retour
+															</Button>
+														</div>
+													)}
+											</>
+										)}
 									</div>
 								))}
-								{isPendingSendMessage && (
+								{isPending && (
 									<div className={cx(classes.typingContainer)}>
 										<div className={cx(classes.typingIndicator)}>
 											<span />
@@ -211,7 +266,8 @@ const ChatBot = () => {
 								)}
 								<div ref={messagesEndRef} />
 							</div>
-						) : (
+						)}
+						{messages.length === 0 && (
 							<>
 								<Input
 									textArea
@@ -243,7 +299,7 @@ const ChatBot = () => {
 									<div className={cx(classes.sendButtonContainer)}>
 										<Button
 											iconId="fr-icon-arrow-right-up-line"
-											disabled={message.trim() === "" || isPendingSendMessage}
+											disabled={message.trim() === "" || isPending}
 											onClick={() => sendMessage(message)}
 											title="Envoyer le message"
 											className={cx(classes.sendButton)}
@@ -260,15 +316,6 @@ const ChatBot = () => {
 };
 
 const useStyles = tss.withName(ChatBot.name).create({
-	chatBotContainer: {
-		position: "fixed",
-		bottom: fr.spacing("2w"),
-		left: 0,
-		right: 0,
-		display: "flex",
-		justifyContent: "end",
-		zIndex: 1,
-	},
 	chatBotButton: {
 		justifyContent: "center",
 		marginRight: 0,
