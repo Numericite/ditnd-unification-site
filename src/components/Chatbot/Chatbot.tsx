@@ -203,56 +203,54 @@ const ChatBot = ({ mode = "guided" }: Props) => {
 										>
 											{msg.content}
 										</div>
-										{mode === "guided" && (
-											<>
-												{documentsRetrieved.length > 0 &&
-													msg.role === "assistant" &&
-													index === messages.length - 1 && (
-														<div className={cx(classes.actionsContainer)}>
-															<Button
-																size="small"
-																onClick={onBack}
-																priority="secondary"
-																title="Retour"
-																iconId="fr-icon-arrow-left-line"
-																className={cx(classes.pillButton)}
-															>
-																Retour
-															</Button>
-														</div>
-													)}
-												{msg.choices &&
-													msg.choices.length > 0 &&
-													!isPending &&
-													index === messages.length - 1 && (
-														<div className={cx(classes.actionsContainer)}>
-															{msg.choices.map((choice, choiceIndex) => (
-																<Button
-																	key={choiceIndex}
-																	size="small"
-																	onClick={() => sendMessage(choice)}
-																	priority="secondary"
-																	title={choice}
-																	disabled={isPending}
-																	className={cx(classes.pillButton)}
-																>
-																	{choice}
-																</Button>
-															))}
-															<Button
-																size="small"
-																onClick={() => setMessages([])}
-																priority="secondary"
-																title="Retour"
-																iconId="fr-icon-arrow-left-line"
-																className={cx(classes.pillButton)}
-															>
-																Retour
-															</Button>
-														</div>
-													)}
-											</>
+										{((documentsRetrieved.length > 0 &&
+											msg.role === "assistant" &&
+											index === messages.length - 1) ||
+											(mode === "direct" && msg.role === "assistant")) && (
+											<div className={cx(classes.actionsContainer)}>
+												<Button
+													size="small"
+													onClick={onBack}
+													priority="secondary"
+													title="Retour"
+													iconId="fr-icon-arrow-left-line"
+													className={cx(classes.pillButton)}
+												>
+													Retour
+												</Button>
+											</div>
 										)}
+										{mode === "guided" &&
+											msg.choices &&
+											msg.choices.length > 0 &&
+											!isPending &&
+											index === messages.length - 1 && (
+												<div className={cx(classes.actionsContainer)}>
+													{msg.choices.map((choice, choiceIndex) => (
+														<Button
+															key={choiceIndex}
+															size="small"
+															onClick={() => sendMessage(choice)}
+															priority="secondary"
+															title={choice}
+															disabled={isPending}
+															className={cx(classes.pillButton)}
+														>
+															{choice}
+														</Button>
+													))}
+													<Button
+														size="small"
+														onClick={() => setMessages([])}
+														priority="secondary"
+														title="Retour"
+														iconId="fr-icon-arrow-left-line"
+														className={cx(classes.pillButton)}
+													>
+														Retour
+													</Button>
+												</div>
+											)}
 									</div>
 								))}
 								{isPending && (
