@@ -11,6 +11,7 @@ export default function LiteYouTube({ videoId }: { videoId: string }) {
 			<button
 				type="button"
 				onClick={() => setIsLoaded(true)}
+				aria-label="Lire la vidéo YouTube"
 				className={classes.liteButton}
 			>
 				<div
@@ -41,9 +42,11 @@ const useStyles = tss.withName(LiteYouTube.name).create(() => ({
 	liteButton: {
 		all: "unset",
 		display: "block",
-		width: "100%",
-		margin: `${fr.spacing("4v")} 0`,
 		cursor: "pointer",
+		"&:focus-visible": {
+			outline: `2px solid ${fr.colors.decisions.border.plain.info.default}`,
+			outlineOffset: "2px",
+		}
 	},
 	ytThumbnail: {
 		width: "100%",
