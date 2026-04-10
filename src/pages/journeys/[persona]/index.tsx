@@ -36,29 +36,29 @@ export default function JourneyPage() {
 
   const defaultTags: TagItem[] = isProfessionalSub(persona_slug)
     ? [
-        {
-          display: "default",
-          label: "Je suis un professionnel",
-          slug: "professional",
-          dismissible: false,
-        },
-        {
-          display: "professional",
-          label: persona?.displayName
-            ? `Je suis ${persona.displayName}`
-            : (persona?.name ?? ""),
-          slug: persona_slug,
-        },
-      ]
+      {
+        display: "default",
+        label: "Je suis un professionnel",
+        slug: "professional",
+        dismissible: false,
+      },
+      {
+        display: "professional",
+        label: persona?.displayName
+          ? `Je suis ${persona.displayName}`
+          : (persona?.name ?? ""),
+        slug: persona_slug,
+      },
+    ]
     : [
-        {
-          display: isProfessional(persona_slug) ? "professional" : "default",
-          label: persona?.displayName
-            ? `Je suis ${persona.displayName}`
-            : (persona?.name ?? ""),
-          slug: persona_slug,
-        },
-      ];
+      {
+        display: isProfessional(persona_slug) ? "professional" : "default",
+        label: persona?.displayName
+          ? `Je suis ${persona.displayName}`
+          : (persona?.name ?? ""),
+        slug: persona_slug,
+      },
+    ];
 
   const defaultDisplay = isProfessional(persona_slug)
     ? "professional"
@@ -89,7 +89,7 @@ export default function JourneyPage() {
   return (
     <>
       <Head>
-        <title>DITND - Page du persona</title>
+        <title>DITND - {persona?.name ?? "Mon parcours"}</title>
         <meta
           name="description"
           content={`Formulaire pour déterminer quelles ressources vous correspondent le mieux`}

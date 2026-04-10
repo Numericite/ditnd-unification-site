@@ -86,8 +86,12 @@ export default function PersonaDisplay({
 					/>
 					<div className={fr.cx("fr-col-12", "fr-col-lg-8")}>
 						<SearchBarUI value={query} onClick={(query) => setQuery(query)} />
-						{viewCourses
-							? currentList.map((chap) => (
+						<div
+							aria-live="polite"
+							aria-atomic="false"
+						>
+							{viewCourses
+								? currentList.map((chap) => (
 									<div key={`Course ${chap.name}`}>
 										<PersonaContent
 											courses={chap.courses}
@@ -96,7 +100,7 @@ export default function PersonaDisplay({
 										/>
 									</div>
 								))
-							: currentList.map((chap) => (
+								: currentList.map((chap) => (
 									<div key={`Guides ${chap.name}`}>
 										<PersonaContent
 											guides={chap.guides}
@@ -105,11 +109,12 @@ export default function PersonaDisplay({
 										/>
 									</div>
 								))}
-						{chapterLinks.length === 0 && (
-							<div
-								className={fr.cx("fr-my-2w")}
-							>{`Aucune ${viewCourses ? "formation" : "fiche pratique"} trouvée`}</div>
-						)}
+							{chapterLinks.length === 0 && (
+								<div
+									className={fr.cx("fr-my-2w")}
+								>{`Aucune ${viewCourses ? "formation" : "fiche pratique"} trouvée`}</div>
+							)}
+						</div>
 					</div>
 				</div>
 			</div>

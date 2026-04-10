@@ -47,21 +47,21 @@ export default function JourneyPage() {
 
   const breadcrumbSegments = isProPersona
     ? [
-        {
-          label: "Je suis un professionnel",
-          linkProps: { href: "/journeys/professional" },
-        },
-        {
-          label: journeyBreadcrumbText,
-          linkProps: { href: `/journeys/${persona}` },
-        },
-      ]
+      {
+        label: "Je suis un professionnel",
+        linkProps: { href: "/journeys/professional" },
+      },
+      {
+        label: journeyBreadcrumbText,
+        linkProps: { href: `/journeys/${persona}` },
+      },
+    ]
     : [
-        {
-          label: journeyBreadcrumbText,
-          linkProps: { href: `/journeys/${persona}` },
-        },
-      ];
+      {
+        label: journeyBreadcrumbText,
+        linkProps: { href: `/journeys/${persona}` },
+      },
+    ];
 
   return (
     <>
@@ -106,7 +106,7 @@ export default function JourneyPage() {
                 className={fr.cx("fr-responsive-img")}
                 fetchPriority="high"
                 priority
-                alt={journey.image?.alt}
+                alt={journey.image?.alt ?? `Illustration pour ${condition.toUpperCase()}`}
                 src={journey.image?.url ?? "/placeholder.16x9.png"}
                 width={580}
                 height={350}

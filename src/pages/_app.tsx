@@ -71,16 +71,16 @@ function App({ Component, pageProps }: AppProps) {
 	return (
 		<>
 			<Head>
-				<title>DITND</title>
+				<title>DITND - Délégation interministérielle pour les TND</title>
 			</Head>
 			<div className={cx(classes.headerContainer)}>
 				<MainNavigation />
 
 				<main id="main">
 					{isLoadingHomePage ||
-					isLoadingPersona ||
-					isLoadingFooterTitle ||
-					isLoadingPersons ? (
+						isLoadingPersona ||
+						isLoadingFooterTitle ||
+						isLoadingPersons ? (
 						<EmptyScreenZone>
 							<Loader />
 						</EmptyScreenZone>

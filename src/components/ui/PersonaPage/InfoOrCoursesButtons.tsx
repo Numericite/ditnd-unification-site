@@ -17,12 +17,16 @@ export default function InfoOrCoursesButtons({
 			<Button
 				onClick={() => setViewCourses(false)}
 				priority={viewCourses ? "secondary" : "primary"}
+				nativeButtonProps={{ "aria-pressed": !viewCourses }}
+
 			>
 				Je m'informe
 			</Button>
 			<Button
 				onClick={() => setViewCourses(true)}
 				priority={viewCourses ? "primary" : "secondary"}
+				nativeButtonProps={{ "aria-pressed": viewCourses }}
+
 			>
 				Je me forme
 			</Button>

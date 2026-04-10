@@ -48,7 +48,7 @@ export default function PracticalGuidesDisplay({
 						className={cx(fr.cx("fr-responsive-img"), classes.imageBanner)}
 						fetchPriority="high"
 						priority
-						alt={image.alt}
+						alt={image.alt || guide.title}
 						src={image.url}
 						width={1200}
 						height={240}
