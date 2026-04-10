@@ -39,10 +39,16 @@ const ChatBot = ({ mode = "guided" }: Props) => {
 	>([]);
 
 	const messagesEndRef = useRef<HTMLDivElement>(null);
+	const dialogRef = useRef<HTMLDivElement>(null);
 
 	useEffect(() => {
 		messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
 	}, [messages, isPending]);
+
+	useEffect(() => {
+		if (isOpen) dialogRef.current?.focus();
+	}, [isOpen]);
+
 
 	const onBack = () => {
 		setDocumentsRetrieved([]);
@@ -165,7 +171,13 @@ const ChatBot = ({ mode = "guided" }: Props) => {
 					{mode === "guided" ? "Guidé" : "Direct"}
 				</Button>
 			) : (
-				<div className={cx(classes.chatBotWindow)}>
+				<div
+					ref={dialogRef}
+					role="dialog"
+					aria-modal="true"
+					aria-label="Chatbot d'aide"
+					tabIndex={-1}
+					className={cx(classes.chatBotWindow)}>
 					<div className={cx(classes.chatBotHeader)}>
 						<div className={cx(classes.chatBotIcon)}>
 							<i className={cx("fr-icon-message-3-fill")} />
@@ -194,6 +206,7 @@ const ChatBot = ({ mode = "guided" }: Props) => {
 												? classes.messageWrapperUser
 												: classes.messageWrapperAssistant,
 										)}
+
 									>
 										<div
 											className={cx(
@@ -209,19 +222,19 @@ const ChatBot = ({ mode = "guided" }: Props) => {
 											msg.role === "assistant" &&
 											index === messages.length - 1) ||
 											(mode === "direct" && msg.role === "assistant")) && (
-											<div className={cx(classes.actionsContainer)}>
-												<Button
-													size="small"
-													onClick={onBack}
-													priority="secondary"
-													title="Retour"
-													iconId="fr-icon-arrow-left-line"
-													className={cx(classes.pillButton)}
-												>
-													Retour
-												</Button>
-											</div>
-										)}
+												<div className={cx(classes.actionsContainer)}>
+													<Button
+														size="small"
+														onClick={onBack}
+														priority="secondary"
+														title="Retour"
+														iconId="fr-icon-arrow-left-line"
+														className={cx(classes.pillButton)}
+													>
+														Retour
+													</Button>
+												</div>
+											)}
 										{mode === "guided" &&
 											msg.choices &&
 											msg.choices.length > 0 &&
@@ -271,7 +284,7 @@ const ChatBot = ({ mode = "guided" }: Props) => {
 							<>
 								<Input
 									textArea
-									label=""
+									label="Votre message"
 									state="default"
 									nativeTextAreaProps={{
 										value: message,
@@ -463,7 +476,6 @@ const useStyles = tss.withName(ChatBot.name).create({
 	textAreaInput: {
 		background: "none",
 		boxShadow: "none",
-		outline: "none",
 		resize: "none",
 	},
 	textArea: {
