@@ -35,11 +35,11 @@ const useStyles = tss.withName(SubMenuCustom.name).create(() => ({
 	},
 	personaName: {
 		fontWeight: "bold",
-		fontSize: "14px",
+		fontSize: "0.875rem",
 	},
 	personaDescription: {
 		color: fr.colors.decisions.text.default.grey.default,
-		fontSize: "12px",
+		fontSize: "0.75rem",
 	},
 }));
 

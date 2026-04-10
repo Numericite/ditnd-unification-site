@@ -62,7 +62,9 @@ export default function CardDisplay({
 					className="fr-link fr-icon-arrow-right-line fr-link--icon-right"
 					href={redirect}
 					aria-label={`${redirectText} : ${title}`}
-					title={`${redirectText} : ${title} (nouvelle fenêtre)`}
+					title={kind === "courses"
+						? `${redirectText} : ${title} (nouvelle fenêtre)`
+						: `${redirectText} : ${title}`}
 					{...(kind === "courses" ? { target: "_blank", rel: "noopener noreferrer" } : {})}
 				>
 					{redirectText}

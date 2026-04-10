@@ -182,7 +182,7 @@ const ChatBot = ({ mode = "guided" }: Props) => {
 					className={cx(classes.chatBotWindow)}>
 					<div className={cx(classes.chatBotHeader)}>
 						<div className={cx(classes.chatBotIcon)}>
-							<i className={cx("fr-icon-message-3-fill")} />
+							<i className={cx("fr-icon-message-3-fill")} aria-hidden="true" />
 						</div>
 						<p className={cx(classes.chatBotTitle)}>
 							Bonjour, !
@@ -368,7 +368,7 @@ const useStyles = tss.withName(ChatBot.name).create({
 	},
 	chatBotTitle: {
 		color: "white",
-		fontSize: "18px",
+		fontSize: "1.125rem",
 		fontWeight: "500",
 		margin: 0,
 	},
