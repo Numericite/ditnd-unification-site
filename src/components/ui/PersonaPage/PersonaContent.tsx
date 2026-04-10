@@ -25,7 +25,7 @@ export default function PersonaContent({
 			</h3>
 			<div
 				className={fr.cx("fr-grid-row", "fr-grid-row--gutters")}
-				id="contenu"
+				id={`contenu-${slugify(chapterName)}`}
 			>
 				{viewCourse ? (
 					<CardsDisplayGroup
