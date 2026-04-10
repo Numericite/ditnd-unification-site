@@ -2,7 +2,6 @@ import Head from "next/head";
 import { tss } from "tss-react/dsfr";
 import { fr } from "@codegouvfr/react-dsfr";
 import { PersonaTiles } from "~/components/HomePage/PersonaTiles";
-import Breadcrumb from "@codegouvfr/react-dsfr/Breadcrumb";
 import SearchBar from "@codegouvfr/react-dsfr/SearchBar";
 import { api } from "~/utils/api";
 import MostViewedGuides from "~/components/HomePage/MostViewedGuides";
@@ -51,11 +50,11 @@ export default function Home() {
     <>
       <Head>
         <title>DITND - Accueil</title>
+        <meta
+          name="description"
+          content="Page d'accueil de la plateforme de la délégation interministérielle pour les troubles du neurodéveloppement, où vous trouverez des informations, diagnostics et formations sur les troubles du neurodéveloppement"
+        />
       </Head>
-      <meta
-        name="description"
-        content="Page d'accueil de la plateforme de la délégation interministérielle pour les troubles du neurodéveloppement, où vous trouverez des informations, diagnostics et formations sur les troubles du neurodéveloppement"
-      />
       <div>
         <div className={fr.cx("fr-container", "fr-my-8w")}>
           <div className={fr.cx("fr-py-4w")}>
