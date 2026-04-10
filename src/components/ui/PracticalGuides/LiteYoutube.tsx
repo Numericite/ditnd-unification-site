@@ -30,7 +30,7 @@ export default function LiteYouTube({ videoId }: { videoId: string }) {
 		<div className={classes.iframeWrapper}>
 			<iframe
 				title="YouTube video player"
-				src={`https://www.youtube-nocookie.com/embed/${videoId}?autoplay=1`}
+				src={`https://www.youtube-nocookie.com/embed/${videoId}`}
 				allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture"
 				allowFullScreen
 			/>
