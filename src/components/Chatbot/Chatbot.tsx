@@ -77,6 +77,7 @@ const ChatBot = ({ mode = "guided" }: Props) => {
 											href={`/guides/${slug}`}
 											target="_blank"
 											rel="noopener noreferrer"
+											title={`${title} (nouvelle fenêtre)`}
 										>
 											{title}
 										</a>
@@ -144,6 +145,7 @@ const ChatBot = ({ mode = "guided" }: Props) => {
 											href={`/guides/${slug}`}
 											target="_blank"
 											rel="noopener noreferrer"
+											title={`${title} (nouvelle fenêtre)`}
 										>
 											{title}
 										</a>

@@ -42,6 +42,8 @@ export default function CardDisplay({
 		}
 		: { imageComponent: undefined };
 
+	const redirectText = kind === "courses" ? "Voir la formation" : "Voir la fiche";
+
 	return (
 		<Card
 			background
@@ -59,9 +61,11 @@ export default function CardDisplay({
 				<a
 					className="fr-link fr-icon-arrow-right-line fr-link--icon-right"
 					href={redirect}
+					aria-label={`${redirectText} : ${title}`}
+					title={`${redirectText} : ${title} (nouvelle fenêtre)`}
 					{...(kind === "courses" ? { target: "_blank", rel: "noopener noreferrer" } : {})}
 				>
-					{kind === "courses" ? "Voir la formation" : "Voir la fiche"}
+					{redirectText}
 				</a>
 			}
 			size="medium"
