@@ -28,6 +28,9 @@ const useStyles = tss.withName(SubMenuCustom.name).create(() => ({
 		gap: fr.spacing("2w"),
 		marginTop: fr.spacing("1v"),
 		pointerEvents: "none",
+		"& svg": {
+			flexShrink: 0,
+		},
 	},
 	personaInfo: {
 		display: "flex",
