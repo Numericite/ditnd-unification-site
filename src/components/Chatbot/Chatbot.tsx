@@ -117,7 +117,7 @@ const ChatBot = () => {
                   <div className={cx(classes.inputArea)}>
                     <Input
                       textArea
-                      label="Votre message"
+                      label="Votre question"
                       state="default"
                       nativeTextAreaProps={{
                         ref: textAreaRef,
@@ -177,10 +177,7 @@ const ChatBot = () => {
                     onScroll={checkScrollOverflow}
                   >
                     <p className={cx(classes.sourcesLabel)}>
-                      <i
-                        className="fr-icon-chat-3-line"
-                        aria-hidden="true"
-                      />
+                      <i className="fr-icon-chat-3-line" aria-hidden="true" />
                       En résumé
                     </p>
                     <p className={cx(classes.resourcesIntro)}>
