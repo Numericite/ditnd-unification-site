@@ -16,150 +16,149 @@ import { EmptyScreenZone } from "~/components/ui/EmptyScreenZone";
 import { fr } from "@codegouvfr/react-dsfr";
 
 declare module "@codegouvfr/react-dsfr/next-pagesdir" {
-	interface RegisterLink {
-		Link: typeof Link;
-	}
+  interface RegisterLink {
+    Link: typeof Link;
+  }
 }
 
 const { augmentDocumentWithEmotionCache, withAppEmotionCache } =
-	createEmotionSsrAdvancedApproach({ key: "css" });
+  createEmotionSsrAdvancedApproach({ key: "css" });
 
 const { withDsfr, dsfrDocumentApi } = createNextDsfrIntegrationApi({
-	defaultColorScheme: "system",
-	Link,
-	preloadFonts: [
-		//"Marianne-Light",
-		//"Marianne-Light_Italic",
-		"Marianne-Regular",
-		//"Marianne-Regular_Italic",
-		"Marianne-Medium",
-		//"Marianne-Medium_Italic",
-		"Marianne-Bold",
-		//"Marianne-Bold_Italic",
-		//"Spectral-Regular",
-		//"Spectral-ExtraBold"
-	],
+  defaultColorScheme: "system",
+  Link,
+  preloadFonts: [
+    //"Marianne-Light",
+    //"Marianne-Light_Italic",
+    "Marianne-Regular",
+    //"Marianne-Regular_Italic",
+    "Marianne-Medium",
+    //"Marianne-Medium_Italic",
+    "Marianne-Bold",
+    //"Marianne-Bold_Italic",
+    //"Spectral-Regular",
+    //"Spectral-ExtraBold"
+  ],
 });
 
 export { augmentDocumentWithEmotionCache, dsfrDocumentApi };
 
 function App({ Component, pageProps }: AppProps) {
-	const { classes, cx } = useStyles();
+  const { classes, cx } = useStyles();
 
-	const { data: conditions, isLoading: isLoadingHomePage } =
-		api.condition.all.useQuery();
+  const { data: conditions, isLoading: isLoadingHomePage } =
+    api.condition.all.useQuery();
 
-	const { data: persons, isLoading: isLoadingPersons } =
-		api.persona.persons.useQuery();
+  const { data: persons, isLoading: isLoadingPersons } =
+    api.persona.persons.useQuery();
 
-	const { data: homeCMS, isLoading: isLoadingHomeCMS } =
-		api.cms.home.useQuery();
+  const { data: homeCMS, isLoading: isLoadingHomeCMS } =
+    api.cms.home.useQuery();
 
-	const { data: footerTitle, isLoading: isLoadingFooterTitle } =
-		api.cms.footerTitle.useQuery();
+  const { data: footerTitle, isLoading: isLoadingFooterTitle } =
+    api.cms.footerTitle.useQuery();
 
-	const { data: professionalPersonas, isLoading: isLoadingPersona } =
-		api.persona.professionals.useQuery();
+  const { data: professionalPersonas, isLoading: isLoadingPersona } =
+    api.persona.professionals.useQuery();
 
-	if (homeCMS && !isLoadingHomeCMS) homeCMSStore.set(homeCMS);
+  if (homeCMS && !isLoadingHomeCMS) homeCMSStore.set(homeCMS);
 
-	if (professionalPersonas) proStore.set(professionalPersonas);
-	if (persons) personStore.set(persons);
+  if (professionalPersonas) proStore.set(professionalPersonas);
+  if (persons) personStore.set(persons);
 
-	tdhStore.set(conditions);
+  tdhStore.set(conditions);
 
-	return (
-		<>
-			<Head>
-				<title>DITND - Délégation interministérielle pour les TND</title>
-			</Head>
-			<div className={cx(classes.headerContainer)}>
-				<MainNavigation />
+  return (
+    <>
+      <Head>
+        <title>DITND - Délégation interministérielle pour les TND</title>
+      </Head>
+      <div className={cx(classes.headerContainer)}>
+        <MainNavigation />
 
-				<main id="main">
-					{isLoadingHomePage ||
-						isLoadingPersona ||
-						isLoadingFooterTitle ||
-						isLoadingPersons ? (
-						<EmptyScreenZone>
-							<Loader />
-						</EmptyScreenZone>
-					) : (
-						<Component {...pageProps} />
-					)}
-				</main>
+        <main id="main">
+          {isLoadingHomePage ||
+          isLoadingPersona ||
+          isLoadingFooterTitle ||
+          isLoadingPersons ? (
+            <EmptyScreenZone>
+              <Loader />
+            </EmptyScreenZone>
+          ) : (
+            <Component {...pageProps} />
+          )}
+        </main>
 
-				<div className={cx(classes.chatBotsWrapper, "fr-container")}>
-					<ChatBot mode="direct" />
-					<ChatBot />
-				</div>
+        <div className={cx(classes.chatBotsWrapper, "fr-container")}>
+          <ChatBot />
+        </div>
 
-				<Footer
-					id="footer"
-					accessibility="non compliant"
-					contentDescription={footerTitle}
-					accessibilityLinkProps={{
-						href: "/accessibility",
-					}}
-					termsLinkProps={{
-						href: "/legalNotice",
-					}}
-					bottomItems={[
-						{
-							text: "Données personnelles",
-							linkProps: { href: "/cgu" },
-						},
-						{
-							text: "Modalités d'utilisation",
-							linkProps: { href: "/termsOfUse" },
-						},
-						{
-							text: "Code source",
-							linkProps: {
-								href: "https://github.com/Numericite/ditnd-unification-site",
-								title: "Code source, nouvelle fenêtre",
-							},
-						},
-						headerFooterDisplayItem,
-					]}
-				/>
-			</div>
-		</>
-	);
+        <Footer
+          id="footer"
+          accessibility="non compliant"
+          contentDescription={footerTitle}
+          accessibilityLinkProps={{
+            href: "/accessibility",
+          }}
+          termsLinkProps={{
+            href: "/legalNotice",
+          }}
+          bottomItems={[
+            {
+              text: "Données personnelles",
+              linkProps: { href: "/cgu" },
+            },
+            {
+              text: "Modalités d'utilisation",
+              linkProps: { href: "/termsOfUse" },
+            },
+            {
+              text: "Code source",
+              linkProps: {
+                href: "https://github.com/Numericite/ditnd-unification-site",
+                title: "Code source, nouvelle fenêtre",
+              },
+            },
+            headerFooterDisplayItem,
+          ]}
+        />
+      </div>
+    </>
+  );
 }
 
 const useStyles = tss.withName(App.name).create({
-	headerContainer: {
-		minHeight: "100vh",
-		display: "flex",
-		flexDirection: "column",
-	},
-	megaMenuCustom: {
-		".fr-menu__list": {
-			position: "relative",
-		},
-		".fr-collapse": {
-			overflow: "visible",
-			"&:is(.fr-collapsing)": {
-				overflow: "hidden",
-			},
-		},
-	},
-	chatBotsWrapper: {
-		position: "fixed",
-		bottom: fr.spacing("2w"),
-		left: 0,
-		right: 0,
-		display: "flex",
-		justifyContent: "end",
-		alignItems: "flex-end",
-		gap: fr.spacing("2v"),
-		zIndex: 1,
-		pointerEvents: "none",
-		"& > *": {
-			pointerEvents: "auto",
-		},
-	},
+  headerContainer: {
+    minHeight: "100vh",
+    display: "flex",
+    flexDirection: "column",
+  },
+  megaMenuCustom: {
+    ".fr-menu__list": {
+      position: "relative",
+    },
+    ".fr-collapse": {
+      overflow: "visible",
+      "&:is(.fr-collapsing)": {
+        overflow: "hidden",
+      },
+    },
+  },
+  chatBotsWrapper: {
+    position: "fixed",
+    bottom: fr.spacing("2w"),
+    left: 0,
+    right: 0,
+    display: "flex",
+    justifyContent: "end",
+    alignItems: "flex-end",
+    gap: fr.spacing("2v"),
+    zIndex: 1100,
+    pointerEvents: "none",
+    "& > *": {
+      pointerEvents: "auto",
+    },
+  },
 });
 
 export default withDsfr(api.withTRPC(withAppEmotionCache(App)));
