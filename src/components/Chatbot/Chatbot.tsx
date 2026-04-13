@@ -178,7 +178,7 @@ const ChatBot = () => {
                   >
                     <p className={cx(classes.sourcesLabel)}>
                       <i
-                        className="ri-chat-ai-3-line"
+                        className="fr-icon-chat-3-line"
                         aria-hidden="true"
                       />
                       En résumé
@@ -190,7 +190,7 @@ const ChatBot = () => {
                       <div className={cx(classes.sourcesSection)}>
                         <p className={cx(classes.sourcesLabel)}>
                           <i
-                            className="ri-book-ai-line"
+                            className="fr-icon-book-2-line"
                             aria-hidden="true"
                           />
                           Consultez les fiches pratiques
