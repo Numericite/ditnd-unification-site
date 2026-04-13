@@ -7,99 +7,110 @@ import { shortenDescription } from "~/utils/tools";
 import { tss } from "tss-react/dsfr";
 
 type Props = {
-	title: string;
-	description?: string;
-	type?: "Webinaire" | "MOOC" | "Présentiel";
-	imageUrl?: string;
-	imageAlt?: string;
-	noImg?: boolean;
-	conditions: Condition[];
-	themes: Theme[];
-	kind?: "guides" | "courses";
-	redirect: string;
-	titleAs?: "h2" | "h3" | "h4" | "h5" | "h6" | undefined;
+  title: string;
+  description?: string;
+  type?: "Webinaire" | "MOOC" | "Présentiel";
+  imageUrl?: string;
+  imageAlt?: string;
+  noImg?: boolean;
+  conditions: Condition[];
+  themes: Theme[];
+  kind?: "guides" | "courses";
+  redirect: string;
+  titleAs?: "h2" | "h3" | "h4" | "h5" | "h6" | undefined;
 };
 
 export default function CardDisplay({
-	title,
-	description,
-	type,
-	imageUrl,
-	imageAlt,
-	noImg,
-	conditions,
-	themes,
-	kind = "guides",
-	redirect = "/",
-	titleAs = "h4",
+  title,
+  description,
+  type,
+  imageUrl,
+  imageAlt,
+  noImg,
+  conditions,
+  themes,
+  kind = "guides",
+  redirect = "/",
+  titleAs = "h4",
 }: Props) {
-	const { classes, cx } = useStyles();
+  const { classes, cx } = useStyles();
 
-	const imgProps = !noImg
-		? {
-			imageUrl: imageUrl ?? "/placeholder.16x9.png",
-			imageAlt: imageAlt ?? "",
-		}
-		: { imageComponent: undefined };
+  const imgProps = !noImg
+    ? {
+        imageUrl: imageUrl ?? "/placeholder.16x9.png",
+        imageAlt: imageAlt ?? "",
+      }
+    : { imageComponent: undefined };
 
-	return (
-		<Card
-			background
-			badge={
-				type ? (
-					<Badge noIcon severity="info">
-						{type}
-					</Badge>
-				) : null
-			}
-			border
-			desc={description ? shortenDescription(description) : undefined}
-			{...imgProps}
-			footer={
-				<a
-					className="fr-link fr-icon-arrow-right-line fr-link--icon-right"
-					href={redirect}
-					{...(kind === "courses" ? { target: "_blank", rel: "noopener noreferrer" } : {})}
-				>
-					{kind === "courses" ? "Voir la formation" : "Voir la fiche"}
-				</a>
-			}
-			size="medium"
-			start={
-				<div className={cx(classes.tags)}>
-					<ul className={cx(fr.cx("fr-tags-group"), classes.tags)}>
-						{conditions.map((condition) => (
-							<li key={condition.id}>
-								<Tag
-									style={{
-										color: condition.textColor,
-										backgroundColor: condition.backgroundColor,
-									}}
-								>
-									<strong>{condition.slug.toUpperCase()}</strong>
-								</Tag>
-							</li>
-						))}
-						{themes.map((theme, index) => (
-							<li key={index}>
-								<Tag>
-									<strong>{theme.name}</strong>
-								</Tag>
-							</li>
-						))}
-					</ul>
-				</div>
-			}
-			title={title}
-			titleAs={titleAs}
-		/>
-	);
+  const redirectText =
+    kind === "courses" ? "Accéder à la formation" : "Voir la fiche";
+
+  return (
+    <Card
+      background
+      badge={
+        type ? (
+          <Badge noIcon severity="info">
+            {type}
+          </Badge>
+        ) : null
+      }
+      border
+      desc={description ? shortenDescription(description) : undefined}
+      {...imgProps}
+      footer={
+        <a
+          className="fr-link fr-icon-arrow-right-line fr-link--icon-right"
+          href={redirect}
+          aria-label={`${redirectText} : ${title}`}
+          title={
+            kind === "courses"
+              ? `${redirectText} : ${title}, nouvelle fenêtre`
+              : `${redirectText} : ${title}`
+          }
+          {...(kind === "courses"
+            ? { target: "_blank", rel: "noopener noreferrer" }
+            : {})}
+        >
+          {redirectText}
+        </a>
+      }
+      size="medium"
+      start={
+        <div className={cx(classes.tags)}>
+          <ul className={cx(fr.cx("fr-tags-group"), classes.tags)}>
+            {conditions.map((condition) => (
+              <li key={condition.id}>
+                <Tag
+                  style={{
+                    color: condition.textColor,
+                    backgroundColor: condition.backgroundColor,
+                  }}
+                >
+                  <strong>{condition.slug.toUpperCase()}</strong>
+                </Tag>
+              </li>
+            ))}
+            {themes.map((theme, index) => (
+              <li key={index}>
+                <Tag>
+                  <strong>{theme.name}</strong>
+                </Tag>
+              </li>
+            ))}
+          </ul>
+        </div>
+      }
+      title={title}
+      titleAs={titleAs}
+    />
+  );
 }
 
 const useStyles = tss.withName(CardDisplay.name).create(() => ({
-	tags: {
-		ul: {
-			paddingInlineStart: "0rem!important",
-		},
-	},
+  tags: {
+    ul: {
+      paddingInlineStart: "0rem!important",
+    },
+  },
 }));

@@ -145,24 +145,26 @@ export const PersonaTiles = ({
   const renderContent = () => {
     switch (display) {
       case "person":
-        return <PersonaGrid tiles={tdhTiles} onClick={tileDispatchTable} />;
+        return <PersonaGrid key="person" tiles={tdhTiles} onClick={tileDispatchTable} ariaLabel={subTitle} />;
 
       case "professional":
         if (!professionalPersonas)
-          return <div>Aucun persona professionnel trouvé</div>;
+          return <div role="alert" aria-live="assertive">Aucun persona professionnel trouvé</div>;
 
         return (
           <PersonaGrid
+            key="professional"
             tiles={professionalPersonas}
             onClick={tileDispatchTable}
+            ariaLabel={subTitle}
           />
         );
 
       case "afterProfessional":
-        return <PersonaGrid tiles={tdh} onClick={tileDispatchTable} />;
+        return <PersonaGrid key="afterProfessional" tiles={tdh} onClick={tileDispatchTable} ariaLabel={subTitle} />;
 
       default:
-        return <PersonaGrid tiles={tiles} onClick={tileDispatchTable} />;
+        return <PersonaGrid key="default" tiles={tiles} onClick={tileDispatchTable} ariaLabel={subTitle} />;
     }
   };
 
@@ -195,32 +197,38 @@ export const PersonaTiles = ({
             {lastTag?.slug !== "professional" && lastTag?.label}
           </h1>
         )}
-        <h2>{subTitle}</h2>
-        <div className={fr.cx("fr-text--sm", "fr-mb-8v")} style={{ whiteSpace: "pre-line" }}>
+      </div>
+
+      <fieldset className={cx(classes.fieldset)}>
+        <legend className={cx(classes.legend)}>
+          <h2>{subTitle}</h2>
+        </legend>
+        <div
+          className={fr.cx("fr-text--sm", "fr-mb-8v")}
+          style={{ whiteSpace: "pre-line" }}
+        >
           {homeCMS.tiles.description}
         </div>
-      </div>
 
-      {!hideTags && (
-        <div className={cx(fr.cx("fr-grid-row", "fr-grid-row--gutters"))}>
-          {tags.map((tag, index) => (
-            <Tag
-              key={index}
-              className={cx(classes.tagStyles)}
-              dismissible
-              nativeButtonProps={{
-                onClick: () => deleteTag(tag),
-              }}
-            >
-              {tag.label}
-            </Tag>
-          ))}
-        </div>
-      )}
+        {!hideTags && (
+          <div className={cx(fr.cx("fr-grid-row", "fr-grid-row--gutters"))}>
+            {tags.map((tag, index) => (
+              <Tag
+                key={index}
+                className={cx(classes.tagStyles)}
+                dismissible
+                nativeButtonProps={{
+                  onClick: () => deleteTag(tag),
+                }}
+              >
+                {tag.label}
+              </Tag>
+            ))}
+          </div>
+        )}
 
-      <div className={fr.cx("fr-grid-row", "fr-grid-row--gutters", "fr-mt-6v")}>
         {renderContent()}
-      </div>
+      </fieldset>
     </>
   );
 };
@@ -229,6 +237,17 @@ const useStyles = tss.withName(PersonaTiles.name).create(() => ({
   tagStyles: {
     marginLeft: fr.spacing("3v"),
     marginBottom: fr.spacing("1v"),
+  },
+  fieldset: {
+    border: "none",
+    padding: 0,
+    margin: 0,
+    minInlineSize: 0,
+    width: "100%",
+  },
+  legend: {
+    width: "100%",
+    padding: 0,
   },
   coloredTitle: {
     color: fr.colors.decisions.artwork.major.blueFrance.default,

@@ -26,12 +26,17 @@ export const SearchGuidesDisplay = ({ filters }: { filters: FiltersQuery }) => {
           <Loader />
         </EmptyScreenZone>
       ) : practicalGuideData?.length === 0 || !practicalGuideData ? (
-        <div className={fr.cx("fr-my-2w")}>Aucune fiche pratique trouvée</div>
+        <div className={fr.cx("fr-my-2w")} role="alert" aria-live="assertive">Aucune fiche pratique trouvée</div>
       ) : (
         <div
           className={fr.cx("fr-grid-row", "fr-grid-row--gutters", "fr-pt-3w")}
           id="contenu"
         >
+          <div className={fr.cx("fr-col-12")} style={{ textAlign: "right" }}>
+            <p className={fr.cx("fr-text--sm", "fr-mb-0")} role="status" aria-live="polite">
+              {practicalGuideData.length} {practicalGuideData.length > 1 ? "résultats" : "résultat"}
+            </p>
+          </div>
           <CardsDisplayGroup
             className={fr.cx("fr-col-lg-6")}
             guides={practicalGuideData}
