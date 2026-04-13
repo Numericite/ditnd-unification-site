@@ -184,7 +184,7 @@ export const tableConverter: JSXConverter<any> = ({ node }) => {
 export const linkConverter: JSXConverters<DefaultNodeTypes>["link"] = (
   args,
 ) => {
-  const { node } = args;
+  const { node, nodesToJSX, converters } = args;
 
   const url = node.fields.url;
 
@@ -193,6 +193,25 @@ export const linkConverter: JSXConverters<DefaultNodeTypes>["link"] = (
     if (!videoId) return null;
 
     return <LiteYouTube videoId={videoId} />;
+  }
+
+  if (node.fields.newTab) {
+    const childrenJSX = nodesToJSX({
+      nodes: node.children ?? [],
+      converters,
+    });
+    const linkText = extractTextFromNodes(node.children ?? []);
+
+    return (
+      <a
+        href={url}
+        target="_blank"
+        rel="noopener noreferrer"
+        title={`${linkText}, nouvelle fenêtre`}
+      >
+        {childrenJSX}
+      </a>
+    );
   }
 
   const defaultLinkConverter = defaultJSXConverters.link;
