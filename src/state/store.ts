@@ -22,3 +22,5 @@ export const homeCMSStore = observable<Home>();
 export const personStore = observable<PersonaTile[]>([]);
 
 export const proStore = observable<PersonaTile[]>([]);
+
+export const chatbotOpenStore = observable<boolean>(false);
