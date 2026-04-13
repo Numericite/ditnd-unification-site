@@ -149,7 +149,7 @@ export const PersonaTiles = ({
 
       case "professional":
         if (!professionalPersonas)
-          return <div>Aucun persona professionnel trouvé</div>;
+          return <div role="alert" aria-live="assertive">Aucun persona professionnel trouvé</div>;
 
         return (
           <PersonaGrid

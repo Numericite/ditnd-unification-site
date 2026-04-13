@@ -113,7 +113,7 @@ export default function Home() {
               {persons ? (
                 <PersonaTiles tiles={tiles} />
               ) : (
-                "Aucun persona trouvé"
+                <div role="alert" aria-live="assertive">Aucun persona trouvé</div>
               )}
             </div>
           </div>
@@ -133,7 +133,7 @@ export default function Home() {
                 </div>
 
                 {mostViewedGuides?.length === 0 || !mostViewedGuides ? (
-                  <div>Aucune fiche pratique trouvée</div>
+                  <div role="alert" aria-live="assertive">Aucune fiche pratique trouvée</div>
                 ) : (
                   <MostViewedGuides guides={mostViewedGuides} />
                 )}

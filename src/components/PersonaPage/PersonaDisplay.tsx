@@ -112,6 +112,8 @@ export default function PersonaDisplay({
 							{chapterLinks.length === 0 && (
 								<div
 									className={fr.cx("fr-my-2w")}
+									role="alert"
+									aria-live="assertive"
 								>{`Aucune ${viewCourses ? "formation" : "fiche pratique"} trouvée`}</div>
 							)}
 						</div>
