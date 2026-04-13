@@ -247,7 +247,10 @@ const ChatBot = () => {
         </>
       )}
       <Button
-        className={cx(classes.chatBotButton)}
+        className={cx(
+          classes.chatBotButton,
+          isOpen && classes.chatBotButtonOpen,
+        )}
         onClick={() => chatbotOpenStore.set(!isOpen)}
         iconId={isOpen ? "fr-icon-close-line" : "fr-icon-message-3-fill"}
         title={isOpen ? "Fermer le chatbot d'aide" : "Ouvrir le chatbot d'aide"}
@@ -271,6 +274,8 @@ const useStyles = tss.withName(ChatBot.name).create({
     marginTop: fr.spacing("2v"),
     zIndex: 1100,
     alignSelf: "flex-end",
+  },
+  chatBotButtonOpen: {
     [fr.breakpoints.down("md")]: {
       display: "none",
     },
