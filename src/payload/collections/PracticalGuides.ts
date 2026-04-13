@@ -28,8 +28,23 @@ const afterChangePracticalGuide: CollectionAfterChangeHook = async ({
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const db = req.payload.db as any;
 
-  // Remove vectors when unpublished
+  // Skip indexing for non-published versions.
+  // Only delete vectors if no published version exists anymore (true unpublish).
   if (doc._status !== "published") {
+    try {
+      const publishedDoc = await req.payload.findByID({
+        collection: "practical-guides",
+        id: doc.id,
+        draft: false,
+      });
+      // A published version still exists — keep its vectors intact
+      if (publishedDoc?._status === "published") {
+        return doc;
+      }
+    } catch {
+      // No published version found — fall through to delete vectors
+    }
+
     try {
       await db.drizzle.execute(
         sql`DELETE FROM practical_guide_search_vectors WHERE doc_id = ${String(doc.id)}`,
