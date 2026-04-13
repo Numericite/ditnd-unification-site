@@ -63,7 +63,7 @@ export default function CardDisplay({
 					href={redirect}
 					aria-label={`${redirectText} : ${title}`}
 					title={kind === "courses"
-						? `${redirectText} : ${title} (nouvelle fenêtre)`
+						? `${redirectText} : ${title}, nouvelle fenêtre`
 						: `${redirectText} : ${title}`}
 					{...(kind === "courses" ? { target: "_blank", rel: "noopener noreferrer" } : {})}
 				>

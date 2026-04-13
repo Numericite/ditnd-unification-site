@@ -130,7 +130,7 @@ export const uploadConverter: JSXConverters<DefaultNodeTypes>["upload"] = ({
     );
 
   return (
-    <a target="_blank" rel="noopener noreferrer" href={value.url ?? ""}>
+    <a target="_blank" rel="noopener noreferrer" href={value.url ?? ""} title={`${value.alt}, nouvelle fenêtre`}>
       {value.alt}
     </a>
   );
@@ -234,7 +234,7 @@ export const citationConverter: JSXConverter<SerializedBlockNode> = ({
   const source = value.source ? (
     <li>
       {value.sourceUrl ? (
-        <a href={value.sourceUrl} target="_blank" rel="noopener noreferrer">
+        <a href={value.sourceUrl} target="_blank" rel="noopener noreferrer" title={`${value.source}, nouvelle fenêtre`}>
           {value.source}
         </a>
       ) : (
