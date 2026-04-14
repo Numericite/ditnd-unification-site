@@ -21,10 +21,10 @@ export default function Cgu() {
 	return (
 		<>
 			<Head>
-				<title>DITND - Politique de confidentialité</title>
+				<title>Politique de confidentialité - Maison de l'autisme</title>
 				<meta
 					name="description"
-					content={`DITND - Politique de confidentialité`}
+					content="Politique de confidentialité et protection des données personnelles du site Maison de l'autisme."
 				/>
 			</Head>
 			<div className={fr.cx("fr-container", "fr-py-10w")}>

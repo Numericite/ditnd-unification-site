@@ -6,10 +6,10 @@ export default function Actus() {
 	return (
 		<>
 			<Head>
-				<title>DITND - Actualités</title>
+				<title>Actualités - Maison de l'autisme</title>
 				<meta
 					name="description"
-					content={`Page d'actualité en cours de construction`}
+					content="Actualités de la Maison de l'autisme : dernières nouvelles, événements et ressources sur l'autisme et les troubles du neurodéveloppement."
 				/>
 			</Head>
 			<EmptyScreenZone>Actualités</EmptyScreenZone></>);

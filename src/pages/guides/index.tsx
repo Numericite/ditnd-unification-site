@@ -26,10 +26,10 @@ export default function PracticalGuides() {
 	return (
 		<>
 			<Head>
-				<title>DITND - Fiches Pratiques</title>
+				<title>Fiches pratiques sur l'autisme et les troubles du neurodéveloppement - Maison de l'autisme</title>
 				<meta
 					name="description"
-					content={`Page sur la recherche de fiches pratiques liés au troubles du neurodéveloppement`}
+					content="Retrouvez toutes les fiches pratiques sur l'autisme et ses troubles associés : diagnostic, accompagnement, scolarité, emploi, vie quotidienne."
 				/>
 			</Head>
 			<div className={fr.cx("fr-container", "fr-pb-8w")}>

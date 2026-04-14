@@ -21,8 +21,8 @@ export default function Accessibility() {
 	return (
 		<>
 			<Head>
-				<title>DITND - Accessibilité</title>
-				<meta name="description" content={`DITND - Accessibilité`} />
+				<title>Accessibilité - Maison de l'autisme</title>
+				<meta name="description" content="Déclaration d'accessibilité du site Maison de l'autisme, site national d'informations sur l'autisme et les troubles du neurodéveloppement." />
 			</Head>
 			<div className={fr.cx("fr-container", "fr-py-10w")}>
 				<WysiwygContent

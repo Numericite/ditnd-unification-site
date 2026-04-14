@@ -5,10 +5,10 @@ export default function Annuaire() {
 	return (
 		<>
 			<Head>
-				<title>DITND - Annuaire</title>
+				<title>Annuaire de ressources pour l'autisme - Maison de l'autisme</title>
 				<meta
 					name="description"
-					content={`Page d'annuaire en cours de construction`}
+					content="Annuaire de ressources pour l'autisme : contacts et organismes utiles pour les personnes autistes et leur entourage."
 				/>
 			</Head>
 			<EmptyScreenZone>Annuaire</EmptyScreenZone></>);

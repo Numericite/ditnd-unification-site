@@ -71,7 +71,7 @@ function App({ Component, pageProps }: AppProps) {
   return (
     <>
       <Head>
-        <title>DITND - Délégation interministérielle pour les TND</title>
+        <title>Maison de l'autisme - Informations sur l'autisme et les troubles du neurodéveloppement</title>
       </Head>
       <div className={cx(classes.headerContainer)}>
         <MainNavigation />
@@ -115,7 +115,7 @@ function App({ Component, pageProps }: AppProps) {
             {
               text: "Code source",
               linkProps: {
-                href: "https://github.com/Numericite/ditnd-unification-site",
+                href: "https://github.com/Numericite/maisondelautisme-site",
                 title: "Code source, nouvelle fenêtre",
               },
             },

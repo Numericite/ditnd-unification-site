@@ -42,10 +42,10 @@ export default function PracticalGuidePage() {
 	return (
 		<>
 			<Head>
-				<title>DITND - {guide.title}</title>
+				<title>{guide.title} - Maison de l'autisme</title>
 				<meta
 					name="description"
-					content={`Fiche pratique sur ${guide.title} `}
+					content={`${guide.title} : fiche pratique sur l'autisme et les troubles du neurodéveloppement - Maison de l'autisme`}
 				/>
 			</Head>
 			<div className={fr.cx("fr-container")}>

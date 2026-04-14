@@ -28,10 +28,10 @@ export default function Courses() {
 	return (
 		<>
 			<Head>
-				<title>DITND - Formations</title>
+				<title>Formations sur l'autisme et les troubles du neurodéveloppement - Maison de l'autisme</title>
 				<meta
 					name="description"
-					content={`Page sur la recherche de formations liés au troubles du neurodéveloppement`}
+					content="Découvrez les formations sur l'autisme et les troubles du neurodéveloppement : sensibilisation, accompagnement, pratiques professionnelles."
 				/>
 			</Head>
 			<div className={fr.cx("fr-container", "fr-pb-8w")}>

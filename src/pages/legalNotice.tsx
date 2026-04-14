@@ -21,8 +21,8 @@ export default function LegalNotice() {
 	return (
 		<>
 			<Head>
-				<title>DITND - Mention légales</title>
-				<meta name="description" content={`DITND - Mention légales`} />
+				<title>Mentions légales - Maison de l'autisme</title>
+				<meta name="description" content="Mentions légales du site Maison de l'autisme, site national d'informations sur l'autisme et les troubles du neurodéveloppement." />
 			</Head>
 			<div className={fr.cx("fr-container", "fr-py-10w")}>
 				<WysiwygContent

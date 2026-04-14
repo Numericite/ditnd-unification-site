@@ -38,7 +38,7 @@ export default function WysiwygContent({
 
   return (
     <div className={cx(classes.wysiwig)} id="wysiwig-content">
-      <h1 className={classes.wysiwygTitle}>{title}</h1>
+      <h1>{title}</h1>
       {createdAt && updatedAt && (
         <p
           className={fr.cx("fr-text--sm")}
@@ -50,9 +50,6 @@ export default function WysiwygContent({
 }
 
 const useStyles = tss.withName(WysiwygContent.name).create(() => ({
-  wysiwygTitle: {
-    marginBottom: fr.spacing("2v"),
-  },
   wysiwig: {
     h1: {
       color: fr.colors.decisions.text.active.blueFrance.default,

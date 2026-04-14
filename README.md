@@ -1,6 +1,6 @@
-# DITND - Unification des sites internet
+# Maison de l'autisme
 
-_DITND - Unification des sites internet_ is a web application built with [Next.js](https://nextjs.org), [Payload CMS](https://payloadcms.com), and [tRPC](https://trpc.io). It provides a robust platform for managing and ensuring compliance in digital services.
+_Maison de l'autisme_ est une application web construite avec [Next.js](https://nextjs.org), [Payload CMS](https://payloadcms.com), et [tRPC](https://trpc.io). Elle propose un site national d'informations pour toutes les personnes concernées par l'autisme et ses troubles associés.
 
 ## Features
 

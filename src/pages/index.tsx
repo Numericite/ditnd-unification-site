@@ -49,10 +49,10 @@ export default function Home() {
   return (
     <>
       <Head>
-        <title>DITND - Accueil</title>
+        <title>Maison de l'autisme - Accueil</title>
         <meta
           name="description"
-          content="Page d'accueil de la plateforme de la délégation interministérielle pour les troubles du neurodéveloppement, où vous trouverez des informations, diagnostics et formations sur les troubles du neurodéveloppement"
+          content="Maison de l'autisme : site national d'informations pour toutes les personnes concernées par l'autisme et ses troubles associés. Retrouvez des ressources, diagnostics et formations."
         />
       </Head>
       <div>

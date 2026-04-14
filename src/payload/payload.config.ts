@@ -164,7 +164,7 @@ export default buildConfig({
       tabbedUI: true,
       generateTitle: ({ doc }) => {
         const title = (doc as Record<string, unknown>)?.title;
-        return typeof title === "string" ? `${title} - DIT'ND` : "DIT'ND";
+        return typeof title === "string" ? `${title} - Maison de l'autisme` : "Maison de l'autisme";
       },
       generateDescription: ({ doc }) => {
         const description = (doc as Record<string, unknown>)?.description;

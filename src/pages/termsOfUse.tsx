@@ -21,8 +21,8 @@ export default function TermsOfUse() {
 	return (
 		<>
 			<Head>
-				<title>DITND - Modalités d'utilisation</title>
-				<meta name="description" content={`DITND - Modalités d'utilisation`} />
+				<title>Modalités d'utilisation - Maison de l'autisme</title>
+				<meta name="description" content="Modalités d'utilisation du site Maison de l'autisme, site national d'informations sur l'autisme et les troubles du neurodéveloppement." />
 			</Head>
 			<div className={fr.cx("fr-container", "fr-py-10w")}>
 				<WysiwygContent
