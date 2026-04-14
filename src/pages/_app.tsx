@@ -71,7 +71,10 @@ function App({ Component, pageProps }: AppProps) {
   return (
     <>
       <Head>
-        <title>Maison de l'autisme - Informations sur l'autisme et les troubles du neurodéveloppement</title>
+        <title>
+          Maison de l'autisme - Informations sur l'autisme et les troubles du
+          neurodéveloppement
+        </title>
       </Head>
       <div className={cx(classes.headerContainer)}>
         <MainNavigation />
@@ -97,25 +100,28 @@ function App({ Component, pageProps }: AppProps) {
           id="footer"
           accessibility="non compliant"
           contentDescription={footerTitle}
+          websiteMapLinkProps={{
+            href: "/plan-du-site",
+          }}
           accessibilityLinkProps={{
-            href: "/accessibility",
+            href: "/accessibilite",
           }}
           termsLinkProps={{
-            href: "/legalNotice",
+            href: "/mentions-legales",
           }}
           bottomItems={[
             {
               text: "Données personnelles",
-              linkProps: { href: "/cgu" },
+              linkProps: { href: "/donnees-personnelles" },
             },
             {
               text: "Modalités d'utilisation",
-              linkProps: { href: "/termsOfUse" },
+              linkProps: { href: "/modalites-utilisation" },
             },
             {
               text: "Code source",
               linkProps: {
-                href: "https://github.com/Numericite/maisondelautisme-site",
+                href: "https://github.com/Numericite/ditnd-unification-site",
                 title: "Code source, nouvelle fenêtre",
               },
             },
