@@ -33,10 +33,10 @@ export default function PracticalGuidePage() {
 	return (
 		<>
 			<Head>
-				<title>DITND - {guide.title}</title>
+				<title>{guide.title} (brouillon) - Maison de l'autisme</title>
 				<meta
 					name="description"
-					content={`Brouillon Fiche pratique sur ${guide.title} `}
+					content={`${guide.title} : brouillon de fiche pratique - Maison de l'autisme`}
 				/>
 			</Head>
 			<div className={fr.cx("fr-container")}>

@@ -89,7 +89,7 @@ export default function JourneyPage() {
   return (
     <>
       <Head>
-        <title>DITND - {persona?.name ?? "Mon parcours"}</title>
+        <title>{persona?.name ?? "Mon parcours"} - Maison de l'autisme</title>
         <meta
           name="description"
           content={`Formulaire pour déterminer quelles ressources vous correspondent le mieux`}

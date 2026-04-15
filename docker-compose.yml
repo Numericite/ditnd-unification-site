@@ -4,7 +4,7 @@ services:
     environment:
       POSTGRES_USER: user
       POSTGRES_PASSWORD: password
-      POSTGRES_DB: ditnd-unification-site
+      POSTGRES_DB: maisondelautisme-site
     ports:
       - "5434:5432"
     volumes:

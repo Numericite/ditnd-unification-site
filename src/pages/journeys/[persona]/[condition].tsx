@@ -66,7 +66,7 @@ export default function JourneyPage() {
   return (
     <>
       <Head>
-        <title>DITND - {journey.journey_name}</title>
+        <title>{journey.journey_name} - Maison de l'autisme</title>
         <meta
           name="description"
           content={`Page de parcours en tant que ${journey.persona.name.toLowerCase()}, où vous trouverez des ressources sur le ${condition.toUpperCase()}`}

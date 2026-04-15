@@ -5,9 +5,9 @@ import { Loader } from "~/components/ui/Loader";
 import WysiwygContent from "~/components/ui/PracticalGuides/WysiwygContent";
 import { api } from "~/utils/api";
 
-export default function Cgu() {
+export default function Accessibility() {
 	const { data: pageContent, isLoading: isLoadingData } =
-		api.cms.cgu.useQuery();
+		api.cms.accessibility.useQuery();
 
 	if (isLoadingData)
 		return (
@@ -21,11 +21,8 @@ export default function Cgu() {
 	return (
 		<>
 			<Head>
-				<title>DITND - Politique de confidentialité</title>
-				<meta
-					name="description"
-					content={`DITND - Politique de confidentialité`}
-				/>
+				<title>Accessibilité - Maison de l'autisme</title>
+				<meta name="description" content="Déclaration d'accessibilité du site Maison de l'autisme, site national d'informations sur l'autisme et les troubles du neurodéveloppement." />
 			</Head>
 			<div className={fr.cx("fr-container", "fr-py-10w")}>
 				<WysiwygContent

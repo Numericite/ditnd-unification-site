@@ -6,9 +6,9 @@ export default async function homeTask(payload: BasePayload) {
     data: {
       header: {
         title:
-          "Plateforme nationale du TSA et des troubles du neuro-développement",
+          "Site national d'informations pour toutes les personnes concernées par l'autisme et ses troubles associés",
         description:
-          "La plateforme nationale au service des personnes concernées par un trouble du neurodéveloppement.",
+          "La Maison de l'autisme propose de l'information fiable, de l'écoute, des conseils et des temps d'échange autour de l'autisme et des troubles du neurodéveloppement.",
       },
       tiles: {
         description: "Découvrez les parcours personnalisés selon votre profil.",

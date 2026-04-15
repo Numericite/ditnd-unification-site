@@ -6,7 +6,7 @@ export default async function footerTask(payload: BasePayload) {
 		slug: "footer",
 		data: {
 			title:
-				"Délégation interministérielle pour les troubles du neurodéveloppement",
+				"Maison de l'autisme - Site national d'informations sur l'autisme et les troubles du neurodéveloppement",
 			accessibility: {
 				title: "Accessibilité",
 				content: legalsContent.accessibility,

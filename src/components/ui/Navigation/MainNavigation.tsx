@@ -61,7 +61,7 @@ export default function MainNavigation() {
         }
         homeLinkProps={{
           href: "/",
-          title: "Accueil DITND",
+          title: "Accueil - Maison de l'autisme",
         }}
         id="fr-header-with-horizontal-operator-logo"
         navigation={userNavigationItems}
@@ -76,8 +76,8 @@ export default function MainNavigation() {
             Posez votre question
           </Button>,
         ]}
-        serviceTitle="DI-TND"
-        serviceTagline="Délégation interministérielle pour les troubles du neurodéveloppement"
+        serviceTitle="Maison de l'autisme"
+        serviceTagline="Site national d'informations sur l'autisme et les troubles du neurodéveloppement"
       />
     </>
   );
