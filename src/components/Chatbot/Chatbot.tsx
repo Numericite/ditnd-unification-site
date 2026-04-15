@@ -295,7 +295,7 @@ const useStyles = tss.withName(ChatBot.name).create({
     borderRadius: fr.spacing("2v"),
     overflow: "hidden",
     boxShadow: "0 4px 24px rgba(0, 0, 0, 0.12)",
-    backgroundColor: "white",
+    backgroundColor: fr.colors.decisions.background.default.grey.default,
     position: "relative",
     zIndex: 1100,
     [fr.breakpoints.down("md")]: {
@@ -315,9 +315,9 @@ const useStyles = tss.withName(ChatBot.name).create({
     backgroundColor: fr.colors.decisions.artwork.major.blueFrance.default,
   },
   closeButton: {
-    color: "white",
+    color: fr.colors.decisions.text.inverted.grey.default,
     "&:hover": {
-      backgroundColor: "rgba(255, 255, 255, 0.1)",
+      backgroundColor: fr.colors.decisions.background.contrast.grey.hover,
     },
   },
   chatBotContent: {
@@ -351,7 +351,7 @@ const useStyles = tss.withName(ChatBot.name).create({
       display: "flex",
       justifyContent: "center",
       alignItems: "center",
-      color: "white",
+      color: fr.colors.decisions.text.inverted.grey.default,
       "::before": {
         margin: 0,
         "--icon-size": "1.5rem",
@@ -371,8 +371,8 @@ const useStyles = tss.withName(ChatBot.name).create({
     marginBottom: fr.spacing("2v"),
   },
   userBubble: {
-    backgroundColor: fr.colors.options.blueCumulus.main526.default,
-    color: "white",
+    backgroundColor: fr.colors.decisions.background.actionHigh.blueFrance.default,
+    color: fr.colors.decisions.text.inverted.grey.default,
     borderRadius: fr.spacing("2v"),
     padding: `${fr.spacing("2v")} ${fr.spacing("3v")}`,
     maxWidth: "85%",
@@ -465,8 +465,8 @@ const useStyles = tss.withName(ChatBot.name).create({
     alignItems: "center",
     gap: fr.spacing("1v"),
     padding: `${fr.spacing("1v")} ${fr.spacing("3v")}`,
-    backgroundColor: fr.colors.decisions.artwork.major.blueFrance.default,
-    color: "white",
+    backgroundColor: fr.colors.decisions.background.actionHigh.blueFrance.default,
+    color: fr.colors.decisions.text.inverted.grey.default,
     border: "none",
     borderRadius: "100px",
     cursor: "pointer",
