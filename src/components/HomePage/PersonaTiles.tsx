@@ -107,13 +107,13 @@ export const PersonaTiles = ({
       setSubTitle(titleByDisplay.professional);
     },
     afterProfessional: (tile) => {
-      router.push(`/journeys/${tile.slug}`);
+      router.push(`/parcours/${tile.slug}`);
     },
     condition: (tile) => {
       const personaSlug = tags
         .filter((tag) => tag.slug !== "professional")
         .map((tag) => tag.slug);
-      router.push(`/journeys/${personaSlug}/${tile.slug}`);
+      router.push(`/parcours/${personaSlug}/${tile.slug}`);
     },
     default: () => {
       setDisplay("default");
@@ -183,7 +183,7 @@ export const PersonaTiles = ({
             segments={tags.slice(0, -1).map((tag) => ({
               label: tag.label,
               linkProps: {
-                href: `/journeys/${tag.slug}`,
+                href: `/parcours/${tag.slug}`,
                 onClick: (e: React.MouseEvent) => {
                   e.preventDefault();
                   navigateBreadcrumb(tag);

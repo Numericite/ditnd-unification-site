@@ -49,17 +49,17 @@ export default function JourneyPage() {
     ? [
       {
         label: "Je suis un professionnel",
-        linkProps: { href: "/journeys/professional" },
+        linkProps: { href: "/parcours/professional" },
       },
       {
         label: journeyBreadcrumbText,
-        linkProps: { href: `/journeys/${persona}` },
+        linkProps: { href: `/parcours/${persona}` },
       },
     ]
     : [
       {
         label: journeyBreadcrumbText,
-        linkProps: { href: `/journeys/${persona}` },
+        linkProps: { href: `/parcours/${persona}` },
       },
     ];
 

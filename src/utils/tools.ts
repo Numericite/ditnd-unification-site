@@ -194,8 +194,8 @@ export const skipLinks: Record<string, SkipLinkType[]> = {
 			label: "Pied de page",
 		},
 	],
-	"/guides": searchPageLinks,
-	"/guides/...": [
+	"/fiches-pratiques": searchPageLinks,
+	"/fiches-pratiques/...": [
 		{
 			anchor: "#summary",
 			label: "Sommaire",
@@ -210,8 +210,8 @@ export const skipLinks: Record<string, SkipLinkType[]> = {
 		},
 	],
 	"/formations": searchPageLinks,
-	"/journeys": defaultSkipLinks,
-	"/journeys/.../...": [
+	"/parcours": defaultSkipLinks,
+	"/parcours/.../...": [
 		{
 			anchor: "#summary",
 			label: "Sommaire",
@@ -233,13 +233,13 @@ export const skipLinks: Record<string, SkipLinkType[]> = {
 };
 
 export const getPathNameForSkipLinks = (pathname: string) => {
-	const isTwoLevelJourney = /^\/journeys\/[^/]+\/[^/]+$/.test(pathname);
-	const isOneLevelJourney = /^\/journeys\/[^/]+$/.test(pathname);
-	const isOneLevelGuide = /^\/guides\/[^/]+$/.test(pathname);
+	const isTwoLevelJourney = /^\/parcours\/[^/]+\/[^/]+$/.test(pathname);
+	const isOneLevelJourney = /^\/parcours\/[^/]+$/.test(pathname);
+	const isOneLevelGuide = /^\/fiches-pratiques\/[^/]+$/.test(pathname);
 
-	if (isTwoLevelJourney) return "/journeys/.../...";
-	if (isOneLevelJourney) return "/journeys";
-	if (isOneLevelGuide) return "/guides/...";
+	if (isTwoLevelJourney) return "/parcours/.../...";
+	if (isOneLevelJourney) return "/parcours";
+	if (isOneLevelGuide) return "/fiches-pratiques/...";
 	return pathname;
 };
 

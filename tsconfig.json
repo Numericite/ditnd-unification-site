@@ -40,7 +40,7 @@
 		"**/*.js",
 		".next/types/**/*.ts",
 		".next/dev/types/**/*.ts",
-		"src/pages/journeys/[persona]"
+		"src/pages/parcours/[persona]"
 	],
 	"exclude": ["node_modules", "generated", "./src/payload/migrations/**"]
 }

@@ -72,7 +72,7 @@ export default function Home() {
                 <SearchBar
                   id="search-global"
                   big
-                  onButtonClick={() => router.push(`/guides?search=${search}`)}
+                  onButtonClick={() => router.push(`/fiches-pratiques?search=${search}`)}
                   renderInput={({ className, id, placeholder, type }) => (
                     <input
                       className={className}
@@ -139,7 +139,7 @@ export default function Home() {
                 )}
 
                 <a
-                  href="/guides"
+                  href="/fiches-pratiques"
                   className={cx(
                     fr.cx(
                       "fr-link",

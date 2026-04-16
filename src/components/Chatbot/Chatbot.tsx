@@ -220,7 +220,7 @@ const ChatBot = () => {
                             <li key={id}>
                               <a
                                 className={cx(classes.sourceCard)}
-                                href={`/guides/${slug}`}
+                                href={`/fiches-pratiques/${slug}`}
                                 target="_blank"
                                 rel="noopener noreferrer"
                                 title={`${title}, nouvelle fenêtre`}

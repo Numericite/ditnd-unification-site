@@ -25,19 +25,19 @@ export default function MainNavigation() {
     },
     {
       text: "Je suis",
-      isActive: router.pathname.startsWith("/journeys"),
+      isActive: router.pathname.startsWith("/parcours"),
       menuLinks: personas.map((persona) => ({
         text: <SubMenuCustom key={persona.slug} persona={{ ...persona }} />,
-        isActive: router.asPath.startsWith(`/journeys/${persona.slug}`),
+        isActive: router.asPath.startsWith(`/parcours/${persona.slug}`),
         linkProps: {
-          href: `/journeys/${persona.slug}`,
+          href: `/parcours/${persona.slug}`,
         },
       })),
     },
     {
       text: "Fiches pratiques",
-      linkProps: { href: "/guides" },
-      isActive: router.pathname.startsWith("/guides"),
+      linkProps: { href: "/fiches-pratiques" },
+      isActive: router.pathname.startsWith("/fiches-pratiques"),
     },
     {
       text: "Formations",

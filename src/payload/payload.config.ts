@@ -54,7 +54,7 @@ export default buildConfig({
         const basePath =
           data._status === "draft"
             ? `/draft/${data.slug}`
-            : `/guides/${data.slug}`;
+            : `/fiches-pratiques/${data.slug}`;
 
         return `${basePath}?v=${data.updatedAt}`;
       },
@@ -175,7 +175,7 @@ export default buildConfig({
       generateURL: ({ doc }) => {
         const slug = (doc as Record<string, unknown>)?.slug;
         return typeof slug === "string"
-          ? `${process.env.NEXT_PUBLIC_SITE_URL || ""}/guides/${slug}`
+          ? `${process.env.NEXT_PUBLIC_SITE_URL || ""}/fiches-pratiques/${slug}`
           : "";
       },
     }),

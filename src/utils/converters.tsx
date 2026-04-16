@@ -429,7 +429,7 @@ export const relationshipConverter: JSXConverters<DefaultNodeTypes>["relationshi
             imageAlt={value.image?.alt}
             conditions={value.conditions ?? []}
             themes={value.themes}
-            redirect={`/guides/${value.slug}`}
+            redirect={`/fiches-pratiques/${value.slug}`}
             titleAs="h3"
           />
         </div>

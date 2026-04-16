@@ -49,7 +49,7 @@ export default function PracticalGuidePage() {
 						{
 							label: "Fiches Pratiques",
 							linkProps: {
-								href: "/guides",
+								href: "/fiches-pratiques",
 							},
 						},
 					]}

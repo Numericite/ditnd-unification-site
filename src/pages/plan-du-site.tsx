@@ -44,7 +44,7 @@ export default function PlanDuSite() {
 									<li key={persona.slug}>
 										<a
 											className={fr.cx("fr-link")}
-											href={`/journeys/${persona.slug}`}
+											href={`/parcours/${persona.slug}`}
 										>
 											{persona.name}
 										</a>
@@ -64,7 +64,7 @@ export default function PlanDuSite() {
 							<li>
 								<a
 									className={fr.cx("fr-link")}
-									href="/guides"
+									href="/fiches-pratiques"
 								>
 									Fiches pratiques
 								</a>

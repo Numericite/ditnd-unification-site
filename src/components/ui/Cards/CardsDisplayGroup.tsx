@@ -61,7 +61,7 @@ export default function CardsDisplayGroup({
                     imageAlt={guide.image?.alt}
                     conditions={guide.conditions ?? []}
                     themes={guide.themes}
-                    redirect={`/guides/${guide.slug}`}
+                    redirect={`/fiches-pratiques/${guide.slug}`}
                     titleAs={titleAs}
                     kind={kind}
                   />
