@@ -224,9 +224,6 @@ export interface Condition {
 export interface Course {
   id: number;
   title: string;
-  /**
-   * Description courte affichée sur les cartes (120 caractères max)
-   */
   description: string;
   link: string;
   type: 'MOOC' | 'Webinaire' | 'Présentiel';

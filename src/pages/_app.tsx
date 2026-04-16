@@ -115,10 +115,6 @@ function App({ Component, pageProps }: AppProps) {
               linkProps: { href: "/donnees-personnelles" },
             },
             {
-              text: "Modalités d'utilisation",
-              linkProps: { href: "/modalites-utilisation" },
-            },
-            {
               text: "Code source",
               linkProps: {
                 href: "https://github.com/Numericite/ditnd-unification-site",

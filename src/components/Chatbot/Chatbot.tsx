@@ -7,10 +7,12 @@ import { api } from "~/utils/api";
 import { chatbotOpenStore } from "~/state/store";
 import { useSelector } from "@legendapp/state/react";
 import type { AugmentedPracticalGuide } from "~/server/api/routers/practical-guides";
+import type { AugmentedCourse } from "~/server/api/routers/courses";
 
 type ChatResponse = {
   content: string;
   guides: AugmentedPracticalGuide[];
+  courses: AugmentedCourse[];
 };
 
 const ChatBot = () => {
@@ -198,6 +200,34 @@ const ChatBot = () => {
                               <a
                                 className={cx(classes.sourceCard)}
                                 href={`/guides/${slug}`}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                title={`${title}, nouvelle fenêtre`}
+                              >
+                                <span className={cx(classes.sourceCardTitle)}>
+                                  {title}
+                                </span>
+                              </a>
+                            </li>
+                          ))}
+                        </ul>
+                      </div>
+                    )}
+                    {response.courses && response.courses.length > 0 && (
+                      <div className={cx(classes.sourcesSection)}>
+                        <p className={cx(classes.sourcesLabel)}>
+                          <i
+                            className="fr-icon-graduation-cap-line"
+                            aria-hidden="true"
+                          />
+                          Consultez les formations
+                        </p>
+                        <ul className={cx(classes.resourcesList)}>
+                          {response.courses.map(({ id, title, link }) => (
+                            <li key={id}>
+                              <a
+                                className={cx(classes.sourceCard)}
+                                href={link}
                                 target="_blank"
                                 rel="noopener noreferrer"
                                 title={`${title}, nouvelle fenêtre`}

@@ -43,3 +43,33 @@ export const addPracticalGuidesTableVector: PostgresAdapter["afterSchemaInit"][n
 
 		return schema;
 	};
+
+export const addCoursesTable: PostgresAdapter["beforeSchemaInit"][number] =
+	({ schema }) => {
+		return {
+			...schema,
+			tables: {
+				...schema.tables,
+				courses_search_vectors: pgTable("courses_search_vectors", {
+					doc_id: text("doc_id").primaryKey(),
+					text: text("text").notNull(),
+				}),
+			},
+		};
+	};
+
+export const addCoursesTableVector: PostgresAdapter["afterSchemaInit"][number] =
+	({ schema, extendTable }) => {
+		const coursesVectorsTable = schema.tables.courses_search_vectors;
+
+		if (!coursesVectorsTable) return schema;
+
+		extendTable({
+			table: coursesVectorsTable,
+			columns: {
+				embedding: vector("embedding", { dimensions: 1536 }).notNull(),
+			},
+		});
+
+		return schema;
+	};

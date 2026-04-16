@@ -24,6 +24,8 @@ import { fr } from "@payloadcms/translations/languages/fr";
 import {
   addPracticalGuidesTable,
   addPracticalGuidesTableVector,
+  addCoursesTable,
+  addCoursesTableVector,
 } from "./hooks";
 
 const hasAwsCreds = Boolean(
@@ -101,8 +103,8 @@ export default buildConfig({
   },
   db: postgresAdapter({
     extensions: ["vector"],
-    beforeSchemaInit: [addPracticalGuidesTable],
-    afterSchemaInit: [addPracticalGuidesTableVector],
+    beforeSchemaInit: [addPracticalGuidesTable, addCoursesTable],
+    afterSchemaInit: [addPracticalGuidesTableVector, addCoursesTableVector],
     pool: {
       connectionString: process.env.POSTGRESQL_ADDON_URI || "",
     },

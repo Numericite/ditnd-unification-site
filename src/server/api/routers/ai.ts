@@ -11,6 +11,7 @@ import { generateEmbedding } from "~/payload/services/embedding";
 import { sql } from "@payloadcms/db-postgres";
 import type { Condition } from "~/payload/payload-types";
 import type { AugmentedPracticalGuide } from "./practical-guides";
+import type { AugmentedCourse } from "./courses";
 
 export const aiRouter = createTRPCRouter({
 	chatbotDirectSend: publicProcedure
@@ -30,23 +31,42 @@ export const aiRouter = createTRPCRouter({
 
 			// 1. Retrieve relevant text chunks from search vectors
 			const embedding = await generateEmbedding(userMessage);
-			const retrieveSqlEmbedding = await ctx.payload.db.drizzle.execute(sql`
-				SELECT doc_id, text, embedding <=> ${JSON.stringify(embedding)}::vector as similarity_score
-				FROM practical_guide_search_vectors
-				ORDER BY embedding <=> ${JSON.stringify(embedding)}::vector
-				LIMIT 3
-			`);
+			const [retrieveGuideEmbeddings, retrieveCourseEmbeddings] = await Promise.all([
+				ctx.payload.db.drizzle.execute(sql`
+					SELECT doc_id, text, embedding <=> ${JSON.stringify(embedding)}::vector as similarity_score
+					FROM practical_guide_search_vectors
+					ORDER BY embedding <=> ${JSON.stringify(embedding)}::vector
+					LIMIT 3
+				`),
+				ctx.payload.db.drizzle.execute(sql`
+					SELECT doc_id, text, embedding <=> ${JSON.stringify(embedding)}::vector as similarity_score
+					FROM courses_search_vectors
+					ORDER BY embedding <=> ${JSON.stringify(embedding)}::vector
+					LIMIT 3
+				`),
+			]);
 
-			// 2. Fetch practical guide docs
-			const practicalGuides = await ctx.payload.find({
-				collection: "practical-guides",
-				where: {
-					id: {
-						in: retrieveSqlEmbedding.rows.map(({ doc_id }) => doc_id),
+			// 2. Fetch practical guide docs and course docs
+			const [practicalGuides, courses] = await Promise.all([
+				ctx.payload.find({
+					collection: "practical-guides",
+					where: {
+						id: {
+							in: retrieveGuideEmbeddings.rows.map(({ doc_id }) => doc_id),
+						},
 					},
-				},
-				depth: 1,
-			});
+					depth: 1,
+				}),
+				ctx.payload.find({
+					collection: "courses",
+					where: {
+						id: {
+							in: retrieveCourseEmbeddings.rows.map(({ doc_id }) => doc_id),
+						},
+					},
+					depth: 1,
+				}),
+			]);
 
 			const tmpPracticalGuides = (await Promise.all(
 				practicalGuides.docs.map(async (doc) => ({
@@ -59,15 +79,31 @@ export const aiRouter = createTRPCRouter({
 				})),
 			)) as AugmentedPracticalGuide[];
 
+			const tmpCourses = courses.docs as AugmentedCourse[];
+
 			// 3. Build context from retrieved chunks
-			const contextChunks = (
-				retrieveSqlEmbedding.rows as {
+			const guideChunks = (
+				retrieveGuideEmbeddings.rows as {
 					doc_id: string;
 					text: string;
 					similarity_score: number;
 				}[]
 			)
 				.map(({ text }) => text)
+				.join("\n\n---\n\n");
+
+			const courseChunks = (
+				retrieveCourseEmbeddings.rows as {
+					doc_id: string;
+					text: string;
+					similarity_score: number;
+				}[]
+			)
+				.map(({ text }) => text)
+				.join("\n\n---\n\n");
+
+			const contextChunks = [guideChunks, courseChunks]
+				.filter(Boolean)
 				.join("\n\n---\n\n");
 
 			// 4. Load the direct chatbot system prompt
@@ -94,7 +130,7 @@ export const aiRouter = createTRPCRouter({
 					{ role: "system", content: systemPrompt },
 					{
 						role: "user",
-						content: `Question : ${userMessage}\n\nInformations issues des guides pratiques :\n\n${contextChunks}`,
+						content: `Question : ${userMessage}\n\nInformations issues des guides pratiques et formations :\n\n${contextChunks}`,
 					},
 				],
 				temperature: 0.1,
@@ -135,6 +171,7 @@ export const aiRouter = createTRPCRouter({
 			return {
 				content: parsed.data.content,
 				guides: tmpPracticalGuides,
+				courses: tmpCourses,
 			};
 		}),
 
