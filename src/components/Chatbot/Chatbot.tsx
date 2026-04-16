@@ -320,23 +320,18 @@ const useStyles = tss.withName(ChatBot.name).create({
     alignItems: "flex-end",
   },
   chatBotButton: {
-    position: "relative",
-    marginTop: fr.spacing("2v"),
     zIndex: 1100,
     alignSelf: "flex-end",
     [fr.breakpoints.down("md")]: {
+      width: "100%",
+      borderRadius: 0,
+      justifyContent: "center",
       position: "fixed",
       bottom: 0,
-      left: 0,
-      right: 0,
-      width: "100%",
-      marginTop: 0,
-      borderRadius: 0,
-      alignSelf: "stretch",
-      justifyContent: "center",
     },
   },
   chatBotButtonOpen: {
+    marginTop: fr.spacing("4v"),
     [fr.breakpoints.down("md")]: {
       display: "none",
     },

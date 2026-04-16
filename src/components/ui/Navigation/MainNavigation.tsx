@@ -68,7 +68,7 @@ export default function MainNavigation() {
         quickAccessItems={[
           <Button
             key={"button-question"}
-            iconId={"fr-icon-message-2-line"}
+            iconId={"fr-icon-message-3-line"}
             priority="secondary"
             size="large"
             onClick={() => chatbotOpenStore.set(true)}

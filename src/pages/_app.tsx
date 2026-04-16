@@ -92,12 +92,13 @@ function App({ Component, pageProps }: AppProps) {
           )}
         </main>
 
-        <div className={cx(classes.chatBotsWrapper, "fr-container")}>
+        <div className={cx(classes.chatBotsWrapper)}>
           <ChatBot />
         </div>
 
         <Footer
           id="footer"
+          className={cx(classes.footer)}
           accessibility="non compliant"
           contentDescription={footerTitle}
           websiteMapLinkProps={{
@@ -149,8 +150,7 @@ const useStyles = tss.withName(App.name).create({
   chatBotsWrapper: {
     position: "fixed",
     bottom: fr.spacing("2w"),
-    left: 0,
-    right: 0,
+    right: fr.spacing("3w"),
     display: "flex",
     justifyContent: "end",
     alignItems: "flex-end",
@@ -159,6 +159,16 @@ const useStyles = tss.withName(App.name).create({
     pointerEvents: "none",
     "& > *": {
       pointerEvents: "auto",
+    },
+    [fr.breakpoints.down("md")]: {
+      bottom: 0,
+      right: 0,
+      left: 0,
+    },
+  },
+  footer: {
+    [fr.breakpoints.down("md")]: {
+      paddingBottom: fr.spacing("10v"),
     },
   },
 });
