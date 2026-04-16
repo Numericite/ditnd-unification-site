@@ -29,21 +29,21 @@ const ChatBot = () => {
   const [response, setResponse] = useState<ChatResponse | null>(null);
   const [showScrollHint, setShowScrollHint] = useState(false);
 
-  const responseContainerRef = useRef<HTMLDivElement>(null);
+  const scrollAreaRef = useRef<HTMLDivElement>(null);
   const textAreaRef = useRef<HTMLTextAreaElement>(null);
 
-  const checkScrollOverflow = useCallback(() => {
-    const container = responseContainerRef.current;
-    if (!container) return;
-    const hasOverflow =
-      container.scrollHeight - container.scrollTop - container.clientHeight >
-      20;
-    setShowScrollHint(hasOverflow);
+  const checkScrollHint = useCallback(() => {
+    const el = scrollAreaRef.current;
+    if (!el) return;
+    setShowScrollHint(el.scrollHeight - el.scrollTop - el.clientHeight > 20);
   }, []);
 
   useEffect(() => {
-    checkScrollOverflow();
-  }, [response, checkScrollOverflow]);
+    if (response) {
+      scrollAreaRef.current?.scrollTo({ top: 0 });
+      requestAnimationFrame(checkScrollHint);
+    }
+  }, [response, checkScrollHint]);
 
   useEffect(() => {
     if (isOpen && !response) {
@@ -69,6 +69,13 @@ const ChatBot = () => {
     setMessage("");
   };
 
+  const autoResizeTextArea = useCallback(() => {
+    const ta = textAreaRef.current;
+    if (!ta) return;
+    ta.style.height = "auto";
+    ta.style.height = `${Math.min(ta.scrollHeight, 400)}px`;
+  }, []);
+
   const sendMessage = async (text: string) => {
     setUserQuestion(text);
     setMessage("");
@@ -77,8 +84,8 @@ const ChatBot = () => {
   };
 
   const scrollToBottom = () => {
-    responseContainerRef.current?.scrollTo({
-      top: responseContainerRef.current.scrollHeight,
+    scrollAreaRef.current?.scrollTo({
+      top: scrollAreaRef.current.scrollHeight,
       behavior: "smooth",
     });
   };
@@ -112,7 +119,11 @@ const ChatBot = () => {
               />
             </div>
 
-            <div className={cx(classes.chatBotContent)}>
+            <div
+              ref={scrollAreaRef}
+              className={cx(classes.chatBotContent)}
+              onScroll={checkScrollHint}
+            >
               {!hasResponse && !isPending && (
                 <>
                   <div className={cx(classes.welcome)}>
@@ -136,7 +147,10 @@ const ChatBot = () => {
                       nativeTextAreaProps={{
                         ref: textAreaRef,
                         value: message,
-                        onChange: (e) => setMessage(e.target.value),
+                        onChange: (e) => {
+                          setMessage(e.target.value);
+                          autoResizeTextArea();
+                        },
                         onKeyDown: (e) => {
                           if (
                             e.key === "Enter" &&
@@ -148,7 +162,7 @@ const ChatBot = () => {
                           }
                         },
                         className: cx(classes.textAreaInput),
-                        rows: 3,
+                        rows: 1,
                       }}
                       className={cx(classes.textArea)}
                     />
@@ -183,104 +197,85 @@ const ChatBot = () => {
               )}
 
               {hasResponse && (
-                <div className={cx(classes.responseArea)}>
-                  <div
-                    ref={responseContainerRef}
-                    className={cx(classes.responseContainer)}
-                    onScroll={checkScrollOverflow}
-                  >
-                    <p className={cx(classes.sourcesLabel)}>
-                      <i className="fr-icon-chat-3-line" aria-hidden="true" />
-                      En résumé
-                    </p>
-                    <p className={cx(classes.resourcesIntro)}>
-                      {response.content}
-                    </p>
-                    {(() => {
-                      const guidesSection = response.guides.length > 0 && (
-                        <div className={cx(classes.sourcesSection)}>
-                          <p className={cx(classes.sourcesLabel)}>
-                            <i
-                              className="fr-icon-book-2-line"
-                              aria-hidden="true"
-                            />
-                            Consultez les fiches pratiques
-                          </p>
-                          <ul className={cx(classes.resourcesList)}>
-                            {response.guides.map(({ id, title, slug }) => (
-                              <li key={id}>
-                                <a
-                                  className={cx(classes.sourceCard)}
-                                  href={`/guides/${slug}`}
-                                  target="_blank"
-                                  rel="noopener noreferrer"
-                                  title={`${title}, nouvelle fenêtre`}
-                                >
-                                  <span className={cx(classes.sourceCardTitle)}>
-                                    {title}
-                                  </span>
-                                </a>
-                              </li>
-                            ))}
-                          </ul>
-                        </div>
-                      );
+                <>
+                  <p className={cx(classes.sourcesLabel)}>
+                    <i className="fr-icon-chat-3-line" aria-hidden="true" />
+                    En résumé
+                  </p>
+                  <p className={cx(classes.resourcesIntro)}>
+                    {response.content}
+                  </p>
+                  {(() => {
+                    const guidesSection = response.guides.length > 0 && (
+                      <div className={cx(classes.sourcesSection)}>
+                        <p className={cx(classes.sourcesLabel)}>
+                          <i
+                            className="fr-icon-book-2-line"
+                            aria-hidden="true"
+                          />
+                          Consultez les fiches pratiques
+                        </p>
+                        <ul className={cx(classes.resourcesList)}>
+                          {response.guides.map(({ id, title, slug }) => (
+                            <li key={id}>
+                              <a
+                                className={cx(classes.sourceCard)}
+                                href={`/guides/${slug}`}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                title={`${title}, nouvelle fenêtre`}
+                              >
+                                <span className={cx(classes.sourceCardTitle)}>
+                                  {title}
+                                </span>
+                              </a>
+                            </li>
+                          ))}
+                        </ul>
+                      </div>
+                    );
 
-                      const coursesSection = response.courses?.length > 0 && (
-                        <div className={cx(classes.sourcesSection)}>
-                          <p className={cx(classes.sourcesLabel)}>
-                            <i
-                              className="fr-icon-lightbulb-line"
-                              aria-hidden="true"
-                            />
-                            Consultez les formations
-                          </p>
-                          <ul className={cx(classes.resourcesList)}>
-                            {response.courses.map(({ id, title, link }) => (
-                              <li key={id}>
-                                <a
-                                  className={cx(classes.sourceCard)}
-                                  href={link}
-                                  target="_blank"
-                                  rel="noopener noreferrer"
-                                  title={`${title}, nouvelle fenêtre`}
-                                >
-                                  <span className={cx(classes.sourceCardTitle)}>
-                                    {title}
-                                  </span>
-                                </a>
-                              </li>
-                            ))}
-                          </ul>
-                        </div>
-                      );
+                    const coursesSection = response.courses?.length > 0 && (
+                      <div className={cx(classes.sourcesSection)}>
+                        <p className={cx(classes.sourcesLabel)}>
+                          <i
+                            className="fr-icon-lightbulb-line"
+                            aria-hidden="true"
+                          />
+                          Consultez les formations
+                        </p>
+                        <ul className={cx(classes.resourcesList)}>
+                          {response.courses.map(({ id, title, link }) => (
+                            <li key={id}>
+                              <a
+                                className={cx(classes.sourceCard)}
+                                href={link}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                title={`${title}, nouvelle fenêtre`}
+                              >
+                                <span className={cx(classes.sourceCardTitle)}>
+                                  {title}
+                                </span>
+                              </a>
+                            </li>
+                          ))}
+                        </ul>
+                      </div>
+                    );
 
-                      return response.primarySource === "courses" ? (
-                        <>
-                          {coursesSection}
-                          {guidesSection}
-                        </>
-                      ) : (
-                        <>
-                          {guidesSection}
-                          {coursesSection}
-                        </>
-                      );
-                    })()}
-                  </div>
-                  {showScrollHint && (
-                    <button
-                      className={cx("Mui", classes.scrollHint)}
-                      onClick={scrollToBottom}
-                      aria-label="Voir la suite"
-                    >
-                      <i
-                        className="fr-icon-arrow-down-s-line"
-                        aria-hidden="true"
-                      />
-                      <span>Voir la suite</span>
-                    </button>
-                  )}
+                    return response.primarySource === "courses" ? (
+                      <>
+                        {coursesSection}
+                        {guidesSection}
+                      </>
+                    ) : (
+                      <>
+                        {guidesSection}
+                        {coursesSection}
+                      </>
+                    );
+                  })()}
                   <div className={cx(classes.backAction)}>
                     <Button
                       size="small"
@@ -292,9 +287,19 @@ const ChatBot = () => {
                       Poser une autre question
                     </Button>
                   </div>
-                </div>
+                </>
               )}
             </div>
+            {showScrollHint && (
+              <button
+                className={cx(classes.scrollHint)}
+                onClick={scrollToBottom}
+                aria-label="Voir la suite"
+              >
+                <i className="fr-icon-arrow-down-s-line" aria-hidden="true" />
+                <span>Voir la suite</span>
+              </button>
+            )}
           </div>
         </>
       )}
@@ -385,10 +390,12 @@ const useStyles = tss.withName(ChatBot.name).create({
     flex: 1,
     padding: `${fr.spacing("4v")} ${fr.spacing("5v")}`,
     gap: fr.spacing("3v"),
-    overflow: "hidden",
+    overflowY: "auto",
     minHeight: "300px",
+    maxHeight: "70vh",
     [fr.breakpoints.down("md")]: {
       padding: `${fr.spacing("3v")} ${fr.spacing("3v")}`,
+      maxHeight: "none",
     },
   },
   welcome: {
@@ -437,25 +444,6 @@ const useStyles = tss.withName(ChatBot.name).create({
     padding: `${fr.spacing("2v")} ${fr.spacing("3v")}`,
     maxWidth: "85%",
     lineHeight: 1.6,
-  },
-  responseArea: {
-    position: "relative",
-    flex: 1,
-    minHeight: 0,
-    display: "flex",
-    flexDirection: "column",
-    gap: fr.spacing("3v"),
-  },
-  responseContainer: {
-    overflowY: "auto",
-    maxHeight: "50vh",
-    paddingRight: fr.spacing("2v"),
-    paddingBottom: fr.spacing("4v"),
-    lineHeight: 1.6,
-    [fr.breakpoints.down("md")]: {
-      maxHeight: "none",
-      flex: 1,
-    },
   },
   backAction: {
     paddingTop: fr.spacing("2v"),
@@ -515,14 +503,9 @@ const useStyles = tss.withName(ChatBot.name).create({
   },
   scrollHint: {
     position: "absolute",
-    bottom: 0,
+    bottom: fr.spacing("2v"),
     left: "50%",
     transform: "translateX(-50%)",
-    [fr.breakpoints.down("md")]: {
-      left: "auto",
-      right: 0,
-      transform: "none",
-    },
     display: "flex",
     alignItems: "center",
     gap: fr.spacing("1v"),
@@ -531,17 +514,23 @@ const useStyles = tss.withName(ChatBot.name).create({
       fr.colors.decisions.background.actionHigh.blueFrance.default,
     color: fr.colors.decisions.text.inverted.grey.default,
     border: "none",
+    borderRadius: "100px",
     cursor: "pointer",
     fontSize: "0.75rem",
     fontWeight: 500,
     boxShadow: "0 2px 8px rgba(0,0,0,0.15)",
+    zIndex: 1,
     "& i::before": {
       "--icon-size": "0.875rem",
     },
     "&:hover": {
-      backgroundColor:
-        fr.colors.decisions.background.actionHigh.blueFrance.hover,
+      backgroundColor: `${fr.colors.decisions.background.actionHigh.blueFrance.hover} !important`,
       color: fr.colors.decisions.text.inverted.grey.default,
+    },
+    [fr.breakpoints.down("md")]: {
+      left: "auto",
+      right: fr.spacing("2v"),
+      transform: "none",
     },
   },
   typingContainer: {
@@ -585,6 +574,8 @@ const useStyles = tss.withName(ChatBot.name).create({
     background: "none",
     boxShadow: "none",
     resize: "none",
+    maxHeight: "400px",
+    overflowY: "auto",
   },
   textArea: {
     marginBottom: 0,
