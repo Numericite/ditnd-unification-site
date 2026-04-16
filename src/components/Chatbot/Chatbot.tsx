@@ -13,6 +13,7 @@ type ChatResponse = {
   content: string;
   guides: AugmentedPracticalGuide[];
   courses: AugmentedCourse[];
+  primarySource: "guides" | "courses";
 };
 
 const ChatBot = () => {
@@ -121,6 +122,7 @@ const ChatBot = () => {
                       textArea
                       label="Votre question"
                       state="default"
+                      hintText="Exemple : “Je souhaite m’informer sur le TSA”"
                       nativeTextAreaProps={{
                         ref: textAreaRef,
                         value: message,
@@ -135,8 +137,6 @@ const ChatBot = () => {
                             sendMessage(message);
                           }
                         },
-                        placeholder:
-                          "Exemple : \u201CJe souhaite m\u2019informer sur le TSA\u201D",
                         className: cx(classes.textAreaInput),
                         rows: 3,
                       }}
@@ -148,8 +148,9 @@ const ChatBot = () => {
                         disabled={message.trim() === "" || isPending}
                         onClick={() => sendMessage(message)}
                         title="Envoyer le message"
-                        className={cx(classes.sendButton)}
-                      />
+                      >
+                        Envoyer
+                      </Button>
                     </div>
                   </div>
                 </>
@@ -185,66 +186,81 @@ const ChatBot = () => {
                     <p className={cx(classes.resourcesIntro)}>
                       {response.content}
                     </p>
-                    {response.guides.length > 0 && (
-                      <div className={cx(classes.sourcesSection)}>
-                        <p className={cx(classes.sourcesLabel)}>
-                          <i
-                            className="fr-icon-book-2-line"
-                            aria-hidden="true"
-                          />
-                          Consultez les fiches pratiques
-                        </p>
-                        <ul className={cx(classes.resourcesList)}>
-                          {response.guides.map(({ id, title, slug }) => (
-                            <li key={id}>
-                              <a
-                                className={cx(classes.sourceCard)}
-                                href={`/guides/${slug}`}
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                title={`${title}, nouvelle fenêtre`}
-                              >
-                                <span className={cx(classes.sourceCardTitle)}>
-                                  {title}
-                                </span>
-                              </a>
-                            </li>
-                          ))}
-                        </ul>
-                      </div>
-                    )}
-                    {response.courses && response.courses.length > 0 && (
-                      <div className={cx(classes.sourcesSection)}>
-                        <p className={cx(classes.sourcesLabel)}>
-                          <i
-                            className="fr-icon-graduation-cap-line"
-                            aria-hidden="true"
-                          />
-                          Consultez les formations
-                        </p>
-                        <ul className={cx(classes.resourcesList)}>
-                          {response.courses.map(({ id, title, link }) => (
-                            <li key={id}>
-                              <a
-                                className={cx(classes.sourceCard)}
-                                href={link}
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                title={`${title}, nouvelle fenêtre`}
-                              >
-                                <span className={cx(classes.sourceCardTitle)}>
-                                  {title}
-                                </span>
-                              </a>
-                            </li>
-                          ))}
-                        </ul>
-                      </div>
-                    )}
+                    {(() => {
+                      const guidesSection = response.guides.length > 0 && (
+                        <div className={cx(classes.sourcesSection)}>
+                          <p className={cx(classes.sourcesLabel)}>
+                            <i
+                              className="fr-icon-book-2-line"
+                              aria-hidden="true"
+                            />
+                            Consultez les fiches pratiques
+                          </p>
+                          <ul className={cx(classes.resourcesList)}>
+                            {response.guides.map(({ id, title, slug }) => (
+                              <li key={id}>
+                                <a
+                                  className={cx(classes.sourceCard)}
+                                  href={`/guides/${slug}`}
+                                  target="_blank"
+                                  rel="noopener noreferrer"
+                                  title={`${title}, nouvelle fenêtre`}
+                                >
+                                  <span className={cx(classes.sourceCardTitle)}>
+                                    {title}
+                                  </span>
+                                </a>
+                              </li>
+                            ))}
+                          </ul>
+                        </div>
+                      );
+
+                      const coursesSection = response.courses?.length > 0 && (
+                        <div className={cx(classes.sourcesSection)}>
+                          <p className={cx(classes.sourcesLabel)}>
+                            <i
+                              className="fr-icon-lightbulb-line"
+                              aria-hidden="true"
+                            />
+                            Consultez les formations
+                          </p>
+                          <ul className={cx(classes.resourcesList)}>
+                            {response.courses.map(({ id, title, link }) => (
+                              <li key={id}>
+                                <a
+                                  className={cx(classes.sourceCard)}
+                                  href={link}
+                                  target="_blank"
+                                  rel="noopener noreferrer"
+                                  title={`${title}, nouvelle fenêtre`}
+                                >
+                                  <span className={cx(classes.sourceCardTitle)}>
+                                    {title}
+                                  </span>
+                                </a>
+                              </li>
+                            ))}
+                          </ul>
+                        </div>
+                      );
+
+                      return response.primarySource === "courses" ? (
+                        <>
+                          {coursesSection}
+                          {guidesSection}
+                        </>
+                      ) : (
+                        <>
+                          {guidesSection}
+                          {coursesSection}
+                        </>
+                      );
+                    })()}
                   </div>
                   {showScrollHint && (
                     <button
-                      className={cx(classes.scrollHint)}
+                      className={cx("Mui", classes.scrollHint)}
                       onClick={scrollToBottom}
                       aria-label="Voir la suite"
                     >
@@ -262,7 +278,6 @@ const ChatBot = () => {
                       priority="secondary"
                       title="Poser une autre question"
                       iconId="fr-icon-arrow-left-line"
-                      className={cx(classes.pillButton)}
                     >
                       Poser une autre question
                     </Button>
@@ -282,7 +297,7 @@ const ChatBot = () => {
         iconId={isOpen ? "fr-icon-close-line" : "fr-icon-message-3-fill"}
         title={isOpen ? "Fermer le chatbot d'aide" : "Ouvrir le chatbot d'aide"}
       >
-        {isOpen ? "Fermer" : "Posez votre question"}
+        {isOpen ? "Fermer le chatbot" : "Posez votre question"}
       </Button>
     </div>
   );
@@ -295,8 +310,6 @@ const useStyles = tss.withName(ChatBot.name).create({
     alignItems: "flex-end",
   },
   chatBotButton: {
-    backgroundColor: fr.colors.decisions.artwork.minor.blueFrance.default,
-    borderRadius: fr.spacing("6v"),
     position: "relative",
     marginTop: fr.spacing("2v"),
     zIndex: 1100,
@@ -347,7 +360,7 @@ const useStyles = tss.withName(ChatBot.name).create({
   closeButton: {
     color: fr.colors.decisions.text.inverted.grey.default,
     "&:hover": {
-      backgroundColor: fr.colors.decisions.background.contrast.grey.hover,
+      backgroundColor: `${fr.colors.decisions.artwork.major.blueFrance.hover} !important`,
     },
   },
   chatBotContent: {
@@ -401,7 +414,8 @@ const useStyles = tss.withName(ChatBot.name).create({
     marginBottom: fr.spacing("2v"),
   },
   userBubble: {
-    backgroundColor: fr.colors.decisions.background.actionHigh.blueFrance.default,
+    backgroundColor:
+      fr.colors.decisions.background.actionHigh.blueFrance.default,
     color: fr.colors.decisions.text.inverted.grey.default,
     borderRadius: fr.spacing("2v"),
     padding: `${fr.spacing("2v")} ${fr.spacing("3v")}`,
@@ -483,9 +497,6 @@ const useStyles = tss.withName(ChatBot.name).create({
     fontWeight: 500,
     flex: 1,
   },
-  pillButton: {
-    borderRadius: "100px",
-  },
   scrollHint: {
     position: "absolute",
     bottom: 0,
@@ -495,10 +506,10 @@ const useStyles = tss.withName(ChatBot.name).create({
     alignItems: "center",
     gap: fr.spacing("1v"),
     padding: `${fr.spacing("1v")} ${fr.spacing("3v")}`,
-    backgroundColor: fr.colors.decisions.background.actionHigh.blueFrance.default,
+    backgroundColor:
+      fr.colors.decisions.background.actionHigh.blueFrance.default,
     color: fr.colors.decisions.text.inverted.grey.default,
     border: "none",
-    borderRadius: "100px",
     cursor: "pointer",
     fontSize: "0.75rem",
     fontWeight: 500,
@@ -507,7 +518,9 @@ const useStyles = tss.withName(ChatBot.name).create({
       "--icon-size": "0.875rem",
     },
     "&:hover": {
-      opacity: 0.9,
+      backgroundColor:
+        fr.colors.decisions.background.actionHigh.blueFrance.hover,
+      color: fr.colors.decisions.text.inverted.grey.default,
     },
   },
   typingContainer: {
@@ -559,9 +572,6 @@ const useStyles = tss.withName(ChatBot.name).create({
   sendButtonContainer: {
     display: "flex",
     justifyContent: "end",
-  },
-  sendButton: {
-    borderRadius: "100%",
   },
 });
 

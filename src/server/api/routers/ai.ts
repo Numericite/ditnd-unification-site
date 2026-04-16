@@ -81,26 +81,19 @@ export const aiRouter = createTRPCRouter({
 
 			const tmpCourses = courses.docs as AugmentedCourse[];
 
-			// 3. Build context from retrieved chunks
-			const guideChunks = (
-				retrieveGuideEmbeddings.rows as {
-					doc_id: string;
-					text: string;
-					similarity_score: number;
-				}[]
-			)
-				.map(({ text }) => text)
-				.join("\n\n---\n\n");
+			// 3. Build context from retrieved chunks and determine primary source
+			type VectorRow = { doc_id: string; text: string; similarity_score: number };
+			const guideRows = retrieveGuideEmbeddings.rows as VectorRow[];
+			const courseRows = retrieveCourseEmbeddings.rows as VectorRow[];
 
-			const courseChunks = (
-				retrieveCourseEmbeddings.rows as {
-					doc_id: string;
-					text: string;
-					similarity_score: number;
-				}[]
-			)
-				.map(({ text }) => text)
-				.join("\n\n---\n\n");
+			const guideChunks = guideRows.map(({ text }) => text).join("\n\n---\n\n");
+			const courseChunks = courseRows.map(({ text }) => text).join("\n\n---\n\n");
+
+			// Lower cosine distance = more similar. Compare best scores to pick primary source.
+			const bestGuideScore = guideRows[0]?.similarity_score ?? Infinity;
+			const bestCourseScore = courseRows[0]?.similarity_score ?? Infinity;
+			const primarySource: "guides" | "courses" =
+				bestCourseScore < bestGuideScore ? "courses" : "guides";
 
 			const contextChunks = [guideChunks, courseChunks]
 				.filter(Boolean)
@@ -172,6 +165,7 @@ export const aiRouter = createTRPCRouter({
 				content: parsed.data.content,
 				guides: tmpPracticalGuides,
 				courses: tmpCourses,
+				primarySource,
 			};
 		}),
 
