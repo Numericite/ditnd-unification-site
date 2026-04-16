@@ -53,6 +53,16 @@ const ChatBot = () => {
     }
   }, [isOpen, response]);
 
+  useEffect(() => {
+    if (!isOpen) return;
+    const mql = window.matchMedia("(max-width: 767px)");
+    if (!mql.matches) return;
+    document.body.style.overflow = "hidden";
+    return () => {
+      document.body.style.overflow = "";
+    };
+  }, [isOpen]);
+
   const onBack = () => {
     setResponse(null);
     setUserQuestion("");
@@ -314,6 +324,17 @@ const useStyles = tss.withName(ChatBot.name).create({
     marginTop: fr.spacing("2v"),
     zIndex: 1100,
     alignSelf: "flex-end",
+    [fr.breakpoints.down("md")]: {
+      position: "fixed",
+      bottom: 0,
+      left: 0,
+      right: 0,
+      width: "100%",
+      marginTop: 0,
+      borderRadius: 0,
+      alignSelf: "stretch",
+      justifyContent: "center",
+    },
   },
   chatBotButtonOpen: {
     [fr.breakpoints.down("md")]: {
@@ -502,6 +523,11 @@ const useStyles = tss.withName(ChatBot.name).create({
     bottom: 0,
     left: "50%",
     transform: "translateX(-50%)",
+    [fr.breakpoints.down("md")]: {
+      left: "auto",
+      right: 0,
+      transform: "none",
+    },
     display: "flex",
     alignItems: "center",
     gap: fr.spacing("1v"),
