@@ -210,6 +210,20 @@ export const skipLinks: Record<string, SkipLinkType[]> = {
 		},
 	],
 	"/formations": searchPageLinks,
+	"/recherche": [
+		{
+			anchor: "#search-global",
+			label: "Recherche",
+		},
+		{
+			anchor: "#contenu",
+			label: "Résultats de recherche",
+		},
+		{
+			anchor: "#footer",
+			label: "Pied de page",
+		},
+	],
 	"/parcours": defaultSkipLinks,
 	"/parcours/.../...": [
 		{

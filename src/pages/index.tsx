@@ -72,7 +72,7 @@ export default function Home() {
                 <SearchBar
                   id="search-global"
                   big
-                  onButtonClick={() => router.push(`/fiches-pratiques?search=${search}`)}
+                  onButtonClick={() => router.push(`/recherche?search=${search}`)}
                   renderInput={({ className, id, placeholder, type }) => (
                     <input
                       className={className}

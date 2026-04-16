@@ -5,6 +5,7 @@ import { themeRouter } from "./routers/themes";
 import { practicalGuidesRouter } from "./routers/practical-guides";
 import { journeyRouter } from "./routers/journeys";
 import { courseRouter } from "./routers/courses";
+import { searchRouter } from "./routers/search";
 import { aiRouter } from "./routers/ai";
 import { cmsRouter } from "./routers/cms";
 
@@ -18,6 +19,7 @@ export const appRouter = createTRPCRouter({
 	persona: personaRouter,
 	theme: themeRouter,
 	course: courseRouter,
+	search: searchRouter,
 	practicalGuide: practicalGuidesRouter,
 	journey: journeyRouter,
 	ai: aiRouter,

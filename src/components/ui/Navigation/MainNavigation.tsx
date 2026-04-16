@@ -1,5 +1,6 @@
 import type { MainNavigationProps } from "@codegouvfr/react-dsfr/MainNavigation";
 import { useRouter } from "next/router";
+import { useState } from "react";
 import SubMenuCustom from "./SubMenuCustom";
 import Button from "@codegouvfr/react-dsfr/Button";
 import Header from "@codegouvfr/react-dsfr/Header";
@@ -14,6 +15,7 @@ import SkipLinks from "@codegouvfr/react-dsfr/SkipLinks";
 
 export default function MainNavigation() {
   const router = useRouter();
+  const [headerSearch, setHeaderSearch] = useState("");
 
   const personas = personsAndProTiles(personStore.get());
 
@@ -76,6 +78,24 @@ export default function MainNavigation() {
             Posez votre question
           </Button>,
         ]}
+        renderSearchInput={({ className, id, placeholder, type }) => (
+          <input
+            className={className}
+            id={id}
+            placeholder={placeholder}
+            type={type}
+            value={headerSearch}
+            onChange={(e) => setHeaderSearch(e.currentTarget.value)}
+          />
+        )}
+        onSearchButtonClick={(text) => {
+          const trimmed = text.trim();
+          if (!trimmed) return;
+          setHeaderSearch("");
+          router.push(`/recherche?search=${encodeURIComponent(trimmed)}`);
+        }}
+        allowEmptySearch={false}
+        clearSearchInputOnSearch
         serviceTitle="Maison de l'autisme"
         serviceTagline="Site national d'informations sur l'autisme et les troubles du neurodéveloppement"
       />
