@@ -1,35 +1,45 @@
 import { fr } from "@codegouvfr/react-dsfr";
+import type { GetServerSideProps } from "next";
 import Head from "next/head";
+import { getPayload } from "payload";
+import type { DefaultTypedEditorState } from "@payloadcms/richtext-lexical";
 import { EmptyScreenZone } from "~/components/ui/EmptyScreenZone";
-import { Loader } from "~/components/ui/Loader";
 import WysiwygContent from "~/components/ui/PracticalGuides/WysiwygContent";
-import { api } from "~/utils/api";
+import payloadConfig from "~/payload/payload.config";
+import type { Footer } from "~/payload/payload-types";
 
-export default function TermsOfUse() {
-	const { data: pageContent, isLoading: isLoadingData } =
-		api.cms.termsOfUse.useQuery();
+type Props = {
+	title: string;
+	content: DefaultTypedEditorState;
+};
 
-	if (isLoadingData)
-		return (
-			<EmptyScreenZone>
-				<Loader />
-			</EmptyScreenZone>
-		);
-
-	if (!pageContent) return <EmptyScreenZone>Missing content</EmptyScreenZone>;
+export default function TermsOfUse({ title, content }: Props) {
+	if (!content) return <EmptyScreenZone>Missing content</EmptyScreenZone>;
 
 	return (
 		<>
 			<Head>
 				<title>Modalités d'utilisation - Maison de l'autisme</title>
-				<meta name="description" content="Modalités d'utilisation du site Maison de l'autisme, site national d'informations sur l'autisme et les troubles du neurodéveloppement." />
+				<meta
+					name="description"
+					content="Modalités d'utilisation du site Maison de l'autisme, site national d'informations sur l'autisme et les troubles du neurodéveloppement."
+				/>
 			</Head>
 			<div className={fr.cx("fr-container", "fr-py-10w")}>
-				<WysiwygContent
-					title={pageContent.title}
-					content={pageContent.content}
-				/>
+				<WysiwygContent title={title} content={content} />
 			</div>
 		</>
 	);
 }
+
+export const getServerSideProps: GetServerSideProps<Props> = async () => {
+	const payload = await getPayload({ config: payloadConfig });
+	const footer = (await payload.findGlobal({ slug: "footer" })) as Footer;
+
+	return {
+		props: {
+			title: footer.termsOfUse.title,
+			content: footer.termsOfUse.content as unknown as DefaultTypedEditorState,
+		},
+	};
+};

@@ -46,6 +46,34 @@ export default function MainNavigation() {
       linkProps: { href: "/formations" },
       isActive: router.pathname.startsWith("/formations"),
     },
+    {
+      text: "Annuaire",
+      linkProps: {
+        href: "https://annuaire.autismeinfoservice.fr/",
+        target: "_blank",
+      },
+    },
+    {
+      text: "À propos",
+      isActive: router.pathname.startsWith("/a-propos"),
+      menuLinks: [
+        {
+          text: "Maison de l'autisme",
+          isActive: router.pathname === "/a-propos/maison-de-l-autisme",
+          linkProps: { href: "/a-propos/maison-de-l-autisme" },
+        },
+        {
+          text: "GNCRA",
+          isActive: router.pathname === "/a-propos/gncra",
+          linkProps: { href: "/a-propos/gncra" },
+        },
+        {
+          text: "CRAs",
+          isActive: router.pathname === "/a-propos/cras",
+          linkProps: { href: "/a-propos/cras" },
+        },
+      ],
+    },
   ];
 
   const pathName = getPathNameForSkipLinks(router.pathname);

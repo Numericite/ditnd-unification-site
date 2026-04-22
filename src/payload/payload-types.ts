@@ -112,10 +112,12 @@ export interface Config {
   globals: {
     home: Home;
     footer: Footer;
+    about: About;
   };
   globalsSelect: {
     home: HomeSelect<false> | HomeSelect<true>;
     footer: FooterSelect<false> | FooterSelect<true>;
+    about: AboutSelect<false> | AboutSelect<true>;
   };
   locale: null;
   user: User & {
@@ -947,6 +949,72 @@ export interface Footer {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "about".
+ */
+export interface About {
+  id: number;
+  maisonDeLAutisme: {
+    title: string;
+    imageBanner?: (number | null) | Media;
+    content: {
+      root: {
+        type: string;
+        children: {
+          type: any;
+          version: number;
+          [k: string]: unknown;
+        }[];
+        direction: ('ltr' | 'rtl') | null;
+        format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+        indent: number;
+        version: number;
+      };
+      [k: string]: unknown;
+    };
+  };
+  gncra: {
+    title: string;
+    imageBanner?: (number | null) | Media;
+    content: {
+      root: {
+        type: string;
+        children: {
+          type: any;
+          version: number;
+          [k: string]: unknown;
+        }[];
+        direction: ('ltr' | 'rtl') | null;
+        format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+        indent: number;
+        version: number;
+      };
+      [k: string]: unknown;
+    };
+  };
+  cras: {
+    title: string;
+    imageBanner?: (number | null) | Media;
+    content: {
+      root: {
+        type: string;
+        children: {
+          type: any;
+          version: number;
+          [k: string]: unknown;
+        }[];
+        direction: ('ltr' | 'rtl') | null;
+        format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+        indent: number;
+        version: number;
+      };
+      [k: string]: unknown;
+    };
+  };
+  updatedAt?: string | null;
+  createdAt?: string | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "home_select".
  */
 export interface HomeSelect<T extends boolean = true> {
@@ -999,6 +1067,36 @@ export interface FooterSelect<T extends boolean = true> {
     | T
     | {
         title?: T;
+        content?: T;
+      };
+  updatedAt?: T;
+  createdAt?: T;
+  globalType?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "about_select".
+ */
+export interface AboutSelect<T extends boolean = true> {
+  maisonDeLAutisme?:
+    | T
+    | {
+        title?: T;
+        imageBanner?: T;
+        content?: T;
+      };
+  gncra?:
+    | T
+    | {
+        title?: T;
+        imageBanner?: T;
+        content?: T;
+      };
+  cras?:
+    | T
+    | {
+        title?: T;
+        imageBanner?: T;
         content?: T;
       };
   updatedAt?: T;

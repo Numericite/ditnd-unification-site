@@ -36,6 +36,7 @@ const hasAwsCreds = Boolean(
 );
 import { CMSHome } from "./globals/cms/Home";
 import { CMSFooter } from "./globals/cms/Footer";
+import { CMSAbout } from "./globals/cms/About";
 import { PracticalGuideViews } from "./collections/PracticalGuidesViews";
 
 const filename = fileURLToPath(import.meta.url);
@@ -92,7 +93,7 @@ export default buildConfig({
     Journeys,
     Medias,
   ],
-  globals: [CMSHome, CMSFooter],
+  globals: [CMSHome, CMSFooter, CMSAbout],
   editor: lexicalEditor(),
   i18n: {
     supportedLanguages: { en, fr },

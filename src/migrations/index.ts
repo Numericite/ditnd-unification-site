@@ -14,6 +14,7 @@ import * as migration_20260323_120000_migrate_callout_highlight_to_richtext from
 import * as migration_20260323_163106 from './20260323_163106';
 import * as migration_20260323_164005 from './20260323_164005';
 import * as migration_20260416_100000 from './20260416_100000';
+import * as migration_20260422_064546_about_global from './20260422_064546_about_global';
 
 export const migrations = [
   {
@@ -89,11 +90,16 @@ export const migrations = [
   {
     up: migration_20260323_164005.up,
     down: migration_20260323_164005.down,
-    name: '20260323_164005'
+    name: '20260323_164005',
   },
   {
     up: migration_20260416_100000.up,
     down: migration_20260416_100000.down,
     name: '20260416_100000',
+  },
+  {
+    up: migration_20260422_064546_about_global.up,
+    down: migration_20260422_064546_about_global.down,
+    name: '20260422_064546_about_global'
   },
 ];
