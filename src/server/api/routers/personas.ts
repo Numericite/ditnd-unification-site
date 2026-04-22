@@ -41,11 +41,12 @@ export const personaRouter = createTRPCRouter({
 		const result = await ctx.payload.find({
 			collection: "personas",
 			limit: 0,
-			where: {
-				slug: {
-					not_like: "pro%",
-				},
-			},
+			// TODO: Réactiver le sous-niveau spécifique aux professionnels
+			// where: {
+			// 	slug: {
+			// 		not_like: "pro%",
+			// 	},
+			// },
 			select: {
 				updatedAt: false,
 				createdAt: false,

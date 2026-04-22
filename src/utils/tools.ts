@@ -133,15 +133,18 @@ export const personsAndProTiles = (personas: PersonaTile[]) => {
 		name: `Je suis ${persona.displayName ?? persona.name}`,
 	}));
 
-	const professionalTile: PersonaTile = {
-		name: "Je suis un professionnel",
-		description: "Description type",
-		slug: "professional",
-		display: "professional",
-		pictogram: "CityHall",
-	};
+	return mapped;
 
-	return [...mapped.slice(0, 2), professionalTile, ...mapped.slice(2)];
+	// TODO: Réactiver le sous-niveau spécifique aux professionnels
+	// const professionalTile: PersonaTile = {
+	// 	name: "Je suis un professionnel",
+	// 	description: "Description type",
+	// 	slug: "professional",
+	// 	display: "professional",
+	// 	pictogram: "CityHall",
+	// };
+
+	// return [...mapped.slice(0, 2), professionalTile, ...mapped.slice(2)];
 };
 
 const searchPageLinks: SkipLinkType[] = [

@@ -14,7 +14,9 @@ function isProfessional(persona_slug: string) {
 }
 
 function isProfessionalSub(persona_slug: string) {
-	return persona_slug.startsWith("pro") && persona_slug !== "professional";
+	// TODO: Réactiver le sous-niveau spécifique aux professionnels
+	// return persona_slug.startsWith("pro") && persona_slug !== "professional";
+	return false;
 }
 
 export default function JourneyPage() {

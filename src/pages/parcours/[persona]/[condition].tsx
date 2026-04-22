@@ -11,7 +11,9 @@ import type { AugmentedJourney } from "~/server/api/routers/journeys";
 import { api } from "~/utils/api";
 
 function isProfessionalPersona(slug: string) {
-	return slug.startsWith("pro");
+	// TODO: Réactiver le sous-niveau spécifique aux professionnels
+	// return slug.startsWith("pro");
+	return false;
 }
 
 export default function JourneyPage() {
