@@ -17,11 +17,6 @@ export default function MainNavigation() {
 
 	const userNavigationItems: MainNavigationProps.Item[] = [
 		{
-			text: "Accueil",
-			isActive: router.pathname === "/",
-			linkProps: { href: "/" },
-		},
-		{
 			text: "Je suis",
 			isActive: router.pathname.startsWith("/parcours"),
 			menuLinks: personas.map((persona) => ({
