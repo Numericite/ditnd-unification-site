@@ -102,16 +102,23 @@ export const PersonaTiles = ({
       setSubTitle(titleByDisplay.person);
     },
     professional: (tile) => {
+      // TODO: Réactiver le sous-niveau spécifique aux professionnels
+      // quand les sous-groupes pros seront disponibles côté back-office.
+      // handleClick(tile, "default");
+      // setDisplay("professional");
+      // setSubTitle(titleByDisplay.professional);
       handleClick(tile, "default");
-      setDisplay("professional");
-      setSubTitle(titleByDisplay.professional);
+      setDisplay("person");
+      setSubTitle(titleByDisplay.person);
     },
     afterProfessional: (tile) => {
       router.push(`/parcours/${tile.slug}`);
     },
     condition: (tile) => {
       const personaSlug = tags
-        .filter((tag) => tag.slug !== "professional")
+        // TODO: Réactiver ce filtre avec le retour des sous-groupes pros
+        // (le slug "professional" était alors un niveau intermédiaire à retirer de l'URL).
+        // .filter((tag) => tag.slug !== "professional")
         .map((tag) => tag.slug);
       router.push(`/parcours/${personaSlug}/${tile.slug}`);
     },
