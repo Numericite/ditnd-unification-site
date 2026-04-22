@@ -75,6 +75,30 @@ export default function PlanDuSite() {
 					</section>
 
 					<section className={cx(classes.section)}>
+						<h2>À propos</h2>
+						<ul className={cx(classes.sitemapList)}>
+							<li>
+								<a
+									className={fr.cx("fr-link")}
+									href="/a-propos/maison-de-l-autisme"
+								>
+									Maison de l'autisme
+								</a>
+							</li>
+							<li>
+								<a className={fr.cx("fr-link")} href="/a-propos/gncra">
+									GNCRA
+								</a>
+							</li>
+							<li>
+								<a className={fr.cx("fr-link")} href="/a-propos/cras">
+									CRAs
+								</a>
+							</li>
+						</ul>
+					</section>
+
+					<section className={cx(classes.section)}>
 						<h2>Informations et obligations légales</h2>
 						<ul className={cx(classes.sitemapList)}>
 							<li>

@@ -40,7 +40,7 @@ export default function GncraPage({ title, content, imageBanner }: Props) {
 				<Breadcrumb
 					currentPageLabel={title}
 					homeLinkProps={{ href: "/" }}
-					segments={[{ label: "À propos", linkProps: { href: "#" } }]}
+					segments={[{ label: "À propos", linkProps: { href: "/a-propos" } }]}
 				/>
 				<CmsPageLayout
 					title={title}

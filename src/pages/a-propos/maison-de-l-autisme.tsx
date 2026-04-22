@@ -44,7 +44,7 @@ export default function MaisonDeLAutismePage({
 				<Breadcrumb
 					currentPageLabel={title}
 					homeLinkProps={{ href: "/" }}
-					segments={[{ label: "À propos", linkProps: { href: "#" } }]}
+					segments={[{ label: "À propos", linkProps: { href: "/a-propos" } }]}
 				/>
 				<CmsPageLayout
 					title={title}
