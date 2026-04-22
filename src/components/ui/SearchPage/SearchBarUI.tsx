@@ -45,7 +45,7 @@ export const SearchBarUI = ({ value = "", onClick }: Props) => {
 								if (event.currentTarget.value === "") {
 									onClick("");
 
-									const { search, ...rest } = router.query;
+									const { search: _search, ...rest } = router.query;
 
 									router.push(
 										{

@@ -86,29 +86,26 @@ export default function PersonaDisplay({
 					/>
 					<div className={fr.cx("fr-col-12", "fr-col-lg-8")}>
 						<SearchBarUI value={query} onClick={(query) => setQuery(query)} />
-						<div
-							aria-live="polite"
-							aria-atomic="false"
-						>
+						<div aria-live="polite" aria-atomic="false">
 							{viewCourses
 								? currentList.map((chap) => (
-									<div key={`Course ${chap.name}`}>
-										<PersonaContent
-											courses={chap.courses}
-											chapterName={chap.name}
-											viewCourse={viewCourses}
-										/>
-									</div>
-								))
+										<div key={`Course ${chap.name}`}>
+											<PersonaContent
+												courses={chap.courses}
+												chapterName={chap.name}
+												viewCourse={viewCourses}
+											/>
+										</div>
+									))
 								: currentList.map((chap) => (
-									<div key={`Guides ${chap.name}`}>
-										<PersonaContent
-											guides={chap.guides}
-											chapterName={chap.name}
-											viewCourse={viewCourses}
-										/>
-									</div>
-								))}
+										<div key={`Guides ${chap.name}`}>
+											<PersonaContent
+												guides={chap.guides}
+												chapterName={chap.name}
+												viewCourse={viewCourses}
+											/>
+										</div>
+									))}
 							{chapterLinks.length === 0 && (
 								<div
 									className={fr.cx("fr-my-2w")}

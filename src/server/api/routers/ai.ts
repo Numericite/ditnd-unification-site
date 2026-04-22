@@ -31,20 +31,21 @@ export const aiRouter = createTRPCRouter({
 
 			// 1. Retrieve relevant text chunks from search vectors
 			const embedding = await generateEmbedding(userMessage);
-			const [retrieveGuideEmbeddings, retrieveCourseEmbeddings] = await Promise.all([
-				ctx.payload.db.drizzle.execute(sql`
+			const [retrieveGuideEmbeddings, retrieveCourseEmbeddings] =
+				await Promise.all([
+					ctx.payload.db.drizzle.execute(sql`
 					SELECT doc_id, text, embedding <=> ${JSON.stringify(embedding)}::vector as similarity_score
 					FROM practical_guide_search_vectors
 					ORDER BY embedding <=> ${JSON.stringify(embedding)}::vector
 					LIMIT 3
 				`),
-				ctx.payload.db.drizzle.execute(sql`
+					ctx.payload.db.drizzle.execute(sql`
 					SELECT doc_id, text, embedding <=> ${JSON.stringify(embedding)}::vector as similarity_score
 					FROM courses_search_vectors
 					ORDER BY embedding <=> ${JSON.stringify(embedding)}::vector
 					LIMIT 3
 				`),
-			]);
+				]);
 
 			// 2. Fetch practical guide docs and course docs
 			const [practicalGuides, courses] = await Promise.all([
@@ -82,12 +83,18 @@ export const aiRouter = createTRPCRouter({
 			const tmpCourses = courses.docs as AugmentedCourse[];
 
 			// 3. Build context from retrieved chunks and determine primary source
-			type VectorRow = { doc_id: string; text: string; similarity_score: number };
+			type VectorRow = {
+				doc_id: string;
+				text: string;
+				similarity_score: number;
+			};
 			const guideRows = retrieveGuideEmbeddings.rows as VectorRow[];
 			const courseRows = retrieveCourseEmbeddings.rows as VectorRow[];
 
 			const guideChunks = guideRows.map(({ text }) => text).join("\n\n---\n\n");
-			const courseChunks = courseRows.map(({ text }) => text).join("\n\n---\n\n");
+			const courseChunks = courseRows
+				.map(({ text }) => text)
+				.join("\n\n---\n\n");
 
 			// Lower cosine distance = more similar. Compare best scores to pick primary source.
 			const bestGuideScore = guideRows[0]?.similarity_score ?? Infinity;
@@ -103,10 +110,7 @@ export const aiRouter = createTRPCRouter({
 			let systemPrompt = "";
 			try {
 				systemPrompt = readFileSync(
-					path.join(
-						process.cwd(),
-						"src/utils/prompts/chatbot-direct.md",
-					),
+					path.join(process.cwd(), "src/utils/prompts/chatbot-direct.md"),
 					"utf-8",
 				);
 			} catch (_) {
@@ -168,5 +172,4 @@ export const aiRouter = createTRPCRouter({
 				primarySource,
 			};
 		}),
-
 });

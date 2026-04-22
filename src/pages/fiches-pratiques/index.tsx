@@ -26,7 +26,10 @@ export default function PracticalGuides() {
 	return (
 		<>
 			<Head>
-				<title>Fiches pratiques sur l'autisme et les troubles du neurodéveloppement - Maison de l'autisme</title>
+				<title>
+					Fiches pratiques sur l'autisme et les troubles du neurodéveloppement -
+					Maison de l'autisme
+				</title>
 				<meta
 					name="description"
 					content="Retrouvez toutes les fiches pratiques sur l'autisme et ses troubles associés : diagnostic, accompagnement, scolarité, emploi, vie quotidienne."

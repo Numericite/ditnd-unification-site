@@ -13,414 +13,433 @@
  * via the `definition` "supportedTimezones".
  */
 export type SupportedTimezones =
-  | 'Pacific/Midway'
-  | 'Pacific/Niue'
-  | 'Pacific/Honolulu'
-  | 'Pacific/Rarotonga'
-  | 'America/Anchorage'
-  | 'Pacific/Gambier'
-  | 'America/Los_Angeles'
-  | 'America/Tijuana'
-  | 'America/Denver'
-  | 'America/Phoenix'
-  | 'America/Chicago'
-  | 'America/Guatemala'
-  | 'America/New_York'
-  | 'America/Bogota'
-  | 'America/Caracas'
-  | 'America/Santiago'
-  | 'America/Buenos_Aires'
-  | 'America/Sao_Paulo'
-  | 'Atlantic/South_Georgia'
-  | 'Atlantic/Azores'
-  | 'Atlantic/Cape_Verde'
-  | 'Europe/London'
-  | 'Europe/Berlin'
-  | 'Africa/Lagos'
-  | 'Europe/Athens'
-  | 'Africa/Cairo'
-  | 'Europe/Moscow'
-  | 'Asia/Riyadh'
-  | 'Asia/Dubai'
-  | 'Asia/Baku'
-  | 'Asia/Karachi'
-  | 'Asia/Tashkent'
-  | 'Asia/Calcutta'
-  | 'Asia/Dhaka'
-  | 'Asia/Almaty'
-  | 'Asia/Jakarta'
-  | 'Asia/Bangkok'
-  | 'Asia/Shanghai'
-  | 'Asia/Singapore'
-  | 'Asia/Tokyo'
-  | 'Asia/Seoul'
-  | 'Australia/Brisbane'
-  | 'Australia/Sydney'
-  | 'Pacific/Guam'
-  | 'Pacific/Noumea'
-  | 'Pacific/Auckland'
-  | 'Pacific/Fiji';
+	| "Pacific/Midway"
+	| "Pacific/Niue"
+	| "Pacific/Honolulu"
+	| "Pacific/Rarotonga"
+	| "America/Anchorage"
+	| "Pacific/Gambier"
+	| "America/Los_Angeles"
+	| "America/Tijuana"
+	| "America/Denver"
+	| "America/Phoenix"
+	| "America/Chicago"
+	| "America/Guatemala"
+	| "America/New_York"
+	| "America/Bogota"
+	| "America/Caracas"
+	| "America/Santiago"
+	| "America/Buenos_Aires"
+	| "America/Sao_Paulo"
+	| "Atlantic/South_Georgia"
+	| "Atlantic/Azores"
+	| "Atlantic/Cape_Verde"
+	| "Europe/London"
+	| "Europe/Berlin"
+	| "Africa/Lagos"
+	| "Europe/Athens"
+	| "Africa/Cairo"
+	| "Europe/Moscow"
+	| "Asia/Riyadh"
+	| "Asia/Dubai"
+	| "Asia/Baku"
+	| "Asia/Karachi"
+	| "Asia/Tashkent"
+	| "Asia/Calcutta"
+	| "Asia/Dhaka"
+	| "Asia/Almaty"
+	| "Asia/Jakarta"
+	| "Asia/Bangkok"
+	| "Asia/Shanghai"
+	| "Asia/Singapore"
+	| "Asia/Tokyo"
+	| "Asia/Seoul"
+	| "Australia/Brisbane"
+	| "Australia/Sydney"
+	| "Pacific/Guam"
+	| "Pacific/Noumea"
+	| "Pacific/Auckland"
+	| "Pacific/Fiji";
 
 export interface Config {
-  auth: {
-    users: UserAuthOperations;
-  };
-  blocks: {};
-  collections: {
-    users: User;
-    personas: Persona;
-    conditions: Condition;
-    courses: Course;
-    'practical-guides': PracticalGuide;
-    'practical-guide-views': PracticalGuideView;
-    themes: Theme;
-    journeys: Journey;
-    medias: Media;
-    'search-results': SearchResult;
-    'payload-kv': PayloadKv;
-    'payload-folders': FolderInterface;
-    'payload-locked-documents': PayloadLockedDocument;
-    'payload-preferences': PayloadPreference;
-    'payload-migrations': PayloadMigration;
-  };
-  collectionsJoins: {
-    'payload-folders': {
-      documentsAndFolders: 'payload-folders' | 'medias';
-    };
-  };
-  collectionsSelect: {
-    users: UsersSelect<false> | UsersSelect<true>;
-    personas: PersonasSelect<false> | PersonasSelect<true>;
-    conditions: ConditionsSelect<false> | ConditionsSelect<true>;
-    courses: CoursesSelect<false> | CoursesSelect<true>;
-    'practical-guides': PracticalGuidesSelect<false> | PracticalGuidesSelect<true>;
-    'practical-guide-views': PracticalGuideViewsSelect<false> | PracticalGuideViewsSelect<true>;
-    themes: ThemesSelect<false> | ThemesSelect<true>;
-    journeys: JourneysSelect<false> | JourneysSelect<true>;
-    medias: MediasSelect<false> | MediasSelect<true>;
-    'search-results': SearchResultsSelect<false> | SearchResultsSelect<true>;
-    'payload-kv': PayloadKvSelect<false> | PayloadKvSelect<true>;
-    'payload-folders': PayloadFoldersSelect<false> | PayloadFoldersSelect<true>;
-    'payload-locked-documents': PayloadLockedDocumentsSelect<false> | PayloadLockedDocumentsSelect<true>;
-    'payload-preferences': PayloadPreferencesSelect<false> | PayloadPreferencesSelect<true>;
-    'payload-migrations': PayloadMigrationsSelect<false> | PayloadMigrationsSelect<true>;
-  };
-  db: {
-    defaultIDType: number;
-  };
-  fallbackLocale: null;
-  globals: {
-    home: Home;
-    footer: Footer;
-    about: About;
-  };
-  globalsSelect: {
-    home: HomeSelect<false> | HomeSelect<true>;
-    footer: FooterSelect<false> | FooterSelect<true>;
-    about: AboutSelect<false> | AboutSelect<true>;
-  };
-  locale: null;
-  user: User & {
-    collection: 'users';
-  };
-  jobs: {
-    tasks: unknown;
-    workflows: unknown;
-  };
+	auth: {
+		users: UserAuthOperations;
+	};
+	blocks: {};
+	collections: {
+		users: User;
+		personas: Persona;
+		conditions: Condition;
+		courses: Course;
+		"practical-guides": PracticalGuide;
+		"practical-guide-views": PracticalGuideView;
+		themes: Theme;
+		journeys: Journey;
+		medias: Media;
+		"search-results": SearchResult;
+		"payload-kv": PayloadKv;
+		"payload-folders": FolderInterface;
+		"payload-locked-documents": PayloadLockedDocument;
+		"payload-preferences": PayloadPreference;
+		"payload-migrations": PayloadMigration;
+	};
+	collectionsJoins: {
+		"payload-folders": {
+			documentsAndFolders: "payload-folders" | "medias";
+		};
+	};
+	collectionsSelect: {
+		users: UsersSelect<false> | UsersSelect<true>;
+		personas: PersonasSelect<false> | PersonasSelect<true>;
+		conditions: ConditionsSelect<false> | ConditionsSelect<true>;
+		courses: CoursesSelect<false> | CoursesSelect<true>;
+		"practical-guides":
+			| PracticalGuidesSelect<false>
+			| PracticalGuidesSelect<true>;
+		"practical-guide-views":
+			| PracticalGuideViewsSelect<false>
+			| PracticalGuideViewsSelect<true>;
+		themes: ThemesSelect<false> | ThemesSelect<true>;
+		journeys: JourneysSelect<false> | JourneysSelect<true>;
+		medias: MediasSelect<false> | MediasSelect<true>;
+		"search-results": SearchResultsSelect<false> | SearchResultsSelect<true>;
+		"payload-kv": PayloadKvSelect<false> | PayloadKvSelect<true>;
+		"payload-folders": PayloadFoldersSelect<false> | PayloadFoldersSelect<true>;
+		"payload-locked-documents":
+			| PayloadLockedDocumentsSelect<false>
+			| PayloadLockedDocumentsSelect<true>;
+		"payload-preferences":
+			| PayloadPreferencesSelect<false>
+			| PayloadPreferencesSelect<true>;
+		"payload-migrations":
+			| PayloadMigrationsSelect<false>
+			| PayloadMigrationsSelect<true>;
+	};
+	db: {
+		defaultIDType: number;
+	};
+	fallbackLocale: null;
+	globals: {
+		home: Home;
+		footer: Footer;
+		about: About;
+	};
+	globalsSelect: {
+		home: HomeSelect<false> | HomeSelect<true>;
+		footer: FooterSelect<false> | FooterSelect<true>;
+		about: AboutSelect<false> | AboutSelect<true>;
+	};
+	locale: null;
+	user: User & {
+		collection: "users";
+	};
+	jobs: {
+		tasks: unknown;
+		workflows: unknown;
+	};
 }
 export interface UserAuthOperations {
-  forgotPassword: {
-    email: string;
-    password: string;
-  };
-  login: {
-    email: string;
-    password: string;
-  };
-  registerFirstUser: {
-    email: string;
-    password: string;
-  };
-  unlock: {
-    email: string;
-    password: string;
-  };
+	forgotPassword: {
+		email: string;
+		password: string;
+	};
+	login: {
+		email: string;
+		password: string;
+	};
+	registerFirstUser: {
+		email: string;
+		password: string;
+	};
+	unlock: {
+		email: string;
+		password: string;
+	};
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "users".
  */
 export interface User {
-  id: number;
-  firstName?: string | null;
-  lastName?: string | null;
-  role: 'admin' | 'editor';
-  updatedAt: string;
-  createdAt: string;
-  email: string;
-  resetPasswordToken?: string | null;
-  resetPasswordExpiration?: string | null;
-  salt?: string | null;
-  hash?: string | null;
-  loginAttempts?: number | null;
-  lockUntil?: string | null;
-  sessions?:
-    | {
-        id: string;
-        createdAt?: string | null;
-        expiresAt: string;
-      }[]
-    | null;
-  password?: string | null;
+	id: number;
+	firstName?: string | null;
+	lastName?: string | null;
+	role: "admin" | "editor";
+	updatedAt: string;
+	createdAt: string;
+	email: string;
+	resetPasswordToken?: string | null;
+	resetPasswordExpiration?: string | null;
+	salt?: string | null;
+	hash?: string | null;
+	loginAttempts?: number | null;
+	lockUntil?: string | null;
+	sessions?:
+		| {
+				id: string;
+				createdAt?: string | null;
+				expiresAt: string;
+		  }[]
+		| null;
+	password?: string | null;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "personas".
  */
 export interface Persona {
-  id: number;
-  _order?: string | null;
-  name: string;
-  /**
-   * Description courte affichée sur les cartes (120 caractères max)
-   */
-  description: string;
-  /**
-   * Texte affiché après 'Je suis' sur les tuiles (optionnel). Ex: 'une personne concernée'. Si vide, le nom du persona sera utilisé.
-   */
-  displayName?: string | null;
-  /**
-   * Phrase affichée en titre sur la page parcours (optionnel). Ex: 'Je suis un parent interessé par le'
-   */
-  journeyIntro?: string | null;
-  slug: string;
-  pictogram?:
-    | ('Avatar' | 'HumanCooperation' | 'CityHall' | 'SelfTraining' | 'Hospital' | 'School' | 'Companie' | 'Ecosystem')
-    | null;
-  updatedAt: string;
-  createdAt: string;
+	id: number;
+	_order?: string | null;
+	name: string;
+	/**
+	 * Description courte affichée sur les cartes (120 caractères max)
+	 */
+	description: string;
+	/**
+	 * Texte affiché après 'Je suis' sur les tuiles (optionnel). Ex: 'une personne concernée'. Si vide, le nom du persona sera utilisé.
+	 */
+	displayName?: string | null;
+	/**
+	 * Phrase affichée en titre sur la page parcours (optionnel). Ex: 'Je suis un parent interessé par le'
+	 */
+	journeyIntro?: string | null;
+	slug: string;
+	pictogram?:
+		| (
+				| "Avatar"
+				| "HumanCooperation"
+				| "CityHall"
+				| "SelfTraining"
+				| "Hospital"
+				| "School"
+				| "Companie"
+				| "Ecosystem"
+		  )
+		| null;
+	updatedAt: string;
+	createdAt: string;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "conditions".
  */
 export interface Condition {
-  id: number;
-  _order?: string | null;
-  name: string;
-  /**
-   * Description courte affichée sur les cartes (120 caractères max)
-   */
-  description: string;
-  acronym: string;
-  slug: string;
-  textColor: string;
-  backgroundColor: string;
-  updatedAt: string;
-  createdAt: string;
+	id: number;
+	_order?: string | null;
+	name: string;
+	/**
+	 * Description courte affichée sur les cartes (120 caractères max)
+	 */
+	description: string;
+	acronym: string;
+	slug: string;
+	textColor: string;
+	backgroundColor: string;
+	updatedAt: string;
+	createdAt: string;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "courses".
  */
 export interface Course {
-  id: number;
-  title: string;
-  description: string;
-  link: string;
-  type: 'MOOC' | 'Webinaire' | 'Présentiel';
-  theme: number | Theme;
-  persona: number | Persona;
-  condition: number | Condition;
-  image?: (number | null) | Media;
-  updatedAt: string;
-  createdAt: string;
+	id: number;
+	title: string;
+	description: string;
+	link: string;
+	type: "MOOC" | "Webinaire" | "Présentiel";
+	theme: number | Theme;
+	persona: number | Persona;
+	condition: number | Condition;
+	image?: (number | null) | Media;
+	updatedAt: string;
+	createdAt: string;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "themes".
  */
 export interface Theme {
-  id: number;
-  name: string;
-  /**
-   * Description courte affichée sur les cartes (120 caractères max)
-   */
-  description: string;
-  slug: string;
-  updatedAt: string;
-  createdAt: string;
+	id: number;
+	name: string;
+	/**
+	 * Description courte affichée sur les cartes (120 caractères max)
+	 */
+	description: string;
+	slug: string;
+	updatedAt: string;
+	createdAt: string;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "medias".
  */
 export interface Media {
-  id: number;
-  alt: string;
-  folder?: (number | null) | FolderInterface;
-  updatedAt: string;
-  createdAt: string;
-  url?: string | null;
-  thumbnailURL?: string | null;
-  filename?: string | null;
-  mimeType?: string | null;
-  filesize?: number | null;
-  width?: number | null;
-  height?: number | null;
-  focalX?: number | null;
-  focalY?: number | null;
-  sizes?: {
-    thumbnail?: {
-      url?: string | null;
-      width?: number | null;
-      height?: number | null;
-      mimeType?: string | null;
-      filesize?: number | null;
-      filename?: string | null;
-    };
-    square?: {
-      url?: string | null;
-      width?: number | null;
-      height?: number | null;
-      mimeType?: string | null;
-      filesize?: number | null;
-      filename?: string | null;
-    };
-    small?: {
-      url?: string | null;
-      width?: number | null;
-      height?: number | null;
-      mimeType?: string | null;
-      filesize?: number | null;
-      filename?: string | null;
-    };
-    medium?: {
-      url?: string | null;
-      width?: number | null;
-      height?: number | null;
-      mimeType?: string | null;
-      filesize?: number | null;
-      filename?: string | null;
-    };
-    large?: {
-      url?: string | null;
-      width?: number | null;
-      height?: number | null;
-      mimeType?: string | null;
-      filesize?: number | null;
-      filename?: string | null;
-    };
-    banner?: {
-      url?: string | null;
-      width?: number | null;
-      height?: number | null;
-      mimeType?: string | null;
-      filesize?: number | null;
-      filename?: string | null;
-    };
-  };
+	id: number;
+	alt: string;
+	folder?: (number | null) | FolderInterface;
+	updatedAt: string;
+	createdAt: string;
+	url?: string | null;
+	thumbnailURL?: string | null;
+	filename?: string | null;
+	mimeType?: string | null;
+	filesize?: number | null;
+	width?: number | null;
+	height?: number | null;
+	focalX?: number | null;
+	focalY?: number | null;
+	sizes?: {
+		thumbnail?: {
+			url?: string | null;
+			width?: number | null;
+			height?: number | null;
+			mimeType?: string | null;
+			filesize?: number | null;
+			filename?: string | null;
+		};
+		square?: {
+			url?: string | null;
+			width?: number | null;
+			height?: number | null;
+			mimeType?: string | null;
+			filesize?: number | null;
+			filename?: string | null;
+		};
+		small?: {
+			url?: string | null;
+			width?: number | null;
+			height?: number | null;
+			mimeType?: string | null;
+			filesize?: number | null;
+			filename?: string | null;
+		};
+		medium?: {
+			url?: string | null;
+			width?: number | null;
+			height?: number | null;
+			mimeType?: string | null;
+			filesize?: number | null;
+			filename?: string | null;
+		};
+		large?: {
+			url?: string | null;
+			width?: number | null;
+			height?: number | null;
+			mimeType?: string | null;
+			filesize?: number | null;
+			filename?: string | null;
+		};
+		banner?: {
+			url?: string | null;
+			width?: number | null;
+			height?: number | null;
+			mimeType?: string | null;
+			filesize?: number | null;
+			filename?: string | null;
+		};
+	};
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "payload-folders".
  */
 export interface FolderInterface {
-  id: number;
-  name: string;
-  folder?: (number | null) | FolderInterface;
-  documentsAndFolders?: {
-    docs?: (
-      | {
-          relationTo?: 'payload-folders';
-          value: number | FolderInterface;
-        }
-      | {
-          relationTo?: 'medias';
-          value: number | Media;
-        }
-    )[];
-    hasNextPage?: boolean;
-    totalDocs?: number;
-  };
-  folderType?: 'medias'[] | null;
-  updatedAt: string;
-  createdAt: string;
+	id: number;
+	name: string;
+	folder?: (number | null) | FolderInterface;
+	documentsAndFolders?: {
+		docs?: (
+			| {
+					relationTo?: "payload-folders";
+					value: number | FolderInterface;
+			  }
+			| {
+					relationTo?: "medias";
+					value: number | Media;
+			  }
+		)[];
+		hasNextPage?: boolean;
+		totalDocs?: number;
+	};
+	folderType?: "medias"[] | null;
+	updatedAt: string;
+	createdAt: string;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "practical-guides".
  */
 export interface PracticalGuide {
-  id: number;
-  title: string;
-  slug: string;
-  /**
-   * Description courte affichée sur les cartes (120 caractères max)
-   */
-  description: string;
-  conditions?: (number | Condition)[] | null;
-  content: {
-    root: {
-      type: string;
-      children: {
-        type: any;
-        version: number;
-        [k: string]: unknown;
-      }[];
-      direction: ('ltr' | 'rtl') | null;
-      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
-      indent: number;
-      version: number;
-    };
-    [k: string]: unknown;
-  };
-  persona: (number | Persona)[];
-  themes: (number | Theme)[];
-  'practical-guides'?: (number | PracticalGuide)[] | null;
-  courses?: (number | Course)[] | null;
-  image?: (number | null) | Media;
-  imageBanner?: (number | null) | Media;
-  meta?: {
-    title?: string | null;
-    description?: string | null;
-    /**
-     * Maximum upload file size: 12MB. Recommended file size for images is <500KB.
-     */
-    image?: (number | null) | Media;
-  };
-  updatedAt: string;
-  createdAt: string;
-  _status?: ('draft' | 'published') | null;
+	id: number;
+	title: string;
+	slug: string;
+	/**
+	 * Description courte affichée sur les cartes (120 caractères max)
+	 */
+	description: string;
+	conditions?: (number | Condition)[] | null;
+	content: {
+		root: {
+			type: string;
+			children: {
+				type: any;
+				version: number;
+				[k: string]: unknown;
+			}[];
+			direction: ("ltr" | "rtl") | null;
+			format: "left" | "start" | "center" | "right" | "end" | "justify" | "";
+			indent: number;
+			version: number;
+		};
+		[k: string]: unknown;
+	};
+	persona: (number | Persona)[];
+	themes: (number | Theme)[];
+	"practical-guides"?: (number | PracticalGuide)[] | null;
+	courses?: (number | Course)[] | null;
+	image?: (number | null) | Media;
+	imageBanner?: (number | null) | Media;
+	meta?: {
+		title?: string | null;
+		description?: string | null;
+		/**
+		 * Maximum upload file size: 12MB. Recommended file size for images is <500KB.
+		 */
+		image?: (number | null) | Media;
+	};
+	updatedAt: string;
+	createdAt: string;
+	_status?: ("draft" | "published") | null;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "practical-guide-views".
  */
 export interface PracticalGuideView {
-  id: number;
-  guide: number | PracticalGuide;
-  viewCount: number;
-  updatedAt: string;
-  createdAt: string;
+	id: number;
+	guide: number | PracticalGuide;
+	viewCount: number;
+	updatedAt: string;
+	createdAt: string;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "journeys".
  */
 export interface Journey {
-  id: number;
-  journey_name: string;
-  persona: number | Persona;
-  image?: (number | null) | Media;
-  chapter: {
-    'chapter-name': string;
-    'practical-guides': (number | PracticalGuide)[];
-    courses?: (number | Course)[] | null;
-    id?: string | null;
-  }[];
-  updatedAt: string;
-  createdAt: string;
+	id: number;
+	journey_name: string;
+	persona: number | Persona;
+	image?: (number | null) | Media;
+	chapter: {
+		"chapter-name": string;
+		"practical-guides": (number | PracticalGuide)[];
+		courses?: (number | Course)[] | null;
+		id?: string | null;
+	}[];
+	updatedAt: string;
+	createdAt: string;
 }
 /**
  * This is a collection of automatically created search results. These results are used by the global site search and will be updated automatically as documents in the CMS are created or updated.
@@ -429,715 +448,714 @@ export interface Journey {
  * via the `definition` "search-results".
  */
 export interface SearchResult {
-  id: number;
-  title?: string | null;
-  priority?: number | null;
-  doc: {
-    relationTo: 'practical-guides';
-    value: number | PracticalGuide;
-  };
-  slug?: string | null;
-  description?: string | null;
-  contentText?: string | null;
-  conditionNames?: string | null;
-  themeNames?: string | null;
-  personaNames?: string | null;
-  updatedAt: string;
-  createdAt: string;
+	id: number;
+	title?: string | null;
+	priority?: number | null;
+	doc: {
+		relationTo: "practical-guides";
+		value: number | PracticalGuide;
+	};
+	slug?: string | null;
+	description?: string | null;
+	contentText?: string | null;
+	conditionNames?: string | null;
+	themeNames?: string | null;
+	personaNames?: string | null;
+	updatedAt: string;
+	createdAt: string;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "payload-kv".
  */
 export interface PayloadKv {
-  id: number;
-  key: string;
-  data:
-    | {
-        [k: string]: unknown;
-      }
-    | unknown[]
-    | string
-    | number
-    | boolean
-    | null;
+	id: number;
+	key: string;
+	data:
+		| {
+				[k: string]: unknown;
+		  }
+		| unknown[]
+		| string
+		| number
+		| boolean
+		| null;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "payload-locked-documents".
  */
 export interface PayloadLockedDocument {
-  id: number;
-  document?:
-    | ({
-        relationTo: 'users';
-        value: number | User;
-      } | null)
-    | ({
-        relationTo: 'personas';
-        value: number | Persona;
-      } | null)
-    | ({
-        relationTo: 'conditions';
-        value: number | Condition;
-      } | null)
-    | ({
-        relationTo: 'courses';
-        value: number | Course;
-      } | null)
-    | ({
-        relationTo: 'practical-guides';
-        value: number | PracticalGuide;
-      } | null)
-    | ({
-        relationTo: 'practical-guide-views';
-        value: number | PracticalGuideView;
-      } | null)
-    | ({
-        relationTo: 'themes';
-        value: number | Theme;
-      } | null)
-    | ({
-        relationTo: 'journeys';
-        value: number | Journey;
-      } | null)
-    | ({
-        relationTo: 'medias';
-        value: number | Media;
-      } | null)
-    | ({
-        relationTo: 'search-results';
-        value: number | SearchResult;
-      } | null)
-    | ({
-        relationTo: 'payload-folders';
-        value: number | FolderInterface;
-      } | null);
-  globalSlug?: string | null;
-  user: {
-    relationTo: 'users';
-    value: number | User;
-  };
-  updatedAt: string;
-  createdAt: string;
+	id: number;
+	document?:
+		| ({
+				relationTo: "users";
+				value: number | User;
+		  } | null)
+		| ({
+				relationTo: "personas";
+				value: number | Persona;
+		  } | null)
+		| ({
+				relationTo: "conditions";
+				value: number | Condition;
+		  } | null)
+		| ({
+				relationTo: "courses";
+				value: number | Course;
+		  } | null)
+		| ({
+				relationTo: "practical-guides";
+				value: number | PracticalGuide;
+		  } | null)
+		| ({
+				relationTo: "practical-guide-views";
+				value: number | PracticalGuideView;
+		  } | null)
+		| ({
+				relationTo: "themes";
+				value: number | Theme;
+		  } | null)
+		| ({
+				relationTo: "journeys";
+				value: number | Journey;
+		  } | null)
+		| ({
+				relationTo: "medias";
+				value: number | Media;
+		  } | null)
+		| ({
+				relationTo: "search-results";
+				value: number | SearchResult;
+		  } | null)
+		| ({
+				relationTo: "payload-folders";
+				value: number | FolderInterface;
+		  } | null);
+	globalSlug?: string | null;
+	user: {
+		relationTo: "users";
+		value: number | User;
+	};
+	updatedAt: string;
+	createdAt: string;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "payload-preferences".
  */
 export interface PayloadPreference {
-  id: number;
-  user: {
-    relationTo: 'users';
-    value: number | User;
-  };
-  key?: string | null;
-  value?:
-    | {
-        [k: string]: unknown;
-      }
-    | unknown[]
-    | string
-    | number
-    | boolean
-    | null;
-  updatedAt: string;
-  createdAt: string;
+	id: number;
+	user: {
+		relationTo: "users";
+		value: number | User;
+	};
+	key?: string | null;
+	value?:
+		| {
+				[k: string]: unknown;
+		  }
+		| unknown[]
+		| string
+		| number
+		| boolean
+		| null;
+	updatedAt: string;
+	createdAt: string;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "payload-migrations".
  */
 export interface PayloadMigration {
-  id: number;
-  name?: string | null;
-  batch?: number | null;
-  updatedAt: string;
-  createdAt: string;
+	id: number;
+	name?: string | null;
+	batch?: number | null;
+	updatedAt: string;
+	createdAt: string;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "users_select".
  */
 export interface UsersSelect<T extends boolean = true> {
-  firstName?: T;
-  lastName?: T;
-  role?: T;
-  updatedAt?: T;
-  createdAt?: T;
-  email?: T;
-  resetPasswordToken?: T;
-  resetPasswordExpiration?: T;
-  salt?: T;
-  hash?: T;
-  loginAttempts?: T;
-  lockUntil?: T;
-  sessions?:
-    | T
-    | {
-        id?: T;
-        createdAt?: T;
-        expiresAt?: T;
-      };
+	firstName?: T;
+	lastName?: T;
+	role?: T;
+	updatedAt?: T;
+	createdAt?: T;
+	email?: T;
+	resetPasswordToken?: T;
+	resetPasswordExpiration?: T;
+	salt?: T;
+	hash?: T;
+	loginAttempts?: T;
+	lockUntil?: T;
+	sessions?:
+		| T
+		| {
+				id?: T;
+				createdAt?: T;
+				expiresAt?: T;
+		  };
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "personas_select".
  */
 export interface PersonasSelect<T extends boolean = true> {
-  _order?: T;
-  name?: T;
-  description?: T;
-  displayName?: T;
-  journeyIntro?: T;
-  slug?: T;
-  pictogram?: T;
-  updatedAt?: T;
-  createdAt?: T;
+	_order?: T;
+	name?: T;
+	description?: T;
+	displayName?: T;
+	journeyIntro?: T;
+	slug?: T;
+	pictogram?: T;
+	updatedAt?: T;
+	createdAt?: T;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "conditions_select".
  */
 export interface ConditionsSelect<T extends boolean = true> {
-  _order?: T;
-  name?: T;
-  description?: T;
-  acronym?: T;
-  slug?: T;
-  textColor?: T;
-  backgroundColor?: T;
-  updatedAt?: T;
-  createdAt?: T;
+	_order?: T;
+	name?: T;
+	description?: T;
+	acronym?: T;
+	slug?: T;
+	textColor?: T;
+	backgroundColor?: T;
+	updatedAt?: T;
+	createdAt?: T;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "courses_select".
  */
 export interface CoursesSelect<T extends boolean = true> {
-  title?: T;
-  description?: T;
-  link?: T;
-  type?: T;
-  theme?: T;
-  persona?: T;
-  condition?: T;
-  image?: T;
-  updatedAt?: T;
-  createdAt?: T;
+	title?: T;
+	description?: T;
+	link?: T;
+	type?: T;
+	theme?: T;
+	persona?: T;
+	condition?: T;
+	image?: T;
+	updatedAt?: T;
+	createdAt?: T;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "practical-guides_select".
  */
 export interface PracticalGuidesSelect<T extends boolean = true> {
-  title?: T;
-  slug?: T;
-  description?: T;
-  conditions?: T;
-  content?: T;
-  persona?: T;
-  themes?: T;
-  'practical-guides'?: T;
-  courses?: T;
-  image?: T;
-  imageBanner?: T;
-  meta?:
-    | T
-    | {
-        title?: T;
-        description?: T;
-        image?: T;
-      };
-  updatedAt?: T;
-  createdAt?: T;
-  _status?: T;
+	title?: T;
+	slug?: T;
+	description?: T;
+	conditions?: T;
+	content?: T;
+	persona?: T;
+	themes?: T;
+	"practical-guides"?: T;
+	courses?: T;
+	image?: T;
+	imageBanner?: T;
+	meta?:
+		| T
+		| {
+				title?: T;
+				description?: T;
+				image?: T;
+		  };
+	updatedAt?: T;
+	createdAt?: T;
+	_status?: T;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "practical-guide-views_select".
  */
 export interface PracticalGuideViewsSelect<T extends boolean = true> {
-  guide?: T;
-  viewCount?: T;
-  updatedAt?: T;
-  createdAt?: T;
+	guide?: T;
+	viewCount?: T;
+	updatedAt?: T;
+	createdAt?: T;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "themes_select".
  */
 export interface ThemesSelect<T extends boolean = true> {
-  name?: T;
-  description?: T;
-  slug?: T;
-  updatedAt?: T;
-  createdAt?: T;
+	name?: T;
+	description?: T;
+	slug?: T;
+	updatedAt?: T;
+	createdAt?: T;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "journeys_select".
  */
 export interface JourneysSelect<T extends boolean = true> {
-  journey_name?: T;
-  persona?: T;
-  image?: T;
-  chapter?:
-    | T
-    | {
-        'chapter-name'?: T;
-        'practical-guides'?: T;
-        courses?: T;
-        id?: T;
-      };
-  updatedAt?: T;
-  createdAt?: T;
+	journey_name?: T;
+	persona?: T;
+	image?: T;
+	chapter?:
+		| T
+		| {
+				"chapter-name"?: T;
+				"practical-guides"?: T;
+				courses?: T;
+				id?: T;
+		  };
+	updatedAt?: T;
+	createdAt?: T;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "medias_select".
  */
 export interface MediasSelect<T extends boolean = true> {
-  alt?: T;
-  folder?: T;
-  updatedAt?: T;
-  createdAt?: T;
-  url?: T;
-  thumbnailURL?: T;
-  filename?: T;
-  mimeType?: T;
-  filesize?: T;
-  width?: T;
-  height?: T;
-  focalX?: T;
-  focalY?: T;
-  sizes?:
-    | T
-    | {
-        thumbnail?:
-          | T
-          | {
-              url?: T;
-              width?: T;
-              height?: T;
-              mimeType?: T;
-              filesize?: T;
-              filename?: T;
-            };
-        square?:
-          | T
-          | {
-              url?: T;
-              width?: T;
-              height?: T;
-              mimeType?: T;
-              filesize?: T;
-              filename?: T;
-            };
-        small?:
-          | T
-          | {
-              url?: T;
-              width?: T;
-              height?: T;
-              mimeType?: T;
-              filesize?: T;
-              filename?: T;
-            };
-        medium?:
-          | T
-          | {
-              url?: T;
-              width?: T;
-              height?: T;
-              mimeType?: T;
-              filesize?: T;
-              filename?: T;
-            };
-        large?:
-          | T
-          | {
-              url?: T;
-              width?: T;
-              height?: T;
-              mimeType?: T;
-              filesize?: T;
-              filename?: T;
-            };
-        banner?:
-          | T
-          | {
-              url?: T;
-              width?: T;
-              height?: T;
-              mimeType?: T;
-              filesize?: T;
-              filename?: T;
-            };
-      };
+	alt?: T;
+	folder?: T;
+	updatedAt?: T;
+	createdAt?: T;
+	url?: T;
+	thumbnailURL?: T;
+	filename?: T;
+	mimeType?: T;
+	filesize?: T;
+	width?: T;
+	height?: T;
+	focalX?: T;
+	focalY?: T;
+	sizes?:
+		| T
+		| {
+				thumbnail?:
+					| T
+					| {
+							url?: T;
+							width?: T;
+							height?: T;
+							mimeType?: T;
+							filesize?: T;
+							filename?: T;
+					  };
+				square?:
+					| T
+					| {
+							url?: T;
+							width?: T;
+							height?: T;
+							mimeType?: T;
+							filesize?: T;
+							filename?: T;
+					  };
+				small?:
+					| T
+					| {
+							url?: T;
+							width?: T;
+							height?: T;
+							mimeType?: T;
+							filesize?: T;
+							filename?: T;
+					  };
+				medium?:
+					| T
+					| {
+							url?: T;
+							width?: T;
+							height?: T;
+							mimeType?: T;
+							filesize?: T;
+							filename?: T;
+					  };
+				large?:
+					| T
+					| {
+							url?: T;
+							width?: T;
+							height?: T;
+							mimeType?: T;
+							filesize?: T;
+							filename?: T;
+					  };
+				banner?:
+					| T
+					| {
+							url?: T;
+							width?: T;
+							height?: T;
+							mimeType?: T;
+							filesize?: T;
+							filename?: T;
+					  };
+		  };
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "search-results_select".
  */
 export interface SearchResultsSelect<T extends boolean = true> {
-  title?: T;
-  priority?: T;
-  doc?: T;
-  slug?: T;
-  description?: T;
-  contentText?: T;
-  conditionNames?: T;
-  themeNames?: T;
-  personaNames?: T;
-  updatedAt?: T;
-  createdAt?: T;
+	title?: T;
+	priority?: T;
+	doc?: T;
+	slug?: T;
+	description?: T;
+	contentText?: T;
+	conditionNames?: T;
+	themeNames?: T;
+	personaNames?: T;
+	updatedAt?: T;
+	createdAt?: T;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "payload-kv_select".
  */
 export interface PayloadKvSelect<T extends boolean = true> {
-  key?: T;
-  data?: T;
+	key?: T;
+	data?: T;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "payload-folders_select".
  */
 export interface PayloadFoldersSelect<T extends boolean = true> {
-  name?: T;
-  folder?: T;
-  documentsAndFolders?: T;
-  folderType?: T;
-  updatedAt?: T;
-  createdAt?: T;
+	name?: T;
+	folder?: T;
+	documentsAndFolders?: T;
+	folderType?: T;
+	updatedAt?: T;
+	createdAt?: T;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "payload-locked-documents_select".
  */
 export interface PayloadLockedDocumentsSelect<T extends boolean = true> {
-  document?: T;
-  globalSlug?: T;
-  user?: T;
-  updatedAt?: T;
-  createdAt?: T;
+	document?: T;
+	globalSlug?: T;
+	user?: T;
+	updatedAt?: T;
+	createdAt?: T;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "payload-preferences_select".
  */
 export interface PayloadPreferencesSelect<T extends boolean = true> {
-  user?: T;
-  key?: T;
-  value?: T;
-  updatedAt?: T;
-  createdAt?: T;
+	user?: T;
+	key?: T;
+	value?: T;
+	updatedAt?: T;
+	createdAt?: T;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "payload-migrations_select".
  */
 export interface PayloadMigrationsSelect<T extends boolean = true> {
-  name?: T;
-  batch?: T;
-  updatedAt?: T;
-  createdAt?: T;
+	name?: T;
+	batch?: T;
+	updatedAt?: T;
+	createdAt?: T;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "home".
  */
 export interface Home {
-  id: number;
-  header: {
-    title: string;
-    description: string;
-  };
-  tiles: {
-    description: string;
-  };
-  mostViewedGuides: {
-    title: string;
-    description: string;
-  };
-  updatedAt?: string | null;
-  createdAt?: string | null;
+	id: number;
+	header: {
+		title: string;
+		description: string;
+	};
+	tiles: {
+		description: string;
+	};
+	mostViewedGuides: {
+		title: string;
+		description: string;
+	};
+	updatedAt?: string | null;
+	createdAt?: string | null;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "footer".
  */
 export interface Footer {
-  id: number;
-  title: string;
-  accessibility: {
-    title: string;
-    content: {
-      root: {
-        type: string;
-        children: {
-          type: any;
-          version: number;
-          [k: string]: unknown;
-        }[];
-        direction: ('ltr' | 'rtl') | null;
-        format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
-        indent: number;
-        version: number;
-      };
-      [k: string]: unknown;
-    };
-  };
-  legalNotice: {
-    title: string;
-    content: {
-      root: {
-        type: string;
-        children: {
-          type: any;
-          version: number;
-          [k: string]: unknown;
-        }[];
-        direction: ('ltr' | 'rtl') | null;
-        format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
-        indent: number;
-        version: number;
-      };
-      [k: string]: unknown;
-    };
-  };
-  cgu: {
-    title: string;
-    content: {
-      root: {
-        type: string;
-        children: {
-          type: any;
-          version: number;
-          [k: string]: unknown;
-        }[];
-        direction: ('ltr' | 'rtl') | null;
-        format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
-        indent: number;
-        version: number;
-      };
-      [k: string]: unknown;
-    };
-  };
-  termsOfUse: {
-    title: string;
-    content: {
-      root: {
-        type: string;
-        children: {
-          type: any;
-          version: number;
-          [k: string]: unknown;
-        }[];
-        direction: ('ltr' | 'rtl') | null;
-        format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
-        indent: number;
-        version: number;
-      };
-      [k: string]: unknown;
-    };
-  };
-  contactProsCra: {
-    title: string;
-    imageBanner?: (number | null) | Media;
-    content: {
-      root: {
-        type: string;
-        children: {
-          type: any;
-          version: number;
-          [k: string]: unknown;
-        }[];
-        direction: ('ltr' | 'rtl') | null;
-        format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
-        indent: number;
-        version: number;
-      };
-      [k: string]: unknown;
-    };
-  };
-  updatedAt?: string | null;
-  createdAt?: string | null;
+	id: number;
+	title: string;
+	accessibility: {
+		title: string;
+		content: {
+			root: {
+				type: string;
+				children: {
+					type: any;
+					version: number;
+					[k: string]: unknown;
+				}[];
+				direction: ("ltr" | "rtl") | null;
+				format: "left" | "start" | "center" | "right" | "end" | "justify" | "";
+				indent: number;
+				version: number;
+			};
+			[k: string]: unknown;
+		};
+	};
+	legalNotice: {
+		title: string;
+		content: {
+			root: {
+				type: string;
+				children: {
+					type: any;
+					version: number;
+					[k: string]: unknown;
+				}[];
+				direction: ("ltr" | "rtl") | null;
+				format: "left" | "start" | "center" | "right" | "end" | "justify" | "";
+				indent: number;
+				version: number;
+			};
+			[k: string]: unknown;
+		};
+	};
+	cgu: {
+		title: string;
+		content: {
+			root: {
+				type: string;
+				children: {
+					type: any;
+					version: number;
+					[k: string]: unknown;
+				}[];
+				direction: ("ltr" | "rtl") | null;
+				format: "left" | "start" | "center" | "right" | "end" | "justify" | "";
+				indent: number;
+				version: number;
+			};
+			[k: string]: unknown;
+		};
+	};
+	termsOfUse: {
+		title: string;
+		content: {
+			root: {
+				type: string;
+				children: {
+					type: any;
+					version: number;
+					[k: string]: unknown;
+				}[];
+				direction: ("ltr" | "rtl") | null;
+				format: "left" | "start" | "center" | "right" | "end" | "justify" | "";
+				indent: number;
+				version: number;
+			};
+			[k: string]: unknown;
+		};
+	};
+	contactProsCra: {
+		title: string;
+		imageBanner?: (number | null) | Media;
+		content: {
+			root: {
+				type: string;
+				children: {
+					type: any;
+					version: number;
+					[k: string]: unknown;
+				}[];
+				direction: ("ltr" | "rtl") | null;
+				format: "left" | "start" | "center" | "right" | "end" | "justify" | "";
+				indent: number;
+				version: number;
+			};
+			[k: string]: unknown;
+		};
+	};
+	updatedAt?: string | null;
+	createdAt?: string | null;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "about".
  */
 export interface About {
-  id: number;
-  maisonDeLAutisme: {
-    title: string;
-    imageBanner?: (number | null) | Media;
-    content: {
-      root: {
-        type: string;
-        children: {
-          type: any;
-          version: number;
-          [k: string]: unknown;
-        }[];
-        direction: ('ltr' | 'rtl') | null;
-        format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
-        indent: number;
-        version: number;
-      };
-      [k: string]: unknown;
-    };
-  };
-  gncra: {
-    title: string;
-    imageBanner?: (number | null) | Media;
-    content: {
-      root: {
-        type: string;
-        children: {
-          type: any;
-          version: number;
-          [k: string]: unknown;
-        }[];
-        direction: ('ltr' | 'rtl') | null;
-        format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
-        indent: number;
-        version: number;
-      };
-      [k: string]: unknown;
-    };
-  };
-  cras: {
-    title: string;
-    imageBanner?: (number | null) | Media;
-    content: {
-      root: {
-        type: string;
-        children: {
-          type: any;
-          version: number;
-          [k: string]: unknown;
-        }[];
-        direction: ('ltr' | 'rtl') | null;
-        format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
-        indent: number;
-        version: number;
-      };
-      [k: string]: unknown;
-    };
-  };
-  updatedAt?: string | null;
-  createdAt?: string | null;
+	id: number;
+	maisonDeLAutisme: {
+		title: string;
+		imageBanner?: (number | null) | Media;
+		content: {
+			root: {
+				type: string;
+				children: {
+					type: any;
+					version: number;
+					[k: string]: unknown;
+				}[];
+				direction: ("ltr" | "rtl") | null;
+				format: "left" | "start" | "center" | "right" | "end" | "justify" | "";
+				indent: number;
+				version: number;
+			};
+			[k: string]: unknown;
+		};
+	};
+	gncra: {
+		title: string;
+		imageBanner?: (number | null) | Media;
+		content: {
+			root: {
+				type: string;
+				children: {
+					type: any;
+					version: number;
+					[k: string]: unknown;
+				}[];
+				direction: ("ltr" | "rtl") | null;
+				format: "left" | "start" | "center" | "right" | "end" | "justify" | "";
+				indent: number;
+				version: number;
+			};
+			[k: string]: unknown;
+		};
+	};
+	cras: {
+		title: string;
+		imageBanner?: (number | null) | Media;
+		content: {
+			root: {
+				type: string;
+				children: {
+					type: any;
+					version: number;
+					[k: string]: unknown;
+				}[];
+				direction: ("ltr" | "rtl") | null;
+				format: "left" | "start" | "center" | "right" | "end" | "justify" | "";
+				indent: number;
+				version: number;
+			};
+			[k: string]: unknown;
+		};
+	};
+	updatedAt?: string | null;
+	createdAt?: string | null;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "home_select".
  */
 export interface HomeSelect<T extends boolean = true> {
-  header?:
-    | T
-    | {
-        title?: T;
-        description?: T;
-      };
-  tiles?:
-    | T
-    | {
-        description?: T;
-      };
-  mostViewedGuides?:
-    | T
-    | {
-        title?: T;
-        description?: T;
-      };
-  updatedAt?: T;
-  createdAt?: T;
-  globalType?: T;
+	header?:
+		| T
+		| {
+				title?: T;
+				description?: T;
+		  };
+	tiles?:
+		| T
+		| {
+				description?: T;
+		  };
+	mostViewedGuides?:
+		| T
+		| {
+				title?: T;
+				description?: T;
+		  };
+	updatedAt?: T;
+	createdAt?: T;
+	globalType?: T;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "footer_select".
  */
 export interface FooterSelect<T extends boolean = true> {
-  title?: T;
-  accessibility?:
-    | T
-    | {
-        title?: T;
-        content?: T;
-      };
-  legalNotice?:
-    | T
-    | {
-        title?: T;
-        content?: T;
-      };
-  cgu?:
-    | T
-    | {
-        title?: T;
-        content?: T;
-      };
-  termsOfUse?:
-    | T
-    | {
-        title?: T;
-        content?: T;
-      };
-  contactProsCra?:
-    | T
-    | {
-        title?: T;
-        imageBanner?: T;
-        content?: T;
-      };
-  updatedAt?: T;
-  createdAt?: T;
-  globalType?: T;
+	title?: T;
+	accessibility?:
+		| T
+		| {
+				title?: T;
+				content?: T;
+		  };
+	legalNotice?:
+		| T
+		| {
+				title?: T;
+				content?: T;
+		  };
+	cgu?:
+		| T
+		| {
+				title?: T;
+				content?: T;
+		  };
+	termsOfUse?:
+		| T
+		| {
+				title?: T;
+				content?: T;
+		  };
+	contactProsCra?:
+		| T
+		| {
+				title?: T;
+				imageBanner?: T;
+				content?: T;
+		  };
+	updatedAt?: T;
+	createdAt?: T;
+	globalType?: T;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "about_select".
  */
 export interface AboutSelect<T extends boolean = true> {
-  maisonDeLAutisme?:
-    | T
-    | {
-        title?: T;
-        imageBanner?: T;
-        content?: T;
-      };
-  gncra?:
-    | T
-    | {
-        title?: T;
-        imageBanner?: T;
-        content?: T;
-      };
-  cras?:
-    | T
-    | {
-        title?: T;
-        imageBanner?: T;
-        content?: T;
-      };
-  updatedAt?: T;
-  createdAt?: T;
-  globalType?: T;
+	maisonDeLAutisme?:
+		| T
+		| {
+				title?: T;
+				imageBanner?: T;
+				content?: T;
+		  };
+	gncra?:
+		| T
+		| {
+				title?: T;
+				imageBanner?: T;
+				content?: T;
+		  };
+	cras?:
+		| T
+		| {
+				title?: T;
+				imageBanner?: T;
+				content?: T;
+		  };
+	updatedAt?: T;
+	createdAt?: T;
+	globalType?: T;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "auth".
  */
 export interface Auth {
-  [k: string]: unknown;
+	[k: string]: unknown;
 }
 
-
-declare module 'payload' {
-  export interface GeneratedTypes extends Config {}
+declare module "payload" {
+	export interface GeneratedTypes extends Config {}
 }

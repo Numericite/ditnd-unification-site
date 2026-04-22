@@ -13,7 +13,8 @@ export const YouTubeBlock: Block = {
 			required: true,
 			label: { fr: "URL YouTube" },
 			admin: {
-				placeholder: "https://www.youtube.com/watch?v=... ou https://youtu.be/...",
+				placeholder:
+					"https://www.youtube.com/watch?v=... ou https://youtu.be/...",
 			},
 			validate: (val: string | undefined | null) => {
 				if (!val) return "L'URL YouTube est requise";

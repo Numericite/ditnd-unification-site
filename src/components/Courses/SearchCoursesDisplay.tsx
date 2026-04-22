@@ -36,16 +36,22 @@ export const SearchCoursesDisplay = ({
 					<Loader />
 				</EmptyScreenZone>
 			) : coursesData?.length === 0 || !coursesData ? (
-				<div className={fr.cx("fr-my-2w")} role="alert" aria-live="assertive">Aucune formation trouvée</div>
+				<div className={fr.cx("fr-my-2w")} role="alert" aria-live="assertive">
+					Aucune formation trouvée
+				</div>
 			) : (
 				<div
 					className={fr.cx("fr-grid-row", "fr-grid-row--gutters", "fr-pt-3w")}
 					id="contenu"
 				>
 					<div className={fr.cx("fr-col-12")} style={{ textAlign: "right" }}>
-						<p className={fr.cx("fr-text--sm", "fr-mb-0")} role="status" aria-live="polite">
-							{coursesData.length} {coursesData.length > 1 ? "résultats" : "résultat"}
-						</p>
+						<output
+							className={fr.cx("fr-text--sm", "fr-mb-0")}
+							aria-live="polite"
+						>
+							{coursesData.length}{" "}
+							{coursesData.length > 1 ? "résultats" : "résultat"}
+						</output>
 					</div>
 					<CardsDisplayGroup
 						className={fr.cx(

@@ -21,7 +21,7 @@ export default function PlanDuSite() {
 			<div className={fr.cx("fr-container", "fr-py-10w")}>
 				<h1>Plan du site</h1>
 
-				<nav role="navigation" aria-label="Plan du site">
+				<nav aria-label="Plan du site">
 					<section className={cx(classes.section)}>
 						<h2>Accueil</h2>
 						<ul className={cx(classes.sitemapList)}>
@@ -57,23 +57,17 @@ export default function PlanDuSite() {
 					<section className={cx(classes.section)}>
 						<h2>S'informer</h2>
 						<p className={fr.cx("fr-text--sm", "fr-mb-2w")}>
-							Ressources et informations sur l'autisme et les
-							troubles du neurodéveloppement
+							Ressources et informations sur l'autisme et les troubles du
+							neurodéveloppement
 						</p>
 						<ul className={cx(classes.sitemapList)}>
 							<li>
-								<a
-									className={fr.cx("fr-link")}
-									href="/fiches-pratiques"
-								>
+								<a className={fr.cx("fr-link")} href="/fiches-pratiques">
 									Fiches pratiques
 								</a>
 							</li>
 							<li>
-								<a
-									className={fr.cx("fr-link")}
-									href="/formations"
-								>
+								<a className={fr.cx("fr-link")} href="/formations">
 									Formations
 								</a>
 							</li>
@@ -84,42 +78,27 @@ export default function PlanDuSite() {
 						<h2>Informations et obligations légales</h2>
 						<ul className={cx(classes.sitemapList)}>
 							<li>
-								<a
-									className={fr.cx("fr-link")}
-									href="/accessibilite"
-								>
+								<a className={fr.cx("fr-link")} href="/accessibilite">
 									Accessibilité
 								</a>
 							</li>
 							<li>
-								<a
-									className={fr.cx("fr-link")}
-									href="/mentions-legales"
-								>
+								<a className={fr.cx("fr-link")} href="/mentions-legales">
 									Mentions légales
 								</a>
 							</li>
 							<li>
-								<a
-									className={fr.cx("fr-link")}
-									href="/donnees-personnelles"
-								>
+								<a className={fr.cx("fr-link")} href="/donnees-personnelles">
 									Données personnelles
 								</a>
 							</li>
 							<li>
-								<a
-									className={fr.cx("fr-link")}
-									href="/modalites-utilisation"
-								>
+								<a className={fr.cx("fr-link")} href="/modalites-utilisation">
 									Modalités d'utilisation
 								</a>
 							</li>
 							<li>
-								<a
-									className={fr.cx("fr-link")}
-									href="/contact-pros-cra"
-								>
+								<a className={fr.cx("fr-link")} href="/contact-pros-cra">
 									Contact professionnels
 								</a>
 							</li>

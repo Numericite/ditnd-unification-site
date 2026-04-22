@@ -11,130 +11,133 @@ import type { AugmentedJourney } from "~/server/api/routers/journeys";
 import { api } from "~/utils/api";
 
 function isProfessionalPersona(slug: string) {
-  return slug.startsWith("pro");
+	return slug.startsWith("pro");
 }
 
 export default function JourneyPage() {
-  const { classes, cx } = useStyles();
+	const { classes, cx } = useStyles();
 
-  const router = useRouter();
-  const persona = router.query.persona as string;
-  const condition = router.query.condition as string;
+	const router = useRouter();
+	const persona = router.query.persona as string;
+	const condition = router.query.condition as string;
 
-  const { data: journeyData, isLoading: isLoadingJourney } =
-    api.journey.getByPersona.useQuery({
-      persona: persona,
-    });
+	const { data: journeyData, isLoading: isLoadingJourney } =
+		api.journey.getByPersona.useQuery({
+			persona: persona,
+		});
 
-  if (isLoadingJourney)
-    return (
-      <EmptyScreenZone>
-        <Loader />
-      </EmptyScreenZone>
-    );
+	if (isLoadingJourney)
+		return (
+			<EmptyScreenZone>
+				<Loader />
+			</EmptyScreenZone>
+		);
 
-  if (!journeyData || journeyData.length === 0) {
-    return <EmptyScreenZone>Parcours introuvable</EmptyScreenZone>;
-  }
+	if (!journeyData || journeyData.length === 0) {
+		return <EmptyScreenZone>Parcours introuvable</EmptyScreenZone>;
+	}
 
-  const journey = journeyData[0] as AugmentedJourney;
+	const journey = journeyData[0] as AugmentedJourney;
 
-  const isProPersona = isProfessionalPersona(persona);
+	const isProPersona = isProfessionalPersona(persona);
 
-  const journeyBreadcrumbText = journey.persona?.displayName
-    ? `Je suis ${journey.persona.displayName}`
-    : (journey.persona?.name ?? "");
+	const journeyBreadcrumbText = journey.persona?.displayName
+		? `Je suis ${journey.persona.displayName}`
+		: (journey.persona?.name ?? "");
 
-  const breadcrumbSegments = isProPersona
-    ? [
-      {
-        label: "Je suis un professionnel",
-        linkProps: { href: "/parcours/professional" },
-      },
-      {
-        label: journeyBreadcrumbText,
-        linkProps: { href: `/parcours/${persona}` },
-      },
-    ]
-    : [
-      {
-        label: journeyBreadcrumbText,
-        linkProps: { href: `/parcours/${persona}` },
-      },
-    ];
+	const breadcrumbSegments = isProPersona
+		? [
+				{
+					label: "Je suis un professionnel",
+					linkProps: { href: "/parcours/professional" },
+				},
+				{
+					label: journeyBreadcrumbText,
+					linkProps: { href: `/parcours/${persona}` },
+				},
+			]
+		: [
+				{
+					label: journeyBreadcrumbText,
+					linkProps: { href: `/parcours/${persona}` },
+				},
+			];
 
-  return (
-    <>
-      <Head>
-        <title>{journey.journey_name} - Maison de l'autisme</title>
-        <meta
-          name="description"
-          content={`Page de parcours en tant que ${journey.persona.name.toLowerCase()}, où vous trouverez des ressources sur le ${condition.toUpperCase()}`}
-        />
-      </Head>
-      <div className={fr.cx("fr-container")}>
-        <Breadcrumb
-          currentPageLabel={condition.toUpperCase()}
-          homeLinkProps={{
-            href: "/",
-          }}
-          segments={breadcrumbSegments}
-        />
-      </div>
-      <div className={fr.cx("fr-container")}>
-        <div className={fr.cx("fr-py-4w")}>
-          <div
-            className={fr.cx("fr-grid-row", "fr-grid-row--gutters")}
-            style={{ alignItems: "stretch" }}
-          >
-            <div
-              className={fr.cx("fr-col-12", "fr-col-lg-6")}
-              style={{ alignContent: "center" }}
-            >
-              <h1>{`${journey.persona.journeyIntro ?? `Je suis un ${journey.persona.name.toLowerCase()} interessé par le`} ${condition.toUpperCase()}`}</h1>
-              <p>
-                Le TSA, ou trouble du spectre de l’autisme, est un trouble du
-                neurodéveloppement qui se manifeste dès l’enfance et qui
-                accompagne la personne tout au long de sa vie. Il se caractérise
-                principalement par des difficultés dans la communication et les
-                interactions sociales, ainsi que par des comportements et
-                intérêts restreints et répétitifs.
-              </p>
-            </div>
-            <div className={fr.cx("fr-col-12", "fr-col-lg-6")}>
-              <Image
-                className={fr.cx("fr-responsive-img")}
-                fetchPriority="high"
-                priority
-                alt={journey.image?.alt ?? `Illustration pour ${condition.toUpperCase()}`}
-                src={journey.image?.url ?? "/placeholder.16x9.png"}
-                width={580}
-                height={350}
-              />
-            </div>
-          </div>
-        </div>
-      </div>
-      <div className={cx(classes.coloredContainer)}>
-        <PersonaDisplay journey={journey} />
-      </div>
-    </>
-  );
+	return (
+		<>
+			<Head>
+				<title>{journey.journey_name} - Maison de l'autisme</title>
+				<meta
+					name="description"
+					content={`Page de parcours en tant que ${journey.persona.name.toLowerCase()}, où vous trouverez des ressources sur le ${condition.toUpperCase()}`}
+				/>
+			</Head>
+			<div className={fr.cx("fr-container")}>
+				<Breadcrumb
+					currentPageLabel={condition.toUpperCase()}
+					homeLinkProps={{
+						href: "/",
+					}}
+					segments={breadcrumbSegments}
+				/>
+			</div>
+			<div className={fr.cx("fr-container")}>
+				<div className={fr.cx("fr-py-4w")}>
+					<div
+						className={fr.cx("fr-grid-row", "fr-grid-row--gutters")}
+						style={{ alignItems: "stretch" }}
+					>
+						<div
+							className={fr.cx("fr-col-12", "fr-col-lg-6")}
+							style={{ alignContent: "center" }}
+						>
+							<h1>{`${journey.persona.journeyIntro ?? `Je suis un ${journey.persona.name.toLowerCase()} interessé par le`} ${condition.toUpperCase()}`}</h1>
+							<p>
+								Le TSA, ou trouble du spectre de l’autisme, est un trouble du
+								neurodéveloppement qui se manifeste dès l’enfance et qui
+								accompagne la personne tout au long de sa vie. Il se caractérise
+								principalement par des difficultés dans la communication et les
+								interactions sociales, ainsi que par des comportements et
+								intérêts restreints et répétitifs.
+							</p>
+						</div>
+						<div className={fr.cx("fr-col-12", "fr-col-lg-6")}>
+							<Image
+								className={fr.cx("fr-responsive-img")}
+								fetchPriority="high"
+								priority
+								alt={
+									journey.image?.alt ??
+									`Illustration pour ${condition.toUpperCase()}`
+								}
+								src={journey.image?.url ?? "/placeholder.16x9.png"}
+								width={580}
+								height={350}
+							/>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div className={cx(classes.coloredContainer)}>
+				<PersonaDisplay journey={journey} />
+			</div>
+		</>
+	);
 }
 
 const useStyles = tss.withName(JourneyPage.name).create({
-  coloredContainer: {
-    backgroundColor: fr.colors.decisions.background.alt.blueFrance.default,
-  },
-  summarySticky: {
-    position: "sticky",
-    top: "20px",
-    ".fr-summary__link:before": {
-      visibility: "hidden",
-    },
-  },
-  centeredContainer: {
-    textAlign: "center",
-    paddingTop: fr.spacing("4w"),
-  },
+	coloredContainer: {
+		backgroundColor: fr.colors.decisions.background.alt.blueFrance.default,
+	},
+	summarySticky: {
+		position: "sticky",
+		top: "20px",
+		".fr-summary__link:before": {
+			visibility: "hidden",
+		},
+	},
+	centeredContainer: {
+		textAlign: "center",
+		paddingTop: fr.spacing("4w"),
+	},
 });
