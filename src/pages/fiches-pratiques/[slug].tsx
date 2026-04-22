@@ -7,10 +7,45 @@ import PracticalGuidesDisplay from "~/components/PracticalGuides/PracticalGuides
 import { fr } from "@codegouvfr/react-dsfr";
 import { EmptyScreenZone } from "~/components/ui/EmptyScreenZone";
 import { useEffect } from "react";
+import { personStore, proStore } from "~/state/store";
+
+type BreadcrumbSegment = {
+	label: string;
+	linkProps: { href: string };
+};
+
+function getParcoursBreadcrumbSegments(
+	from: string | undefined,
+): BreadcrumbSegment[] | null {
+	if (!from) return null;
+
+	const [personaSlug, conditionSlug] = from.split("/");
+	if (!personaSlug || !conditionSlug) return null;
+
+	const persona =
+		personStore.get().find((p) => p.slug === personaSlug) ??
+		proStore.get().find((p) => p.slug === personaSlug);
+
+	const personaLabel = persona
+		? `Je suis ${persona.displayName ?? persona.name}`
+		: personaSlug;
+
+	return [
+		{
+			label: personaLabel,
+			linkProps: { href: `/parcours/${personaSlug}` },
+		},
+		{
+			label: conditionSlug.toUpperCase(),
+			linkProps: { href: `/parcours/${personaSlug}/${conditionSlug}` },
+		},
+	];
+}
 
 export default function PracticalGuidePage() {
 	const router = useRouter();
 	const slug = router.query.slug as string;
+	const from = router.query.from as string | undefined;
 
 	const { data: guideData, isLoading: isLoadingData } =
 		api.practicalGuide.getBySlug.useQuery({
@@ -39,6 +74,16 @@ export default function PracticalGuidePage() {
 		return <EmptyScreenZone>Fiche introuvable</EmptyScreenZone>;
 	}
 
+	const parcoursSegments = getParcoursBreadcrumbSegments(from);
+	const breadcrumbSegments: BreadcrumbSegment[] = parcoursSegments ?? [
+		{
+			label: "Fiches Pratiques",
+			linkProps: {
+				href: "/fiches-pratiques",
+			},
+		},
+	];
+
 	return (
 		<>
 			<Head>
@@ -54,14 +99,7 @@ export default function PracticalGuidePage() {
 					homeLinkProps={{
 						href: "/",
 					}}
-					segments={[
-						{
-							label: "Fiches Pratiques",
-							linkProps: {
-								href: "/fiches-pratiques",
-							},
-						},
-					]}
+					segments={breadcrumbSegments}
 				/>
 				<PracticalGuidesDisplay guide={guide} />
 			</div>

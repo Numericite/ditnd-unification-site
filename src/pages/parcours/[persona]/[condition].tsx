@@ -121,7 +121,7 @@ export default function JourneyPage() {
 				</div>
 			</div>
 			<div className={cx(classes.coloredContainer)}>
-				<PersonaDisplay journey={journey} />
+				<PersonaDisplay journey={journey} from={`${persona}/${condition}`} />
 			</div>
 		</>
 	);

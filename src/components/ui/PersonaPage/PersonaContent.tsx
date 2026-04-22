@@ -10,6 +10,7 @@ type Props = {
 	guides?: AugmentedPracticalGuide[];
 	chapterName: string;
 	viewCourse: boolean;
+	from?: string;
 };
 
 export default function PersonaContent({
@@ -17,6 +18,7 @@ export default function PersonaContent({
 	guides,
 	chapterName,
 	viewCourse,
+	from,
 }: Props) {
 	return (
 		<>
@@ -38,6 +40,7 @@ export default function PersonaContent({
 						className={fr.cx("fr-col-12", "fr-col-sm-6")}
 						guides={guides}
 						kind="guides"
+						from={from}
 					/>
 				)}
 			</div>

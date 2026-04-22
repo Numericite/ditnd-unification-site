@@ -13,8 +13,10 @@ import InfoOrCoursesButtons from "../ui/PersonaPage/InfoOrCoursesButtons";
 
 export default function PersonaDisplay({
 	journey,
+	from,
 }: {
 	journey: AugmentedJourney;
+	from?: string;
 }) {
 	const { classes, cx } = useStyles();
 	const [viewCourses, setViewCourses] = useState<boolean>(false);
@@ -103,6 +105,7 @@ export default function PersonaDisplay({
 												guides={chap.guides}
 												chapterName={chap.name}
 												viewCourse={viewCourses}
+												from={from}
 											/>
 										</div>
 									))}

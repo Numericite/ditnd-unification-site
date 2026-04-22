@@ -9,6 +9,7 @@ type Props = {
 	className?: string;
 	titleAs?: "h2" | "h3" | "h4" | "h5" | "h6" | undefined;
 	kind: "guides" | "courses";
+	from?: string;
 };
 
 export default function CardsDisplayGroup({
@@ -17,7 +18,12 @@ export default function CardsDisplayGroup({
 	kind,
 	className,
 	titleAs,
+	from,
 }: Props) {
+	const buildGuideRedirect = (slug: string) => {
+		const base = `/fiches-pratiques/${slug}`;
+		return from ? `${base}?from=${encodeURIComponent(from)}` : base;
+	};
 	const renderContent = () => {
 		switch (kind) {
 			case "courses":
@@ -61,7 +67,7 @@ export default function CardsDisplayGroup({
 										imageAlt={guide.image?.alt}
 										conditions={guide.conditions ?? []}
 										themes={guide.themes}
-										redirect={`/fiches-pratiques/${guide.slug}`}
+										redirect={buildGuideRedirect(guide.slug)}
 										titleAs={titleAs}
 										kind={kind}
 									/>
