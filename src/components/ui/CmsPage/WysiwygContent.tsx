@@ -1,14 +1,11 @@
 import { tss } from "tss-react/dsfr";
 import { fr } from "@codegouvfr/react-dsfr";
-import { type Link, generateSummaryFromRichText } from "~/utils/tools";
 import type { DefaultTypedEditorState } from "@payloadcms/richtext-lexical";
-import { useEffect, type Dispatch, type SetStateAction } from "react";
 import { RichTextRenderer } from "./RichTextRenderer";
 
 type Props = {
   title: string;
   content: DefaultTypedEditorState;
-  setMenuLinks?: Dispatch<SetStateAction<Link[]>>;
   createdAt?: string;
   updatedAt?: string;
 };
@@ -16,17 +13,10 @@ type Props = {
 export default function WysiwygContent({
   title,
   content,
-  setMenuLinks,
   createdAt,
   updatedAt,
 }: Props) {
   const { classes, cx } = useStyles();
-
-  useEffect(() => {
-    if (!setMenuLinks) return;
-
-    setMenuLinks(generateSummaryFromRichText(content));
-  }, [content, setMenuLinks]);
 
   const createdAtFormatted = createdAt
     ? new Date(createdAt).toLocaleDateString("fr-FR")

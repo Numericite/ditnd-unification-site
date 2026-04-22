@@ -11094,4 +11094,143 @@ export const legalsContent = {
 			direction: null,
 		},
 	},
+	contactProsCra: {
+		root: {
+			type: "root",
+			format: "",
+			indent: 0,
+			version: 1,
+
+			children: [
+				{
+					type: "paragraph",
+					format: "",
+					indent: 0,
+					version: 1,
+
+					children: [
+						{
+							mode: "normal",
+							text: "Vous êtes un professionnel de centre ressources autisme ? Ce formulaire permet de contact permet ",
+							type: "text",
+							style: "",
+							detail: 0,
+							format: 0,
+							version: 1,
+						},
+						{
+							mode: "normal",
+							text: "exclusivement aux professionnels",
+							type: "text",
+							style: "",
+							detail: 0,
+							format: 1,
+							version: 1,
+						},
+						{
+							mode: "normal",
+							text: " des CRA de contacter les équipes communication de la Maison de l'autisme et n'est pas destiné à répondre aux questions concernant des problématiques individuelles.",
+							type: "text",
+							style: "",
+							detail: 0,
+							format: 0,
+							version: 1,
+						},
+					],
+					direction: null,
+					textStyle: "",
+					textFormat: 0,
+				},
+				{
+					type: "paragraph",
+					format: "",
+					indent: 0,
+					version: 1,
+
+					children: [
+						{
+							mode: "normal",
+							text: "Si vous souhaitez échanger sur votre situation individuelle, veuillez contactez Autisme Info Service :",
+							type: "text",
+							style: "",
+							detail: 0,
+							format: 0,
+							version: 1,
+						},
+					],
+					direction: null,
+					textStyle: "",
+					textFormat: 0,
+				},
+				{
+					tag: "ul",
+					type: "list",
+					start: 1,
+					format: "",
+					indent: 0,
+					version: 1,
+
+					children: [
+						{
+							type: "listitem",
+							value: 1,
+							format: "",
+							indent: 0,
+							version: 1,
+							checked: true,
+							children: [
+								{
+									type: "link",
+									fields: {
+										url: "https://www.autismeinfoservice.fr/contact",
+										newTab: true,
+										linkType: "custom",
+									},
+									format: "",
+									indent: 0,
+									version: 3,
+									children: [
+										{
+											mode: "normal",
+											text: "par email",
+											type: "text",
+											style: "",
+											detail: 0,
+											format: 0,
+											version: 1,
+										},
+									],
+									direction: null,
+								},
+							],
+							direction: null,
+						},
+						{
+							type: "listitem",
+							value: 2,
+							format: "",
+							indent: 0,
+							version: 1,
+							checked: true,
+							children: [
+								{
+									mode: "normal",
+									text: "ou par téléphone au 0800 71 40 40 (du lundi au vendredi de 9h à 13h puis de 14h à 17h / le mardi : permanence supplémentaire de 18h à 20h).",
+									type: "text",
+									style: "",
+									detail: 0,
+									format: 0,
+									version: 1,
+								},
+							],
+							direction: null,
+						},
+					],
+					direction: null,
+					listType: "bullet",
+				},
+			],
+			direction: null,
+		},
+	},
 } satisfies Record<string, DefaultTypedEditorState>;

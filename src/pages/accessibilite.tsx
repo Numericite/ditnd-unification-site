@@ -1,10 +1,11 @@
 import { fr } from "@codegouvfr/react-dsfr";
+import Breadcrumb from "@codegouvfr/react-dsfr/Breadcrumb";
 import type { GetServerSideProps } from "next";
 import Head from "next/head";
 import { getPayload } from "payload";
 import type { DefaultTypedEditorState } from "@payloadcms/richtext-lexical";
+import CmsPageLayout from "~/components/ui/CmsPage/CmsPageLayout";
 import { EmptyScreenZone } from "~/components/ui/EmptyScreenZone";
-import WysiwygContent from "~/components/ui/PracticalGuides/WysiwygContent";
 import payloadConfig from "~/payload/payload.config";
 import type { Footer } from "~/payload/payload-types";
 
@@ -25,8 +26,13 @@ export default function Accessibility({ title, content }: Props) {
 					content="Déclaration d'accessibilité du site Maison de l'autisme, site national d'informations sur l'autisme et les troubles du neurodéveloppement."
 				/>
 			</Head>
-			<div className={fr.cx("fr-container", "fr-py-10w")}>
-				<WysiwygContent title={title} content={content} />
+			<div className={fr.cx("fr-container", "fr-pb-10v")}>
+				<Breadcrumb
+					currentPageLabel={title}
+					homeLinkProps={{ href: "/" }}
+					segments={[]}
+				/>
+				<CmsPageLayout title={title} content={content} />
 			</div>
 		</>
 	);
