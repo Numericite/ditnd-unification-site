@@ -8,33 +8,70 @@ type SocialProps = {
 	title: string;
 };
 
+function openSharePopup(url: string) {
+	const width = 600;
+	const height = 500;
+	const left = (window.innerWidth - width) / 2 + window.screenX;
+	const top = (window.innerHeight - height) / 2 + window.screenY;
+	window.open(
+		url,
+		"share",
+		`popup=1,width=${width},height=${height},left=${left},top=${top}`,
+	);
+}
+
+function getShareContext() {
+	const url = window.location.href.replace(/#.*$/, "");
+	const title = document.title;
+	return { url, title };
+}
+
 const socials: SocialProps[] = [
 	{
 		icon: "fr-icon-facebook-circle-line",
-		onClick: () => {},
-		title: "Lien Facebook",
+		onClick: () => {
+			const { url } = getShareContext();
+			openSharePopup(
+				`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(url)}`,
+			);
+		},
+		title: "Partager sur Facebook",
 	},
 	{
 		icon: "fr-icon-twitter-x-line",
-		onClick: () => {},
-		title: "Lien X",
+		onClick: () => {
+			const { url, title } = getShareContext();
+			openSharePopup(
+				`https://twitter.com/intent/tweet?url=${encodeURIComponent(url)}&text=${encodeURIComponent(title)}`,
+			);
+		},
+		title: "Partager sur X",
 	},
 	{
 		icon: "fr-icon-linkedin-box-line",
-		onClick: () => {},
-		title: "Lien LinkedIn",
+		onClick: () => {
+			const { url } = getShareContext();
+			openSharePopup(
+				`https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(url)}`,
+			);
+		},
+		title: "Partager sur LinkedIn",
 	},
 	{
 		icon: "fr-icon-mail-line",
 		onClick: () => {
-			location.href = "mailto:";
+			const { url, title } = getShareContext();
+			const subject = title;
+			const body = `Je vous partage cet article : ${title}\n\n${url}`;
+			window.location.href = `mailto:?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
 		},
-		title: "Lien Outlook",
+		title: "Partager par e-mail",
 	},
 	{
 		icon: "fr-icon-links-line",
 		onClick: () => {
-			navigator.clipboard.writeText(location.href.replace(/#.*$/, ""));
+			const { url } = getShareContext();
+			navigator.clipboard.writeText(url);
 			alert("Adresse copié dans le presse papier");
 		},
 		title: "Copier le lien",
