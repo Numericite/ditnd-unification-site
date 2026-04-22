@@ -37,8 +37,7 @@ export const CalloutBlock: Block = {
 			required: false,
 			admin: {
 				components: {
-					Description:
-						"../payload/components/IconIdDescription",
+					Description: "../payload/components/IconIdDescription",
 				},
 			},
 		},

@@ -41,14 +41,10 @@ const afterChangeCourse: CollectionAfterChangeHook = async ({ doc, req }) => {
 		]);
 
 		const metadata: string[] = [];
-		if (personaName)
-			metadata.push(`Public concerné : ${personaName}`);
-		if (conditionName)
-			metadata.push(`Trouble : ${conditionName}`);
-		if (themeName)
-			metadata.push(`Thème : ${themeName}`);
-		if (type)
-			metadata.push(`Type de ressource : ${type}`);
+		if (personaName) metadata.push(`Public concerné : ${personaName}`);
+		if (conditionName) metadata.push(`Trouble : ${conditionName}`);
+		if (themeName) metadata.push(`Thème : ${themeName}`);
+		if (type) metadata.push(`Type de ressource : ${type}`);
 
 		const fullText = [title, description, ...metadata]
 			.filter(Boolean)
@@ -81,7 +77,11 @@ const afterDeleteCourse: CollectionAfterDeleteHook = async ({ id, req }) => {
 			sql`DELETE FROM courses_search_vectors WHERE doc_id = ${String(id)}`,
 		);
 	} catch (err) {
-		console.error("[VectorSearch] Failed to delete course embeddings for:", id, err);
+		console.error(
+			"[VectorSearch] Failed to delete course embeddings for:",
+			id,
+			err,
+		);
 	}
 };
 

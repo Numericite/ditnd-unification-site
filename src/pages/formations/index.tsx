@@ -28,7 +28,10 @@ export default function Courses() {
 	return (
 		<>
 			<Head>
-				<title>Formations sur l'autisme et les troubles du neurodéveloppement - Maison de l'autisme</title>
+				<title>
+					Formations sur l'autisme et les troubles du neurodéveloppement -
+					Maison de l'autisme
+				</title>
 				<meta
 					name="description"
 					content="Découvrez les formations sur l'autisme et les troubles du neurodéveloppement : sensibilisation, accompagnement, pratiques professionnelles."

@@ -83,7 +83,7 @@ export const contactRouter = createTRPCRouter({
 			].join("\n");
 
 			const html = `
-				<h2>Nouveau message — contact professionnels CRA</h2>
+				<h2>Nouveau message du formulaire de contact des</h2>
 				<ul>
 					<li><strong>Profil :</strong> ${escapeHtml(profileLabel)}</li>
 					<li><strong>Nom :</strong> ${escapeHtml(input.firstName)} ${escapeHtml(input.lastName)}</li>

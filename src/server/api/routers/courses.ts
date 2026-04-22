@@ -67,7 +67,9 @@ export const courseRouter = createTRPCRouter({
 				try {
 					const queryEmbedding = await generateEmbedding(trimmedText);
 					// eslint-disable-next-line @typescript-eslint/no-explicit-any
-					const vectorResults = await (ctx.payload.db as any).drizzle.execute(sql`
+					const vectorResults = await (
+						ctx.payload.db as any
+					).drizzle.execute(sql`
 						SELECT doc_id
 						FROM courses_search_vectors
 						ORDER BY embedding <=> ${JSON.stringify(queryEmbedding)}::vector
@@ -75,9 +77,12 @@ export const courseRouter = createTRPCRouter({
 					`);
 					matchingIds = (vectorResults.rows as { doc_id: string }[])
 						.map((row) => parseInt(row.doc_id, 10))
-						.filter((id) => !isNaN(id));
+						.filter((id) => !Number.isNaN(id));
 				} catch (err) {
-					console.warn("[VectorSearch] Course semantic search failed, falling back to keyword search:", err);
+					console.warn(
+						"[VectorSearch] Course semantic search failed, falling back to keyword search:",
+						err,
+					);
 				}
 
 				// 2. Fallback to keyword search if vector search returned nothing

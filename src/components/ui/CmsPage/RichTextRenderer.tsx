@@ -3,9 +3,9 @@ import { RichText } from "@payloadcms/richtext-lexical/react";
 import { getConverters } from "~/utils/converters";
 
 export function RichTextRenderer({
-  content,
+	content,
 }: {
-  content: DefaultTypedEditorState;
+	content: DefaultTypedEditorState;
 }) {
-  return <RichText data={content} converters={getConverters()} />;
+	return <RichText data={content} converters={getConverters()} />;
 }

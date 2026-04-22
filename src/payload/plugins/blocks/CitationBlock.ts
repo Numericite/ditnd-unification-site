@@ -32,8 +32,7 @@ export const CitationBlock: Block = {
 			type: "text",
 			required: false,
 			admin: {
-				description:
-					"Source ou référence de la citation (optionnel)",
+				description: "Source ou référence de la citation (optionnel)",
 			},
 		},
 		{
@@ -42,8 +41,7 @@ export const CitationBlock: Block = {
 			type: "text",
 			required: false,
 			admin: {
-				description:
-					"Lien vers la source de la citation (optionnel)",
+				description: "Lien vers la source de la citation (optionnel)",
 			},
 		},
 		{
@@ -53,8 +51,7 @@ export const CitationBlock: Block = {
 			relationTo: "medias",
 			required: false,
 			admin: {
-				description:
-					"Image associée à la citation (optionnel)",
+				description: "Image associée à la citation (optionnel)",
 			},
 		},
 		{
