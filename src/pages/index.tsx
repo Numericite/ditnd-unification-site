@@ -96,6 +96,7 @@ export default function Home() {
 							>
 								<Image
 									alt=""
+									role="presentation"
 									width={400}
 									height={400}
 									fetchPriority="high"

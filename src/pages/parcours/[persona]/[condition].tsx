@@ -108,10 +108,8 @@ export default function JourneyPage() {
 								className={fr.cx("fr-responsive-img")}
 								fetchPriority="high"
 								priority
-								alt={
-									journey.image?.alt ??
-									`Illustration pour ${condition.toUpperCase()}`
-								}
+								alt=""
+								role="presentation"
 								src={journey.image?.url ?? "/placeholder.16x9.png"}
 								width={580}
 								height={350}

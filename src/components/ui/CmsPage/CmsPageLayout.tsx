@@ -44,7 +44,8 @@ export default function CmsPageLayout({
 			className={cx(fr.cx("fr-responsive-img"), classes.imageBanner)}
 			fetchPriority="high"
 			priority
-			alt={imageBanner.alt || title}
+			alt=""
+			role="presentation"
 			src={imageBanner.url}
 			width={1200}
 			height={240}
