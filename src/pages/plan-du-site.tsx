@@ -1,4 +1,5 @@
 import { fr } from "@codegouvfr/react-dsfr";
+import Breadcrumb from "@codegouvfr/react-dsfr/Breadcrumb";
 import Head from "next/head";
 import { tss } from "tss-react/dsfr";
 import { personStore } from "~/state/store";
@@ -18,7 +19,12 @@ export default function PlanDuSite() {
 					content="Plan du site de la Maison de l'autisme : retrouvez l'ensemble des pages et rubriques du site national d'informations sur l'autisme et les troubles du neurodéveloppement."
 				/>
 			</Head>
-			<div className={fr.cx("fr-container", "fr-py-10w")}>
+			<div className={fr.cx("fr-container", "fr-pb-10v")}>
+				<Breadcrumb
+					currentPageLabel="Plan du site"
+					homeLinkProps={{ href: "/" }}
+					segments={[]}
+				/>
 				<h1>Plan du site</h1>
 
 				<nav aria-label="Plan du site">
