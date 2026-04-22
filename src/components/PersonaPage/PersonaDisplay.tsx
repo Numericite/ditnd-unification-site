@@ -5,7 +5,7 @@ import { courseQuery, practicalGuideQuery, slugify } from "~/utils/tools";
 import type { AugmentedJourney } from "~/server/api/routers/journeys";
 import { useRouter } from "next/router";
 import { tss } from "tss-react/dsfr";
-import SummaryContent from "../ui/PracticalGuides/SummaryContent";
+import SummaryContent from "../ui/CmsPage/SummaryContent";
 import { useSearchParams } from "next/navigation";
 import { EmptyScreenZone } from "../ui/EmptyScreenZone";
 import PersonaContent from "../ui/PersonaPage/PersonaContent";

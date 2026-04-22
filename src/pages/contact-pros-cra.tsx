@@ -3,11 +3,13 @@ import Breadcrumb from "@codegouvfr/react-dsfr/Breadcrumb";
 import type { GetServerSideProps } from "next";
 import Head from "next/head";
 import { getPayload } from "payload";
-import payloadConfig from "~/payload/payload.config";
-import type { About, Media } from "~/payload/payload-types";
 import type { DefaultTypedEditorState } from "@payloadcms/richtext-lexical";
+import { tss } from "tss-react/dsfr";
 import CmsPageLayout from "~/components/ui/CmsPage/CmsPageLayout";
+import ContactProsCraForm from "~/components/ui/ContactProsCraForm/ContactProsCraForm";
 import { EmptyScreenZone } from "~/components/ui/EmptyScreenZone";
+import payloadConfig from "~/payload/payload.config";
+import type { Footer, Media } from "~/payload/payload-types";
 
 type Props = {
 	title: string;
@@ -15,65 +17,69 @@ type Props = {
 	imageBanner: Media | null;
 };
 
-export default function MaisonDeLAutismePage({
+export default function ContactProsCraPage({
 	title,
 	content,
 	imageBanner,
 }: Props) {
+	const { classes, cx } = useStyles();
+
 	if (!content) return <EmptyScreenZone>Missing content</EmptyScreenZone>;
 
 	return (
 		<>
 			<Head>
-				<title>{title} - Maison de l'autisme</title>
+				<title>{title} - Maison de l&apos;autisme</title>
 				<meta
 					name="description"
-					content={`${title} : découvrez la Maison de l'autisme, site national d'informations sur l'autisme et les troubles du neurodéveloppement.`}
+					content="Formulaire de contact dédié aux professionnels des Centres Ressources Autisme (CRA)."
 				/>
-				<meta property="og:title" content={`${title} - Maison de l'autisme`} />
-				<meta
-					property="og:description"
-					content={`${title} : découvrez la Maison de l'autisme, site national d'informations sur l'autisme et les troubles du neurodéveloppement.`}
-				/>
-				<meta property="og:type" content="article" />
-				{imageBanner?.url && (
-					<meta property="og:image" content={imageBanner.url} />
-				)}
 			</Head>
-			<div className={fr.cx("fr-container")}>
+			<div className={fr.cx("fr-container", "fr-pb-10v")}>
 				<Breadcrumb
 					currentPageLabel={title}
 					homeLinkProps={{ href: "/" }}
-					segments={[{ label: "À propos", linkProps: { href: "#" } }]}
+					segments={[]}
 				/>
 				<CmsPageLayout
 					title={title}
 					content={content}
 					imageBanner={imageBanner}
-					showShareSocials
-				/>
+				>
+					<div className={cx(classes.formWrapper)}>
+						<ContactProsCraForm />
+					</div>
+				</CmsPageLayout>
 			</div>
 		</>
 	);
 }
 
+const useStyles = tss.withName(ContactProsCraPage.name).create(() => ({
+	formWrapper: {
+		marginTop: fr.spacing("6w"),
+	},
+}));
+
 export const getServerSideProps: GetServerSideProps<Props> = async () => {
 	const payload = await getPayload({ config: payloadConfig });
-	const about = (await payload.findGlobal({
-		slug: "about",
+	const footer = (await payload.findGlobal({
+		slug: "footer",
 		depth: 2,
-	})) as About;
+	})) as Footer;
 
-	const tab = about.maisonDeLAutisme;
+	const tab = footer.contactProsCra;
 	const imageBanner =
-		tab.imageBanner && typeof tab.imageBanner === "object"
+		tab?.imageBanner && typeof tab.imageBanner === "object"
 			? tab.imageBanner
 			: null;
 
 	return {
 		props: {
-			title: tab.title,
-			content: tab.content as unknown as DefaultTypedEditorState,
+			title:
+				tab?.title ??
+				"Formulaire de contact réservé aux professionnels des CRA",
+			content: (tab?.content ?? null) as unknown as DefaultTypedEditorState,
 			imageBanner,
 		},
 	};

@@ -28,6 +28,7 @@
 		"@legendapp/state": "^2.1.15",
 		"@mui/material": "7.3.6",
 		"@payloadcms/db-postgres": "3.69.0",
+		"@payloadcms/email-nodemailer": "3.69.0",
 		"@payloadcms/next": "3.69.0",
 		"@payloadcms/plugin-search": "3.69.0",
 		"@payloadcms/plugin-seo": "3.69.0",

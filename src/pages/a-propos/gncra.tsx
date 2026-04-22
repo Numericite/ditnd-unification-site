@@ -6,7 +6,7 @@ import { getPayload } from "payload";
 import payloadConfig from "~/payload/payload.config";
 import type { About, Media } from "~/payload/payload-types";
 import type { DefaultTypedEditorState } from "@payloadcms/richtext-lexical";
-import CmsPageDisplay from "~/components/ui/PracticalGuides/CmsPageDisplay";
+import CmsPageLayout from "~/components/ui/CmsPage/CmsPageLayout";
 import { EmptyScreenZone } from "~/components/ui/EmptyScreenZone";
 
 type Props = {
@@ -42,10 +42,11 @@ export default function GncraPage({ title, content, imageBanner }: Props) {
 					homeLinkProps={{ href: "/" }}
 					segments={[{ label: "À propos", linkProps: { href: "#" } }]}
 				/>
-				<CmsPageDisplay
+				<CmsPageLayout
 					title={title}
 					content={content}
 					imageBanner={imageBanner}
+					showShareSocials
 				/>
 			</div>
 		</>

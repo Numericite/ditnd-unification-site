@@ -115,6 +115,14 @@ export default function PlanDuSite() {
 									Modalités d'utilisation
 								</a>
 							</li>
+							<li>
+								<a
+									className={fr.cx("fr-link")}
+									href="/contact-pros-cra"
+								>
+									Contact professionnels
+								</a>
+							</li>
 						</ul>
 					</section>
 				</nav>

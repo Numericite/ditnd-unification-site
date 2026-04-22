@@ -1,5 +1,6 @@
 // storage-adapter-import-placeholder
 import { postgresAdapter } from "@payloadcms/db-postgres";
+import { nodemailerAdapter } from "@payloadcms/email-nodemailer";
 import { lexicalEditor } from "@payloadcms/richtext-lexical";
 import path from "path";
 import { buildConfig } from "payload";
@@ -30,9 +31,9 @@ import {
 
 const hasAwsCreds = Boolean(
   process.env.S3_ACCESS_KEY_ID &&
-  process.env.S3_SECRET_ACCESS_KEY &&
-  process.env.S3_BUCKET &&
-  process.env.S3_REGION,
+    process.env.S3_SECRET_ACCESS_KEY &&
+    process.env.S3_BUCKET &&
+    process.env.S3_REGION,
 );
 import { CMSHome } from "./globals/cms/Home";
 import { CMSFooter } from "./globals/cms/Footer";
@@ -42,7 +43,27 @@ import { PracticalGuideViews } from "./collections/PracticalGuidesViews";
 const filename = fileURLToPath(import.meta.url);
 const dirname = path.dirname(filename);
 
+const smtpHost = process.env.SMTP_HOST;
+const smtpPort = Number(process.env.SMTP_PORT) || 1025;
+const smtpUser = process.env.SMTP_USER;
+const smtpPassword = process.env.SMTP_PASSWORD;
+
 export default buildConfig({
+  email: nodemailerAdapter({
+    defaultFromAddress:
+      process.env.SMTP_FROM_ADDRESS || "contact@maisondelautisme.gouv.fr",
+    defaultFromName: process.env.SMTP_FROM_NAME || "Maison de l'autisme",
+    transportOptions: {
+      host: smtpHost || "localhost",
+      port: smtpPort,
+      secure: smtpPort === 465,
+      auth:
+        smtpUser && smtpPassword
+          ? { user: smtpUser, pass: smtpPassword }
+          : undefined,
+      ignoreTLS: !smtpUser && !smtpPassword,
+    },
+  }),
   admin: {
     user: Users.slug,
     importMap: {
@@ -167,7 +188,9 @@ export default buildConfig({
       tabbedUI: true,
       generateTitle: ({ doc }) => {
         const title = (doc as Record<string, unknown>)?.title;
-        return typeof title === "string" ? `${title} - Maison de l'autisme` : "Maison de l'autisme";
+        return typeof title === "string"
+          ? `${title} - Maison de l'autisme`
+          : "Maison de l'autisme";
       },
       generateDescription: ({ doc }) => {
         const description = (doc as Record<string, unknown>)?.description;

@@ -131,6 +131,10 @@ function App({ Component, pageProps }: AppProps) {
                 rel: "noopener noreferrer",
               },
             },
+            {
+              text: "Contact professionnels",
+              linkProps: { href: "/contact-pros-cra" },
+            },
             headerFooterDisplayItem,
           ]}
         />

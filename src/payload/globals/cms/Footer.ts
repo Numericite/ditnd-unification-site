@@ -1,6 +1,14 @@
 import type { GlobalConfig } from "payload";
 import { standardFields } from "~/payload/fields/standards";
 
+const imageBannerField = {
+	name: "imageBanner",
+	type: "upload",
+	relationTo: "medias",
+	required: false,
+	label: { fr: "Image de la bannière" },
+} as const;
+
 export const CMSFooter: GlobalConfig = {
 	slug: "footer",
 	label: "CMS - Footer",
@@ -28,6 +36,15 @@ export const CMSFooter: GlobalConfig = {
 					label: "Modalités d'utilisation",
 					name: "termsOfUse",
 					fields: [standardFields.title, standardFields.wysiwyg],
+				},
+				{
+					label: "Contact professionnels",
+					name: "contactProsCra",
+					fields: [
+						standardFields.title,
+						imageBannerField,
+						standardFields.wysiwyg,
+					],
 				},
 			],
 		},

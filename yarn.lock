@@ -1871,6 +1871,13 @@
     to-snake-case "1.0.0"
     uuid "9.0.0"
 
+"@payloadcms/email-nodemailer@3.69.0":
+  version "3.69.0"
+  resolved "https://registry.yarnpkg.com/@payloadcms/email-nodemailer/-/email-nodemailer-3.69.0.tgz#7ffdc44607116f1da9c4610093ffd07107ce7f50"
+  integrity sha512-e5Zx1ybL7YuX2NByaUk+JkzDu+0HdAXaCEwkQ8z2XaWlUInWFrZ5NbEXYIx9IGWgo9Ua0JA+MGzdh9ZdhUSUoA==
+  dependencies:
+    nodemailer "7.0.9"
+
 "@payloadcms/graphql@3.69.0":
   version "3.69.0"
   resolved "https://registry.npmjs.org/@payloadcms/graphql/-/graphql-3.69.0.tgz"
@@ -4635,6 +4642,11 @@ node-gyp@^12.2.0:
     tar "^7.5.4"
     tinyglobby "^0.2.12"
     which "^6.0.0"
+
+nodemailer@7.0.9:
+  version "7.0.9"
+  resolved "https://registry.yarnpkg.com/nodemailer/-/nodemailer-7.0.9.tgz#fe5abd4173e08e01aa243c7cddd612ad8c6ccc18"
+  integrity sha512-9/Qm0qXIByEP8lEV2qOqcAW7bRpL8CR9jcTwk3NBnHJNmP9fIJ86g2fgmIXqHY+nj55ZEMwWqYAT2QTDpRUYiQ==
 
 nopt@^9.0.0:
   version "9.0.0"

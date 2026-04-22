@@ -46,7 +46,7 @@ const useStyles = tss.withName(LiteYouTube.name).create(() => ({
 		"&:focus-visible": {
 			outline: `2px solid ${fr.colors.decisions.border.plain.info.default}`,
 			outlineOffset: "2px",
-		}
+		},
 	},
 	ytThumbnail: {
 		width: "100%",
