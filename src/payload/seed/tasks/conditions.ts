@@ -32,7 +32,7 @@ const conditions = [
 			"Trouble du neurodéveloppement affectant la communication et les interactions sociales.",
 		acronym: "TSA",
 		slug: "tsa",
-		textColor: "#0078f3",
+		textColor: "#000091",
 		backgroundColor: "#f4f6ff",
 	},
 ];
