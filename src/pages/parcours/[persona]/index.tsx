@@ -5,6 +5,7 @@ import { tss } from "tss-react/dsfr";
 import { PersonaTiles, type TagItem } from "~/components/HomePage/PersonaTiles";
 import { EmptyScreenZone } from "~/components/ui/EmptyScreenZone";
 import { Loader } from "~/components/ui/Loader";
+import PageContent from "~/components/ui/PageContent";
 import { personStore, proStore } from "~/state/store";
 import { api } from "~/utils/api";
 import { personsAndProTiles } from "~/utils/tools";
@@ -100,15 +101,17 @@ export default function JourneyPage() {
 
 			<div className={cx(classes.coloredContainer)}>
 				<div className={fr.cx("fr-pb-4w", "fr-container")}>
-					<PersonaTiles
-						key={persona_slug}
-						tiles={personas}
-						defaultDisplay={defaultDisplay}
-						defaultTags={defaultTags}
-						hideTags
-						breadCrumb
-						mainTitle
-					/>
+					<PageContent>
+						<PersonaTiles
+							key={persona_slug}
+							tiles={personas}
+							defaultDisplay={defaultDisplay}
+							defaultTags={defaultTags}
+							hideTags
+							breadCrumb
+							mainTitle
+						/>
+					</PageContent>
 				</div>
 			</div>
 		</>

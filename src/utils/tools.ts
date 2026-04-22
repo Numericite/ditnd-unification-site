@@ -23,7 +23,6 @@ export type Link = {
 export type SkipLinkType = {
 	label: string;
 	anchor: string;
-	id?: string | undefined;
 };
 
 const MAX_DESCRIPTION_LENGTH = 120;
@@ -147,118 +146,24 @@ export const personsAndProTiles = (personas: PersonaTile[]) => {
 	// return [...mapped.slice(0, 2), professionalTile, ...mapped.slice(2)];
 };
 
-const searchPageLinks: SkipLinkType[] = [
+export const skipLinks: SkipLinkType[] = [
 	{
 		anchor: "#contenu",
-		label: "Contenu",
+		label: "Vers le contenu principal",
 	},
 	{
-		anchor: "#filters",
-		label: "Filtres de recherche",
+		anchor: "#menu",
+		label: "Aller au menu",
 	},
 	{
 		anchor: "#search-global",
-		label: "Recherche",
+		label: "Aller à la recherche",
 	},
 	{
-		anchor: "#footer",
-		label: "Pied de page",
+		anchor: "#chatbot",
+		label: "Aller au chatbot",
 	},
 ];
-
-export const defaultSkipLinks: SkipLinkType[] = [
-	{
-		anchor: "#main",
-		label: "Contenu",
-	},
-	{
-		anchor: "#footer",
-		label: "Pied de page",
-	},
-];
-
-export const skipLinks: Record<string, SkipLinkType[]> = {
-	"/": [
-		{
-			anchor: "#search-global",
-			label: "Recherche",
-		},
-		{
-			anchor: "#who",
-			label: "Qui êtes vous",
-		},
-		{
-			anchor: "#mostViewed",
-			label: "Fiches Pratiques les plus lues",
-		},
-
-		{
-			anchor: "#footer",
-			label: "Pied de page",
-		},
-	],
-	"/fiches-pratiques": searchPageLinks,
-	"/fiches-pratiques/...": [
-		{
-			anchor: "#summary",
-			label: "Sommaire",
-		},
-		{
-			anchor: "#wysiwig-content",
-			label: "Contenu de la fiche pratique",
-		},
-		{
-			anchor: "#footer",
-			label: "Pied de page",
-		},
-	],
-	"/formations": searchPageLinks,
-	"/recherche": [
-		{
-			anchor: "#search-global",
-			label: "Recherche",
-		},
-		{
-			anchor: "#contenu",
-			label: "Résultats de recherche",
-		},
-		{
-			anchor: "#footer",
-			label: "Pied de page",
-		},
-	],
-	"/parcours": defaultSkipLinks,
-	"/parcours/.../...": [
-		{
-			anchor: "#summary",
-			label: "Sommaire",
-		},
-
-		{
-			anchor: "#search-global",
-			label: "Recherche",
-		},
-		{
-			anchor: "#contenu",
-			label: "Contenu",
-		},
-		{
-			anchor: "#footer",
-			label: "Pied de page",
-		},
-	],
-};
-
-export const getPathNameForSkipLinks = (pathname: string) => {
-	const isTwoLevelJourney = /^\/parcours\/[^/]+\/[^/]+$/.test(pathname);
-	const isOneLevelJourney = /^\/parcours\/[^/]+$/.test(pathname);
-	const isOneLevelGuide = /^\/fiches-pratiques\/[^/]+$/.test(pathname);
-
-	if (isTwoLevelJourney) return "/parcours/.../...";
-	if (isOneLevelJourney) return "/parcours";
-	if (isOneLevelGuide) return "/fiches-pratiques/...";
-	return pathname;
-};
 
 const HEX_COLOR_REGEX = /^#([0-9a-f]{3}|[0-9a-f]{6})$/i;
 

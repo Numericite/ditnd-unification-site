@@ -2,6 +2,7 @@ import { fr } from "@codegouvfr/react-dsfr";
 import Breadcrumb from "@codegouvfr/react-dsfr/Breadcrumb";
 import Head from "next/head";
 import { tss } from "tss-react/dsfr";
+import PageContent from "~/components/ui/PageContent";
 import { personStore } from "~/state/store";
 import { personsAndProTiles } from "~/utils/tools";
 
@@ -25,116 +26,118 @@ export default function PlanDuSite() {
 					homeLinkProps={{ href: "/" }}
 					segments={[]}
 				/>
-				<h1>Plan du site</h1>
+				<PageContent>
+					<h1>Plan du site</h1>
 
-				<nav aria-label="Plan du site">
-					<section className={cx(classes.section)}>
-						<h2>Accueil</h2>
-						<ul className={cx(classes.sitemapList)}>
-							<li>
-								<a className={fr.cx("fr-link")} href="/">
-									Page d'accueil
-								</a>
-							</li>
-						</ul>
-					</section>
-
-					<section className={cx(classes.section)}>
-						<h2>Mon parcours</h2>
-						<p className={fr.cx("fr-text--sm", "fr-mb-2w")}>
-							Trouvez les ressources adaptées à votre profil
-						</p>
-						{personas.length > 0 && (
+					<nav aria-label="Plan du site">
+						<section className={cx(classes.section)}>
+							<h2>Accueil</h2>
 							<ul className={cx(classes.sitemapList)}>
-								{personas.map((persona) => (
-									<li key={persona.slug}>
-										<a
-											className={fr.cx("fr-link")}
-											href={`/parcours/${persona.slug}`}
-										>
-											{persona.name}
-										</a>
-									</li>
-								))}
+								<li>
+									<a className={fr.cx("fr-link")} href="/">
+										Page d'accueil
+									</a>
+								</li>
 							</ul>
-						)}
-					</section>
+						</section>
 
-					<section className={cx(classes.section)}>
-						<h2>S'informer</h2>
-						<p className={fr.cx("fr-text--sm", "fr-mb-2w")}>
-							Ressources et informations sur l'autisme et les troubles du
-							neurodéveloppement
-						</p>
-						<ul className={cx(classes.sitemapList)}>
-							<li>
-								<a className={fr.cx("fr-link")} href="/fiches-pratiques">
-									Fiches pratiques
-								</a>
-							</li>
-							<li>
-								<a className={fr.cx("fr-link")} href="/formations">
-									Formations
-								</a>
-							</li>
-						</ul>
-					</section>
+						<section className={cx(classes.section)}>
+							<h2>Mon parcours</h2>
+							<p className={fr.cx("fr-text--sm", "fr-mb-2w")}>
+								Trouvez les ressources adaptées à votre profil
+							</p>
+							{personas.length > 0 && (
+								<ul className={cx(classes.sitemapList)}>
+									{personas.map((persona) => (
+										<li key={persona.slug}>
+											<a
+												className={fr.cx("fr-link")}
+												href={`/parcours/${persona.slug}`}
+											>
+												{persona.name}
+											</a>
+										</li>
+									))}
+								</ul>
+							)}
+						</section>
 
-					<section className={cx(classes.section)}>
-						<h2>À propos</h2>
-						<ul className={cx(classes.sitemapList)}>
-							<li>
-								<a
-									className={fr.cx("fr-link")}
-									href="/a-propos/maison-de-l-autisme"
-								>
-									Maison de l'autisme
-								</a>
-							</li>
-							<li>
-								<a className={fr.cx("fr-link")} href="/a-propos/gncra">
-									GNCRA
-								</a>
-							</li>
-							<li>
-								<a className={fr.cx("fr-link")} href="/a-propos/cras">
-									CRAs
-								</a>
-							</li>
-						</ul>
-					</section>
+						<section className={cx(classes.section)}>
+							<h2>S'informer</h2>
+							<p className={fr.cx("fr-text--sm", "fr-mb-2w")}>
+								Ressources et informations sur l'autisme et les troubles du
+								neurodéveloppement
+							</p>
+							<ul className={cx(classes.sitemapList)}>
+								<li>
+									<a className={fr.cx("fr-link")} href="/fiches-pratiques">
+										Fiches pratiques
+									</a>
+								</li>
+								<li>
+									<a className={fr.cx("fr-link")} href="/formations">
+										Formations
+									</a>
+								</li>
+							</ul>
+						</section>
 
-					<section className={cx(classes.section)}>
-						<h2>Informations et obligations légales</h2>
-						<ul className={cx(classes.sitemapList)}>
-							<li>
-								<a className={fr.cx("fr-link")} href="/accessibilite">
-									Accessibilité
-								</a>
-							</li>
-							<li>
-								<a className={fr.cx("fr-link")} href="/mentions-legales">
-									Mentions légales
-								</a>
-							</li>
-							<li>
-								<a className={fr.cx("fr-link")} href="/donnees-personnelles">
-									Données personnelles
-								</a>
-							</li>
-							<li>
-								<a className={fr.cx("fr-link")} href="/modalites-utilisation">
-									Modalités d'utilisation
-								</a>
-							</li>
-							<li>
-								<a className={fr.cx("fr-link")} href="/contact-pros-cra">
-									Contact professionnels
-								</a>
-							</li>
-						</ul>
-					</section>
-				</nav>
+						<section className={cx(classes.section)}>
+							<h2>À propos</h2>
+							<ul className={cx(classes.sitemapList)}>
+								<li>
+									<a
+										className={fr.cx("fr-link")}
+										href="/a-propos/maison-de-l-autisme"
+									>
+										Maison de l'autisme
+									</a>
+								</li>
+								<li>
+									<a className={fr.cx("fr-link")} href="/a-propos/gncra">
+										GNCRA
+									</a>
+								</li>
+								<li>
+									<a className={fr.cx("fr-link")} href="/a-propos/cras">
+										CRAs
+									</a>
+								</li>
+							</ul>
+						</section>
+
+						<section className={cx(classes.section)}>
+							<h2>Informations et obligations légales</h2>
+							<ul className={cx(classes.sitemapList)}>
+								<li>
+									<a className={fr.cx("fr-link")} href="/accessibilite">
+										Accessibilité
+									</a>
+								</li>
+								<li>
+									<a className={fr.cx("fr-link")} href="/mentions-legales">
+										Mentions légales
+									</a>
+								</li>
+								<li>
+									<a className={fr.cx("fr-link")} href="/donnees-personnelles">
+										Données personnelles
+									</a>
+								</li>
+								<li>
+									<a className={fr.cx("fr-link")} href="/modalites-utilisation">
+										Modalités d'utilisation
+									</a>
+								</li>
+								<li>
+									<a className={fr.cx("fr-link")} href="/contact-pros-cra">
+										Contact professionnels
+									</a>
+								</li>
+							</ul>
+						</section>
+					</nav>
+				</PageContent>
 			</div>
 		</>
 	);

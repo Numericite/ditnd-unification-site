@@ -4,6 +4,8 @@ import { createNextDsfrIntegrationApi } from "@codegouvfr/react-dsfr/next-pagesd
 import type { AppProps } from "next/app";
 import Head from "next/head";
 import Link from "next/link";
+import { useRouter } from "next/router";
+import { useEffect } from "react";
 import { createEmotionSsrAdvancedApproach } from "tss-react/next/pagesDir";
 import { api } from "~/utils/api";
 import { homeCMSStore, personStore, proStore, tdhStore } from "~/state/store";
@@ -45,6 +47,17 @@ export { augmentDocumentWithEmotionCache, dsfrDocumentApi };
 
 function App({ Component, pageProps }: AppProps) {
 	const { classes, cx } = useStyles();
+	const router = useRouter();
+
+	useEffect(() => {
+		const handleRouteChange = () => {
+			document.getElementById("contenu")?.focus({ preventScroll: true });
+		};
+		router.events.on("routeChangeComplete", handleRouteChange);
+		return () => {
+			router.events.off("routeChangeComplete", handleRouteChange);
+		};
+	}, [router.events]);
 
 	const { data: conditions, isLoading: isLoadingHomePage } =
 		api.condition.all.useQuery();
@@ -79,7 +92,7 @@ function App({ Component, pageProps }: AppProps) {
 			<div className={cx(classes.headerContainer)}>
 				<MainNavigation />
 
-				<main id="main">
+				<main>
 					{isLoadingHomePage ||
 					isLoadingPersona ||
 					isLoadingFooterTitle ||

@@ -12,6 +12,7 @@ import { EmptyScreenZone } from "~/components/ui/EmptyScreenZone";
 import { homeCMSStore, personStore } from "~/state/store";
 import { personsAndProTiles } from "~/utils/tools";
 import Image from "next/image";
+import PageContent from "~/components/ui/PageContent";
 
 export default function Home() {
 	const { classes, cx } = useStyles();
@@ -55,7 +56,7 @@ export default function Home() {
 					content="Maison de l'autisme : site national d'informations pour toutes les personnes concernées par l'autisme et ses troubles associés. Retrouvez des ressources, diagnostics et formations."
 				/>
 			</Head>
-			<div>
+			<PageContent>
 				<div className={fr.cx("fr-container", "fr-my-8w")}>
 					<div className={fr.cx("fr-py-4w")}>
 						<div
@@ -68,7 +69,6 @@ export default function Home() {
 								<h1>{homeCMS.header.title}</h1>
 								<p className={classes.preLine}>{homeCMS.header.description}</p>
 								<SearchBar
-									id="search-global"
 									big
 									onButtonClick={() =>
 										router.push(`/recherche?search=${search}`)
@@ -108,7 +108,7 @@ export default function Home() {
 						</div>
 					</div>
 				</div>
-				<div className={cx(classes.coloredContainer)} id="who">
+				<div className={cx(classes.coloredContainer)}>
 					<div className={fr.cx("fr-container")}>
 						<div className={fr.cx("fr-py-6w")}>
 							{persons ? (
@@ -126,7 +126,6 @@ export default function Home() {
 						<div className={fr.cx("fr-grid-row", "fr-grid-row--gutters")}>
 							<div
 								className={cx(fr.cx("fr-col-12"), classes.mostViewedContainer)}
-								id="mostViewed"
 							>
 								<h2>{homeCMS?.mostViewedGuides.title}</h2>
 								<div className={cx(fr.cx("fr-text--sm"), classes.preLine)}>
@@ -158,7 +157,7 @@ export default function Home() {
 						</div>
 					</div>
 				</div>
-			</div>
+			</PageContent>
 		</>
 	);
 }

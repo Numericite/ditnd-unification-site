@@ -27,7 +27,7 @@ export default function WysiwygContent({
 		: null;
 
 	return (
-		<div className={cx(classes.wysiwig)} id="wysiwig-content">
+		<div className={cx(classes.wysiwig)}>
 			<h1>{title}</h1>
 			{createdAt && updatedAt && (
 				<p

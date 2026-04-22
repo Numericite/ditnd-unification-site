@@ -6,6 +6,7 @@ import { Loader } from "~/components/ui/Loader";
 import PracticalGuidesDisplay from "~/components/PracticalGuides/PracticalGuidesDisplay";
 import { fr } from "@codegouvfr/react-dsfr";
 import { EmptyScreenZone } from "~/components/ui/EmptyScreenZone";
+import PageContent from "~/components/ui/PageContent";
 
 export default function PracticalGuidePage() {
 	const router = useRouter();
@@ -54,7 +55,9 @@ export default function PracticalGuidePage() {
 						},
 					]}
 				/>
-				<PracticalGuidesDisplay guide={guide} />
+				<PageContent>
+					<PracticalGuidesDisplay guide={guide} />
+				</PageContent>
 			</div>
 		</>
 	);

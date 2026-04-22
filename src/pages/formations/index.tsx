@@ -2,6 +2,7 @@ import { fr } from "@codegouvfr/react-dsfr";
 import Head from "next/head";
 import { useState, type Dispatch, type SetStateAction } from "react";
 import Breadcrumb from "@codegouvfr/react-dsfr/Breadcrumb";
+import SkipLinks from "@codegouvfr/react-dsfr/SkipLinks";
 import {
 	SearchCoursesDisplay,
 	type CoursesFiltersQuery,
@@ -11,6 +12,7 @@ import type { FiltersQuery } from "~/components/PracticalGuides/GuidesFiltersDis
 import { tss } from "tss-react/dsfr";
 import { useRouter } from "next/router";
 import { deserialize } from "~/utils/tools";
+import PageContent from "~/components/ui/PageContent";
 
 export default function Courses() {
 	const { classes, cx } = useStyles();
@@ -45,7 +47,7 @@ export default function Courses() {
 					}}
 					segments={[]}
 				/>
-				<div>
+				<PageContent>
 					<h1 className={fr.cx("fr-mb-4w")}>Formations</h1>
 
 					<div className={fr.cx("fr-grid-row", "fr-grid-row--gutters")}>
@@ -56,9 +58,15 @@ export default function Courses() {
 							)}
 						>
 							<div className={fr.cx("fr-p-3w")}>
-								<h2 className={fr.cx("fr-h4")} id="filters">
-									Affiner la recherche
-								</h2>
+								<h2 className={fr.cx("fr-h4")}>Affiner la recherche</h2>
+								<SkipLinks
+									links={[
+										{
+											label: "Aller aux résultats de recherche",
+											anchor: "#results",
+										},
+									]}
+								/>
 								<div className={fr.cx("fr-mt-2w")}>
 									<CoursesFiltersDisplay
 										setFilters={
@@ -80,7 +88,7 @@ export default function Courses() {
 							<SearchCoursesDisplay filters={filters} />
 						</div>
 					</div>
-				</div>
+				</PageContent>
 			</div>
 		</>
 	);

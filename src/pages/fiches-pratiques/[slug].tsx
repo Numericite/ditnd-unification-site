@@ -6,6 +6,7 @@ import { Loader } from "~/components/ui/Loader";
 import PracticalGuidesDisplay from "~/components/PracticalGuides/PracticalGuidesDisplay";
 import { fr } from "@codegouvfr/react-dsfr";
 import { EmptyScreenZone } from "~/components/ui/EmptyScreenZone";
+import PageContent from "~/components/ui/PageContent";
 import { useEffect } from "react";
 import { personStore, proStore } from "~/state/store";
 
@@ -101,7 +102,9 @@ export default function PracticalGuidePage() {
 					}}
 					segments={breadcrumbSegments}
 				/>
-				<PracticalGuidesDisplay guide={guide} />
+				<PageContent>
+					<PracticalGuidesDisplay guide={guide} />
+				</PageContent>
 			</div>
 		</>
 	);

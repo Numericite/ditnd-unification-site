@@ -8,6 +8,7 @@ import { tss } from "tss-react/dsfr";
 import CmsPageLayout from "~/components/ui/CmsPage/CmsPageLayout";
 import ContactProsCraForm from "~/components/ui/ContactProsCraForm/ContactProsCraForm";
 import { EmptyScreenZone } from "~/components/ui/EmptyScreenZone";
+import PageContent from "~/components/ui/PageContent";
 import payloadConfig from "~/payload/payload.config";
 import type { Footer, Media } from "~/payload/payload-types";
 
@@ -41,15 +42,17 @@ export default function ContactProsCraPage({
 					homeLinkProps={{ href: "/" }}
 					segments={[]}
 				/>
-				<CmsPageLayout
-					title={title}
-					content={content}
-					imageBanner={imageBanner}
-				>
-					<div className={cx(classes.formWrapper)}>
-						<ContactProsCraForm />
-					</div>
-				</CmsPageLayout>
+				<PageContent>
+					<CmsPageLayout
+						title={title}
+						content={content}
+						imageBanner={imageBanner}
+					>
+						<div className={cx(classes.formWrapper)}>
+							<ContactProsCraForm />
+						</div>
+					</CmsPageLayout>
+				</PageContent>
 			</div>
 		</>
 	);

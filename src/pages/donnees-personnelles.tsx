@@ -6,6 +6,7 @@ import { getPayload } from "payload";
 import type { DefaultTypedEditorState } from "@payloadcms/richtext-lexical";
 import CmsPageLayout from "~/components/ui/CmsPage/CmsPageLayout";
 import { EmptyScreenZone } from "~/components/ui/EmptyScreenZone";
+import PageContent from "~/components/ui/PageContent";
 import payloadConfig from "~/payload/payload.config";
 import type { Footer } from "~/payload/payload-types";
 
@@ -32,7 +33,9 @@ export default function Cgu({ title, content }: Props) {
 					homeLinkProps={{ href: "/" }}
 					segments={[]}
 				/>
-				<CmsPageLayout title={title} content={content} />
+				<PageContent>
+					<CmsPageLayout title={title} content={content} />
+				</PageContent>
 			</div>
 		</>
 	);

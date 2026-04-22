@@ -7,6 +7,7 @@ import { tss } from "tss-react/dsfr";
 import PersonaDisplay from "~/components/PersonaPage/PersonaDisplay";
 import { EmptyScreenZone } from "~/components/ui/EmptyScreenZone";
 import { Loader } from "~/components/ui/Loader";
+import PageContent from "~/components/ui/PageContent";
 import type { AugmentedJourney } from "~/server/api/routers/journeys";
 import { api } from "~/utils/api";
 
@@ -83,44 +84,46 @@ export default function JourneyPage() {
 					segments={breadcrumbSegments}
 				/>
 			</div>
-			<div className={fr.cx("fr-container")}>
-				<div className={fr.cx("fr-py-4w")}>
-					<div
-						className={fr.cx("fr-grid-row", "fr-grid-row--gutters")}
-						style={{ alignItems: "stretch" }}
-					>
+			<PageContent>
+				<div className={fr.cx("fr-container")}>
+					<div className={fr.cx("fr-py-4w")}>
 						<div
-							className={fr.cx("fr-col-12", "fr-col-lg-6")}
-							style={{ alignContent: "center" }}
+							className={fr.cx("fr-grid-row", "fr-grid-row--gutters")}
+							style={{ alignItems: "stretch" }}
 						>
-							<h1>{`${journey.persona.journeyIntro ?? `Je suis un ${journey.persona.name.toLowerCase()} interessé par le`} ${condition.toUpperCase()}`}</h1>
-							<p>
-								Le TSA, ou trouble du spectre de l’autisme, est un trouble du
-								neurodéveloppement qui se manifeste dès l’enfance et qui
-								accompagne la personne tout au long de sa vie. Il se caractérise
-								principalement par des difficultés dans la communication et les
-								interactions sociales, ainsi que par des comportements et
-								intérêts restreints et répétitifs.
-							</p>
-						</div>
-						<div className={fr.cx("fr-col-12", "fr-col-lg-6")}>
-							<Image
-								className={fr.cx("fr-responsive-img")}
-								fetchPriority="high"
-								priority
-								alt=""
-								role="presentation"
-								src={journey.image?.url ?? "/placeholder.16x9.png"}
-								width={580}
-								height={350}
-							/>
+							<div
+								className={fr.cx("fr-col-12", "fr-col-lg-6")}
+								style={{ alignContent: "center" }}
+							>
+								<h1>{`${journey.persona.journeyIntro ?? `Je suis un ${journey.persona.name.toLowerCase()} interessé par le`} ${condition.toUpperCase()}`}</h1>
+								<p>
+									Le TSA, ou trouble du spectre de l’autisme, est un trouble du
+									neurodéveloppement qui se manifeste dès l’enfance et qui
+									accompagne la personne tout au long de sa vie. Il se
+									caractérise principalement par des difficultés dans la
+									communication et les interactions sociales, ainsi que par des
+									comportements et intérêts restreints et répétitifs.
+								</p>
+							</div>
+							<div className={fr.cx("fr-col-12", "fr-col-lg-6")}>
+								<Image
+									className={fr.cx("fr-responsive-img")}
+									fetchPriority="high"
+									priority
+									alt=""
+									role="presentation"
+									src={journey.image?.url ?? "/placeholder.16x9.png"}
+									width={580}
+									height={350}
+								/>
+							</div>
 						</div>
 					</div>
 				</div>
-			</div>
-			<div className={cx(classes.coloredContainer)}>
-				<PersonaDisplay journey={journey} from={`${persona}/${condition}`} />
-			</div>
+				<div className={cx(classes.coloredContainer)}>
+					<PersonaDisplay journey={journey} from={`${persona}/${condition}`} />
+				</div>
+			</PageContent>
 		</>
 	);
 }

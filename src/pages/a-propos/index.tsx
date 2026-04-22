@@ -2,6 +2,7 @@ import { fr } from "@codegouvfr/react-dsfr";
 import Breadcrumb from "@codegouvfr/react-dsfr/Breadcrumb";
 import Head from "next/head";
 import { tss } from "tss-react/dsfr";
+import PageContent from "~/components/ui/PageContent";
 
 const aboutLinks = [
 	{ href: "/a-propos/maison-de-l-autisme", label: "Maison de l'autisme" },
@@ -27,19 +28,21 @@ export default function AProposIndex() {
 					homeLinkProps={{ href: "/" }}
 					segments={[]}
 				/>
-				<h1>À propos</h1>
+				<PageContent>
+					<h1>À propos</h1>
 
-				<nav aria-label="À propos">
-					<ul className={cx(classes.sitemapList)}>
-						{aboutLinks.map((link) => (
-							<li key={link.href}>
-								<a className={fr.cx("fr-link")} href={link.href}>
-									{link.label}
-								</a>
-							</li>
-						))}
-					</ul>
-				</nav>
+					<nav aria-label="À propos">
+						<ul className={cx(classes.sitemapList)}>
+							{aboutLinks.map((link) => (
+								<li key={link.href}>
+									<a className={fr.cx("fr-link")} href={link.href}>
+										{link.label}
+									</a>
+								</li>
+							))}
+						</ul>
+					</nav>
+				</PageContent>
 			</div>
 		</>
 	);

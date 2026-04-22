@@ -2,6 +2,7 @@ import { fr } from "@codegouvfr/react-dsfr";
 import Badge from "@codegouvfr/react-dsfr/Badge";
 import Card from "@codegouvfr/react-dsfr/Card";
 import Tag from "@codegouvfr/react-dsfr/Tag";
+import Link from "next/link";
 import type { Condition, Theme } from "~/payload/payload-types";
 import { shortenDescription } from "~/utils/tools";
 import { tss } from "tss-react/dsfr";
@@ -59,21 +60,27 @@ export default function CardDisplay({
 			desc={description ? shortenDescription(description) : undefined}
 			{...imgProps}
 			footer={
-				<a
-					className="fr-link fr-icon-arrow-right-line fr-link--icon-right"
-					href={redirect}
-					aria-label={`${redirectText} : ${title}`}
-					title={
-						kind === "courses"
-							? `${redirectText} : ${title}, nouvelle fenêtre`
-							: `${redirectText} : ${title}`
-					}
-					{...(kind === "courses"
-						? { target: "_blank", rel: "noopener noreferrer" }
-						: {})}
-				>
-					{redirectText}
-				</a>
+				kind === "courses" ? (
+					<a
+						className="fr-link fr-icon-arrow-right-line fr-link--icon-right"
+						href={redirect}
+						aria-label={`${redirectText} : ${title}`}
+						title={`${redirectText} : ${title}, nouvelle fenêtre`}
+						target="_blank"
+						rel="noopener noreferrer"
+					>
+						{redirectText}
+					</a>
+				) : (
+					<Link
+						className="fr-link fr-icon-arrow-right-line fr-link--icon-right"
+						href={redirect}
+						aria-label={`${redirectText} : ${title}`}
+						title={`${redirectText} : ${title}`}
+					>
+						{redirectText}
+					</Link>
+				)
 			}
 			size="medium"
 			start={

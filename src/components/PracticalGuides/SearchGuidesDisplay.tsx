@@ -31,8 +31,9 @@ export const SearchGuidesDisplay = ({ filters }: { filters: FiltersQuery }) => {
 				</div>
 			) : (
 				<div
+					id="results"
+					tabIndex={-1}
 					className={fr.cx("fr-grid-row", "fr-grid-row--gutters", "fr-pt-3w")}
-					id="contenu"
 				>
 					<div className={fr.cx("fr-col-12")} style={{ textAlign: "right" }}>
 						<output
