@@ -54,6 +54,9 @@ export const PersonaGrid = ({ tiles, onClick, ariaLabel }: Props) => {
 					? pictogramMap[tile.pictogram]
 					: null;
 
+				const lgColClass =
+					tiles.length === 3 ? "fr-col-lg-4" : "fr-col-lg-3";
+
 				return (
 					<div
 						key={index}
@@ -61,7 +64,7 @@ export const PersonaGrid = ({ tiles, onClick, ariaLabel }: Props) => {
 							"fr-col-12",
 							"fr-col-sm-6",
 							"fr-col-md-4",
-							"fr-col-lg-3",
+							lgColClass,
 						)}
 					>
 						<Tile
