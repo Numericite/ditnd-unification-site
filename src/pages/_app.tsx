@@ -122,6 +122,15 @@ function App({ Component, pageProps }: AppProps) {
                 title: "Code source, nouvelle fenêtre",
               },
             },
+            {
+              text: "Contact particuliers",
+              linkProps: {
+                href: "https://www.autismeinfoservice.fr/contact",
+                title: "Contact particuliers, nouvelle fenêtre",
+                target: "_blank",
+                rel: "noopener noreferrer",
+              },
+            },
             headerFooterDisplayItem,
           ]}
         />
