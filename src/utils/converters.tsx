@@ -186,30 +186,54 @@ export const tableConverter: JSXConverter<any> = ({ node }) => {
 	return <Table data={[...data]} headers={headers} />;
 };
 
+const internalDocToHref = (doc: {
+	relationTo: string;
+	value: unknown;
+}): string | undefined => {
+	const value = doc.value;
+	const slug =
+		value && typeof value === "object" && "slug" in value
+			? (value as { slug?: string | null }).slug
+			: undefined;
+
+	if (!slug) return undefined;
+
+	switch (doc.relationTo) {
+		case "practical-guides":
+			return `/fiches-pratiques/${slug}`;
+		default:
+			return undefined;
+	}
+};
+
 export const linkConverter: JSXConverters<DefaultNodeTypes>["link"] = (
 	args,
 ) => {
 	const { node, nodesToJSX, converters } = args;
 
-	const url = node.fields.url;
+	const href =
+		node.fields.linkType === "internal" && node.fields.doc
+			? internalDocToHref(node.fields.doc)
+			: node.fields.url;
 
-	if (url?.includes("youtube.com") || url?.includes("youtu.be")) {
-		const videoId = extractYouTubeId(url);
+	if (href?.includes("youtube.com") || href?.includes("youtu.be")) {
+		const videoId = extractYouTubeId(href);
 		if (!videoId) return null;
 
 		return <LiteYouTube videoId={videoId} />;
 	}
 
+	const childrenJSX = nodesToJSX({
+		nodes: node.children ?? [],
+		converters,
+	});
+
 	if (node.fields.newTab) {
-		const childrenJSX = nodesToJSX({
-			nodes: node.children ?? [],
-			converters,
-		});
 		const linkText = extractTextFromNodes(node.children ?? []);
 
 		return (
 			<a
-				href={url}
+				href={href}
 				target="_blank"
 				rel="noopener noreferrer"
 				title={`${linkText}, nouvelle fenêtre`}
@@ -219,11 +243,7 @@ export const linkConverter: JSXConverters<DefaultNodeTypes>["link"] = (
 		);
 	}
 
-	const defaultLinkConverter = defaultJSXConverters.link;
-
-	return typeof defaultLinkConverter === "function"
-		? defaultLinkConverter(args)
-		: null;
+	return <a href={href}>{childrenJSX}</a>;
 };
 
 export const accordionConverter: JSXConverter<SerializedBlockNode> = ({
