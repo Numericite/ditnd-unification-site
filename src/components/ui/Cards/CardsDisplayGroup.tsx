@@ -39,7 +39,7 @@ export default function CardsDisplayGroup({
 									<CardDisplay
 										{...course}
 										imageUrl={course.image?.url ?? undefined}
-										imageAlt={course.image?.alt}
+										imageAlt=""
 										conditions={[course.condition]}
 										themes={[course.theme]}
 										redirect={course.link}
@@ -64,7 +64,7 @@ export default function CardsDisplayGroup({
 									<CardDisplay
 										{...guide}
 										imageUrl={guide.image?.url ?? undefined}
-										imageAlt={guide.image?.alt}
+										imageAlt=""
 										conditions={guide.conditions ?? []}
 										themes={guide.themes}
 										redirect={buildGuideRedirect(guide.slug)}

@@ -462,7 +462,7 @@ export const relationshipConverter: JSXConverters<DefaultNodeTypes>["relationshi
 					<CardDisplay
 						title={value.title}
 						imageUrl={value.image?.url ?? undefined}
-						imageAlt={value.image?.alt}
+						imageAlt=""
 						conditions={value.conditions ?? []}
 						themes={value.themes}
 						redirect={`/fiches-pratiques/${value.slug}`}
@@ -480,7 +480,7 @@ export const relationshipConverter: JSXConverters<DefaultNodeTypes>["relationshi
 					<CardDisplay
 						title={value.title}
 						imageUrl={value.image?.url ?? undefined}
-						imageAlt={value.image?.alt}
+						imageAlt=""
 						conditions={[value.condition]}
 						themes={[value.theme]}
 						redirect={value.link}
