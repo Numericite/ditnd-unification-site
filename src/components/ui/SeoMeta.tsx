@@ -5,6 +5,7 @@ const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? "";
 const DEFAULT_DESCRIPTION =
 	"Site national d'informations sur l'autisme et les troubles du neurodéveloppement.";
 const DEFAULT_IMAGE = "/main-logo.png";
+const NOINDEX = process.env.NEXT_PUBLIC_NOINDEX === "true";
 
 type SeoMetaProps = {
 	title?: string;
@@ -37,6 +38,13 @@ export default function SeoMeta({
 	return (
 		<Head>
 			<title>{fullTitle}</title>
+			{NOINDEX && (
+				<meta
+					key="robots"
+					name="robots"
+					content="noindex, nofollow, noarchive"
+				/>
+			)}
 			<meta key="description" name="description" content={finalDescription} />
 			<meta key="og:title" property="og:title" content={fullTitle} />
 			<meta

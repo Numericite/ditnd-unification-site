@@ -24,6 +24,20 @@ const config = {
 			bodySizeLimit: "50mb",
 		},
 	},
+	async headers() {
+		if (process.env.NEXT_PUBLIC_NOINDEX !== "true") return [];
+		return [
+			{
+				source: "/:path*",
+				headers: [
+					{
+						key: "X-Robots-Tag",
+						value: "noindex, nofollow, noarchive",
+					},
+				],
+			},
+		];
+	},
 };
 
 export default withPayload(config, { devBundleServerPackages: false });
