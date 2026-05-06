@@ -16,7 +16,7 @@ type Props = {
 };
 
 export default function Accessibility({ title, content }: Props) {
-	if (!content) return <EmptyScreenZone>Missing content</EmptyScreenZone>;
+	if (!content) return <EmptyScreenZone>Contenu manquant</EmptyScreenZone>;
 
 	return (
 		<>

@@ -2,7 +2,6 @@ import { Footer } from "@codegouvfr/react-dsfr/Footer";
 import { headerFooterDisplayItem } from "@codegouvfr/react-dsfr/Display";
 import { createNextDsfrIntegrationApi } from "@codegouvfr/react-dsfr/next-pagesdir";
 import type { AppProps } from "next/app";
-import Head from "next/head";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { useEffect } from "react";
@@ -15,6 +14,7 @@ import ChatBot from "~/components/Chatbot/Chatbot";
 import "~/utils/styles/keyframes.css";
 import MainNavigation from "~/components/ui/Navigation/MainNavigation";
 import { EmptyScreenZone } from "~/components/ui/EmptyScreenZone";
+import SeoMeta from "~/components/ui/SeoMeta";
 import { fr } from "@codegouvfr/react-dsfr";
 
 declare module "@codegouvfr/react-dsfr/next-pagesdir" {
@@ -83,12 +83,11 @@ function App({ Component, pageProps }: AppProps) {
 
 	return (
 		<>
-			<Head>
-				<title>
-					Maison de l'autisme - Informations sur l'autisme et les troubles du
-					neurodéveloppement
-				</title>
-			</Head>
+			<SeoMeta
+				title="Maison de l'autisme - Informations sur l'autisme et les troubles du neurodéveloppement"
+				description="Site national d'informations pour toutes les personnes concernées par l'autisme et les troubles du neurodéveloppement. Retrouvez des ressources, diagnostics et formations."
+				pathname={router.asPath}
+			/>
 			<div className={cx(classes.headerContainer)}>
 				<MainNavigation />
 

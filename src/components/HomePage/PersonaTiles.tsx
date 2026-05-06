@@ -1,6 +1,6 @@
 import { fr } from "@codegouvfr/react-dsfr";
 import { useState } from "react";
-import { homeCMSStore, proStore, tdhStore, type TDH } from "~/state/store";
+import { homeCMSStore, proStore, tdhStore } from "~/state/store";
 import { PersonaGrid } from "../ui/HomePage/PersonaGrid";
 import Tag from "@codegouvfr/react-dsfr/Tag";
 import { useRouter } from "next/router";
@@ -29,13 +29,14 @@ export type TagItem = {
 	dismissible?: boolean;
 };
 
-const unknownTile: TDH = {
-	name: "Un trouble que je ne sais pas identifier",
-	description: "Mieux comprendre vos symptômes et être accompagné",
-	acronym: "unknown",
-	slug: "unknown",
-	display: "condition",
-};
+// TODO: Réactiver la tuile "Un trouble que je ne sais pas identifier"
+// const unknownTile: TDH = {
+// 	name: "Un trouble que je ne sais pas identifier",
+// 	description: "Mieux comprendre vos symptômes et être accompagné",
+// 	acronym: "unknown",
+// 	slug: "unknown",
+// 	display: "condition",
+// };
 
 const titleByDisplay: Record<PersonaTypes, string> = {
 	default: "Qui êtes vous?",
@@ -80,7 +81,9 @@ export const PersonaTiles = ({
 
 	const homeCMS = homeCMSStore.get();
 
-	const tdhTiles = [unknownTile, ...tdh];
+	// TODO: Réactiver la tuile "Un trouble que je ne sais pas identifier"
+	// const tdhTiles = [unknownTile, ...tdh];
+	const tdhTiles = [...tdh];
 
 	const handleClick = (tile: PersonaTile, prevDisplay: PersonaTypes) => {
 		setTags((prev) => [
@@ -100,25 +103,25 @@ export const PersonaTiles = ({
 			setSubTitle(titleByDisplay.person);
 		},
 		professional: (tile) => {
-      // TODO: Réactiver le sous-niveau spécifique aux professionnels
-      // quand les sous-groupes pros seront disponibles côté back-office.
-      // handleClick(tile, "default");
-      // setDisplay("professional");
-      // setSubTitle(titleByDisplay.professional);
-      handleClick(tile, "default");
-      setDisplay("person");
-      setSubTitle(titleByDisplay.person);
+			// TODO: Réactiver le sous-niveau spécifique aux professionnels
+			// quand les sous-groupes pros seront disponibles côté back-office.
+			// handleClick(tile, "default");
+			// setDisplay("professional");
+			// setSubTitle(titleByDisplay.professional);
+			handleClick(tile, "default");
+			setDisplay("person");
+			setSubTitle(titleByDisplay.person);
 		},
 		afterProfessional: (tile) => {
 			router.push(`/parcours/${tile.slug}`);
 		},
 		condition: (tile) => {
-      const personaSlug = tags
-        // TODO: Réactiver ce filtre avec le retour des sous-groupes pros
-        // (le slug "professional" était alors un niveau intermédiaire à retirer de l'URL).
-        // .filter((tag) => tag.slug !== "professional")
-        .map((tag) => tag.slug);
-      router.push(`/parcours/${personaSlug}/${tile.slug}`);
+			const personaSlug = tags
+				// TODO: Réactiver ce filtre avec le retour des sous-groupes pros
+				// (le slug "professional" était alors un niveau intermédiaire à retirer de l'URL).
+				// .filter((tag) => tag.slug !== "professional")
+				.map((tag) => tag.slug);
+			router.push(`/parcours/${personaSlug}/${tile.slug}`);
 		},
 		default: () => {
 			setDisplay("default");

@@ -40,6 +40,7 @@ export default function CardDisplay({
 		? {
 				imageUrl: imageUrl ?? "/placeholder.16x9.png",
 				imageAlt: imageAlt ?? "",
+				nativeImgProps: { role: "presentation" },
 			}
 		: { imageComponent: undefined };
 

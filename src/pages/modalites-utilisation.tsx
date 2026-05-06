@@ -16,7 +16,7 @@ type Props = {
 };
 
 export default function TermsOfUse({ title, content }: Props) {
-	if (!content) return <EmptyScreenZone>Missing content</EmptyScreenZone>;
+	if (!content) return <EmptyScreenZone>Contenu manquant</EmptyScreenZone>;
 
 	return (
 		<>

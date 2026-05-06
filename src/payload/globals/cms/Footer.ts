@@ -23,12 +23,12 @@ export const CMSFooter: GlobalConfig = {
 					fields: [standardFields.title, standardFields.wysiwyg],
 				},
 				{
-					label: "Mention légales",
+					label: "Mentions légales",
 					name: "legalNotice",
 					fields: [standardFields.title, standardFields.wysiwyg],
 				},
 				{
-					label: "Politique de confidentialité",
+					label: "Données personnelles",
 					name: "cgu",
 					fields: [standardFields.title, standardFields.wysiwyg],
 				},
