@@ -4,12 +4,14 @@ import Head from "next/head";
 import { tss } from "tss-react/dsfr";
 import PageContent from "~/components/ui/PageContent";
 import { personStore } from "~/state/store";
+import { api } from "~/utils/api";
 import { personsAndProTiles } from "~/utils/tools";
 
 export default function PlanDuSite() {
 	const { classes, cx } = useStyles();
 
 	const personas = personsAndProTiles(personStore.get());
+	const { data: conditions } = api.condition.all.useQuery();
 
 	return (
 		<>
@@ -56,6 +58,20 @@ export default function PlanDuSite() {
 											>
 												{persona.name}
 											</a>
+											{conditions && conditions.length > 0 && (
+												<ul className={cx(classes.sitemapList)}>
+													{conditions.map((condition) => (
+														<li key={`${persona.slug}-${condition.slug}`}>
+															<a
+																className={fr.cx("fr-link")}
+																href={`/parcours/${persona.slug}/${condition.slug}`}
+															>
+																{condition.acronym || condition.name}
+															</a>
+														</li>
+													))}
+												</ul>
+											)}
 										</li>
 									))}
 								</ul>
