@@ -123,10 +123,10 @@ function App({ Component, pageProps }: AppProps) {
 						href: "/mentions-legales",
 					}}
 					bottomItems={[
-						{
-							text: "Données personnelles",
-							linkProps: { href: "/donnees-personnelles" },
-						},
+						// {
+						// 	text: "Données personnelles",
+						// 	linkProps: { href: "/donnees-personnelles" },
+						// },
 						{
 							text: "Code source",
 							linkProps: {
