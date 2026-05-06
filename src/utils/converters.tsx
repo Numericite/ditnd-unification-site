@@ -26,7 +26,6 @@ import LiteYouTube from "~/components/ui/CmsPage/LiteYoutube";
 import { Table } from "@codegouvfr/react-dsfr/Table";
 import { Download } from "@codegouvfr/react-dsfr/Download";
 import { Quote, type QuoteProps } from "@codegouvfr/react-dsfr/Quote";
-import { Highlight } from "@codegouvfr/react-dsfr/Highlight";
 import { CallOut, type CallOutProps } from "@codegouvfr/react-dsfr/CallOut";
 
 interface CitationFields {
@@ -319,9 +318,11 @@ export const highlightConverter: JSXConverter<SerializedBlockNode> = ({
 	const size = value.size === "default" ? undefined : value.size;
 
 	return (
-		<Highlight className={fr.cx("fr-my-3v")} size={size}>
-			<RichText data={value.content} converters={getConverters()} />
-		</Highlight>
+		<div className={fr.cx("fr-highlight", "fr-my-3v")}>
+			<div className={size ? fr.cx(`fr-text--${size}`) : undefined}>
+				<RichText data={value.content} converters={getConverters()} />
+			</div>
+		</div>
 	);
 };
 
@@ -338,6 +339,7 @@ export const calloutConverter: JSXConverter<SerializedBlockNode> = ({
 			title={value.title}
 			iconId={value.iconId}
 			colorVariant={value.colorVariant}
+			bodyAs="div"
 		>
 			<RichText data={value.content} converters={getConverters()} />
 		</CallOut>
