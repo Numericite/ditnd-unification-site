@@ -65,8 +65,9 @@ export default function PlanDuSite() {
 															<a
 																className={fr.cx("fr-link")}
 																href={`/parcours/${persona.slug}/${condition.slug}`}
+																title={`${persona.name} par le ${condition.acronym || condition.name}`}
 															>
-																{condition.acronym || condition.name}
+																par le {condition.acronym || condition.name}
 															</a>
 														</li>
 													))}
