@@ -4,7 +4,7 @@ const SITE_NAME = "Maison de l'autisme";
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? "";
 const DEFAULT_DESCRIPTION =
 	"Site national d'informations sur l'autisme et les troubles du neurodéveloppement.";
-const DEFAULT_IMAGE = "/HomePageIllustration.svg";
+const DEFAULT_IMAGE = "/main-logo.png";
 
 type SeoMetaProps = {
 	title?: string;
