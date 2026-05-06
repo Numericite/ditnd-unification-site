@@ -44,7 +44,7 @@ const MESSAGE_HINT = (
 		caractères spéciaux ne sont pas acceptés.
 		<br />
 		Attention à vos données ! Si nous vous encourageons à nous donner votre
-		avis, nous ne vous demandons de ne pas nous transmettre d&apos;informations
+		avis, nous vous demandons de ne pas nous transmettre d&apos;informations
 		sensibles. Notamment, ne communiquez pas vos opinions philosophiques,
 		syndicales ou politiques ; ces données sont trop personnelles !
 	</>

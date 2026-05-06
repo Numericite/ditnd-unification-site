@@ -3586,7 +3586,7 @@ export const PracticalGuidesContent: DefaultTypedEditorState[] = [
 							children: [
 								{
 									mode: "normal",
-									text: "Le GNCRA (Groupement National des Centres de Ressource Autisme) recense dans un catalogue dédié ",
+									text: "Le GNCRA (Groupement National des Centres Ressources Autisme) recense dans un catalogue dédié ",
 									type: "text",
 									style: "",
 									detail: 0,
