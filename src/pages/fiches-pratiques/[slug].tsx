@@ -1,14 +1,15 @@
 import { useRouter } from "next/router";
 import { api } from "~/utils/api";
 import Breadcrumb from "@codegouvfr/react-dsfr/Breadcrumb";
-import Head from "next/head";
 import { Loader } from "~/components/ui/Loader";
 import PracticalGuidesDisplay from "~/components/PracticalGuides/PracticalGuidesDisplay";
 import { fr } from "@codegouvfr/react-dsfr";
 import { EmptyScreenZone } from "~/components/ui/EmptyScreenZone";
 import PageContent from "~/components/ui/PageContent";
+import SeoMeta from "~/components/ui/SeoMeta";
 import { useEffect } from "react";
 import { personStore, proStore } from "~/state/store";
+import type { Media } from "~/payload/payload-types";
 
 type BreadcrumbSegment = {
 	label: string;
@@ -85,15 +86,32 @@ export default function PracticalGuidePage() {
 		},
 	];
 
+	const metaImageRef = guide.meta?.image;
+	const metaImageObj =
+		metaImageRef && typeof metaImageRef === "object"
+			? (metaImageRef as Media)
+			: undefined;
+
+	const metaTitle = guide.meta?.title?.trim() || guide.title;
+	const metaDescription =
+		guide.meta?.description?.trim() ||
+		guide.description?.trim() ||
+		`${guide.title} : fiche pratique sur l'autisme et les troubles du neurodéveloppement.`;
+	const metaImage =
+		metaImageObj?.url ||
+		guide.imageBanner?.url ||
+		guide.image?.url ||
+		undefined;
+
 	return (
 		<>
-			<Head>
-				<title>{guide.title} - Maison de l'autisme</title>
-				<meta
-					name="description"
-					content={`${guide.title} : fiche pratique sur l'autisme et les troubles du neurodéveloppement - Maison de l'autisme`}
-				/>
-			</Head>
+			<SeoMeta
+				title={metaTitle}
+				description={metaDescription}
+				image={metaImage}
+				type="article"
+				pathname={`/fiches-pratiques/${guide.slug}`}
+			/>
 			<div className={fr.cx("fr-container")}>
 				<Breadcrumb
 					currentPageLabel={guide.title}
