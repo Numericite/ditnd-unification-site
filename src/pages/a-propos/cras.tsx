@@ -17,7 +17,7 @@ type Props = {
 };
 
 export default function CrasPage({ title, content, imageBanner }: Props) {
-	if (!content) return <EmptyScreenZone>Missing content</EmptyScreenZone>;
+	if (!content) return <EmptyScreenZone>Contenu manquant</EmptyScreenZone>;
 
 	return (
 		<>

@@ -25,7 +25,7 @@ export default function ContactProsCraPage({
 }: Props) {
 	const { classes, cx } = useStyles();
 
-	if (!content) return <EmptyScreenZone>Missing content</EmptyScreenZone>;
+	if (!content) return <EmptyScreenZone>Contenu manquant</EmptyScreenZone>;
 
 	return (
 		<>

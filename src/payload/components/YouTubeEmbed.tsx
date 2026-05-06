@@ -60,7 +60,7 @@ export default function YouTubeEmbed() {
 					borderRadius: "4px",
 				}}
 				src={`https://www.youtube-nocookie.com/embed/${videoId}`}
-				title="YouTube video player"
+				title="Lecteur vidéo YouTube"
 				allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture"
 				allowFullScreen
 			/>

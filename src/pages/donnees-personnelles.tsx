@@ -16,15 +16,15 @@ type Props = {
 };
 
 export default function Cgu({ title, content }: Props) {
-	if (!content) return <EmptyScreenZone>Missing content</EmptyScreenZone>;
+	if (!content) return <EmptyScreenZone>Contenu manquant</EmptyScreenZone>;
 
 	return (
 		<>
 			<Head>
-				<title>Politique de confidentialité - Maison de l'autisme</title>
+				<title>Données personnelles - Maison de l'autisme</title>
 				<meta
 					name="description"
-					content="Politique de confidentialité et protection des données personnelles du site Maison de l'autisme."
+					content="Données personnelles et politique de confidentialité du site Maison de l'autisme."
 				/>
 			</Head>
 			<div className={fr.cx("fr-container", "fr-pb-10v")}>

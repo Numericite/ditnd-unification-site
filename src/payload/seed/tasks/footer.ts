@@ -12,11 +12,11 @@ export default async function footerTask(payload: BasePayload) {
 				content: legalsContent.accessibility,
 			},
 			legalNotice: {
-				title: "Mention légales",
+				title: "Mentions légales",
 				content: legalsContent.legalNotice,
 			},
 			cgu: {
-				title: "Politique de confidentialité",
+				title: "Données personnelles",
 				content: legalsContent.cgu,
 			},
 			termsOfUse: {
