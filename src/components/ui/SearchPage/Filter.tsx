@@ -6,6 +6,7 @@ import { useBreakpointsValuesPx } from "@codegouvfr/react-dsfr/useBreakpointsVal
 import { useWindowInnerSize } from "@codegouvfr/react-dsfr/tools/useWindowInnerSize";
 import { useRouter } from "next/router";
 import { deserialize } from "~/utils/tools";
+import { tss } from "tss-react/dsfr";
 
 type Props = {
 	label: string;
@@ -23,6 +24,7 @@ export const Filter = ({ label, value, handleOnChange }: Props) => {
 
 	const router = useRouter();
 	const { conditions, themes, personas, type } = router.query;
+	const { classes } = useStyles();
 
 	const isChecked = (slug: string) =>
 		deserialize(conditions).includes(slug) ||
@@ -36,16 +38,28 @@ export const Filter = ({ label, value, handleOnChange }: Props) => {
 			onExpandedChange={() => setExpand((prev) => !prev)}
 			expanded={expand}
 		>
-			<Checkbox
-				options={value.map((item) => ({
-					label: item.label,
-					nativeInputProps: {
-						value: String(item.slug),
-						checked: isChecked(item.slug),
-						onChange: handleOnChange,
-					},
-				}))}
-			/>
+			<fieldset className={classes.fieldset}>
+				<legend className="fr-sr-only">{label}</legend>
+				<Checkbox
+					options={value.map((item) => ({
+						label: item.label,
+						nativeInputProps: {
+							value: String(item.slug),
+							checked: isChecked(item.slug),
+							onChange: handleOnChange,
+						},
+					}))}
+				/>
+			</fieldset>
 		</Accordion>
 	);
 };
+
+const useStyles = tss.withName(Filter.name).create(() => ({
+	fieldset: {
+		border: 0,
+		padding: 0,
+		margin: 0,
+		minInlineSize: "auto",
+	},
+}));

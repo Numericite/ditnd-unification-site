@@ -311,6 +311,7 @@ const ChatBot = () => {
 																href={`/fiches-pratiques/${slug}`}
 																target="_blank"
 																rel="noopener noreferrer"
+																aria-label={`${title}, nouvelle fenêtre`}
 																title={`${title}, nouvelle fenêtre`}
 															>
 																<span className={cx(classes.sourceCardTitle)}>
@@ -340,6 +341,7 @@ const ChatBot = () => {
 																href={link}
 																target="_blank"
 																rel="noopener noreferrer"
+																aria-label={`${title}, nouvelle fenêtre`}
 																title={`${title}, nouvelle fenêtre`}
 															>
 																<span className={cx(classes.sourceCardTitle)}>

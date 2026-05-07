@@ -90,6 +90,7 @@ export default function ShareSocials() {
 					onClick={social.onClick}
 					priority="tertiary"
 					title={social.title}
+					nativeButtonProps={{ "aria-label": social.title }}
 				/>
 			))}
 		</div>
