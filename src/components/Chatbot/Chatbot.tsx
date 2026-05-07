@@ -28,9 +28,13 @@ const ChatBot = () => {
 	const [userQuestion, setUserQuestion] = useState("");
 	const [response, setResponse] = useState<ChatResponse | null>(null);
 	const [showScrollHint, setShowScrollHint] = useState(false);
+	const [error, setError] = useState<string | null>(null);
 
 	const scrollAreaRef = useRef<HTMLDivElement>(null);
 	const textAreaRef = useRef<HTMLTextAreaElement>(null);
+	const dialogRef = useRef<HTMLDivElement>(null);
+	const backButtonRef = useRef<HTMLButtonElement>(null);
+	const previouslyFocusedRef = useRef<HTMLElement | null>(null);
 
 	const checkScrollHint = useCallback(() => {
 		const el = scrollAreaRef.current;
@@ -63,10 +67,70 @@ const ChatBot = () => {
 		};
 	}, [isOpen]);
 
+	useEffect(() => {
+		if (isOpen) {
+			previouslyFocusedRef.current =
+				(document.activeElement as HTMLElement | null) ?? null;
+		} else if (previouslyFocusedRef.current) {
+			previouslyFocusedRef.current.focus();
+			previouslyFocusedRef.current = null;
+		}
+	}, [isOpen]);
+
+	useEffect(() => {
+		if (!isOpen) return;
+		const handleKeyDown = (e: KeyboardEvent) => {
+			if (e.key === "Escape") {
+				e.preventDefault();
+				chatbotOpenStore.set(false);
+				return;
+			}
+			if (e.key === "Tab" && dialogRef.current) {
+				const focusable = Array.from(
+					dialogRef.current.querySelectorAll<HTMLElement>(
+						'a[href], button:not([disabled]), textarea:not([disabled]), input:not([disabled]), [tabindex]:not([tabindex="-1"])',
+					),
+				).filter(
+					(el) => el.offsetParent !== null || el === document.activeElement,
+				);
+				const first = focusable[0];
+				const last = focusable[focusable.length - 1];
+				if (!first || !last) return;
+				const active = document.activeElement as HTMLElement | null;
+				if (
+					e.shiftKey &&
+					(active === first || !dialogRef.current.contains(active))
+				) {
+					e.preventDefault();
+					last.focus();
+				} else if (
+					!e.shiftKey &&
+					(active === last || !dialogRef.current.contains(active))
+				) {
+					e.preventDefault();
+					first.focus();
+				}
+			}
+		};
+		document.addEventListener("keydown", handleKeyDown);
+		return () => {
+			document.removeEventListener("keydown", handleKeyDown);
+		};
+	}, [isOpen]);
+
+	useEffect(() => {
+		if (response) {
+			setTimeout(() => {
+				backButtonRef.current?.focus();
+			}, 50);
+		}
+	}, [response]);
+
 	const onBack = () => {
 		setResponse(null);
 		setUserQuestion("");
 		setMessage("");
+		setError(null);
 	};
 
 	const autoResizeTextArea = useCallback(() => {
@@ -79,8 +143,16 @@ const ChatBot = () => {
 	const sendMessage = async (text: string) => {
 		setUserQuestion(text);
 		setMessage("");
-		const result = await chatbotDirectSendMessage({ userMessage: text });
-		setResponse(result);
+		setError(null);
+		try {
+			const result = await chatbotDirectSendMessage({ userMessage: text });
+			setResponse(result);
+		} catch {
+			setError(
+				"Une erreur est survenue lors de l'envoi de votre message. Veuillez réessayer.",
+			);
+			setUserQuestion("");
+		}
 	};
 
 	const scrollToBottom = () => {
@@ -102,12 +174,16 @@ const ChatBot = () => {
 						aria-hidden="true"
 					/>
 					<div
+						ref={dialogRef}
 						role="dialog"
 						aria-modal="true"
-						aria-label="Chatbot d'aide"
+						aria-labelledby="chatbot-title"
 						tabIndex={-1}
 						className={cx(classes.chatBotWindow)}
 					>
+						<h2 id="chatbot-title" className="fr-sr-only">
+							Assistant conversationnel
+						</h2>
 						<div className={cx(classes.topBar)}>
 							<Button
 								iconId="fr-icon-close-line"
@@ -139,6 +215,11 @@ const ChatBot = () => {
 									</div>
 
 									<div className={cx(classes.inputArea)}>
+										{error && (
+											<p role="alert" className={cx(classes.errorMessage)}>
+												{error}
+											</p>
+										)}
 										<Input
 											textArea
 											label="Votre question"
@@ -187,17 +268,24 @@ const ChatBot = () => {
 							)}
 
 							{isPending && (
-								<div className={cx(classes.typingContainer)}>
-									<div className={cx(classes.typingIndicator)}>
+								<output className={cx(classes.typingContainer)}>
+									<span className="fr-sr-only">
+										Chargement de la réponse en cours
+									</span>
+									<div
+										className={cx(classes.typingIndicator)}
+										aria-hidden="true"
+									>
 										<span />
 										<span />
 										<span />
 									</div>
-								</div>
+								</output>
 							)}
 
 							{hasResponse && (
 								<>
+									<output className="fr-sr-only">Réponse reçue</output>
 									<p className={cx(classes.sourcesLabel)}>
 										<i className="fr-icon-chat-3-line" aria-hidden="true" />
 										En résumé
@@ -283,6 +371,7 @@ const ChatBot = () => {
 											priority="secondary"
 											title="Poser une autre question"
 											iconId="fr-icon-arrow-left-line"
+											nativeButtonProps={{ ref: backButtonRef }}
 										>
 											Poser une autre question
 										</Button>
@@ -585,6 +674,14 @@ const useStyles = tss.withName(ChatBot.name).create({
 	sendButtonContainer: {
 		display: "flex",
 		justifyContent: "end",
+	},
+	errorMessage: {
+		margin: 0,
+		padding: `${fr.spacing("2v")} ${fr.spacing("3v")}`,
+		borderRadius: fr.spacing("1v"),
+		backgroundColor: fr.colors.decisions.background.contrast.error.default,
+		color: fr.colors.decisions.text.default.error.default,
+		fontSize: "0.875rem",
 	},
 });
 
