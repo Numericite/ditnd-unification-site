@@ -10,22 +10,32 @@ import {
 import { CoursesFiltersDisplay } from "~/components/Courses/CoursesFiltersDisplay";
 import type { FiltersQuery } from "~/components/PracticalGuides/GuidesFiltersDisplay";
 import { tss } from "tss-react/dsfr";
-import { useRouter } from "next/router";
 import { deserialize } from "~/utils/tools";
 import PageContent from "~/components/ui/PageContent";
+import type { GetServerSideProps } from "next";
+import { createCaller } from "~/server/api/root";
+import { createTRPCContext } from "~/server/api/trpc";
+import type { AugmentedCourse } from "~/server/api/routers/courses";
+import { DEFAULT_PAGE_SIZE, type PaginatedResult } from "~/utils/pagination";
 
-export default function Courses() {
+type CoursesPaginatedResult = PaginatedResult<AugmentedCourse>;
+
+type Props = {
+	initialFilters: CoursesFiltersQuery;
+	initialQuery: string;
+	initialPage: number;
+	initialData: CoursesPaginatedResult;
+};
+
+export default function Courses({
+	initialFilters,
+	initialQuery,
+	initialPage,
+	initialData,
+}: Props) {
 	const { classes, cx } = useStyles();
 
-	const router = useRouter();
-	const { conditions, themes, personas, type } = router.query;
-
-	const [filters, setFilters] = useState<CoursesFiltersQuery>({
-		conditions: deserialize(conditions) ?? [],
-		themes: deserialize(themes) ?? [],
-		personas: deserialize(personas) ?? [],
-		type: deserialize(type) ?? [],
-	});
+	const [filters, setFilters] = useState<CoursesFiltersQuery>(initialFilters);
 
 	return (
 		<>
@@ -85,7 +95,13 @@ export default function Courses() {
 								"fr-px-md-4w",
 							)}
 						>
-							<SearchCoursesDisplay filters={filters} />
+							<SearchCoursesDisplay
+								filters={filters}
+								initialFilters={initialFilters}
+								initialQuery={initialQuery}
+								initialPage={initialPage}
+								initialData={initialData}
+							/>
 						</div>
 					</div>
 				</PageContent>
@@ -93,6 +109,44 @@ export default function Courses() {
 		</>
 	);
 }
+
+function parsePageParam(value: string | string[] | undefined): number {
+	const raw = Array.isArray(value) ? value[0] : value;
+	const parsed = raw ? parseInt(raw, 10) : 1;
+	return Number.isFinite(parsed) && parsed >= 1 ? parsed : 1;
+}
+
+export const getServerSideProps: GetServerSideProps<Props> = async (ctx) => {
+	const initialFilters: CoursesFiltersQuery = {
+		conditions: deserialize(
+			ctx.query.conditions as string | string[] | undefined,
+		),
+		themes: deserialize(ctx.query.themes as string | string[] | undefined),
+		personas: deserialize(ctx.query.personas as string | string[] | undefined),
+		type: deserialize(ctx.query.type as string | string[] | undefined),
+	};
+	const initialQuery =
+		typeof ctx.query.search === "string" ? ctx.query.search : "";
+	const initialPage = parsePageParam(ctx.query.page);
+
+	const caller = createCaller(await createTRPCContext());
+
+	const initialData = await caller.course.getByFilters({
+		...initialFilters,
+		text: initialQuery,
+		page: initialPage,
+		limit: DEFAULT_PAGE_SIZE,
+	});
+
+	return {
+		props: {
+			initialFilters,
+			initialQuery,
+			initialPage,
+			initialData,
+		},
+	};
+};
 
 const useStyles = tss.withName(Courses.name).create({
 	borderRight: {

@@ -9,7 +9,8 @@ import { useSearchParams } from "next/navigation";
 import { useRouter } from "next/router";
 import CardsDisplayGroup from "../ui/Cards/CardsDisplayGroup";
 import { EmptyScreenZone } from "../ui/EmptyScreenZone";
-import { DEFAULT_PAGE_SIZE } from "~/utils/pagination";
+import { DEFAULT_PAGE_SIZE, type PaginatedResult } from "~/utils/pagination";
+import type { AugmentedCourse } from "~/server/api/routers/courses";
 
 export type CoursesFiltersQuery = {
 	conditions: string[];
@@ -24,17 +25,38 @@ const parsePage = (value: string | string[] | undefined): number => {
 	return Number.isFinite(parsed) && parsed >= 1 ? parsed : 1;
 };
 
+const filtersAreEqual = (a: CoursesFiltersQuery, b: CoursesFiltersQuery) => {
+	const sameArray = (x: string[], y: string[]) =>
+		x.length === y.length && x.every((v, i) => v === y[i]);
+	return (
+		sameArray(a.conditions, b.conditions) &&
+		sameArray(a.themes, b.themes) &&
+		sameArray(a.personas, b.personas) &&
+		sameArray(a.type, b.type)
+	);
+};
+
+type Props = {
+	filters: CoursesFiltersQuery;
+	initialFilters?: CoursesFiltersQuery;
+	initialQuery?: string;
+	initialPage?: number;
+	initialData?: PaginatedResult<AugmentedCourse>;
+};
+
 export const SearchCoursesDisplay = ({
 	filters,
-}: {
-	filters: CoursesFiltersQuery;
-}) => {
+	initialFilters,
+	initialQuery,
+	initialPage,
+	initialData,
+}: Props) => {
 	const searchParams = useSearchParams();
 	const router = useRouter();
 
 	const search = searchParams?.get("search");
 
-	const [query, setQuery] = useState<string>(search ?? "");
+	const [query, setQuery] = useState<string>(search ?? initialQuery ?? "");
 
 	const page = parsePage(router.query.page);
 
@@ -79,9 +101,18 @@ export const SearchCoursesDisplay = ({
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [filterKey, router.isReady]);
 
+	const matchesInitialQueryKey =
+		initialData !== undefined &&
+		query === (initialQuery ?? "") &&
+		page === (initialPage ?? 1) &&
+		(initialFilters ? filtersAreEqual(filters, initialFilters) : true);
+
 	const { data, isLoading } = api.course.getByFilters.useQuery(
 		{ ...filters, text: query, page, limit: DEFAULT_PAGE_SIZE },
-		{ placeholderData: keepPreviousData },
+		{
+			placeholderData: keepPreviousData,
+			...(matchesInitialQueryKey ? { initialData } : {}),
+		},
 	);
 
 	const items = data?.items;

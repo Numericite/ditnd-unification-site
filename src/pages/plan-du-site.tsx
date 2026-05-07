@@ -3,15 +3,14 @@ import Breadcrumb from "@codegouvfr/react-dsfr/Breadcrumb";
 import Head from "next/head";
 import { tss } from "tss-react/dsfr";
 import PageContent from "~/components/ui/PageContent";
-import { personStore } from "~/state/store";
-import { api } from "~/utils/api";
+import { personStore, tdhStore } from "~/state/store";
 import { personsAndProTiles } from "~/utils/tools";
 
 export default function PlanDuSite() {
 	const { classes, cx } = useStyles();
 
 	const personas = personsAndProTiles(personStore.get());
-	const { data: conditions } = api.condition.all.useQuery();
+	const conditions = tdhStore.get();
 
 	return (
 		<>

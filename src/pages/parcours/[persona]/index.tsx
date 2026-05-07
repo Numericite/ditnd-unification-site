@@ -3,11 +3,8 @@ import Head from "next/head";
 import { useRouter } from "next/router";
 import { tss } from "tss-react/dsfr";
 import { PersonaTiles, type TagItem } from "~/components/HomePage/PersonaTiles";
-import { EmptyScreenZone } from "~/components/ui/EmptyScreenZone";
-import { Loader } from "~/components/ui/Loader";
 import PageContent from "~/components/ui/PageContent";
-import { personStore, proStore } from "~/state/store";
-import { api } from "~/utils/api";
+import { personStore, proStore, tdhStore } from "~/state/store";
 import { personsAndProTiles } from "~/utils/tools";
 
 function isProfessional(persona_slug: string) {
@@ -26,11 +23,8 @@ export default function JourneyPage() {
 	const router = useRouter();
 	const persona_slug = router.query.persona as string;
 
-	const { data: conditions, isLoading: isLoadingConditions } =
-		api.condition.all.useQuery();
-
+	const conditions = tdhStore.get();
 	const professionalPersonas = proStore.get();
-
 	const personas = personsAndProTiles(personStore.get());
 
 	const persona = isProfessionalSub(persona_slug)
@@ -68,18 +62,6 @@ export default function JourneyPage() {
 		: isProfessionalSub(persona_slug)
 			? "afterProfessional"
 			: "person";
-
-	if (
-		isLoadingConditions &&
-		!professionalPersonas &&
-		!conditions &&
-		!professionalPersonas
-	)
-		return (
-			<EmptyScreenZone>
-				<Loader />
-			</EmptyScreenZone>
-		);
 
 	if (
 		!conditions ||
