@@ -161,7 +161,7 @@ export const skipLinks: SkipLinkType[] = [
 	},
 	{
 		anchor: "#chatbot",
-		label: "Aller au chatbot",
+		label: "Aller à l'assistant conversationnel",
 	},
 ];
 

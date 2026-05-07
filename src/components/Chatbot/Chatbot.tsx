@@ -187,7 +187,7 @@ const ChatBot = () => {
 						<div className={cx(classes.topBar)}>
 							<Button
 								iconId="fr-icon-close-line"
-								title="Fermer le chatbot d'aide"
+								title="Fermer l'assistant conversationnel"
 								priority="tertiary no outline"
 								size="small"
 								onClick={() => chatbotOpenStore.set(false)}
@@ -402,9 +402,13 @@ const ChatBot = () => {
 				)}
 				onClick={() => chatbotOpenStore.set(!isOpen)}
 				iconId={isOpen ? "fr-icon-close-line" : "fr-icon-message-3-fill"}
-				title={isOpen ? "Fermer le chatbot d'aide" : "Ouvrir le chatbot d'aide"}
+				title={
+					isOpen
+						? "Fermer l'assistant conversationnel"
+						: "Ouvrir l'assistant conversationnel"
+				}
 			>
-				{isOpen ? "Fermer le chatbot" : "Posez votre question"}
+				{isOpen ? "Fermer l'assistant" : "Posez votre question"}
 			</Button>
 		</div>
 	);
