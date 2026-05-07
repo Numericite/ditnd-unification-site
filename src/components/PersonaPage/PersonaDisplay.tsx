@@ -85,6 +85,7 @@ export default function PersonaDisplay({
 						className={cx(classes.whiteSummarySticky)}
 						title="Chapitrages"
 						menuLinks={chapterLinks ?? []}
+						as="h3"
 					/>
 					<div className={fr.cx("fr-col-12", "fr-col-lg-8")}>
 						<SearchBarUI value={query} onClick={(query) => setQuery(query)} />

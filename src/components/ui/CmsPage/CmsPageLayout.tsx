@@ -52,14 +52,23 @@ export default function CmsPageLayout({
 		/>
 	) : null;
 
-	const main = (
+	const dateLine =
+		createdAt && updatedAt ? (
+			<p
+				className={fr.cx("fr-text--sm")}
+			>{`Publié le ${new Date(createdAt).toLocaleDateString("fr-FR")} - Modifié le ${new Date(updatedAt).toLocaleDateString("fr-FR")}`}</p>
+		) : null;
+
+	const heading = (
 		<>
-			<WysiwygContent
-				title={title}
-				content={content}
-				createdAt={createdAt}
-				updatedAt={updatedAt}
-			/>
+			<h1 className={cx(classes.title)}>{title}</h1>
+			{dateLine}
+		</>
+	);
+
+	const body = (
+		<>
+			<WysiwygContent content={content} />
 			{showShareSocials && (
 				<div className={cx(classes.footerContent)}>
 					<div className={cx(classes.marginContent)}>
@@ -79,7 +88,8 @@ export default function CmsPageLayout({
 				<div
 					className={fr.cx("fr-col-12", "fr-col-lg-8", "fr-col-offset-lg-2")}
 				>
-					{main}
+					{heading}
+					{body}
 				</div>
 			</div>
 		);
@@ -88,17 +98,21 @@ export default function CmsPageLayout({
 	return (
 		<div className={fr.cx("fr-grid-row", "fr-grid-row--gutters")}>
 			{banner && <div className={fr.cx("fr-col-12")}>{banner}</div>}
+			<div className={fr.cx("fr-col-12")}>{heading}</div>
 			<SummaryContent
 				menuLinks={links}
 				title="Sommaire"
 				className={cx(classes.summarySticky)}
 			/>
-			<div className={fr.cx("fr-col-12", "fr-col-lg-9")}>{main}</div>
+			<div className={fr.cx("fr-col-12", "fr-col-lg-9")}>{body}</div>
 		</div>
 	);
 }
 
 const useStyles = tss.withName(CmsPageLayout.name).create(() => ({
+	title: {
+		color: fr.colors.decisions.text.active.blueFrance.default,
+	},
 	footerContent: {
 		borderTop: "2px solid var(--border-default-grey)",
 		marginBottom: fr.spacing("3w"),

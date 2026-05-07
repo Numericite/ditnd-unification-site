@@ -1,14 +1,20 @@
 import { fr } from "@codegouvfr/react-dsfr";
-import Summary from "@codegouvfr/react-dsfr/Summary";
+import Summary, { type SummaryProps } from "@codegouvfr/react-dsfr/Summary";
 import type { Link } from "~/utils/tools";
 
 type Props = {
 	menuLinks: Link[];
 	className?: string;
 	title: string;
+	as?: SummaryProps["as"];
 };
 
-export default function SummaryContent({ menuLinks, className, title }: Props) {
+export default function SummaryContent({
+	menuLinks,
+	className,
+	title,
+	as = "h2",
+}: Props) {
 	return (
 		<div
 			className={fr.cx(
@@ -24,6 +30,7 @@ export default function SummaryContent({ menuLinks, className, title }: Props) {
 				className={className}
 				links={menuLinks}
 				title={title}
+				as={as}
 			/>
 		</div>
 	);
