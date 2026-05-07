@@ -21,7 +21,6 @@ import MainNavigation from "~/components/ui/Navigation/MainNavigation";
 import SeoMeta from "~/components/ui/SeoMeta";
 import { fr } from "@codegouvfr/react-dsfr";
 import type { GlobalData } from "~/server/global-data";
-import { getGlobalData } from "~/server/global-data";
 
 declare module "@codegouvfr/react-dsfr/next-pagesdir" {
 	interface RegisterLink {
@@ -211,6 +210,7 @@ const WrappedApp = withDsfr(api.withTRPC(withAppEmotionCache(App)));
 
 	let globalData: GlobalData | undefined;
 	try {
+		const { getGlobalData } = await import("~/server/global-data");
 		globalData = await getGlobalData();
 	} catch (err) {
 		console.error("[_app.getInitialProps] global-data failed:", err);
