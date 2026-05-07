@@ -141,6 +141,7 @@ const ChatBot = () => {
 	}, []);
 
 	const sendMessage = async (text: string) => {
+		dialogRef.current?.focus();
 		setUserQuestion(text);
 		setMessage("");
 		setError(null);
@@ -194,6 +195,15 @@ const ChatBot = () => {
 								className={cx(classes.closeButton)}
 							/>
 						</div>
+
+						<output
+							aria-live="polite"
+							aria-atomic="true"
+							className="fr-sr-only"
+						>
+							{isPending && "Chargement de la réponse en cours"}
+							{!isPending && hasResponse && "Réponse reçue"}
+						</output>
 
 						<div
 							ref={scrollAreaRef}
@@ -268,24 +278,17 @@ const ChatBot = () => {
 							)}
 
 							{isPending && (
-								<output className={cx(classes.typingContainer)}>
-									<span className="fr-sr-only">
-										Chargement de la réponse en cours
-									</span>
-									<div
-										className={cx(classes.typingIndicator)}
-										aria-hidden="true"
-									>
+								<div className={cx(classes.typingContainer)} aria-hidden="true">
+									<div className={cx(classes.typingIndicator)}>
 										<span />
 										<span />
 										<span />
 									</div>
-								</output>
+								</div>
 							)}
 
 							{hasResponse && (
 								<>
-									<output className="fr-sr-only">Réponse reçue</output>
 									<p className={cx(classes.sourcesLabel)}>
 										<i className="fr-icon-chat-3-line" aria-hidden="true" />
 										En résumé
