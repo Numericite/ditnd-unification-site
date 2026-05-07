@@ -1,7 +1,6 @@
 import { api } from "~/utils/api";
 import { fr } from "@codegouvfr/react-dsfr";
 import Pagination from "@codegouvfr/react-dsfr/Pagination";
-import { keepPreviousData } from "@tanstack/react-query";
 import type { FiltersQuery } from "./GuidesFiltersDisplay";
 import { useEffect, useRef, useState } from "react";
 import { SearchBarUI } from "../ui/SearchPage/SearchBarUI";
@@ -101,10 +100,7 @@ export const SearchGuidesDisplay = ({
 
 	const { data, isLoading } = api.practicalGuide.getByFilters.useQuery(
 		{ ...filters, text: query, page, limit: DEFAULT_PAGE_SIZE },
-		{
-			placeholderData: keepPreviousData,
-			...(matchesInitialQueryKey ? { initialData } : {}),
-		},
+		matchesInitialQueryKey ? { initialData } : {},
 	);
 
 	const items = data?.items;
@@ -114,7 +110,7 @@ export const SearchGuidesDisplay = ({
 	return (
 		<>
 			<SearchBarUI value={query} onClick={(query) => setQuery(query)} />
-			{isLoading && !data ? (
+			{isLoading ? (
 				<EmptyScreenZone>
 					<Loader />
 				</EmptyScreenZone>

@@ -1,7 +1,6 @@
 import { api } from "~/utils/api";
 import { fr } from "@codegouvfr/react-dsfr";
 import Pagination from "@codegouvfr/react-dsfr/Pagination";
-import { keepPreviousData } from "@tanstack/react-query";
 import { useEffect, useRef, useState } from "react";
 import { SearchBarUI } from "../ui/SearchPage/SearchBarUI";
 import { Loader } from "../ui/Loader";
@@ -109,10 +108,7 @@ export const SearchCoursesDisplay = ({
 
 	const { data, isLoading } = api.course.getByFilters.useQuery(
 		{ ...filters, text: query, page, limit: DEFAULT_PAGE_SIZE },
-		{
-			placeholderData: keepPreviousData,
-			...(matchesInitialQueryKey ? { initialData } : {}),
-		},
+		matchesInitialQueryKey ? { initialData } : {},
 	);
 
 	const items = data?.items;
@@ -122,7 +118,7 @@ export const SearchCoursesDisplay = ({
 	return (
 		<>
 			<SearchBarUI value={query} onClick={(query) => setQuery(query)} />
-			{isLoading && !data ? (
+			{isLoading ? (
 				<EmptyScreenZone>
 					<Loader />
 				</EmptyScreenZone>

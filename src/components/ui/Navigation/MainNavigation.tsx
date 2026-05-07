@@ -10,8 +10,16 @@ import SkipLinks from "@codegouvfr/react-dsfr/SkipLinks";
 
 export default function MainNavigation() {
 	const router = useRouter();
-	const [headerSearch, setHeaderSearch] = useState("");
+	const initialHeaderSearch =
+		typeof router.query.search === "string" ? router.query.search : "";
+	const [headerSearch, setHeaderSearch] = useState(initialHeaderSearch);
 	const searchInputRef = useRef<HTMLInputElement>(null);
+
+	useEffect(() => {
+		const search =
+			typeof router.query.search === "string" ? router.query.search : "";
+		setHeaderSearch(search);
+	}, [router.query.search]);
 
 	const personas = personsAndProTiles(personStore.get());
 
@@ -127,11 +135,9 @@ export default function MainNavigation() {
 					onSearchButtonClick={(text) => {
 						const trimmed = text.trim();
 						if (!trimmed) return;
-						setHeaderSearch("");
 						router.push(`/recherche?search=${encodeURIComponent(trimmed)}`);
 					}}
 					allowEmptySearch={false}
-					clearSearchInputOnSearch
 					serviceTitle="Maison de l'autisme"
 					serviceTagline="Site national d'informations sur l'autisme et les troubles du neurodéveloppement"
 				/>
