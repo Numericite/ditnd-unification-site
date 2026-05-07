@@ -65,7 +65,7 @@ export default function CardDisplay({
 					<a
 						className="fr-link fr-icon-arrow-right-line fr-link--icon-right"
 						href={redirect}
-						aria-label={`${redirectText} : ${title}`}
+						aria-label={`${redirectText} : ${title}, nouvelle fenêtre`}
 						title={`${redirectText} : ${title}, nouvelle fenêtre`}
 						target="_blank"
 						rel="noopener noreferrer"

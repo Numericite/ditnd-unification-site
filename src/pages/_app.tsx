@@ -124,13 +124,17 @@ function App({ Component, pageProps }: AppPropsWithGlobal) {
 							text: "Code source",
 							linkProps: {
 								href: "https://github.com/Numericite/ditnd-unification-site",
+								"aria-label": "Code source, nouvelle fenêtre",
 								title: "Code source, nouvelle fenêtre",
+								target: "_blank",
+								rel: "noopener noreferrer",
 							},
 						},
 						{
 							text: "Contact particuliers",
 							linkProps: {
 								href: "https://www.autismeinfoservice.fr/contact",
+								"aria-label": "Contact particuliers, nouvelle fenêtre",
 								title: "Contact particuliers, nouvelle fenêtre",
 								target: "_blank",
 								rel: "noopener noreferrer",

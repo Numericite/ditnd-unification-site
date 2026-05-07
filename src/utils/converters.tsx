@@ -133,6 +133,7 @@ export const uploadConverter: JSXConverters<DefaultNodeTypes>["upload"] = ({
 			target="_blank"
 			rel="noopener noreferrer"
 			href={value.url ?? ""}
+			aria-label={`${value.alt}, nouvelle fenêtre`}
 			title={`${value.alt}, nouvelle fenêtre`}
 		>
 			{value.alt}
@@ -235,6 +236,7 @@ export const linkConverter: JSXConverters<DefaultNodeTypes>["link"] = (
 				href={href}
 				target="_blank"
 				rel="noopener noreferrer"
+				aria-label={`${linkText}, nouvelle fenêtre`}
 				title={`${linkText}, nouvelle fenêtre`}
 			>
 				{childrenJSX}
@@ -281,6 +283,7 @@ export const citationConverter: JSXConverter<SerializedBlockNode> = ({
 					href={value.sourceUrl}
 					target="_blank"
 					rel="noopener noreferrer"
+					aria-label={`${value.source}, nouvelle fenêtre`}
 					title={`${value.source}, nouvelle fenêtre`}
 				>
 					{value.source}

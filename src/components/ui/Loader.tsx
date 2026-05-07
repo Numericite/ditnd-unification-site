@@ -36,5 +36,10 @@ const useStyles = tss.withName(Loader.name).create(() => ({
 				"--icon-size": "2rem",
 			},
 		},
+		"@media (prefers-reduced-motion: reduce)": {
+			i: {
+				animation: "none",
+			},
+		},
 	},
 }));
