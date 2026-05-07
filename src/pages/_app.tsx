@@ -21,6 +21,7 @@ import MainNavigation from "~/components/ui/Navigation/MainNavigation";
 import SeoMeta from "~/components/ui/SeoMeta";
 import { fr } from "@codegouvfr/react-dsfr";
 import type { GlobalData } from "~/server/global-data";
+import { getGlobalData } from "~/server/global-data";
 
 declare module "@codegouvfr/react-dsfr/next-pagesdir" {
 	interface RegisterLink {
@@ -208,24 +209,11 @@ const WrappedApp = withDsfr(api.withTRPC(withAppEmotionCache(App)));
 		return appProps;
 	}
 
-	const req = appContext.ctx.req;
-	const host = req?.headers?.host;
-	const proto =
-		(Array.isArray(req?.headers?.["x-forwarded-proto"])
-			? req?.headers?.["x-forwarded-proto"][0]
-			: req?.headers?.["x-forwarded-proto"]) ?? "http";
-	const baseUrl = host
-		? `${proto}://${host}`
-		: `http://localhost:${process.env.PORT ?? 3000}`;
-
 	let globalData: GlobalData | undefined;
 	try {
-		const res = await fetch(`${baseUrl}/api/global-data`);
-		if (res.ok) {
-			globalData = (await res.json()) as GlobalData;
-		}
+		globalData = await getGlobalData();
 	} catch (err) {
-		console.error("[_app.getInitialProps] global-data fetch failed:", err);
+		console.error("[_app.getInitialProps] global-data failed:", err);
 	}
 
 	return {
