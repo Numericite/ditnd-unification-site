@@ -651,6 +651,12 @@ const useStyles = tss.withName(ChatBot.name).create({
 			"0%, 60%, 100%": { transform: "translateY(0)" },
 			"30%": { transform: "translateY(-6px)" },
 		},
+		"@media (prefers-reduced-motion: reduce)": {
+			"& span": {
+				animation: "none",
+				opacity: 0.6,
+			},
+		},
 	},
 	inputArea: {
 		marginTop: "auto",
