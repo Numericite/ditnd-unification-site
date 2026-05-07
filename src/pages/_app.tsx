@@ -1,21 +1,26 @@
 import { Footer } from "@codegouvfr/react-dsfr/Footer";
 import { headerFooterDisplayItem } from "@codegouvfr/react-dsfr/Display";
 import { createNextDsfrIntegrationApi } from "@codegouvfr/react-dsfr/next-pagesdir";
-import type { AppProps } from "next/app";
+import NextApp, { type AppContext, type AppProps } from "next/app";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { useEffect } from "react";
 import { createEmotionSsrAdvancedApproach } from "tss-react/next/pagesDir";
 import { api } from "~/utils/api";
-import { homeCMSStore, personStore, proStore, tdhStore } from "~/state/store";
-import { Loader } from "~/components/ui/Loader";
+import {
+	footerTitleStore,
+	homeCMSStore,
+	personStore,
+	proStore,
+	tdhStore,
+} from "~/state/store";
 import { tss } from "tss-react/dsfr";
 import ChatBot from "~/components/Chatbot/Chatbot";
 import "~/utils/styles/keyframes.css";
 import MainNavigation from "~/components/ui/Navigation/MainNavigation";
-import { EmptyScreenZone } from "~/components/ui/EmptyScreenZone";
 import SeoMeta from "~/components/ui/SeoMeta";
 import { fr } from "@codegouvfr/react-dsfr";
+import type { GlobalData } from "~/server/global-data";
 
 declare module "@codegouvfr/react-dsfr/next-pagesdir" {
 	interface RegisterLink {
@@ -45,9 +50,25 @@ const { withDsfr, dsfrDocumentApi } = createNextDsfrIntegrationApi({
 
 export { augmentDocumentWithEmotionCache, dsfrDocumentApi };
 
-function App({ Component, pageProps }: AppProps) {
+type AppPropsWithGlobal = AppProps & {
+	pageProps: AppProps["pageProps"] & { globalData?: GlobalData };
+};
+
+function seedStoresFromGlobalData(globalData: GlobalData) {
+	homeCMSStore.set(globalData.homeCMS);
+	personStore.set(globalData.persons);
+	proStore.set(globalData.professionals);
+	tdhStore.set(globalData.conditions);
+	footerTitleStore.set(globalData.footerTitle);
+}
+
+function App({ Component, pageProps }: AppPropsWithGlobal) {
 	const { classes, cx } = useStyles();
 	const router = useRouter();
+
+	if (pageProps.globalData) {
+		seedStoresFromGlobalData(pageProps.globalData);
+	}
 
 	useEffect(() => {
 		const handleRouteChange = () => {
@@ -59,27 +80,8 @@ function App({ Component, pageProps }: AppProps) {
 		};
 	}, [router.events]);
 
-	const { data: conditions, isLoading: isLoadingHomePage } =
-		api.condition.all.useQuery();
-
-	const { data: persons, isLoading: isLoadingPersons } =
-		api.persona.persons.useQuery();
-
-	const { data: homeCMS, isLoading: isLoadingHomeCMS } =
-		api.cms.home.useQuery();
-
-	const { data: footerTitle, isLoading: isLoadingFooterTitle } =
-		api.cms.footerTitle.useQuery();
-
-	const { data: professionalPersonas, isLoading: isLoadingPersona } =
-		api.persona.professionals.useQuery();
-
-	if (homeCMS && !isLoadingHomeCMS) homeCMSStore.set(homeCMS);
-
-	if (professionalPersonas) proStore.set(professionalPersonas);
-	if (persons) personStore.set(persons);
-
-	tdhStore.set(conditions);
+	const footerTitle =
+		pageProps.globalData?.footerTitle ?? footerTitleStore.get();
 
 	return (
 		<>
@@ -92,16 +94,7 @@ function App({ Component, pageProps }: AppProps) {
 				<MainNavigation />
 
 				<main>
-					{isLoadingHomePage ||
-					isLoadingPersona ||
-					isLoadingFooterTitle ||
-					isLoadingPersons ? (
-						<EmptyScreenZone>
-							<Loader />
-						</EmptyScreenZone>
-					) : (
-						<Component {...pageProps} />
-					)}
+					<Component {...pageProps} />
 				</main>
 
 				<div className={cx(classes.chatBotsWrapper)}>
@@ -198,4 +191,46 @@ const useStyles = tss.withName(App.name).create({
 	},
 });
 
-export default withDsfr(api.withTRPC(withAppEmotionCache(App)));
+const WrappedApp = withDsfr(api.withTRPC(withAppEmotionCache(App)));
+
+(
+	WrappedApp as unknown as {
+		getInitialProps: (ctx: AppContext) => Promise<unknown>;
+	}
+).getInitialProps = async (appContext: AppContext) => {
+	const appProps = await NextApp.getInitialProps(appContext);
+
+	if (typeof window !== "undefined") {
+		return appProps;
+	}
+
+	const req = appContext.ctx.req;
+	const host = req?.headers?.host;
+	const proto =
+		(Array.isArray(req?.headers?.["x-forwarded-proto"])
+			? req?.headers?.["x-forwarded-proto"][0]
+			: req?.headers?.["x-forwarded-proto"]) ?? "http";
+	const baseUrl = host
+		? `${proto}://${host}`
+		: `http://localhost:${process.env.PORT ?? 3000}`;
+
+	let globalData: GlobalData | undefined;
+	try {
+		const res = await fetch(`${baseUrl}/api/global-data`);
+		if (res.ok) {
+			globalData = (await res.json()) as GlobalData;
+		}
+	} catch (err) {
+		console.error("[_app.getInitialProps] global-data fetch failed:", err);
+	}
+
+	return {
+		...appProps,
+		pageProps: {
+			...appProps.pageProps,
+			globalData,
+		},
+	};
+};
+
+export default WrappedApp;

@@ -23,4 +23,6 @@ export const personStore = observable<PersonaTile[]>([]);
 
 export const proStore = observable<PersonaTile[]>([]);
 
+export const footerTitleStore = observable<string>("");
+
 export const chatbotOpenStore = observable<boolean>(false);

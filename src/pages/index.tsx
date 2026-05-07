@@ -3,9 +3,7 @@ import { tss } from "tss-react/dsfr";
 import { fr } from "@codegouvfr/react-dsfr";
 import { PersonaTiles } from "~/components/HomePage/PersonaTiles";
 import SearchBar from "@codegouvfr/react-dsfr/SearchBar";
-import { api } from "~/utils/api";
 import MostViewedGuides from "~/components/HomePage/MostViewedGuides";
-import { Loader } from "~/components/ui/Loader";
 import { useState } from "react";
 import { useRouter } from "next/router";
 import { EmptyScreenZone } from "~/components/ui/EmptyScreenZone";
@@ -13,29 +11,27 @@ import { homeCMSStore, personStore } from "~/state/store";
 import { personsAndProTiles } from "~/utils/tools";
 import Image from "next/image";
 import PageContent from "~/components/ui/PageContent";
+import type { GetServerSideProps } from "next";
+import { createCaller } from "~/server/api/root";
+import { createTRPCContext } from "~/server/api/trpc";
+import type { AugmentedPracticalGuide } from "~/server/api/routers/practical-guides";
 
-export default function Home() {
+type Props = {
+	mostViewedGuides: AugmentedPracticalGuide[];
+};
+
+export default function Home({ mostViewedGuides }: Props) {
 	const { classes, cx } = useStyles();
 
 	const [search, setSearch] = useState("");
 
 	const router = useRouter();
 
-	const { data: mostViewedGuides, isLoading: isLoadingViewedGuides } =
-		api.practicalGuide.getByViews.useQuery();
-
 	const persons = personStore.get();
 
 	const homeCMS = homeCMSStore.get();
 
 	const tiles = personsAndProTiles(persons);
-
-	if (isLoadingViewedGuides || !persons)
-		return (
-			<EmptyScreenZone>
-				<Loader />
-			</EmptyScreenZone>
-		);
 
 	if (!homeCMS)
 		return (
@@ -161,6 +157,17 @@ export default function Home() {
 		</>
 	);
 }
+
+export const getServerSideProps: GetServerSideProps<Props> = async () => {
+	const caller = createCaller(await createTRPCContext());
+	const mostViewedGuides = await caller.practicalGuide.getByViews();
+
+	return {
+		props: {
+			mostViewedGuides,
+		},
+	};
+};
 
 const useStyles = tss.withName(Home.name).create({
 	headerRow: {

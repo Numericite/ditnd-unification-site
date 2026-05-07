@@ -11,26 +11,41 @@ import { EmptyScreenZone } from "~/components/ui/EmptyScreenZone";
 import CardsDisplayGroup from "~/components/ui/Cards/CardsDisplayGroup";
 import PageContent from "~/components/ui/PageContent";
 import { tss } from "tss-react/dsfr";
+import type { GetServerSideProps } from "next";
+import { createCaller } from "~/server/api/root";
+import { createTRPCContext } from "~/server/api/trpc";
+import type { GlobalSearchResult } from "~/server/api/routers/search";
 
-export default function Recherche() {
+type Props = {
+	initialQuery: string;
+	initialData: GlobalSearchResult | null;
+};
+
+export default function Recherche({ initialQuery, initialData }: Props) {
 	const { classes, cx } = useStyles();
 	const router = useRouter();
-	const [search, setSearch] = useState("");
-	const [query, setQuery] = useState("");
+	const [search, setSearch] = useState(initialQuery);
+	const [query, setQuery] = useState(initialQuery);
 
 	useEffect(() => {
 		if (!router.isReady) return;
 		const param =
 			typeof router.query.search === "string" ? router.query.search : "";
-		if (param) {
+		if (param !== query) {
 			setSearch(param);
 			setQuery(param);
 		}
+		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [router.isReady, router.query.search]);
 
 	const { data, isLoading } = api.search.global.useQuery(
 		{ text: query },
-		{ enabled: query.length > 0 },
+		{
+			enabled: query.length > 0,
+			...(initialData && query === initialQuery && initialQuery.length > 0
+				? { initialData }
+				: {}),
+		},
 	);
 
 	const guidesCount = data?.guides.length ?? 0;
@@ -273,6 +288,40 @@ export default function Recherche() {
 		</>
 	);
 }
+
+export const getServerSideProps: GetServerSideProps<Props> = async (ctx) => {
+	const initialQuery =
+		typeof ctx.query.search === "string" ? ctx.query.search.trim() : "";
+
+	if (!initialQuery) {
+		return {
+			props: {
+				initialQuery: "",
+				initialData: null,
+			},
+		};
+	}
+
+	const caller = createCaller(await createTRPCContext());
+
+	try {
+		const initialData = await caller.search.global({ text: initialQuery });
+		return {
+			props: {
+				initialQuery,
+				initialData,
+			},
+		};
+	} catch (err) {
+		console.error("[recherche] SSR search failed:", err);
+		return {
+			props: {
+				initialQuery,
+				initialData: null,
+			},
+		};
+	}
+};
 
 const useStyles = tss.withName(Recherche.name).create({
 	sectionSpacing: {

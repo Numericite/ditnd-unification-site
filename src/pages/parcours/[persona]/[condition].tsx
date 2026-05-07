@@ -1,46 +1,29 @@
 import { fr } from "@codegouvfr/react-dsfr";
 import Breadcrumb from "@codegouvfr/react-dsfr/Breadcrumb";
+import type { GetServerSideProps } from "next";
 import Head from "next/head";
 import Image from "next/image";
-import { useRouter } from "next/router";
 import { tss } from "tss-react/dsfr";
 import PersonaDisplay from "~/components/PersonaPage/PersonaDisplay";
-import { EmptyScreenZone } from "~/components/ui/EmptyScreenZone";
-import { Loader } from "~/components/ui/Loader";
 import PageContent from "~/components/ui/PageContent";
+import { createCaller } from "~/server/api/root";
 import type { AugmentedJourney } from "~/server/api/routers/journeys";
-import { api } from "~/utils/api";
+import { createTRPCContext } from "~/server/api/trpc";
 
-function isProfessionalPersona(slug: string) {
+function isProfessionalPersona(_slug: string) {
 	// TODO: Réactiver le sous-niveau spécifique aux professionnels
 	// return slug.startsWith("pro");
 	return false;
 }
 
-export default function JourneyPage() {
+type Props = {
+	journey: AugmentedJourney;
+	persona: string;
+	condition: string;
+};
+
+export default function JourneyPage({ journey, persona, condition }: Props) {
 	const { classes, cx } = useStyles();
-
-	const router = useRouter();
-	const persona = router.query.persona as string;
-	const condition = router.query.condition as string;
-
-	const { data: journeyData, isLoading: isLoadingJourney } =
-		api.journey.getByPersona.useQuery({
-			persona: persona,
-		});
-
-	if (isLoadingJourney)
-		return (
-			<EmptyScreenZone>
-				<Loader />
-			</EmptyScreenZone>
-		);
-
-	if (!journeyData || journeyData.length === 0) {
-		return <EmptyScreenZone>Parcours introuvable</EmptyScreenZone>;
-	}
-
-	const journey = journeyData[0] as AugmentedJourney;
 
 	const isProPersona = isProfessionalPersona(persona);
 
@@ -127,6 +110,36 @@ export default function JourneyPage() {
 		</>
 	);
 }
+
+export const getServerSideProps: GetServerSideProps<Props> = async (ctx) => {
+	const persona = ctx.params?.persona;
+	const condition = ctx.params?.condition;
+
+	if (typeof persona !== "string" || typeof condition !== "string") {
+		return { notFound: true };
+	}
+
+	const caller = createCaller(await createTRPCContext());
+
+	try {
+		const journeys = await caller.journey.getByPersona({ persona });
+		const journey = journeys[0];
+
+		if (!journey) {
+			return { notFound: true };
+		}
+
+		return {
+			props: {
+				journey,
+				persona,
+				condition,
+			},
+		};
+	} catch {
+		return { notFound: true };
+	}
+};
 
 const useStyles = tss.withName(JourneyPage.name).create({
 	coloredContainer: {

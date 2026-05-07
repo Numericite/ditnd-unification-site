@@ -9,21 +9,32 @@ import { useState } from "react";
 import Breadcrumb from "@codegouvfr/react-dsfr/Breadcrumb";
 import SkipLinks from "@codegouvfr/react-dsfr/SkipLinks";
 import { tss } from "tss-react/dsfr";
-import { useRouter } from "next/router";
 import { deserialize } from "~/utils/tools";
 import PageContent from "~/components/ui/PageContent";
+import type { GetServerSideProps } from "next";
+import { createCaller } from "~/server/api/root";
+import { createTRPCContext } from "~/server/api/trpc";
+import type { AugmentedPracticalGuide } from "~/server/api/routers/practical-guides";
+import { DEFAULT_PAGE_SIZE, type PaginatedResult } from "~/utils/pagination";
 
-export default function PracticalGuides() {
+type GuidesPaginatedResult = PaginatedResult<AugmentedPracticalGuide>;
+
+type Props = {
+	initialFilters: FiltersQuery;
+	initialQuery: string;
+	initialPage: number;
+	initialData: GuidesPaginatedResult;
+};
+
+export default function PracticalGuides({
+	initialFilters,
+	initialQuery,
+	initialPage,
+	initialData,
+}: Props) {
 	const { classes, cx } = useStyles();
 
-	const router = useRouter();
-	const { conditions, themes, personas } = router.query;
-
-	const [filters, setFilters] = useState<FiltersQuery>({
-		conditions: deserialize(conditions) ?? [],
-		themes: deserialize(themes) ?? [],
-		personas: deserialize(personas) ?? [],
-	});
+	const [filters, setFilters] = useState<FiltersQuery>(initialFilters);
 
 	return (
 		<>
@@ -80,7 +91,13 @@ export default function PracticalGuides() {
 								"fr-px-md-4w",
 							)}
 						>
-							<SearchGuidesDisplay filters={filters} />
+							<SearchGuidesDisplay
+								filters={filters}
+								initialQuery={initialQuery}
+								initialPage={initialPage}
+								initialData={initialData}
+								initialFilters={initialFilters}
+							/>
 						</div>
 					</div>
 				</PageContent>
@@ -88,6 +105,43 @@ export default function PracticalGuides() {
 		</>
 	);
 }
+
+function parsePageParam(value: string | string[] | undefined): number {
+	const raw = Array.isArray(value) ? value[0] : value;
+	const parsed = raw ? parseInt(raw, 10) : 1;
+	return Number.isFinite(parsed) && parsed >= 1 ? parsed : 1;
+}
+
+export const getServerSideProps: GetServerSideProps<Props> = async (ctx) => {
+	const initialFilters: FiltersQuery = {
+		conditions: deserialize(
+			ctx.query.conditions as string | string[] | undefined,
+		),
+		themes: deserialize(ctx.query.themes as string | string[] | undefined),
+		personas: deserialize(ctx.query.personas as string | string[] | undefined),
+	};
+	const initialQuery =
+		typeof ctx.query.search === "string" ? ctx.query.search : "";
+	const initialPage = parsePageParam(ctx.query.page);
+
+	const caller = createCaller(await createTRPCContext());
+
+	const initialData = await caller.practicalGuide.getByFilters({
+		...initialFilters,
+		text: initialQuery,
+		page: initialPage,
+		limit: DEFAULT_PAGE_SIZE,
+	});
+
+	return {
+		props: {
+			initialFilters,
+			initialQuery,
+			initialPage,
+			initialData,
+		},
+	};
+};
 
 const useStyles = tss.withName(PracticalGuides.name).create({
 	borderRight: {

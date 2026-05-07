@@ -1,36 +1,18 @@
-import { useRouter } from "next/router";
-import { api } from "~/utils/api";
 import Breadcrumb from "@codegouvfr/react-dsfr/Breadcrumb";
 import Head from "next/head";
-import { Loader } from "~/components/ui/Loader";
 import PracticalGuidesDisplay from "~/components/PracticalGuides/PracticalGuidesDisplay";
 import { fr } from "@codegouvfr/react-dsfr";
-import { EmptyScreenZone } from "~/components/ui/EmptyScreenZone";
 import PageContent from "~/components/ui/PageContent";
+import type { GetServerSideProps } from "next";
+import { createCaller } from "~/server/api/root";
+import { createTRPCContext } from "~/server/api/trpc";
+import type { AugmentedPracticalGuide } from "~/server/api/routers/practical-guides";
 
-export default function PracticalGuidePage() {
-	const router = useRouter();
-	const slug = router.query.slug as string;
+type Props = {
+	guide: AugmentedPracticalGuide;
+};
 
-	const { data: guideData, isLoading: isLoadingData } =
-		api.practicalGuide.getBySlug.useQuery({
-			slug: slug,
-			draft: true,
-		});
-
-	const guide = guideData;
-
-	if (isLoadingData)
-		return (
-			<EmptyScreenZone>
-				<Loader />
-			</EmptyScreenZone>
-		);
-
-	if (!guide) {
-		return <EmptyScreenZone>Fiche introuvable</EmptyScreenZone>;
-	}
-
+export default function PracticalGuideDraftPage({ guide }: Props) {
 	return (
 		<>
 			<Head>
@@ -62,3 +44,25 @@ export default function PracticalGuidePage() {
 		</>
 	);
 }
+
+export const getServerSideProps: GetServerSideProps<Props> = async (ctx) => {
+	const slug = ctx.params?.slug;
+
+	if (typeof slug !== "string") {
+		return { notFound: true };
+	}
+
+	const caller = createCaller(await createTRPCContext());
+
+	try {
+		const guide = await caller.practicalGuide.getBySlug({ slug, draft: true });
+
+		if (!guide) {
+			return { notFound: true };
+		}
+
+		return { props: { guide } };
+	} catch {
+		return { notFound: true };
+	}
+};
