@@ -1,9 +1,8 @@
 import Accordion from "@codegouvfr/react-dsfr/Accordion";
 import Checkbox from "@codegouvfr/react-dsfr/Checkbox";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import type { FilterItem } from "~/components/PracticalGuides/GuidesFiltersDisplay";
 import { useBreakpointsValuesPx } from "@codegouvfr/react-dsfr/useBreakpointsValuesPx";
-import { useWindowInnerSize } from "@codegouvfr/react-dsfr/tools/useWindowInnerSize";
 import { useRouter } from "next/router";
 import { deserialize } from "~/utils/tools";
 import { tss } from "tss-react/dsfr";
@@ -17,10 +16,14 @@ type Props = {
 export const Filter = ({ label, value, handleOnChange }: Props) => {
 	const { breakpointsValues } = useBreakpointsValuesPx();
 
-	const { windowInnerWidth } = useWindowInnerSize();
+	const [expand, setExpand] = useState<boolean>(true);
 
-	const isMobile = windowInnerWidth < breakpointsValues.md;
-	const [expand, setExpand] = useState<boolean>(!isMobile);
+	useEffect(() => {
+		if (window.innerWidth < breakpointsValues.md) {
+			setExpand(false);
+		}
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, []);
 
 	const router = useRouter();
 	const { conditions, themes, personas, type } = router.query;
