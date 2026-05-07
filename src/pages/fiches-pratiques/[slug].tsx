@@ -1,15 +1,16 @@
-import { useRouter } from "next/router";
 import { api } from "~/utils/api";
 import Breadcrumb from "@codegouvfr/react-dsfr/Breadcrumb";
-import { Loader } from "~/components/ui/Loader";
 import PracticalGuidesDisplay from "~/components/PracticalGuides/PracticalGuidesDisplay";
 import { fr } from "@codegouvfr/react-dsfr";
-import { EmptyScreenZone } from "~/components/ui/EmptyScreenZone";
 import PageContent from "~/components/ui/PageContent";
 import SeoMeta from "~/components/ui/SeoMeta";
 import { useEffect } from "react";
 import { personStore, proStore } from "~/state/store";
 import type { Media } from "~/payload/payload-types";
+import type { GetServerSideProps } from "next";
+import { createCaller } from "~/server/api/root";
+import { createTRPCContext } from "~/server/api/trpc";
+import type { AugmentedPracticalGuide } from "~/server/api/routers/practical-guides";
 
 type BreadcrumbSegment = {
 	label: string;
@@ -44,18 +45,12 @@ function getParcoursBreadcrumbSegments(
 	];
 }
 
-export default function PracticalGuidePage() {
-	const router = useRouter();
-	const slug = router.query.slug as string;
-	const from = router.query.from as string | undefined;
+type Props = {
+	guide: AugmentedPracticalGuide;
+	from: string | null;
+};
 
-	const { data: guideData, isLoading: isLoadingData } =
-		api.practicalGuide.getBySlug.useQuery({
-			slug: slug,
-		});
-
-	const guide = guideData;
-
+export default function PracticalGuidePage({ guide, from }: Props) {
 	const { mutate: incremenView } =
 		api.practicalGuide.incrementView.useMutation();
 
@@ -65,18 +60,7 @@ export default function PracticalGuidePage() {
 		}
 	}, [guide?.id]);
 
-	if (isLoadingData)
-		return (
-			<EmptyScreenZone>
-				<Loader />
-			</EmptyScreenZone>
-		);
-
-	if (!guide) {
-		return <EmptyScreenZone>Fiche introuvable</EmptyScreenZone>;
-	}
-
-	const parcoursSegments = getParcoursBreadcrumbSegments(from);
+	const parcoursSegments = getParcoursBreadcrumbSegments(from ?? undefined);
 	const breadcrumbSegments: BreadcrumbSegment[] = parcoursSegments ?? [
 		{
 			label: "Fiches Pratiques",
@@ -127,3 +111,32 @@ export default function PracticalGuidePage() {
 		</>
 	);
 }
+
+export const getServerSideProps: GetServerSideProps<Props> = async (ctx) => {
+	const slug = ctx.params?.slug as string | undefined;
+	const fromParam = ctx.query.from;
+	const from = typeof fromParam === "string" ? fromParam : null;
+
+	if (!slug) {
+		return { notFound: true };
+	}
+
+	const caller = createCaller(await createTRPCContext());
+
+	try {
+		const guide = await caller.practicalGuide.getBySlug({ slug });
+
+		if (!guide) {
+			return { notFound: true };
+		}
+
+		return {
+			props: {
+				guide,
+				from,
+			},
+		};
+	} catch {
+		return { notFound: true };
+	}
+};
