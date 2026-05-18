@@ -48,7 +48,7 @@ export async function rerankCandidates<TMeta>(
 		body: JSON.stringify({
 			model: RERANK_MODEL,
 			query,
-			input: candidates.map((c) => c.text),
+			documents: candidates.map((c) => c.text),
 		}),
 	});
 
