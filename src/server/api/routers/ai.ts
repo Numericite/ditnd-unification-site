@@ -21,9 +21,11 @@ const ANN_CANDIDATES_PER_SOURCE = 12;
 // Hard cap on chunks fed to the LLM after reranking.
 const RERANK_TOP_K = 5;
 // Albert's bge-reranker-v2-m3 returns sigmoid-style scores in [0, 1].
-// On this corpus + colloquial French queries, even clearly-relevant hits rarely break 0.05,
-// so the floor sits low. 0.005 cleanly separates real signal (>= 0.008) from noise (<= 0.003).
-const RERANK_MIN_SCORE = 0.005;
+// With query expansion, real scores cleanly tier: direct hits >= 0.5, related >= 0.2,
+// noise < 0.05. 0.1 is the "quality floor": ensures we never surface weakly-related items
+// even when the query is mediocre, and yields an empty context (LLM says "no info") when
+// the corpus genuinely has nothing useful.
+const RERANK_MIN_SCORE = 0.1;
 // Relative gap: keep a candidate only if its score is at least this fraction of the top score.
 // 0.25 keeps anything within ~4× of the best hit — wide enough to surface clearly related
 // documents even when the absolute top score is modest.
