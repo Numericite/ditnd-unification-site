@@ -8,7 +8,7 @@ import {
 import { readFileSync } from "node:fs";
 import path from "node:path";
 import { generateEmbedding } from "~/payload/services/embedding";
-import { expandQuery } from "~/payload/services/queryExpansion";
+import { expandQuery, type RagSource } from "~/payload/services/queryExpansion";
 import { rerankCandidates } from "~/payload/services/rerank";
 import { sql } from "@payloadcms/db-postgres";
 import type { Condition } from "~/payload/payload-types";
@@ -37,7 +37,7 @@ const FALLBACK_TOP_K_PER_SOURCE = 3;
 // burning tokens on absurdly long inputs.
 const MAX_USER_MESSAGE_CHARS = 800;
 
-type Source = "guides" | "courses";
+type Source = RagSource;
 
 type VectorRow = {
 	doc_id: string;
@@ -93,14 +93,18 @@ export const aiRouter = createTRPCRouter({
 				});
 			}
 
-			// 1a. Expand the query with formal synonyms via Albert chat to bridge colloquial
-			//     French vocabulary to the corpus vocabulary. Used for embedding + reranking,
-			//     NOT for the final LLM call (we don't want to alter the user's question).
-			//     If expansion fails, fall back to the original query.
+			// 1a. Expand the query with formal synonyms via Albert chat and detect intent:
+			//     does the user want practical guides, courses (training), or both?
+			//     The expanded string is used for embedding + reranking. The original userMessage
+			//     is still what the LLM sees, so we don't alter the user's actual question.
+			//     If expansion fails, fall back to the original query and assume both sources.
 			let retrievalQuery = userMessage;
+			let targetSources: RagSource[] = ["guides", "courses"];
 			try {
-				const { expanded } = await expandQuery(userMessage);
+				const { expanded, targetSources: detected } =
+					await expandQuery(userMessage);
 				retrievalQuery = expanded;
+				targetSources = detected;
 			} catch (err) {
 				console.warn(
 					"[RAG] Query expansion failed, using original query:",
@@ -153,9 +157,11 @@ export const aiRouter = createTRPCRouter({
 			let selectedChunks: RetrievedChunk[];
 			let primarySource: Source;
 
+			const intent = new Set<Source>(targetSources);
+
 			if (mergedCandidates.length === 0) {
 				selectedChunks = [];
-				primarySource = "guides";
+				primarySource = targetSources[0] ?? "guides";
 			} else {
 				try {
 					const reranked = await rerankCandidates(
@@ -171,21 +177,44 @@ export const aiRouter = createTRPCRouter({
 						rerankScore: r.score,
 					}));
 
-					selectedChunks = applyRelevanceGate(rerankedChunks);
-					primarySource = selectedChunks[0]?.source ?? "guides";
+					// Apply the quality gate, then constrain to the intended sources.
+					// Courses have less text than guides and reliably score lower in absolute
+					// terms — so when the user explicitly wants courses, we also force-surface
+					// the top-1 course (and vice versa) even if it didn't pass the gate.
+					const gated = applyRelevanceGate(rerankedChunks);
+					const filtered = gated.filter((c) => intent.has(c.source));
+
+					for (const source of targetSources) {
+						const hasSource = filtered.some((c) => c.source === source);
+						if (!hasSource) {
+							const topFromSource = rerankedChunks.find(
+								(c) => c.source === source,
+							);
+							if (topFromSource) filtered.push(topFromSource);
+						}
+					}
+
+					selectedChunks = filtered.slice(0, RERANK_TOP_K);
+					primarySource =
+						targetSources[0] ?? selectedChunks[0]?.source ?? "guides";
 				} catch (err) {
 					console.warn(
 						"[RAG] Rerank call failed, falling back to cosine-ranked candidates:",
 						err instanceof Error ? err.message : String(err),
 					);
-					selectedChunks = [
-						...guideCandidates.slice(0, FALLBACK_TOP_K_PER_SOURCE),
-						...courseCandidates.slice(0, FALLBACK_TOP_K_PER_SOURCE),
-					];
-					// Lower cosine distance = more similar.
-					const bestGuide = guideCandidates[0]?.similarityScore ?? Infinity;
-					const bestCourse = courseCandidates[0]?.similarityScore ?? Infinity;
-					primarySource = bestCourse < bestGuide ? "courses" : "guides";
+					const fallback: RetrievedChunk[] = [];
+					if (intent.has("guides")) {
+						fallback.push(
+							...guideCandidates.slice(0, FALLBACK_TOP_K_PER_SOURCE),
+						);
+					}
+					if (intent.has("courses")) {
+						fallback.push(
+							...courseCandidates.slice(0, FALLBACK_TOP_K_PER_SOURCE),
+						);
+					}
+					selectedChunks = fallback;
+					primarySource = targetSources[0] ?? "guides";
 				}
 			}
 
