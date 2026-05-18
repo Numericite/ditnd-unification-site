@@ -131,7 +131,7 @@ export default function Recherche({ initialQuery, initialData }: Props) {
 							{data?.glossary && (
 								<div className={fr.cx("fr-col-12")}>
 									<CallOut
-										iconId="fr-icon-information-line"
+										className={fr.cx("fr-mb-0")}
 										title={data.glossary.name}
 										buttonProps={
 											data.glossary.link
