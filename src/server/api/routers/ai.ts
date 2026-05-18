@@ -8,14 +8,78 @@ import {
 import { readFileSync } from "node:fs";
 import path from "node:path";
 import { generateEmbedding } from "~/payload/services/embedding";
+import { expandQuery, type RagSource } from "~/payload/services/queryExpansion";
+import { rerankCandidates } from "~/payload/services/rerank";
 import { sql } from "@payloadcms/db-postgres";
 import type { Condition } from "~/payload/payload-types";
 import type { AugmentedPracticalGuide } from "./practical-guides";
 import type { AugmentedCourse } from "./courses";
 
+// RAG tuning constants.
+// Pull a wide candidate set per source via ANN, then rerank with a cross-encoder.
+const ANN_CANDIDATES_PER_SOURCE = 12;
+// Hard cap on chunks fed to the LLM after reranking.
+const RERANK_TOP_K = 5;
+// Albert's bge-reranker-v2-m3 returns sigmoid-style scores in [0, 1].
+// With query expansion, real scores cleanly tier: direct hits >= 0.5, related >= 0.2,
+// noise < 0.05. 0.1 is the "quality floor": ensures we never surface weakly-related items
+// even when the query is mediocre, and yields an empty context (LLM says "no info") when
+// the corpus genuinely has nothing useful.
+const RERANK_MIN_SCORE = 0.1;
+// Relative gap: keep a candidate only if its score is at least this fraction of the top score.
+// 0.25 keeps anything within ~4× of the best hit — wide enough to surface clearly related
+// documents even when the absolute top score is modest.
+const RERANK_RELATIVE_GAP = 0.25;
+// Fallback (rerank API failed): use cosine top-N per source. Best we can do without a cross-encoder.
+const FALLBACK_TOP_K_PER_SOURCE = 3;
+// Defense-in-depth limit on user input length. The Chatbot component enforces the same value
+// client-side with a friendly response; this guard protects against direct tRPC callers from
+// burning tokens on absurdly long inputs.
+const MAX_USER_MESSAGE_CHARS = 800;
+
+type Source = RagSource;
+
+type VectorRow = {
+	doc_id: string;
+	text: string;
+	similarity_score: number;
+};
+
+type RetrievedChunk = {
+	docId: string;
+	source: Source;
+	text: string;
+	similarityScore: number;
+};
+
+type RerankedChunk = RetrievedChunk & { rerankScore: number };
+
+// Filter reranked candidates by absolute floor AND relative gap, capped at top-K.
+function applyRelevanceGate(reranked: RerankedChunk[]): RerankedChunk[] {
+	const topChunk = reranked[0];
+	if (!topChunk) return [];
+
+	const topScore = topChunk.rerankScore;
+	const relativeFloor =
+		topScore > 0 ? topScore * RERANK_RELATIVE_GAP : -Infinity;
+
+	const kept: RerankedChunk[] = [];
+	for (const chunk of reranked) {
+		if (kept.length >= RERANK_TOP_K) break;
+		if (chunk.rerankScore < RERANK_MIN_SCORE) continue;
+		if (chunk.rerankScore < relativeFloor) continue;
+		kept.push(chunk);
+	}
+	return kept;
+}
+
 export const aiRouter = createTRPCRouter({
 	chatbotDirectSend: publicProcedure
-		.input(z.object({ userMessage: z.string() }))
+		.input(
+			z.object({
+				userMessage: z.string().max(MAX_USER_MESSAGE_CHARS),
+			}),
+		)
 		.mutation(async ({ input, ctx }) => {
 			const { userMessage } = input;
 
@@ -29,44 +93,162 @@ export const aiRouter = createTRPCRouter({
 				});
 			}
 
-			// 1. Retrieve relevant text chunks from search vectors
-			const embedding = await generateEmbedding(userMessage);
+			// 1a. Expand the query with formal synonyms via Albert chat and detect intent:
+			//     does the user want practical guides, courses (training), or both?
+			//     The expanded string is used for embedding + reranking. The original userMessage
+			//     is still what the LLM sees, so we don't alter the user's actual question.
+			//     If expansion fails, fall back to the original query and assume both sources.
+			let retrievalQuery = userMessage;
+			let targetSources: RagSource[] = ["guides", "courses"];
+			try {
+				const { expanded, targetSources: detected } =
+					await expandQuery(userMessage);
+				retrievalQuery = expanded;
+				targetSources = detected;
+			} catch (err) {
+				console.warn(
+					"[RAG] Query expansion failed, using original query:",
+					err instanceof Error ? err.message : String(err),
+				);
+			}
+
+			// 1b. Embed the (expanded) query with bge-m3.
+			const embedding = await generateEmbedding(retrievalQuery);
+			const embeddingJson = JSON.stringify(embedding);
+
+			// 2. Pull a wide candidate set from both vector tables (ANN recall).
 			const [retrieveGuideEmbeddings, retrieveCourseEmbeddings] =
 				await Promise.all([
 					ctx.payload.db.drizzle.execute(sql`
-					SELECT doc_id, text, embedding <=> ${JSON.stringify(embedding)}::vector as similarity_score
-					FROM practical_guide_search_vectors
-					ORDER BY embedding <=> ${JSON.stringify(embedding)}::vector
-					LIMIT 3
-				`),
+						SELECT doc_id, text, embedding <=> ${embeddingJson}::vector as similarity_score
+						FROM practical_guide_search_vectors
+						ORDER BY embedding <=> ${embeddingJson}::vector
+						LIMIT ${ANN_CANDIDATES_PER_SOURCE}
+					`),
 					ctx.payload.db.drizzle.execute(sql`
-					SELECT doc_id, text, embedding <=> ${JSON.stringify(embedding)}::vector as similarity_score
-					FROM courses_search_vectors
-					ORDER BY embedding <=> ${JSON.stringify(embedding)}::vector
-					LIMIT 3
-				`),
+						SELECT doc_id, text, embedding <=> ${embeddingJson}::vector as similarity_score
+						FROM courses_search_vectors
+						ORDER BY embedding <=> ${embeddingJson}::vector
+						LIMIT ${ANN_CANDIDATES_PER_SOURCE}
+					`),
 				]);
 
-			// 2. Fetch practical guide docs and course docs
+			const guideCandidates: RetrievedChunk[] = (
+				retrieveGuideEmbeddings.rows as VectorRow[]
+			).map((row) => ({
+				docId: row.doc_id,
+				source: "guides",
+				text: row.text,
+				similarityScore: row.similarity_score,
+			}));
+			const courseCandidates: RetrievedChunk[] = (
+				retrieveCourseEmbeddings.rows as VectorRow[]
+			).map((row) => ({
+				docId: row.doc_id,
+				source: "courses",
+				text: row.text,
+				similarityScore: row.similarity_score,
+			}));
+
+			const mergedCandidates = [...guideCandidates, ...courseCandidates];
+
+			// 3. Rerank with bge-reranker-v2-m3, then apply absolute floor + relative gap.
+			//    On failure: log + fallback to cosine top-N per source so the chatbot stays available.
+			let selectedChunks: RetrievedChunk[];
+			let primarySource: Source;
+
+			const intent = new Set<Source>(targetSources);
+
+			if (mergedCandidates.length === 0) {
+				selectedChunks = [];
+				primarySource = targetSources[0] ?? "guides";
+			} else {
+				try {
+					const reranked = await rerankCandidates(
+						retrievalQuery,
+						mergedCandidates.map((c) => ({
+							id: `${c.source}:${c.docId}`,
+							text: c.text,
+							meta: c,
+						})),
+					);
+					const rerankedChunks: RerankedChunk[] = reranked.map((r) => ({
+						...(r.meta as RetrievedChunk),
+						rerankScore: r.score,
+					}));
+
+					// Apply the quality gate, then constrain to the intended sources.
+					// Courses have less text than guides and reliably score lower in absolute
+					// terms — so when the user explicitly wants courses, we also force-surface
+					// the top-1 course (and vice versa) even if it didn't pass the gate.
+					const gated = applyRelevanceGate(rerankedChunks);
+					const filtered = gated.filter((c) => intent.has(c.source));
+
+					for (const source of targetSources) {
+						const hasSource = filtered.some((c) => c.source === source);
+						if (!hasSource) {
+							const topFromSource = rerankedChunks.find(
+								(c) => c.source === source,
+							);
+							if (topFromSource) filtered.push(topFromSource);
+						}
+					}
+
+					selectedChunks = filtered.slice(0, RERANK_TOP_K);
+					primarySource =
+						targetSources[0] ?? selectedChunks[0]?.source ?? "guides";
+				} catch (err) {
+					console.warn(
+						"[RAG] Rerank call failed, falling back to cosine-ranked candidates:",
+						err instanceof Error ? err.message : String(err),
+					);
+					const fallback: RetrievedChunk[] = [];
+					if (intent.has("guides")) {
+						fallback.push(
+							...guideCandidates.slice(0, FALLBACK_TOP_K_PER_SOURCE),
+						);
+					}
+					if (intent.has("courses")) {
+						fallback.push(
+							...courseCandidates.slice(0, FALLBACK_TOP_K_PER_SOURCE),
+						);
+					}
+					selectedChunks = fallback;
+					primarySource = targetSources[0] ?? "guides";
+				}
+			}
+
+			// 4. Fetch underlying Payload documents only for IDs that survived ranking.
+			const surfacedGuideIds = Array.from(
+				new Set(
+					selectedChunks
+						.filter((c) => c.source === "guides")
+						.map((c) => c.docId),
+				),
+			);
+			const surfacedCourseIds = Array.from(
+				new Set(
+					selectedChunks
+						.filter((c) => c.source === "courses")
+						.map((c) => c.docId),
+				),
+			);
+
 			const [practicalGuides, courses] = await Promise.all([
-				ctx.payload.find({
-					collection: "practical-guides",
-					where: {
-						id: {
-							in: retrieveGuideEmbeddings.rows.map(({ doc_id }) => doc_id),
-						},
-					},
-					depth: 1,
-				}),
-				ctx.payload.find({
-					collection: "courses",
-					where: {
-						id: {
-							in: retrieveCourseEmbeddings.rows.map(({ doc_id }) => doc_id),
-						},
-					},
-					depth: 1,
-				}),
+				surfacedGuideIds.length > 0
+					? ctx.payload.find({
+							collection: "practical-guides",
+							where: { id: { in: surfacedGuideIds } },
+							depth: 1,
+						})
+					: Promise.resolve({ docs: [] }),
+				surfacedCourseIds.length > 0
+					? ctx.payload.find({
+							collection: "courses",
+							where: { id: { in: surfacedCourseIds } },
+							depth: 1,
+						})
+					: Promise.resolve({ docs: [] }),
 			]);
 
 			const tmpPracticalGuides = (await Promise.all(
@@ -82,31 +264,37 @@ export const aiRouter = createTRPCRouter({
 
 			const tmpCourses = courses.docs as AugmentedCourse[];
 
-			// 3. Build context from retrieved chunks and determine primary source
-			type VectorRow = {
-				doc_id: string;
-				text: string;
-				similarity_score: number;
-			};
-			const guideRows = retrieveGuideEmbeddings.rows as VectorRow[];
-			const courseRows = retrieveCourseEmbeddings.rows as VectorRow[];
+			// Reorder the surfaced docs to follow the rerank ordering (best hit first).
+			const guideOrder = new Map(surfacedGuideIds.map((id, idx) => [id, idx]));
+			const courseOrder = new Map(
+				surfacedCourseIds.map((id, idx) => [id, idx]),
+			);
+			tmpPracticalGuides.sort(
+				(a, b) =>
+					(guideOrder.get(String(a.id)) ?? Number.MAX_SAFE_INTEGER) -
+					(guideOrder.get(String(b.id)) ?? Number.MAX_SAFE_INTEGER),
+			);
+			tmpCourses.sort(
+				(a, b) =>
+					(courseOrder.get(String(a.id)) ?? Number.MAX_SAFE_INTEGER) -
+					(courseOrder.get(String(b.id)) ?? Number.MAX_SAFE_INTEGER),
+			);
 
-			const guideChunks = guideRows.map(({ text }) => text).join("\n\n---\n\n");
-			const courseChunks = courseRows
-				.map(({ text }) => text)
-				.join("\n\n---\n\n");
+			// 5. Build the LLM context. Tag each chunk by source so the model can disambiguate.
+			//    If no chunks survived the relevance gate, the LLM gets an empty context and should
+			//    answer "no info found" per the system prompt.
+			const contextChunks =
+				selectedChunks.length === 0
+					? "(Aucune information pertinente trouvée dans les guides ou formations.)"
+					: selectedChunks
+							.map((c) => {
+								const label =
+									c.source === "guides" ? "Fiche pratique" : "Formation";
+								return `[Source: ${label}]\n${c.text}`;
+							})
+							.join("\n\n---\n\n");
 
-			// Lower cosine distance = more similar. Compare best scores to pick primary source.
-			const bestGuideScore = guideRows[0]?.similarity_score ?? Infinity;
-			const bestCourseScore = courseRows[0]?.similarity_score ?? Infinity;
-			const primarySource: "guides" | "courses" =
-				bestCourseScore < bestGuideScore ? "courses" : "guides";
-
-			const contextChunks = [guideChunks, courseChunks]
-				.filter(Boolean)
-				.join("\n\n---\n\n");
-
-			// 4. Load the direct chatbot system prompt
+			// 6. Load the chatbot system prompt.
 			let systemPrompt = "";
 			try {
 				systemPrompt = readFileSync(
@@ -120,7 +308,7 @@ export const aiRouter = createTRPCRouter({
 				});
 			}
 
-			// 5. Call Albert with user question + retrieved chunks as context
+			// 7. Generate the answer with Albert.
 			const albertPayload = {
 				model: "albert-large",
 				messages: [

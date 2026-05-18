@@ -16,6 +16,11 @@ type ChatResponse = {
 	primarySource: "guides" | "courses";
 };
 
+// Reject inputs longer than this without calling the LLM. Sized for a few-sentence question;
+// anything longer is likely a paste error or abuse. Keep in sync with the server-side limit
+// in src/server/api/routers/ai.ts.
+const MAX_USER_MESSAGE_CHARS = 800;
+
 const ChatBot = () => {
 	const { classes, cx } = useStyles();
 
@@ -145,8 +150,22 @@ const ChatBot = () => {
 		setUserQuestion(text);
 		setMessage("");
 		setError(null);
+
+		if (text.length > MAX_USER_MESSAGE_CHARS) {
+			setResponse({
+				content:
+					"Votre question est un peu longue pour moi. Pourriez-vous la reformuler en quelques phrases ?",
+				guides: [],
+				courses: [],
+				primarySource: "guides",
+			});
+			return;
+		}
+
 		try {
-			const result = await chatbotDirectSendMessage({ userMessage: text });
+			const result = await chatbotDirectSendMessage({
+				userMessage: text,
+			});
 			setResponse(result);
 		} catch {
 			setError(
@@ -252,7 +271,6 @@ const ChatBot = () => {
 														sendMessage(message);
 													}
 												},
-												className: cx(classes.textAreaInput),
 												rows: 1,
 											}}
 											className={cx(classes.textArea)}
@@ -652,9 +670,9 @@ const useStyles = tss.withName(ChatBot.name).create({
 			backgroundColor:
 				fr.colors.decisions.background.actionHigh.blueFrance.default,
 			animation: "typingBounce 1.2s ease-in-out infinite",
-			"&:nth-child(1)": { animationDelay: "0s" },
-			"&:nth-child(2)": { animationDelay: "0.2s" },
-			"&:nth-child(3)": { animationDelay: "0.4s" },
+			"&:nth-of-type(1)": { animationDelay: "0s" },
+			"&:nth-of-type(2)": { animationDelay: "0.2s" },
+			"&:nth-of-type(3)": { animationDelay: "0.4s" },
 		},
 		"@keyframes typingBounce": {
 			"0%, 60%, 100%": { transform: "translateY(0)" },
@@ -675,16 +693,12 @@ const useStyles = tss.withName(ChatBot.name).create({
 		flexDirection: "column",
 		gap: fr.spacing("2v"),
 	},
-	textAreaInput: {
-		background: "none",
-		boxShadow: "none",
-		resize: "none",
-		maxHeight: "400px",
-		overflowY: "auto",
-	},
 	textArea: {
 		marginBottom: 0,
 		width: "100%",
+		textarea: {
+			resize: "vertical",
+		},
 	},
 	sendButtonContainer: {
 		display: "flex",

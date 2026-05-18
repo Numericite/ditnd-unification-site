@@ -16,6 +16,7 @@ import * as migration_20260323_164005 from './20260323_164005';
 import * as migration_20260416_100000 from './20260416_100000';
 import * as migration_20260422_064546_about_global from './20260422_064546_about_global';
 import * as migration_20260422_100000_footer_contact_pros_cra from './20260422_100000_footer_contact_pros_cra';
+import * as migration_20260518_120000_bge_m3_embeddings from './20260518_120000_bge_m3_embeddings';
 
 export const migrations = [
   {
@@ -107,5 +108,10 @@ export const migrations = [
     up: migration_20260422_100000_footer_contact_pros_cra.up,
     down: migration_20260422_100000_footer_contact_pros_cra.down,
     name: '20260422_100000_footer_contact_pros_cra'
+  },
+  {
+    up: migration_20260518_120000_bge_m3_embeddings.up,
+    down: migration_20260518_120000_bge_m3_embeddings.down,
+    name: '20260518_120000_bge_m3_embeddings'
   },
 ];
