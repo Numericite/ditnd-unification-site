@@ -271,7 +271,6 @@ const ChatBot = () => {
 														sendMessage(message);
 													}
 												},
-												className: cx(classes.textAreaInput),
 												rows: 1,
 											}}
 											className={cx(classes.textArea)}
@@ -694,16 +693,12 @@ const useStyles = tss.withName(ChatBot.name).create({
 		flexDirection: "column",
 		gap: fr.spacing("2v"),
 	},
-	textAreaInput: {
-		background: "none",
-		boxShadow: "none",
-		resize: "vertical !important" as "vertical",
-		maxHeight: "400px",
-		overflowY: "auto",
-	},
 	textArea: {
 		marginBottom: 0,
 		width: "100%",
+		textarea: {
+			resize: "vertical",
+		},
 	},
 	sendButtonContainer: {
 		display: "flex",
