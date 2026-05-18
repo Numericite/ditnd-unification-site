@@ -71,6 +71,11 @@ export default function MainNavigation() {
 					isActive: router.pathname === "/a-propos/cras",
 					linkProps: { href: "/a-propos/cras" },
 				},
+				{
+					text: "Glossaire",
+					isActive: router.pathname === "/a-propos/glossaire",
+					linkProps: { href: "/a-propos/glossaire" },
+				},
 			],
 		},
 	];

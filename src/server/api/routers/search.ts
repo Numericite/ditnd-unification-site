@@ -4,11 +4,26 @@ import { createTRPCRouter, publicProcedure } from "~/server/api/trpc";
 import { generateEmbedding } from "~/payload/services/embedding";
 import type { AugmentedPracticalGuide } from "./practical-guides";
 import type { AugmentedCourse } from "./courses";
+import type { Glossary } from "~/payload/payload-types";
+
+export type GlossaryMatch = Pick<
+	Glossary,
+	"id" | "name" | "description" | "link"
+>;
 
 export type GlobalSearchResult = {
 	guides: AugmentedPracticalGuide[];
 	courses: AugmentedCourse[];
+	glossary: GlossaryMatch | null;
 };
+
+function normalizeGlossaryKey(text: string): string {
+	return text
+		.normalize("NFD")
+		.replace(/\p{Diacritic}/gu, "")
+		.replace(/[^a-z0-9]/gi, "")
+		.toLowerCase();
+}
 
 export const searchRouter = createTRPCRouter({
 	global: publicProcedure
@@ -21,8 +36,35 @@ export const searchRouter = createTRPCRouter({
 			const trimmedText = input.text.trim();
 
 			if (!trimmedText) {
-				return { guides: [], courses: [] };
+				return { guides: [], courses: [], glossary: null };
 			}
+
+			const glossaryKey = normalizeGlossaryKey(trimmedText);
+			const glossaryMatchPromise: Promise<GlossaryMatch | null> =
+				glossaryKey.length > 0
+					? ctx.payload
+							.find({
+								collection: "glossary",
+								limit: 1000,
+							})
+							.then(({ docs }) => {
+								const match = docs.find(
+									(d) => normalizeGlossaryKey(d.name) === glossaryKey,
+								);
+								return match
+									? {
+											id: match.id,
+											name: match.name,
+											description: match.description,
+											link: match.link ?? null,
+										}
+									: null;
+							})
+							.catch((err) => {
+								console.warn("[GlobalSearch] Glossary lookup failed:", err);
+								return null;
+							})
+					: Promise.resolve(null);
 
 			let guideIds: number[] = [];
 			let courseIds: number[] = [];
@@ -160,9 +202,12 @@ export const searchRouter = createTRPCRouter({
 				return posA - posB;
 			});
 
+			const glossary = await glossaryMatchPromise;
+
 			return {
 				guides: sortedGuides as AugmentedPracticalGuide[],
 				courses: sortedCourses as AugmentedCourse[],
+				glossary,
 			};
 		}),
 });

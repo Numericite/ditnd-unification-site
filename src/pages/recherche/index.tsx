@@ -1,6 +1,7 @@
 import { fr } from "@codegouvfr/react-dsfr";
 import Head from "next/head";
 import Breadcrumb from "@codegouvfr/react-dsfr/Breadcrumb";
+import { CallOut } from "@codegouvfr/react-dsfr/CallOut";
 import SearchBar from "@codegouvfr/react-dsfr/SearchBar";
 import Tabs from "@codegouvfr/react-dsfr/Tabs";
 import { useRouter } from "next/router";
@@ -127,6 +128,28 @@ export default function Recherche({ initialQuery, initialData }: Props) {
 								"fr-pt-3w",
 							)}
 						>
+							{data?.glossary && (
+								<div className={fr.cx("fr-col-12")}>
+									<CallOut
+										className={fr.cx("fr-mb-0")}
+										title={data.glossary.name}
+										buttonProps={
+											data.glossary.link
+												? {
+														children: "Consulter la source",
+														linkProps: {
+															href: data.glossary.link,
+															target: "_blank",
+															rel: "noopener noreferrer",
+														},
+													}
+												: undefined
+										}
+									>
+										{data.glossary.description}
+									</CallOut>
+								</div>
+							)}
 							<div
 								className={fr.cx("fr-col-12")}
 								style={{ textAlign: "right" }}
