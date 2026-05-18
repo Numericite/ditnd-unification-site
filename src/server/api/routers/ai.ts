@@ -19,12 +19,20 @@ import type { AugmentedCourse } from "./courses";
 const ANN_CANDIDATES_PER_SOURCE = 12;
 // Hard cap on chunks fed to the LLM after reranking.
 const RERANK_TOP_K = 5;
-// Absolute floor on the rerank score. bge-reranker-v2-m3 returns logit-like scores —
-// positive ≈ relevant, negative ≈ irrelevant. Tune by inspecting the debug output.
-const RERANK_MIN_SCORE = 0;
-// Relative gap: a candidate is kept only if its score is at least this fraction of the top score.
-// Self-adapts to question difficulty (avoids dragging in weak sources when one chunk is clearly best).
-const RERANK_RELATIVE_GAP = 0.5;
+// Albert's bge-reranker-v2-m3 returns sigmoid-style scores in [0, 1].
+// 0.005 sits cleanly above the pure-noise floor observed in the debug dump
+// (real candidates score > 0.01, noise scores < 0.003).
+const RERANK_MIN_SCORE = 0.005;
+// Relative gap: keep a candidate only if its score is at least this fraction of the top score.
+// 0.25 keeps anything within ~4× of the best hit — wide enough to surface clearly related
+// documents even when the absolute top score is modest.
+const RERANK_RELATIVE_GAP = 0.25;
+// Max chars of each candidate sent to the reranker. The cross-encoder has a hard 512-token
+// context window; feeding it multi-thousand-word guide bodies causes silent truncation and
+// noisy scores. ~800 chars ≈ 200 tokens of French = title + description + metadata + first
+// paragraph, which is the discriminating "card" the reranker actually needs.
+// The full text is still used for the dense embedding (bge-m3 supports 8192 tokens).
+const RERANK_TEXT_MAX_CHARS = 800;
 // Fallback (rerank API failed): use cosine top-N per source. Best we can do without a cross-encoder.
 const FALLBACK_TOP_K_PER_SOURCE = 3;
 // Length of the chunk preview returned in the debug payload (keeps response size sane).
@@ -89,6 +97,13 @@ type DebugInfo = {
 function preview(text: string): string {
 	if (text.length <= DEBUG_TEXT_PREVIEW_CHARS) return text;
 	return `${text.slice(0, DEBUG_TEXT_PREVIEW_CHARS)}…`;
+}
+
+// Keep just the discriminating "card" of each candidate for the reranker.
+// See RERANK_TEXT_MAX_CHARS for rationale.
+function truncateForRerank(text: string): string {
+	if (text.length <= RERANK_TEXT_MAX_CHARS) return text;
+	return text.slice(0, RERANK_TEXT_MAX_CHARS);
 }
 
 // Filter reranked candidates by absolute floor AND relative gap.
@@ -211,7 +226,7 @@ export const aiRouter = createTRPCRouter({
 						userMessage,
 						mergedCandidates.map((c) => ({
 							id: `${c.source}:${c.docId}`,
-							text: c.text,
+							text: truncateForRerank(c.text),
 							meta: c,
 						})),
 					);
