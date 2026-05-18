@@ -8,10 +8,33 @@ import {
 import { readFileSync } from "node:fs";
 import path from "node:path";
 import { generateEmbedding } from "~/payload/services/embedding";
+import { rerankCandidates } from "~/payload/services/rerank";
 import { sql } from "@payloadcms/db-postgres";
 import type { Condition } from "~/payload/payload-types";
 import type { AugmentedPracticalGuide } from "./practical-guides";
 import type { AugmentedCourse } from "./courses";
+
+// RAG tuning constants.
+// Retrieve a wide candidate set per source via ANN, then rerank to keep only the most relevant.
+const ANN_CANDIDATES_PER_SOURCE = 12;
+const RERANK_TOP_K = 5;
+// Fallback (no rerank): keep the previous behavior of top-3 from each source.
+const FALLBACK_TOP_K_PER_SOURCE = 3;
+
+type Source = "guides" | "courses";
+
+type VectorRow = {
+	doc_id: string;
+	text: string;
+	similarity_score: number;
+};
+
+type RetrievedChunk = {
+	docId: string;
+	source: Source;
+	text: string;
+	similarityScore: number;
+};
 
 export const aiRouter = createTRPCRouter({
 	chatbotDirectSend: publicProcedure
@@ -29,44 +52,118 @@ export const aiRouter = createTRPCRouter({
 				});
 			}
 
-			// 1. Retrieve relevant text chunks from search vectors
+			// 1. Embed the user question with bge-m3.
 			const embedding = await generateEmbedding(userMessage);
+			const embeddingJson = JSON.stringify(embedding);
+
+			// 2. Pull a wide candidate set from both vector tables (ANN recall).
 			const [retrieveGuideEmbeddings, retrieveCourseEmbeddings] =
 				await Promise.all([
 					ctx.payload.db.drizzle.execute(sql`
-					SELECT doc_id, text, embedding <=> ${JSON.stringify(embedding)}::vector as similarity_score
-					FROM practical_guide_search_vectors
-					ORDER BY embedding <=> ${JSON.stringify(embedding)}::vector
-					LIMIT 3
-				`),
+						SELECT doc_id, text, embedding <=> ${embeddingJson}::vector as similarity_score
+						FROM practical_guide_search_vectors
+						ORDER BY embedding <=> ${embeddingJson}::vector
+						LIMIT ${ANN_CANDIDATES_PER_SOURCE}
+					`),
 					ctx.payload.db.drizzle.execute(sql`
-					SELECT doc_id, text, embedding <=> ${JSON.stringify(embedding)}::vector as similarity_score
-					FROM courses_search_vectors
-					ORDER BY embedding <=> ${JSON.stringify(embedding)}::vector
-					LIMIT 3
-				`),
+						SELECT doc_id, text, embedding <=> ${embeddingJson}::vector as similarity_score
+						FROM courses_search_vectors
+						ORDER BY embedding <=> ${embeddingJson}::vector
+						LIMIT ${ANN_CANDIDATES_PER_SOURCE}
+					`),
 				]);
 
-			// 2. Fetch practical guide docs and course docs
+			const guideCandidates: RetrievedChunk[] = (
+				retrieveGuideEmbeddings.rows as VectorRow[]
+			).map((row) => ({
+				docId: row.doc_id,
+				source: "guides",
+				text: row.text,
+				similarityScore: row.similarity_score,
+			}));
+			const courseCandidates: RetrievedChunk[] = (
+				retrieveCourseEmbeddings.rows as VectorRow[]
+			).map((row) => ({
+				docId: row.doc_id,
+				source: "courses",
+				text: row.text,
+				similarityScore: row.similarity_score,
+			}));
+
+			// 3. Rerank the merged candidate pool with bge-reranker-v2-m3.
+			//    On failure, fall back to cosine-sorted top-N from each source so the chatbot keeps working.
+			const mergedCandidates = [...guideCandidates, ...courseCandidates];
+
+			let selectedChunks: RetrievedChunk[];
+			let primarySource: Source;
+
+			if (mergedCandidates.length === 0) {
+				selectedChunks = [];
+				primarySource = "guides";
+			} else {
+				try {
+					const reranked = await rerankCandidates(
+						userMessage,
+						mergedCandidates.map((c) => ({
+							id: `${c.source}:${c.docId}`,
+							text: c.text,
+							meta: c,
+						})),
+					);
+					selectedChunks = reranked
+						.slice(0, RERANK_TOP_K)
+						.map((r) => r.meta as RetrievedChunk);
+
+					// The reranker's top hit defines the primary source.
+					const topHit = reranked[0]?.meta as RetrievedChunk | undefined;
+					primarySource = topHit?.source ?? "guides";
+				} catch (err) {
+					console.warn(
+						"[RAG] Rerank call failed, falling back to cosine-ranked candidates:",
+						err,
+					);
+					selectedChunks = [
+						...guideCandidates.slice(0, FALLBACK_TOP_K_PER_SOURCE),
+						...courseCandidates.slice(0, FALLBACK_TOP_K_PER_SOURCE),
+					];
+					// Lower cosine distance = more similar.
+					const bestGuide = guideCandidates[0]?.similarityScore ?? Infinity;
+					const bestCourse = courseCandidates[0]?.similarityScore ?? Infinity;
+					primarySource = bestCourse < bestGuide ? "courses" : "guides";
+				}
+			}
+
+			// 4. Fetch the underlying Payload documents only for IDs that survived ranking.
+			const surfacedGuideIds = Array.from(
+				new Set(
+					selectedChunks
+						.filter((c) => c.source === "guides")
+						.map((c) => c.docId),
+				),
+			);
+			const surfacedCourseIds = Array.from(
+				new Set(
+					selectedChunks
+						.filter((c) => c.source === "courses")
+						.map((c) => c.docId),
+				),
+			);
+
 			const [practicalGuides, courses] = await Promise.all([
-				ctx.payload.find({
-					collection: "practical-guides",
-					where: {
-						id: {
-							in: retrieveGuideEmbeddings.rows.map(({ doc_id }) => doc_id),
-						},
-					},
-					depth: 1,
-				}),
-				ctx.payload.find({
-					collection: "courses",
-					where: {
-						id: {
-							in: retrieveCourseEmbeddings.rows.map(({ doc_id }) => doc_id),
-						},
-					},
-					depth: 1,
-				}),
+				surfacedGuideIds.length > 0
+					? ctx.payload.find({
+							collection: "practical-guides",
+							where: { id: { in: surfacedGuideIds } },
+							depth: 1,
+						})
+					: Promise.resolve({ docs: [] }),
+				surfacedCourseIds.length > 0
+					? ctx.payload.find({
+							collection: "courses",
+							where: { id: { in: surfacedCourseIds } },
+							depth: 1,
+						})
+					: Promise.resolve({ docs: [] }),
 			]);
 
 			const tmpPracticalGuides = (await Promise.all(
@@ -82,31 +179,15 @@ export const aiRouter = createTRPCRouter({
 
 			const tmpCourses = courses.docs as AugmentedCourse[];
 
-			// 3. Build context from retrieved chunks and determine primary source
-			type VectorRow = {
-				doc_id: string;
-				text: string;
-				similarity_score: number;
-			};
-			const guideRows = retrieveGuideEmbeddings.rows as VectorRow[];
-			const courseRows = retrieveCourseEmbeddings.rows as VectorRow[];
-
-			const guideChunks = guideRows.map(({ text }) => text).join("\n\n---\n\n");
-			const courseChunks = courseRows
-				.map(({ text }) => text)
+			// 5. Build the LLM context. Tag each chunk by source so the model can disambiguate.
+			const contextChunks = selectedChunks
+				.map((c) => {
+					const label = c.source === "guides" ? "Fiche pratique" : "Formation";
+					return `[Source: ${label}]\n${c.text}`;
+				})
 				.join("\n\n---\n\n");
 
-			// Lower cosine distance = more similar. Compare best scores to pick primary source.
-			const bestGuideScore = guideRows[0]?.similarity_score ?? Infinity;
-			const bestCourseScore = courseRows[0]?.similarity_score ?? Infinity;
-			const primarySource: "guides" | "courses" =
-				bestCourseScore < bestGuideScore ? "courses" : "guides";
-
-			const contextChunks = [guideChunks, courseChunks]
-				.filter(Boolean)
-				.join("\n\n---\n\n");
-
-			// 4. Load the direct chatbot system prompt
+			// 6. Load the chatbot system prompt.
 			let systemPrompt = "";
 			try {
 				systemPrompt = readFileSync(
@@ -120,7 +201,7 @@ export const aiRouter = createTRPCRouter({
 				});
 			}
 
-			// 5. Call Albert with user question + retrieved chunks as context
+			// 7. Generate the answer with Albert.
 			const albertPayload = {
 				model: "albert-large",
 				messages: [

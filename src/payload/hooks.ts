@@ -37,7 +37,7 @@ export const addPracticalGuidesTableVector: PostgresAdapter["afterSchemaInit"][n
 		extendTable({
 			table: practicalGuideVectorsTable,
 			columns: {
-				embedding: vector("embedding", { dimensions: 1536 }).notNull(),
+				embedding: vector("embedding", { dimensions: 1024 }).notNull(),
 			},
 		});
 
@@ -68,7 +68,7 @@ export const addCoursesTableVector: PostgresAdapter["afterSchemaInit"][number] =
 		extendTable({
 			table: coursesVectorsTable,
 			columns: {
-				embedding: vector("embedding", { dimensions: 1536 }).notNull(),
+				embedding: vector("embedding", { dimensions: 1024 }).notNull(),
 			},
 		});
 
