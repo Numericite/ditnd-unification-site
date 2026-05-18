@@ -76,6 +76,7 @@ export interface Config {
 		themes: Theme;
 		journeys: Journey;
 		medias: Media;
+		glossary: Glossary;
 		"search-results": SearchResult;
 		"payload-kv": PayloadKv;
 		"payload-folders": FolderInterface;
@@ -102,6 +103,7 @@ export interface Config {
 		themes: ThemesSelect<false> | ThemesSelect<true>;
 		journeys: JourneysSelect<false> | JourneysSelect<true>;
 		medias: MediasSelect<false> | MediasSelect<true>;
+		glossary: GlossarySelect<false> | GlossarySelect<true>;
 		"search-results": SearchResultsSelect<false> | SearchResultsSelect<true>;
 		"payload-kv": PayloadKvSelect<false> | PayloadKvSelect<true>;
 		"payload-folders": PayloadFoldersSelect<false> | PayloadFoldersSelect<true>;
@@ -442,6 +444,21 @@ export interface Journey {
 	createdAt: string;
 }
 /**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "glossary".
+ */
+export interface Glossary {
+	id: number;
+	name: string;
+	description: string;
+	/**
+	 * Lien optionnel vers une source externe (doit commencer par https://)
+	 */
+	link?: string | null;
+	updatedAt: string;
+	createdAt: string;
+}
+/**
  * This is a collection of automatically created search results. These results are used by the global site search and will be updated automatically as documents in the CMS are created or updated.
  *
  * This interface was referenced by `Config`'s JSON-Schema
@@ -523,6 +540,10 @@ export interface PayloadLockedDocument {
 		| ({
 				relationTo: "medias";
 				value: number | Media;
+		  } | null)
+		| ({
+				relationTo: "glossary";
+				value: number | Glossary;
 		  } | null)
 		| ({
 				relationTo: "search-results";
@@ -794,6 +815,17 @@ export interface MediasSelect<T extends boolean = true> {
 							filename?: T;
 					  };
 		  };
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "glossary_select".
+ */
+export interface GlossarySelect<T extends boolean = true> {
+	name?: T;
+	description?: T;
+	link?: T;
+	updatedAt?: T;
+	createdAt?: T;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema

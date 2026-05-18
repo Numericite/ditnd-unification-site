@@ -10,6 +10,7 @@ import homeTask from "./tasks/home";
 import footerTask from "./tasks/footer";
 import aboutTask from "./tasks/about";
 import { seedPersonas } from "./tasks/personas";
+import { seedGlossary } from "./tasks/glossary";
 
 const seedData = async () => {
 	try {
@@ -48,6 +49,7 @@ const seedData = async () => {
 		await seedCourses(payload);
 		await seedPracticalGuides(payload);
 		await seedJourneys(payload);
+		await seedGlossary(payload);
 	} catch (e) {
 		console.error(e);
 	} finally {

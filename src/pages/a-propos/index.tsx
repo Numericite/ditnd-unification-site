@@ -8,6 +8,7 @@ const aboutLinks = [
 	{ href: "/a-propos/maison-de-l-autisme", label: "Maison de l'autisme" },
 	{ href: "/a-propos/gncra", label: "GNCRA" },
 	{ href: "/a-propos/cras", label: "CRAs" },
+	{ href: "/a-propos/glossaire", label: "Glossaire" },
 ];
 
 export default function AProposIndex() {
