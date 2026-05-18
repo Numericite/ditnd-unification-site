@@ -8,6 +8,7 @@ import {
 import { readFileSync } from "node:fs";
 import path from "node:path";
 import { generateEmbedding } from "~/payload/services/embedding";
+import { expandQuery } from "~/payload/services/queryExpansion";
 import { rerankCandidates } from "~/payload/services/rerank";
 import { sql } from "@payloadcms/db-postgres";
 import type { Condition } from "~/payload/payload-types";
@@ -68,6 +69,8 @@ type DebugRerankedRow = {
 
 type DebugInfo = {
 	query: string;
+	expansion?: { keywords: string; expanded: string };
+	expansionError?: string;
 	embedding: { model: "BAAI/bge-m3"; dimensions: number };
 	annCandidates: { guides: DebugCandidate[]; courses: DebugCandidate[] };
 	ragPath: "rerank" | "fallback" | "no-candidates";
@@ -155,8 +158,29 @@ export const aiRouter = createTRPCRouter({
 				});
 			}
 
-			// 1. Embed the user question with bge-m3.
-			const embedding = await generateEmbedding(userMessage);
+			// 1a. Expand the query with formal synonyms via Albert chat to bridge colloquial
+			//     French vocabulary to the corpus vocabulary. Used for embedding + reranking,
+			//     NOT for the final LLM call (we don't want to alter the user's question).
+			//     If expansion fails, fall back to the original query.
+			let retrievalQuery = userMessage;
+			let expansionDebug: DebugInfo["expansion"];
+			let expansionErrorMessage: string | undefined;
+			try {
+				const { keywords, expanded } = await expandQuery(userMessage);
+				retrievalQuery = expanded;
+				expansionDebug = { keywords, expanded };
+				console.info("[RAG] query expansion", { userMessage, keywords });
+			} catch (err) {
+				expansionErrorMessage =
+					err instanceof Error ? err.message : String(err);
+				console.warn(
+					"[RAG] Query expansion failed, using original query:",
+					expansionErrorMessage,
+				);
+			}
+
+			// 1b. Embed the (expanded) query with bge-m3.
+			const embedding = await generateEmbedding(retrievalQuery);
 			const embeddingJson = JSON.stringify(embedding);
 
 			// 2. Pull a wide candidate set from both vector tables (ANN recall).
@@ -210,7 +234,7 @@ export const aiRouter = createTRPCRouter({
 			} else {
 				try {
 					const reranked = await rerankCandidates(
-						userMessage,
+						retrievalQuery,
 						mergedCandidates.map((c) => ({
 							id: `${c.source}:${c.docId}`,
 							text: c.text,
@@ -424,6 +448,8 @@ export const aiRouter = createTRPCRouter({
 
 			const debugInfo: DebugInfo = {
 				query: userMessage,
+				expansion: expansionDebug,
+				expansionError: expansionErrorMessage,
 				embedding: {
 					model: "BAAI/bge-m3",
 					dimensions: embedding.length,
