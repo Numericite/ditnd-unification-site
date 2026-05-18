@@ -146,7 +146,9 @@ const ChatBot = () => {
 		setMessage("");
 		setError(null);
 		try {
-			const result = await chatbotDirectSendMessage({ userMessage: text });
+			const result = await chatbotDirectSendMessage({
+				userMessage: text,
+			});
 			setResponse(result);
 		} catch {
 			setError(
@@ -652,9 +654,9 @@ const useStyles = tss.withName(ChatBot.name).create({
 			backgroundColor:
 				fr.colors.decisions.background.actionHigh.blueFrance.default,
 			animation: "typingBounce 1.2s ease-in-out infinite",
-			"&:nth-child(1)": { animationDelay: "0s" },
-			"&:nth-child(2)": { animationDelay: "0.2s" },
-			"&:nth-child(3)": { animationDelay: "0.4s" },
+			"&:nth-of-type(1)": { animationDelay: "0s" },
+			"&:nth-of-type(2)": { animationDelay: "0.2s" },
+			"&:nth-of-type(3)": { animationDelay: "0.4s" },
 		},
 		"@keyframes typingBounce": {
 			"0%, 60%, 100%": { transform: "translateY(0)" },

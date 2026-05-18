@@ -32,8 +32,6 @@ const RERANK_MIN_SCORE = 0.1;
 const RERANK_RELATIVE_GAP = 0.25;
 // Fallback (rerank API failed): use cosine top-N per source. Best we can do without a cross-encoder.
 const FALLBACK_TOP_K_PER_SOURCE = 3;
-// Length of the chunk preview returned in the debug payload (keeps response size sane).
-const DEBUG_TEXT_PREVIEW_CHARS = 160;
 
 type Source = "guides" | "courses";
 
@@ -52,63 +50,10 @@ type RetrievedChunk = {
 
 type RerankedChunk = RetrievedChunk & { rerankScore: number };
 
-type DebugCandidate = {
-	source: Source;
-	docId: string;
-	cosineDistance: number;
-	textPreview: string;
-};
-
-type DebugRerankedRow = {
-	source: Source;
-	docId: string;
-	cosineDistance: number;
-	rerankScore: number;
-	kept: boolean;
-	reason?: string;
-	textPreview: string;
-};
-
-type DebugInfo = {
-	query: string;
-	expansion?: { keywords: string; expanded: string };
-	expansionError?: string;
-	embedding: { model: "BAAI/bge-m3"; dimensions: number };
-	annCandidates: { guides: DebugCandidate[]; courses: DebugCandidate[] };
-	ragPath: "rerank" | "fallback" | "no-candidates";
-	rerank?: {
-		topScore: number;
-		minScore: number;
-		relativeGap: number;
-		topK: number;
-		rows: DebugRerankedRow[];
-	};
-	rerankError?: string;
-	selectedChunks: {
-		source: Source;
-		docId: string;
-		rerankScore?: number;
-		cosineDistance: number;
-		textPreview: string;
-	}[];
-};
-
-function preview(text: string): string {
-	if (text.length <= DEBUG_TEXT_PREVIEW_CHARS) return text;
-	return `${text.slice(0, DEBUG_TEXT_PREVIEW_CHARS)}…`;
-}
-
-// Filter reranked candidates by absolute floor AND relative gap.
-// - Drop anything below RERANK_MIN_SCORE (irrelevant).
-// - Among survivors, drop anything below topScore * RERANK_RELATIVE_GAP (weakly related compared to the best hit).
-// - Cap at RERANK_TOP_K.
-function applyRelevanceGate(reranked: RerankedChunk[]): {
-	kept: RerankedChunk[];
-	dropReasons: Map<string, string>;
-} {
-	const dropReasons = new Map<string, string>();
+// Filter reranked candidates by absolute floor AND relative gap, capped at top-K.
+function applyRelevanceGate(reranked: RerankedChunk[]): RerankedChunk[] {
 	const topChunk = reranked[0];
-	if (!topChunk) return { kept: [], dropReasons };
+	if (!topChunk) return [];
 
 	const topScore = topChunk.rerankScore;
 	const relativeFloor =
@@ -116,39 +61,19 @@ function applyRelevanceGate(reranked: RerankedChunk[]): {
 
 	const kept: RerankedChunk[] = [];
 	for (const chunk of reranked) {
-		const key = `${chunk.source}:${chunk.docId}`;
-		if (chunk.rerankScore < RERANK_MIN_SCORE) {
-			dropReasons.set(key, `below absolute floor (${RERANK_MIN_SCORE})`);
-			continue;
-		}
-		if (chunk.rerankScore < relativeFloor) {
-			dropReasons.set(
-				key,
-				`below relative floor (${relativeFloor.toFixed(3)} = ${topScore.toFixed(3)} × ${RERANK_RELATIVE_GAP})`,
-			);
-			continue;
-		}
-		if (kept.length >= RERANK_TOP_K) {
-			dropReasons.set(key, `over top-K cap (${RERANK_TOP_K})`);
-			continue;
-		}
+		if (kept.length >= RERANK_TOP_K) break;
+		if (chunk.rerankScore < RERANK_MIN_SCORE) continue;
+		if (chunk.rerankScore < relativeFloor) continue;
 		kept.push(chunk);
 	}
-	return { kept, dropReasons };
+	return kept;
 }
 
 export const aiRouter = createTRPCRouter({
 	chatbotDirectSend: publicProcedure
-		.input(
-			z.object({
-				userMessage: z.string(),
-				// When true, response includes a `_debug` field exposing ANN scores, rerank scores
-				// and the path taken. Useful for tuning. Consider gating to admin if used in prod.
-				debug: z.boolean().optional(),
-			}),
-		)
+		.input(z.object({ userMessage: z.string() }))
 		.mutation(async ({ input, ctx }) => {
-			const { userMessage, debug = false } = input;
+			const { userMessage } = input;
 
 			const apiKey = process.env.ALBERT_API_KEY;
 			const apiUrl = process.env.ALBERT_API_URL;
@@ -165,19 +90,13 @@ export const aiRouter = createTRPCRouter({
 			//     NOT for the final LLM call (we don't want to alter the user's question).
 			//     If expansion fails, fall back to the original query.
 			let retrievalQuery = userMessage;
-			let expansionDebug: DebugInfo["expansion"];
-			let expansionErrorMessage: string | undefined;
 			try {
-				const { keywords, expanded } = await expandQuery(userMessage);
+				const { expanded } = await expandQuery(userMessage);
 				retrievalQuery = expanded;
-				expansionDebug = { keywords, expanded };
-				console.info("[RAG] query expansion", { userMessage, keywords });
 			} catch (err) {
-				expansionErrorMessage =
-					err instanceof Error ? err.message : String(err);
 				console.warn(
 					"[RAG] Query expansion failed, using original query:",
-					expansionErrorMessage,
+					err instanceof Error ? err.message : String(err),
 				);
 			}
 
@@ -225,14 +144,10 @@ export const aiRouter = createTRPCRouter({
 			//    On failure: log + fallback to cosine top-N per source so the chatbot stays available.
 			let selectedChunks: RetrievedChunk[];
 			let primarySource: Source;
-			let ragPath: DebugInfo["ragPath"];
-			let rerankDebug: DebugInfo["rerank"] | undefined;
-			let rerankErrorMessage: string | undefined;
 
 			if (mergedCandidates.length === 0) {
 				selectedChunks = [];
 				primarySource = "guides";
-				ragPath = "no-candidates";
 			} else {
 				try {
 					const reranked = await rerankCandidates(
@@ -248,49 +163,12 @@ export const aiRouter = createTRPCRouter({
 						rerankScore: r.score,
 					}));
 
-					const { kept, dropReasons } = applyRelevanceGate(rerankedChunks);
-					selectedChunks = kept;
-
-					const topHit = kept[0];
-					primarySource = topHit?.source ?? "guides";
-					ragPath = "rerank";
-
-					console.info("[RAG] rerank", {
-						query: userMessage,
-						topScore: rerankedChunks[0]?.rerankScore,
-						kept: kept.map((c) => ({
-							source: c.source,
-							docId: c.docId,
-							rerankScore: c.rerankScore,
-						})),
-					});
-
-					if (debug) {
-						rerankDebug = {
-							topScore: rerankedChunks[0]?.rerankScore ?? 0,
-							minScore: RERANK_MIN_SCORE,
-							relativeGap: RERANK_RELATIVE_GAP,
-							topK: RERANK_TOP_K,
-							rows: rerankedChunks.map((c) => {
-								const key = `${c.source}:${c.docId}`;
-								const dropReason = dropReasons.get(key);
-								return {
-									source: c.source,
-									docId: c.docId,
-									cosineDistance: c.similarityScore,
-									rerankScore: c.rerankScore,
-									kept: !dropReason,
-									reason: dropReason,
-									textPreview: preview(c.text),
-								};
-							}),
-						};
-					}
+					selectedChunks = applyRelevanceGate(rerankedChunks);
+					primarySource = selectedChunks[0]?.source ?? "guides";
 				} catch (err) {
-					rerankErrorMessage = err instanceof Error ? err.message : String(err);
 					console.warn(
 						"[RAG] Rerank call failed, falling back to cosine-ranked candidates:",
-						rerankErrorMessage,
+						err instanceof Error ? err.message : String(err),
 					);
 					selectedChunks = [
 						...guideCandidates.slice(0, FALLBACK_TOP_K_PER_SOURCE),
@@ -300,7 +178,6 @@ export const aiRouter = createTRPCRouter({
 					const bestGuide = guideCandidates[0]?.similarityScore ?? Infinity;
 					const bestCourse = courseCandidates[0]?.similarityScore ?? Infinity;
 					primarySource = bestCourse < bestGuide ? "courses" : "guides";
-					ragPath = "fallback";
 				}
 			}
 
@@ -439,49 +316,11 @@ export const aiRouter = createTRPCRouter({
 				});
 			}
 
-			const baseResult = {
+			return {
 				content: parsed.data.content,
 				guides: tmpPracticalGuides,
 				courses: tmpCourses,
 				primarySource,
 			};
-
-			if (!debug) return baseResult;
-
-			const debugInfo: DebugInfo = {
-				query: userMessage,
-				expansion: expansionDebug,
-				expansionError: expansionErrorMessage,
-				embedding: {
-					model: "BAAI/bge-m3",
-					dimensions: embedding.length,
-				},
-				annCandidates: {
-					guides: guideCandidates.map((c) => ({
-						source: c.source,
-						docId: c.docId,
-						cosineDistance: c.similarityScore,
-						textPreview: preview(c.text),
-					})),
-					courses: courseCandidates.map((c) => ({
-						source: c.source,
-						docId: c.docId,
-						cosineDistance: c.similarityScore,
-						textPreview: preview(c.text),
-					})),
-				},
-				ragPath,
-				rerank: rerankDebug,
-				rerankError: rerankErrorMessage,
-				selectedChunks: selectedChunks.map((c) => ({
-					source: c.source,
-					docId: c.docId,
-					rerankScore: (c as RerankedChunk).rerankScore,
-					cosineDistance: c.similarityScore,
-					textPreview: preview(c.text),
-				})),
-			};
-
-			return { ...baseResult, _debug: debugInfo };
 		}),
 });
