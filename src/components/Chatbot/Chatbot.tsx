@@ -16,6 +16,11 @@ type ChatResponse = {
 	primarySource: "guides" | "courses";
 };
 
+// Reject inputs longer than this without calling the LLM. Sized for a few-sentence question;
+// anything longer is likely a paste error or abuse. Keep in sync with the server-side limit
+// in src/server/api/routers/ai.ts.
+const MAX_USER_MESSAGE_CHARS = 800;
+
 const ChatBot = () => {
 	const { classes, cx } = useStyles();
 
@@ -145,6 +150,18 @@ const ChatBot = () => {
 		setUserQuestion(text);
 		setMessage("");
 		setError(null);
+
+		if (text.length > MAX_USER_MESSAGE_CHARS) {
+			setResponse({
+				content:
+					"Votre question est un peu longue pour moi. Pourriez-vous la reformuler en quelques phrases ?",
+				guides: [],
+				courses: [],
+				primarySource: "guides",
+			});
+			return;
+		}
+
 		try {
 			const result = await chatbotDirectSendMessage({
 				userMessage: text,
@@ -680,7 +697,7 @@ const useStyles = tss.withName(ChatBot.name).create({
 	textAreaInput: {
 		background: "none",
 		boxShadow: "none",
-		resize: "none",
+		resize: "vertical",
 		maxHeight: "400px",
 		overflowY: "auto",
 	},

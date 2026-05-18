@@ -32,6 +32,10 @@ const RERANK_MIN_SCORE = 0.1;
 const RERANK_RELATIVE_GAP = 0.25;
 // Fallback (rerank API failed): use cosine top-N per source. Best we can do without a cross-encoder.
 const FALLBACK_TOP_K_PER_SOURCE = 3;
+// Defense-in-depth limit on user input length. The Chatbot component enforces the same value
+// client-side with a friendly response; this guard protects against direct tRPC callers from
+// burning tokens on absurdly long inputs.
+const MAX_USER_MESSAGE_CHARS = 800;
 
 type Source = "guides" | "courses";
 
@@ -71,7 +75,11 @@ function applyRelevanceGate(reranked: RerankedChunk[]): RerankedChunk[] {
 
 export const aiRouter = createTRPCRouter({
 	chatbotDirectSend: publicProcedure
-		.input(z.object({ userMessage: z.string() }))
+		.input(
+			z.object({
+				userMessage: z.string().max(MAX_USER_MESSAGE_CHARS),
+			}),
+		)
 		.mutation(async ({ input, ctx }) => {
 			const { userMessage } = input;
 
