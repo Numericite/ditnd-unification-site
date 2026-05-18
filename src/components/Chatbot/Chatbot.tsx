@@ -697,7 +697,7 @@ const useStyles = tss.withName(ChatBot.name).create({
 	textAreaInput: {
 		background: "none",
 		boxShadow: "none",
-		resize: "vertical",
+		resize: "vertical !important" as "vertical",
 		maxHeight: "400px",
 		overflowY: "auto",
 	},
