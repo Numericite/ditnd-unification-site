@@ -72,6 +72,10 @@ jobs:
       CONTACT_PROS_CRA_RECIPIENT: contact@maisondelautisme.test
       CONTACT_PARTICULIERS_RECIPIENT: contact@maisondelautisme.test
       NEXT_PUBLIC_NOINDEX: "true"
+      # Available on internal PRs; empty on forks. The chatbot E2E suite
+      # gates the real LLM test on these being present.
+      ALBERT_API_KEY: ${{ secrets.ALBERT_API_KEY }}
+      ALBERT_API_URL: ${{ secrets.ALBERT_API_URL }}
     steps:
       - uses: actions/checkout@v4
 
@@ -91,6 +95,8 @@ jobs:
 
       - name: Run Cypress
         uses: cypress-io/github-action@v6
+        env:
+          CYPRESS_LLM_TESTS_ENABLED: ${{ secrets.ALBERT_API_KEY != '' }}
         with:
           install: false
           start: yarn start
