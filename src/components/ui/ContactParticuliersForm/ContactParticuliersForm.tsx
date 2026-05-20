@@ -8,6 +8,7 @@ import { Select } from "@codegouvfr/react-dsfr/Select";
 import { useState } from "react";
 import { tss } from "tss-react/dsfr";
 import { api } from "~/utils/api";
+import { INVALID_MESSAGE_REGEX } from "~/utils/contactForm";
 import {
 	AGE_RANGE_VALUES,
 	type AgeRange,
@@ -16,7 +17,6 @@ import {
 	CLASSIFICATION_VALUES,
 	type Classification,
 	DEPARTEMENT_VALUES,
-	INVALID_MESSAGE_REGEX,
 	OBJET_VALUES,
 	type Objet,
 	SEXE_VALUES,

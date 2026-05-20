@@ -1,32 +1,28 @@
 import { TRPCError } from "@trpc/server";
 import { z } from "zod";
 import { createTRPCRouter, publicProcedure } from "~/server/api/trpc";
+import { INVALID_MESSAGE_REGEX } from "~/utils/contactForm";
 import {
 	AGE_RANGE_VALUES,
 	CIVILITY_VALUES,
 	CLASSIFICATION_VALUES,
-	INVALID_MESSAGE_REGEX,
 	OBJET_VALUES,
 	SEXE_VALUES,
 } from "~/utils/contactParticuliers";
-
-const WISH_LABELS = {
-	newsletter: "Vous inscrire à la newsletter (pour les pros des CRA)",
-	"propose-content": "Proposer un contenu",
-	other: 'Autre (précisez dans le champ "Votre message")',
-} as const;
-
-const PROFILE_LABELS = {
-	"pro-cra": "Un professionnel de CRA",
-} as const;
+import {
+	PROFILE_LABELS,
+	PROFILE_VALUES,
+	WISH_LABELS,
+	WISH_VALUES,
+} from "~/utils/contactProsCra";
 
 const contactProsCraSchema = z.object({
-	profile: z.enum(["pro-cra"]),
+	profile: z.enum(PROFILE_VALUES),
 	firstName: z.string().trim().min(1),
 	lastName: z.string().trim().min(1),
 	craName: z.string().trim().min(1),
 	craRole: z.string().trim().min(1),
-	wish: z.enum(["newsletter", "propose-content", "other"]),
+	wish: z.enum(WISH_VALUES),
 	message: z
 		.string()
 		.trim()

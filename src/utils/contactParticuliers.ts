@@ -141,5 +141,3 @@ export const DEPARTEMENT_VALUES = [
 	"974 - La Réunion",
 	"975 - Mayotte",
 ] as const;
-
-export const INVALID_MESSAGE_REGEX = /[<>{}[\]\\]/;

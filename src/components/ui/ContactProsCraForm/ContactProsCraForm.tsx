@@ -6,6 +6,15 @@ import { Select } from "@codegouvfr/react-dsfr/Select";
 import { useState } from "react";
 import { tss } from "tss-react/dsfr";
 import { api } from "~/utils/api";
+import { INVALID_MESSAGE_REGEX } from "~/utils/contactForm";
+import {
+	PROFILE_LABELS,
+	PROFILE_VALUES,
+	type Profile,
+	type Wish,
+	WISH_LABELS,
+	WISH_VALUES,
+} from "~/utils/contactProsCra";
 
 type FieldName =
 	| "profile"
@@ -21,22 +30,6 @@ type FieldName =
 type FormValues = Record<FieldName, string>;
 
 type FormErrors = Partial<Record<FieldName, string>>;
-
-const PROFILE_OPTIONS = [
-	{ value: "pro-cra", label: "Un professionnel de CRA" },
-] as const;
-
-const WISH_OPTIONS = [
-	{
-		value: "newsletter",
-		label: "Vous inscrire à la newsletter (pour les pros des CRA)",
-	},
-	{ value: "propose-content", label: "Proposer un contenu" },
-	{
-		value: "other",
-		label: 'Autre (précisez dans le champ "Votre message")',
-	},
-] as const;
 
 const MESSAGE_HINT = (
 	<>
@@ -56,10 +49,8 @@ const PHONE_HINT =
 const EMAIL_HINT =
 	"Format adresse courriel attendu. Exemple : jean.dupond@service.tld";
 
-const INVALID_MESSAGE_REGEX = /[<>{}[\]\\]/;
-
 const initialValues: FormValues = {
-	profile: PROFILE_OPTIONS[0].value,
+	profile: PROFILE_VALUES[0],
 	firstName: "",
 	lastName: "",
 	craName: "",
@@ -157,12 +148,12 @@ export default function ContactProsCraForm() {
 
 		try {
 			await submitMutation.mutateAsync({
-				profile: values.profile as "pro-cra",
+				profile: values.profile as Profile,
 				firstName: values.firstName.trim(),
 				lastName: values.lastName.trim(),
 				craName: values.craName.trim(),
 				craRole: values.craRole.trim(),
-				wish: values.wish as "newsletter" | "propose-content" | "other",
+				wish: values.wish as Wish,
 				message: values.message.trim(),
 				phone: values.phone.trim() || undefined,
 				email: values.email.trim(),
@@ -223,9 +214,9 @@ export default function ContactProsCraForm() {
 				state={getFieldState("profile")}
 				stateRelatedMessage={errors.profile}
 			>
-				{PROFILE_OPTIONS.map((opt) => (
-					<option key={opt.value} value={opt.value}>
-						{opt.label}
+				{PROFILE_VALUES.map((value) => (
+					<option key={value} value={value}>
+						{PROFILE_LABELS[value]}
 					</option>
 				))}
 			</Select>
@@ -296,9 +287,9 @@ export default function ContactProsCraForm() {
 				<option value="" disabled>
 					Sélectionnez une option
 				</option>
-				{WISH_OPTIONS.map((opt) => (
-					<option key={opt.value} value={opt.value}>
-						{opt.label}
+				{WISH_VALUES.map((value) => (
+					<option key={value} value={value}>
+						{WISH_LABELS[value]}
 					</option>
 				))}
 			</Select>
