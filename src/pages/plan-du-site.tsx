@@ -141,16 +141,6 @@ export default function PlanDuSite() {
 									</a>
 								</li>
 								<li>
-									<a className={fr.cx("fr-link")} href="/donnees-personnelles">
-										Données personnelles
-									</a>
-								</li>
-								<li>
-									<a className={fr.cx("fr-link")} href="/modalites-utilisation">
-										Modalités d'utilisation
-									</a>
-								</li>
-								<li>
 									<a className={fr.cx("fr-link")} href="/contact-pros-cra">
 										Contact professionnels
 									</a>

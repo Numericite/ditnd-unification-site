@@ -959,42 +959,6 @@ export interface Footer {
 			[k: string]: unknown;
 		};
 	};
-	cgu: {
-		title: string;
-		content: {
-			root: {
-				type: string;
-				children: {
-					type: any;
-					version: number;
-					[k: string]: unknown;
-				}[];
-				direction: ("ltr" | "rtl") | null;
-				format: "left" | "start" | "center" | "right" | "end" | "justify" | "";
-				indent: number;
-				version: number;
-			};
-			[k: string]: unknown;
-		};
-	};
-	termsOfUse: {
-		title: string;
-		content: {
-			root: {
-				type: string;
-				children: {
-					type: any;
-					version: number;
-					[k: string]: unknown;
-				}[];
-				direction: ("ltr" | "rtl") | null;
-				format: "left" | "start" | "center" | "right" | "end" | "justify" | "";
-				indent: number;
-				version: number;
-			};
-			[k: string]: unknown;
-		};
-	};
 	contactProsCra: {
 		title: string;
 		imageBanner?: (number | null) | Media;
@@ -1122,18 +1086,6 @@ export interface FooterSelect<T extends boolean = true> {
 				content?: T;
 		  };
 	legalNotice?:
-		| T
-		| {
-				title?: T;
-				content?: T;
-		  };
-	cgu?:
-		| T
-		| {
-				title?: T;
-				content?: T;
-		  };
-	termsOfUse?:
 		| T
 		| {
 				title?: T;

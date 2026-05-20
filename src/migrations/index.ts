@@ -18,6 +18,7 @@ import * as migration_20260422_064546_about_global from './20260422_064546_about
 import * as migration_20260422_100000_footer_contact_pros_cra from './20260422_100000_footer_contact_pros_cra';
 import * as migration_20260518_120000_bge_m3_embeddings from './20260518_120000_bge_m3_embeddings';
 import * as migration_20260518_140000_glossary from './20260518_140000_glossary';
+import * as migration_20260520_120000_footer_drop_cgu_terms_of_use from './20260520_120000_footer_drop_cgu_terms_of_use';
 
 export const migrations = [
   {
@@ -119,5 +120,10 @@ export const migrations = [
     up: migration_20260518_140000_glossary.up,
     down: migration_20260518_140000_glossary.down,
     name: '20260518_140000_glossary'
+  },
+  {
+    up: migration_20260520_120000_footer_drop_cgu_terms_of_use.up,
+    down: migration_20260520_120000_footer_drop_cgu_terms_of_use.down,
+    name: '20260520_120000_footer_drop_cgu_terms_of_use'
   },
 ];

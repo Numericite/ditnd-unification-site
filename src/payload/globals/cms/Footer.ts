@@ -28,16 +28,6 @@ export const CMSFooter: GlobalConfig = {
 					fields: [standardFields.title, standardFields.wysiwyg],
 				},
 				{
-					label: "Données personnelles",
-					name: "cgu",
-					fields: [standardFields.title, standardFields.wysiwyg],
-				},
-				{
-					label: "Modalités d'utilisation",
-					name: "termsOfUse",
-					fields: [standardFields.title, standardFields.wysiwyg],
-				},
-				{
 					label: "Contact professionnels",
 					name: "contactProsCra",
 					fields: [
