@@ -3,18 +3,12 @@ describe("Contact particuliers form", () => {
 		cy.visit("/contact-particuliers");
 	});
 
-	function fillRequiredAndOptional() {
-		// civility/sexe/ageRange are marked optional in the schema but
-		// `z.enum(...).optional()` rejects "" — so the form effectively
-		// requires them. See PR notes.
-		cy.get('input[name="civility"][value="Madame"]').check({ force: true });
+	function fillRequired() {
 		cy.get('input[name="lastName"]').type("Dupont");
 		cy.get('input[name="firstName"]').type("Marie");
 		cy.get('input[name="email"]').type("marie.dupont@example.com");
 		cy.get('select[name="objet"]').select("Diagnostic");
 		cy.get('select[name="classification"]').select("Usager concerné");
-		cy.get('select[name="sexe"]').select("Féminin");
-		cy.get('select[name="ageRange"]').select("De 26 à 50 ans");
 		cy.get('textarea[name="message"]').type(
 			"Message de test envoyé depuis Cypress pour vérifier le formulaire particuliers.",
 		);
@@ -39,10 +33,23 @@ describe("Contact particuliers form", () => {
 		);
 	});
 
-	it("submits a valid message successfully", () => {
+	it("submits successfully with only required fields", () => {
 		cy.intercept("POST", "/api/trpc/contact.submitParticuliers*").as("submit");
 
-		fillRequiredAndOptional();
+		fillRequired();
+		cy.get('form button[type="submit"]').click();
+
+		cy.wait("@submit").its("response.statusCode").should("eq", 200);
+		cy.contains("Votre message a bien été envoyé").should("be.visible");
+	});
+
+	it("submits successfully with all optional fields filled too", () => {
+		cy.intercept("POST", "/api/trpc/contact.submitParticuliers*").as("submit");
+
+		cy.get('input[name="civility"][value="Madame"]').check({ force: true });
+		cy.get('select[name="sexe"]').select("Féminin");
+		cy.get('select[name="ageRange"]').select("De 26 à 50 ans");
+		fillRequired();
 		cy.get('form button[type="submit"]').click();
 
 		cy.wait("@submit").its("response.statusCode").should("eq", 200);
@@ -60,7 +67,7 @@ describe("Contact particuliers form", () => {
 	it("silently accepts but drops submissions when the honeypot is filled", () => {
 		cy.intercept("POST", "/api/trpc/contact.submitParticuliers*").as("submit");
 
-		fillRequiredAndOptional();
+		fillRequired();
 		cy.get('input[name="website"]').type("https://spam.example.com", {
 			force: true,
 		});
