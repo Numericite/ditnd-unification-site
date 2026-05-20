@@ -20,6 +20,7 @@ import { Themes } from "./collections/Themes";
 import { Journeys } from "./collections/Journeys";
 import { Medias } from "./collections/Medias";
 import { Glossary } from "./collections/Glossary";
+import { GlossaryCategories } from "./collections/GlossaryCategories";
 import { en } from "@payloadcms/translations/languages/en";
 import { fr } from "@payloadcms/translations/languages/fr";
 
@@ -115,6 +116,7 @@ export default buildConfig({
 		Journeys,
 		Medias,
 		Glossary,
+		GlossaryCategories,
 	],
 	globals: [CMSHome, CMSFooter, CMSAbout],
 	editor: lexicalEditor(),

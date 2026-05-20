@@ -5,6 +5,11 @@ export const Personas: CollectionConfig = {
 	slug: "personas",
 	admin: {
 		useAsTitle: "name",
+		group: { fr: "Taxonomies" },
+	},
+	labels: {
+		singular: "Persona",
+		plural: "Personas",
 	},
 	orderable: true,
 	fields: [

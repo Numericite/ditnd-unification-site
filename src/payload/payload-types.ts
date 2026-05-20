@@ -77,6 +77,7 @@ export interface Config {
 		journeys: Journey;
 		medias: Media;
 		glossary: Glossary;
+		"glossary-categories": GlossaryCategory;
 		"search-results": SearchResult;
 		"payload-kv": PayloadKv;
 		"payload-folders": FolderInterface;
@@ -104,6 +105,9 @@ export interface Config {
 		journeys: JourneysSelect<false> | JourneysSelect<true>;
 		medias: MediasSelect<false> | MediasSelect<true>;
 		glossary: GlossarySelect<false> | GlossarySelect<true>;
+		"glossary-categories":
+			| GlossaryCategoriesSelect<false>
+			| GlossaryCategoriesSelect<true>;
 		"search-results": SearchResultsSelect<false> | SearchResultsSelect<true>;
 		"payload-kv": PayloadKvSelect<false> | PayloadKvSelect<true>;
 		"payload-folders": PayloadFoldersSelect<false> | PayloadFoldersSelect<true>;
@@ -451,10 +455,21 @@ export interface Glossary {
 	id: number;
 	name: string;
 	description: string;
+	category?: (number | null) | GlossaryCategory;
 	/**
 	 * Lien optionnel vers une source externe (doit commencer par https://)
 	 */
 	link?: string | null;
+	updatedAt: string;
+	createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "glossary-categories".
+ */
+export interface GlossaryCategory {
+	id: number;
+	name: string;
 	updatedAt: string;
 	createdAt: string;
 }
@@ -544,6 +559,10 @@ export interface PayloadLockedDocument {
 		| ({
 				relationTo: "glossary";
 				value: number | Glossary;
+		  } | null)
+		| ({
+				relationTo: "glossary-categories";
+				value: number | GlossaryCategory;
 		  } | null)
 		| ({
 				relationTo: "search-results";
@@ -823,7 +842,17 @@ export interface MediasSelect<T extends boolean = true> {
 export interface GlossarySelect<T extends boolean = true> {
 	name?: T;
 	description?: T;
+	category?: T;
 	link?: T;
+	updatedAt?: T;
+	createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "glossary-categories_select".
+ */
+export interface GlossaryCategoriesSelect<T extends boolean = true> {
+	name?: T;
 	updatedAt?: T;
 	createdAt?: T;
 }

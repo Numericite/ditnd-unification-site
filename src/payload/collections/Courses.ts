@@ -89,6 +89,7 @@ export const Courses: CollectionConfig = {
 	slug: "courses",
 	admin: {
 		useAsTitle: "title",
+		group: { fr: "Contenus" },
 	},
 	hooks: {
 		afterChange: [afterChangeCourse],

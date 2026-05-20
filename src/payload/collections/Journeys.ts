@@ -4,6 +4,7 @@ export const Journeys: CollectionConfig = {
 	slug: "journeys",
 	admin: {
 		useAsTitle: "journey_name",
+		group: { fr: "Contenus" },
 	},
 	labels: {
 		singular: "Parcours",

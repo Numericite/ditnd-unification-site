@@ -4,7 +4,8 @@ export const Glossary: CollectionConfig = {
 	slug: "glossary",
 	admin: {
 		useAsTitle: "name",
-		defaultColumns: ["name", "description", "link"],
+		group: { fr: "Glossaire" },
+		defaultColumns: ["name", "category", "description", "link"],
 	},
 	labels: {
 		singular: "Terme du glossaire",
@@ -22,6 +23,16 @@ export const Glossary: CollectionConfig = {
 			type: "textarea",
 			required: true,
 			label: { fr: "Description" },
+		},
+		{
+			name: "category",
+			type: "relationship",
+			relationTo: "glossary-categories",
+			required: false,
+			label: { fr: "Catégorie" },
+			admin: {
+				position: "sidebar",
+			},
 		},
 		{
 			name: "link",

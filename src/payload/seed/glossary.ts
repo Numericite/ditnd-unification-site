@@ -6,17 +6,32 @@ const run = async () => {
 	try {
 		const payload = await getPayload({ config });
 
-		const existing = await payload.find({
+		const existingTerms = await payload.find({
 			collection: "glossary",
 			limit: 1,
 		});
 
-		if (existing.totalDocs > 0) {
+		if (existingTerms.totalDocs > 0) {
 			console.log(
-				`Glossary already contains ${existing.totalDocs} entries — deleting before reseeding.`,
+				`Glossary already contains ${existingTerms.totalDocs} entries — deleting before reseeding.`,
 			);
 			await payload.delete({
 				collection: "glossary",
+				where: { id: { exists: true } },
+			});
+		}
+
+		const existingCategories = await payload.find({
+			collection: "glossary-categories",
+			limit: 1,
+		});
+
+		if (existingCategories.totalDocs > 0) {
+			console.log(
+				`Glossary categories already contain ${existingCategories.totalDocs} entries — deleting before reseeding.`,
+			);
+			await payload.delete({
+				collection: "glossary-categories",
 				where: { id: { exists: true } },
 			});
 		}

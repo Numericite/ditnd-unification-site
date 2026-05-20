@@ -5,6 +5,7 @@ export const Users: CollectionConfig = {
 	slug: "users",
 	admin: {
 		useAsTitle: "email",
+		group: { fr: "Administration" },
 	},
 	labels: {
 		singular: "Utilisateur",

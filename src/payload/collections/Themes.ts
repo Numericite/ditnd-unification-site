@@ -5,6 +5,7 @@ export const Themes: CollectionConfig = {
 	slug: "themes",
 	admin: {
 		useAsTitle: "name",
+		group: { fr: "Taxonomies" },
 	},
 	labels: {
 		singular: "Thème",

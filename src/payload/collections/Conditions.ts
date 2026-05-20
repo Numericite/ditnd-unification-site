@@ -6,6 +6,7 @@ export const Conditions: CollectionConfig = {
 	slug: "conditions",
 	admin: {
 		useAsTitle: "name",
+		group: { fr: "Taxonomies" },
 	},
 	labels: {
 		singular: "Trouble du neurodéveloppement",

@@ -3,6 +3,9 @@ import { ImageSizes } from "~/utils/tools";
 
 export const Medias: CollectionConfig = {
 	slug: "medias",
+	admin: {
+		group: { fr: "Médiathèque" },
+	},
 	defaultPopulate: {
 		url: true,
 		filename: true,
