@@ -145,62 +145,46 @@ export const DEPARTEMENT_VALUES = [
 	"975 - Mayotte",
 ] as const;
 
-export const contactParticuliersSchema = z
-	.object({
-		civility: z.enum(CIVILITY_VALUES).optional(),
-		lastName: z
-			.string()
-			.trim()
-			.min(1, "Veuillez renseigner votre nom.")
-			.max(255),
-		firstName: z
-			.string()
-			.trim()
-			.min(1, "Veuillez renseigner votre prénom.")
-			.max(255),
-		email: z
-			.string()
-			.trim()
-			.min(1, "Veuillez renseigner votre courriel.")
-			.email("Veuillez renseigner une adresse email valide.")
-			.max(254),
-		emailConfirmation: z
-			.string()
-			.trim()
-			.min(1, "Veuillez confirmer votre courriel.")
-			.email("Veuillez renseigner une adresse email valide.")
-			.max(254),
-		departement: z.string().trim().max(255).optional(),
-		objet: z.enum(OBJET_VALUES, {
-			errorMap: () => ({
-				message: "Veuillez sélectionner l'objet de votre demande.",
-			}),
+export const contactParticuliersSchema = z.object({
+	civility: z.enum(CIVILITY_VALUES).optional(),
+	lastName: z.string().trim().min(1, "Veuillez renseigner votre nom.").max(255),
+	firstName: z
+		.string()
+		.trim()
+		.min(1, "Veuillez renseigner votre prénom.")
+		.max(255),
+	email: z
+		.string()
+		.trim()
+		.min(1, "Veuillez renseigner votre courriel.")
+		.email("Veuillez renseigner une adresse email valide.")
+		.max(254),
+	departement: z.string().trim().max(255).optional(),
+	objet: z.enum(OBJET_VALUES, {
+		errorMap: () => ({
+			message: "Veuillez sélectionner l'objet de votre demande.",
 		}),
-		classification: z.enum(CLASSIFICATION_VALUES, {
-			errorMap: () => ({ message: "Veuillez sélectionner une option." }),
+	}),
+	classification: z.enum(CLASSIFICATION_VALUES, {
+		errorMap: () => ({ message: "Veuillez sélectionner une option." }),
+	}),
+	sexe: z.enum(SEXE_VALUES).optional(),
+	ageRange: z.enum(AGE_RANGE_VALUES).optional(),
+	message: z
+		.string()
+		.trim()
+		.min(15, "Votre message doit comporter au moins 15 caractères.")
+		.max(2000, "Votre message ne doit pas dépasser 2000 caractères.")
+		.refine((val) => !INVALID_MESSAGE_REGEX.test(val), {
+			message: "Votre message contient des caractères spéciaux non autorisés.",
 		}),
-		sexe: z.enum(SEXE_VALUES).optional(),
-		ageRange: z.enum(AGE_RANGE_VALUES).optional(),
-		message: z
-			.string()
-			.trim()
-			.min(15, "Votre message doit comporter au moins 15 caractères.")
-			.max(2000, "Votre message ne doit pas dépasser 2000 caractères.")
-			.refine((val) => !INVALID_MESSAGE_REGEX.test(val), {
-				message:
-					"Votre message contient des caractères spéciaux non autorisés.",
-			}),
-		newsletter: z.boolean().optional(),
-		consent: z.literal(true, {
-			errorMap: () => ({
-				message: "Vous devez accepter pour soumettre le formulaire.",
-			}),
+	newsletter: z.boolean().optional(),
+	consent: z.literal(true, {
+		errorMap: () => ({
+			message: "Vous devez accepter pour soumettre le formulaire.",
 		}),
-	})
-	.refine((data) => data.email === data.emailConfirmation, {
-		message: "Les adresses email saisies ne correspondent pas.",
-		path: ["emailConfirmation"],
-	});
+	}),
+});
 
 export type ContactParticuliersInput = z.infer<
 	typeof contactParticuliersSchema

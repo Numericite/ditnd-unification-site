@@ -30,7 +30,6 @@ type FormShape = {
 	lastName: string;
 	firstName: string;
 	email: string;
-	emailConfirmation: string;
 	departement: string;
 	objet: Objet | "";
 	classification: Classification | "";
@@ -46,7 +45,6 @@ const initialValues: FormShape = {
 	lastName: "",
 	firstName: "",
 	email: "",
-	emailConfirmation: "",
 	departement: "",
 	objet: "",
 	classification: "",
@@ -103,7 +101,6 @@ export default function ContactParticuliersForm() {
 					lastName: value.lastName,
 					firstName: value.firstName,
 					email: value.email,
-					emailConfirmation: value.emailConfirmation,
 					departement: value.departement || undefined,
 					objet: value.objet as Objet,
 					classification: value.classification as Classification,
@@ -229,51 +226,27 @@ export default function ContactParticuliersForm() {
 					)}
 				</form.Field>
 			</div>
-
-			<div className={cx(classes.row)}>
-				<form.Field name="email">
-					{(field) => (
-						<Input
-							label="Courriel *"
-							hintText={EMAIL_HINT}
-							state={field.state.meta.errors.length > 0 ? "error" : "default"}
-							stateRelatedMessage={firstErrorMessage(field.state.meta.errors)}
-							nativeInputProps={{
-								type: "email",
-								value: field.state.value,
-								onChange: (e) => field.handleChange(e.target.value),
-								onBlur: field.handleBlur,
-								required: true,
-								maxLength: 254,
-								autoComplete: "email",
-								placeholder: "Indiquez votre courriel",
-								name: field.name,
-							}}
-						/>
-					)}
-				</form.Field>
-				<form.Field name="emailConfirmation">
-					{(field) => (
-						<Input
-							label="Confirmation de courriel *"
-							state={field.state.meta.errors.length > 0 ? "error" : "default"}
-							stateRelatedMessage={firstErrorMessage(field.state.meta.errors)}
-							nativeInputProps={{
-								type: "email",
-								value: field.state.value,
-								onChange: (e) => field.handleChange(e.target.value),
-								onBlur: field.handleBlur,
-								required: true,
-								maxLength: 254,
-								autoComplete: "email",
-								placeholder: "Confirmez votre courriel",
-								onPaste: (e) => e.preventDefault(),
-								name: field.name,
-							}}
-						/>
-					)}
-				</form.Field>
-			</div>
+			<form.Field name="email">
+				{(field) => (
+					<Input
+						label="Courriel *"
+						hintText={EMAIL_HINT}
+						state={field.state.meta.errors.length > 0 ? "error" : "default"}
+						stateRelatedMessage={firstErrorMessage(field.state.meta.errors)}
+						nativeInputProps={{
+							type: "email",
+							value: field.state.value,
+							onChange: (e) => field.handleChange(e.target.value),
+							onBlur: field.handleBlur,
+							required: true,
+							maxLength: 254,
+							autoComplete: "email",
+							placeholder: "Indiquez votre courriel",
+							name: field.name,
+						}}
+					/>
+				)}
+			</form.Field>
 
 			<form.Field name="departement">
 				{(field) => (
