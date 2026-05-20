@@ -23,6 +23,7 @@ import { Glossary } from "./collections/Glossary";
 import { GlossaryCategories } from "./collections/GlossaryCategories";
 import { en } from "@payloadcms/translations/languages/en";
 import { fr } from "@payloadcms/translations/languages/fr";
+import { env } from "~/env";
 
 import {
 	addPracticalGuidesTable,
@@ -125,7 +126,7 @@ export default buildConfig({
 	i18n: {
 		supportedLanguages: { en, fr },
 	},
-	secret: process.env.PAYLOAD_SECRET || "",
+	secret: env.PAYLOAD_SECRET,
 	typescript: {
 		outputFile: path.resolve(dirname, "payload-types.ts"),
 	},
@@ -134,7 +135,7 @@ export default buildConfig({
 		beforeSchemaInit: [addPracticalGuidesTable, addCoursesTable],
 		afterSchemaInit: [addPracticalGuidesTableVector, addCoursesTableVector],
 		pool: {
-			connectionString: process.env.POSTGRESQL_ADDON_URI || "",
+			connectionString: env.POSTGRESQL_ADDON_URI,
 		},
 	}),
 	folders: {

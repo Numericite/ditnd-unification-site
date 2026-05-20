@@ -26,6 +26,18 @@ Stack : [Next.js](https://nextjs.org), [Payload CMS](https://payloadcms.com), [t
 
    Fill in the secrets (`PAYLOAD_SECRET`, `BETTER_AUTH_SECRET`, `OPENAI_API_KEY`, S3 credentials, etc.). The default `POSTGRESQL_ADDON_URI` and SMTP values match the provided `docker-compose.yml`.
 
+   ### Generating `PAYLOAD_SECRET` and `BETTER_AUTH_SECRET`
+
+   Both secrets are required and must be at least 32 characters. The app validates them at startup via `src/env.ts` (powered by `@t3-oss/env-nextjs`) and will fail to boot if either is missing or empty — this prevents silent fallback to insecure library defaults.
+
+   Generate a strong value with:
+
+   ```bash
+   node -e "console.log(require('crypto').randomBytes(32).toString('hex'))"
+   ```
+
+   To temporarily bypass validation (e.g. in CI/Docker builds), set `SKIP_ENV_VALIDATION=1`.
+
 3. **Start Postgres + Maildev**
 
    ```bash
