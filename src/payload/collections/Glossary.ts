@@ -1,4 +1,5 @@
 import type { CollectionConfig } from "payload";
+import { hideForNonAdmin, isAdmin } from "../hooks";
 
 export const Glossary: CollectionConfig = {
 	slug: "glossary",
@@ -6,6 +7,12 @@ export const Glossary: CollectionConfig = {
 		useAsTitle: "name",
 		group: { fr: "Glossaire" },
 		defaultColumns: ["name", "category", "description", "link"],
+		hidden: hideForNonAdmin,
+	},
+	access: {
+		create: isAdmin,
+		update: isAdmin,
+		delete: isAdmin,
 	},
 	labels: {
 		singular: "Terme du glossaire",

@@ -67,17 +67,17 @@ export interface Config {
 	};
 	blocks: {};
 	collections: {
-		users: User;
-		personas: Persona;
-		conditions: Condition;
-		courses: Course;
-		"practical-guides": PracticalGuide;
-		"practical-guide-views": PracticalGuideView;
-		themes: Theme;
-		journeys: Journey;
 		medias: Media;
+		"practical-guides": PracticalGuide;
+		courses: Course;
+		journeys: Journey;
+		"practical-guide-views": PracticalGuideView;
 		glossary: Glossary;
 		"glossary-categories": GlossaryCategory;
+		personas: Persona;
+		conditions: Condition;
+		themes: Theme;
+		users: User;
 		"search-results": SearchResult;
 		"payload-kv": PayloadKv;
 		"payload-folders": FolderInterface;
@@ -91,23 +91,23 @@ export interface Config {
 		};
 	};
 	collectionsSelect: {
-		users: UsersSelect<false> | UsersSelect<true>;
-		personas: PersonasSelect<false> | PersonasSelect<true>;
-		conditions: ConditionsSelect<false> | ConditionsSelect<true>;
-		courses: CoursesSelect<false> | CoursesSelect<true>;
+		medias: MediasSelect<false> | MediasSelect<true>;
 		"practical-guides":
 			| PracticalGuidesSelect<false>
 			| PracticalGuidesSelect<true>;
+		courses: CoursesSelect<false> | CoursesSelect<true>;
+		journeys: JourneysSelect<false> | JourneysSelect<true>;
 		"practical-guide-views":
 			| PracticalGuideViewsSelect<false>
 			| PracticalGuideViewsSelect<true>;
-		themes: ThemesSelect<false> | ThemesSelect<true>;
-		journeys: JourneysSelect<false> | JourneysSelect<true>;
-		medias: MediasSelect<false> | MediasSelect<true>;
 		glossary: GlossarySelect<false> | GlossarySelect<true>;
 		"glossary-categories":
 			| GlossaryCategoriesSelect<false>
 			| GlossaryCategoriesSelect<true>;
+		personas: PersonasSelect<false> | PersonasSelect<true>;
+		conditions: ConditionsSelect<false> | ConditionsSelect<true>;
+		themes: ThemesSelect<false> | ThemesSelect<true>;
+		users: UsersSelect<false> | UsersSelect<true>;
 		"search-results": SearchResultsSelect<false> | SearchResultsSelect<true>;
 		"payload-kv": PayloadKvSelect<false> | PayloadKvSelect<true>;
 		"payload-folders": PayloadFoldersSelect<false> | PayloadFoldersSelect<true>;
@@ -161,120 +161,6 @@ export interface UserAuthOperations {
 		email: string;
 		password: string;
 	};
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "users".
- */
-export interface User {
-	id: number;
-	firstName?: string | null;
-	lastName?: string | null;
-	role: "admin" | "editor";
-	updatedAt: string;
-	createdAt: string;
-	email: string;
-	resetPasswordToken?: string | null;
-	resetPasswordExpiration?: string | null;
-	salt?: string | null;
-	hash?: string | null;
-	loginAttempts?: number | null;
-	lockUntil?: string | null;
-	sessions?:
-		| {
-				id: string;
-				createdAt?: string | null;
-				expiresAt: string;
-		  }[]
-		| null;
-	password?: string | null;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "personas".
- */
-export interface Persona {
-	id: number;
-	_order?: string | null;
-	name: string;
-	/**
-	 * Description courte affichée sur les cartes (120 caractères max)
-	 */
-	description: string;
-	/**
-	 * Texte affiché après 'Je suis' sur les tuiles (optionnel). Ex: 'une personne concernée'. Si vide, le nom du persona sera utilisé.
-	 */
-	displayName?: string | null;
-	/**
-	 * Phrase affichée en titre sur la page parcours (optionnel). Ex: 'Je suis un parent interessé par le'
-	 */
-	journeyIntro?: string | null;
-	slug: string;
-	pictogram?:
-		| (
-				| "Avatar"
-				| "HumanCooperation"
-				| "CityHall"
-				| "SelfTraining"
-				| "Hospital"
-				| "School"
-				| "Companie"
-				| "Ecosystem"
-		  )
-		| null;
-	updatedAt: string;
-	createdAt: string;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "conditions".
- */
-export interface Condition {
-	id: number;
-	_order?: string | null;
-	name: string;
-	/**
-	 * Description courte affichée sur les cartes (120 caractères max)
-	 */
-	description: string;
-	acronym: string;
-	slug: string;
-	textColor: string;
-	backgroundColor: string;
-	updatedAt: string;
-	createdAt: string;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "courses".
- */
-export interface Course {
-	id: number;
-	title: string;
-	description: string;
-	link: string;
-	type: "MOOC" | "Webinaire" | "Présentiel";
-	theme: number | Theme;
-	persona: number | Persona;
-	condition: number | Condition;
-	image?: (number | null) | Media;
-	updatedAt: string;
-	createdAt: string;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "themes".
- */
-export interface Theme {
-	id: number;
-	name: string;
-	/**
-	 * Description courte affichée sur les cartes (120 caractères max)
-	 */
-	description: string;
-	slug: string;
-	updatedAt: string;
-	createdAt: string;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -420,12 +306,88 @@ export interface PracticalGuide {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "practical-guide-views".
+ * via the `definition` "conditions".
  */
-export interface PracticalGuideView {
+export interface Condition {
 	id: number;
-	guide: number | PracticalGuide;
-	viewCount: number;
+	_order?: string | null;
+	name: string;
+	/**
+	 * Description courte affichée sur les cartes (120 caractères max)
+	 */
+	description: string;
+	acronym: string;
+	slug: string;
+	textColor: string;
+	backgroundColor: string;
+	updatedAt: string;
+	createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "personas".
+ */
+export interface Persona {
+	id: number;
+	_order?: string | null;
+	name: string;
+	/**
+	 * Description courte affichée sur les cartes (120 caractères max)
+	 */
+	description: string;
+	/**
+	 * Texte affiché après 'Je suis' sur les tuiles (optionnel). Ex: 'une personne concernée'. Si vide, le nom du persona sera utilisé.
+	 */
+	displayName?: string | null;
+	/**
+	 * Phrase affichée en titre sur la page parcours (optionnel). Ex: 'Je suis un parent interessé par le'
+	 */
+	journeyIntro?: string | null;
+	slug: string;
+	pictogram?:
+		| (
+				| "Avatar"
+				| "HumanCooperation"
+				| "CityHall"
+				| "SelfTraining"
+				| "Hospital"
+				| "School"
+				| "Companie"
+				| "Ecosystem"
+		  )
+		| null;
+	updatedAt: string;
+	createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "themes".
+ */
+export interface Theme {
+	id: number;
+	name: string;
+	/**
+	 * Description courte affichée sur les cartes (120 caractères max)
+	 */
+	description: string;
+	slug: string;
+	updatedAt: string;
+	createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "courses".
+ */
+export interface Course {
+	id: number;
+	title: string;
+	description: string;
+	link: string;
+	type: "MOOC" | "Webinaire" | "Présentiel";
+	theme: number | Theme;
+	persona: number | Persona;
+	condition: number | Condition;
+	image?: (number | null) | Media;
 	updatedAt: string;
 	createdAt: string;
 }
@@ -444,6 +406,17 @@ export interface Journey {
 		courses?: (number | Course)[] | null;
 		id?: string | null;
 	}[];
+	updatedAt: string;
+	createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "practical-guide-views".
+ */
+export interface PracticalGuideView {
+	id: number;
+	guide: number | PracticalGuide;
+	viewCount: number;
 	updatedAt: string;
 	createdAt: string;
 }
@@ -472,6 +445,33 @@ export interface GlossaryCategory {
 	name: string;
 	updatedAt: string;
 	createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "users".
+ */
+export interface User {
+	id: number;
+	firstName?: string | null;
+	lastName?: string | null;
+	role: "admin" | "editor";
+	updatedAt: string;
+	createdAt: string;
+	email: string;
+	resetPasswordToken?: string | null;
+	resetPasswordExpiration?: string | null;
+	salt?: string | null;
+	hash?: string | null;
+	loginAttempts?: number | null;
+	lockUntil?: string | null;
+	sessions?:
+		| {
+				id: string;
+				createdAt?: string | null;
+				expiresAt: string;
+		  }[]
+		| null;
+	password?: string | null;
 }
 /**
  * This is a collection of automatically created search results. These results are used by the global site search and will be updated automatically as documents in the CMS are created or updated.
@@ -521,8 +521,32 @@ export interface PayloadLockedDocument {
 	id: number;
 	document?:
 		| ({
-				relationTo: "users";
-				value: number | User;
+				relationTo: "medias";
+				value: number | Media;
+		  } | null)
+		| ({
+				relationTo: "practical-guides";
+				value: number | PracticalGuide;
+		  } | null)
+		| ({
+				relationTo: "courses";
+				value: number | Course;
+		  } | null)
+		| ({
+				relationTo: "journeys";
+				value: number | Journey;
+		  } | null)
+		| ({
+				relationTo: "practical-guide-views";
+				value: number | PracticalGuideView;
+		  } | null)
+		| ({
+				relationTo: "glossary";
+				value: number | Glossary;
+		  } | null)
+		| ({
+				relationTo: "glossary-categories";
+				value: number | GlossaryCategory;
 		  } | null)
 		| ({
 				relationTo: "personas";
@@ -533,36 +557,12 @@ export interface PayloadLockedDocument {
 				value: number | Condition;
 		  } | null)
 		| ({
-				relationTo: "courses";
-				value: number | Course;
-		  } | null)
-		| ({
-				relationTo: "practical-guides";
-				value: number | PracticalGuide;
-		  } | null)
-		| ({
-				relationTo: "practical-guide-views";
-				value: number | PracticalGuideView;
-		  } | null)
-		| ({
 				relationTo: "themes";
 				value: number | Theme;
 		  } | null)
 		| ({
-				relationTo: "journeys";
-				value: number | Journey;
-		  } | null)
-		| ({
-				relationTo: "medias";
-				value: number | Media;
-		  } | null)
-		| ({
-				relationTo: "glossary";
-				value: number | Glossary;
-		  } | null)
-		| ({
-				relationTo: "glossary-categories";
-				value: number | GlossaryCategory;
+				relationTo: "users";
+				value: number | User;
 		  } | null)
 		| ({
 				relationTo: "search-results";
@@ -613,144 +613,6 @@ export interface PayloadMigration {
 	batch?: number | null;
 	updatedAt: string;
 	createdAt: string;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "users_select".
- */
-export interface UsersSelect<T extends boolean = true> {
-	firstName?: T;
-	lastName?: T;
-	role?: T;
-	updatedAt?: T;
-	createdAt?: T;
-	email?: T;
-	resetPasswordToken?: T;
-	resetPasswordExpiration?: T;
-	salt?: T;
-	hash?: T;
-	loginAttempts?: T;
-	lockUntil?: T;
-	sessions?:
-		| T
-		| {
-				id?: T;
-				createdAt?: T;
-				expiresAt?: T;
-		  };
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "personas_select".
- */
-export interface PersonasSelect<T extends boolean = true> {
-	_order?: T;
-	name?: T;
-	description?: T;
-	displayName?: T;
-	journeyIntro?: T;
-	slug?: T;
-	pictogram?: T;
-	updatedAt?: T;
-	createdAt?: T;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "conditions_select".
- */
-export interface ConditionsSelect<T extends boolean = true> {
-	_order?: T;
-	name?: T;
-	description?: T;
-	acronym?: T;
-	slug?: T;
-	textColor?: T;
-	backgroundColor?: T;
-	updatedAt?: T;
-	createdAt?: T;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "courses_select".
- */
-export interface CoursesSelect<T extends boolean = true> {
-	title?: T;
-	description?: T;
-	link?: T;
-	type?: T;
-	theme?: T;
-	persona?: T;
-	condition?: T;
-	image?: T;
-	updatedAt?: T;
-	createdAt?: T;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "practical-guides_select".
- */
-export interface PracticalGuidesSelect<T extends boolean = true> {
-	title?: T;
-	slug?: T;
-	description?: T;
-	conditions?: T;
-	content?: T;
-	persona?: T;
-	themes?: T;
-	"practical-guides"?: T;
-	courses?: T;
-	image?: T;
-	imageBanner?: T;
-	meta?:
-		| T
-		| {
-				title?: T;
-				description?: T;
-				image?: T;
-		  };
-	updatedAt?: T;
-	createdAt?: T;
-	_status?: T;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "practical-guide-views_select".
- */
-export interface PracticalGuideViewsSelect<T extends boolean = true> {
-	guide?: T;
-	viewCount?: T;
-	updatedAt?: T;
-	createdAt?: T;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "themes_select".
- */
-export interface ThemesSelect<T extends boolean = true> {
-	name?: T;
-	description?: T;
-	slug?: T;
-	updatedAt?: T;
-	createdAt?: T;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "journeys_select".
- */
-export interface JourneysSelect<T extends boolean = true> {
-	journey_name?: T;
-	persona?: T;
-	image?: T;
-	chapter?:
-		| T
-		| {
-				"chapter-name"?: T;
-				"practical-guides"?: T;
-				courses?: T;
-				id?: T;
-		  };
-	updatedAt?: T;
-	createdAt?: T;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -837,6 +699,78 @@ export interface MediasSelect<T extends boolean = true> {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "practical-guides_select".
+ */
+export interface PracticalGuidesSelect<T extends boolean = true> {
+	title?: T;
+	slug?: T;
+	description?: T;
+	conditions?: T;
+	content?: T;
+	persona?: T;
+	themes?: T;
+	"practical-guides"?: T;
+	courses?: T;
+	image?: T;
+	imageBanner?: T;
+	meta?:
+		| T
+		| {
+				title?: T;
+				description?: T;
+				image?: T;
+		  };
+	updatedAt?: T;
+	createdAt?: T;
+	_status?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "courses_select".
+ */
+export interface CoursesSelect<T extends boolean = true> {
+	title?: T;
+	description?: T;
+	link?: T;
+	type?: T;
+	theme?: T;
+	persona?: T;
+	condition?: T;
+	image?: T;
+	updatedAt?: T;
+	createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "journeys_select".
+ */
+export interface JourneysSelect<T extends boolean = true> {
+	journey_name?: T;
+	persona?: T;
+	image?: T;
+	chapter?:
+		| T
+		| {
+				"chapter-name"?: T;
+				"practical-guides"?: T;
+				courses?: T;
+				id?: T;
+		  };
+	updatedAt?: T;
+	createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "practical-guide-views_select".
+ */
+export interface PracticalGuideViewsSelect<T extends boolean = true> {
+	guide?: T;
+	viewCount?: T;
+	updatedAt?: T;
+	createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "glossary_select".
  */
 export interface GlossarySelect<T extends boolean = true> {
@@ -855,6 +789,72 @@ export interface GlossaryCategoriesSelect<T extends boolean = true> {
 	name?: T;
 	updatedAt?: T;
 	createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "personas_select".
+ */
+export interface PersonasSelect<T extends boolean = true> {
+	_order?: T;
+	name?: T;
+	description?: T;
+	displayName?: T;
+	journeyIntro?: T;
+	slug?: T;
+	pictogram?: T;
+	updatedAt?: T;
+	createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "conditions_select".
+ */
+export interface ConditionsSelect<T extends boolean = true> {
+	_order?: T;
+	name?: T;
+	description?: T;
+	acronym?: T;
+	slug?: T;
+	textColor?: T;
+	backgroundColor?: T;
+	updatedAt?: T;
+	createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "themes_select".
+ */
+export interface ThemesSelect<T extends boolean = true> {
+	name?: T;
+	description?: T;
+	slug?: T;
+	updatedAt?: T;
+	createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "users_select".
+ */
+export interface UsersSelect<T extends boolean = true> {
+	firstName?: T;
+	lastName?: T;
+	role?: T;
+	updatedAt?: T;
+	createdAt?: T;
+	email?: T;
+	resetPasswordToken?: T;
+	resetPasswordExpiration?: T;
+	salt?: T;
+	hash?: T;
+	loginAttempts?: T;
+	lockUntil?: T;
+	sessions?:
+		| T
+		| {
+				id?: T;
+				createdAt?: T;
+				expiresAt?: T;
+		  };
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema

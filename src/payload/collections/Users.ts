@@ -1,11 +1,12 @@
 import type { CollectionConfig } from "payload";
-import { isAdmin } from "../hooks";
+import { hideForNonAdmin, isAdmin } from "../hooks";
 
 export const Users: CollectionConfig = {
 	slug: "users",
 	admin: {
 		useAsTitle: "email",
-		group: { fr: "Administration" },
+		group: { fr: "Autre" },
+		hidden: hideForNonAdmin,
 	},
 	labels: {
 		singular: "Utilisateur",
@@ -13,6 +14,7 @@ export const Users: CollectionConfig = {
 	},
 	access: {
 		read: isAdmin,
+		create: isAdmin,
 		update: isAdmin,
 		delete: isAdmin,
 	},

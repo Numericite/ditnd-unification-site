@@ -1,5 +1,6 @@
 import type { CollectionConfig } from "payload";
 import { standardFields } from "../fields/standards";
+import { hideForNonAdmin, isAdmin } from "../hooks";
 import { validateHexColor } from "~/utils/tools";
 
 export const Conditions: CollectionConfig = {
@@ -7,6 +8,12 @@ export const Conditions: CollectionConfig = {
 	admin: {
 		useAsTitle: "name",
 		group: { fr: "Taxonomies" },
+		hidden: hideForNonAdmin,
+	},
+	access: {
+		create: isAdmin,
+		update: isAdmin,
+		delete: isAdmin,
 	},
 	labels: {
 		singular: "Trouble du neurodéveloppement",
