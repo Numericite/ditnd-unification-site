@@ -36,6 +36,15 @@ export const CMSFooter: GlobalConfig = {
 						standardFields.wysiwyg,
 					],
 				},
+				{
+					label: "Contact particuliers",
+					name: "contactParticuliers",
+					fields: [
+						standardFields.title,
+						imageBannerField,
+						standardFields.wysiwyg,
+					],
+				},
 			],
 		},
 	],

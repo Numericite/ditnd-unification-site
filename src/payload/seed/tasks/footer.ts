@@ -19,6 +19,10 @@ export default async function footerTask(payload: BasePayload) {
 				title: "Formulaire de contact réservé aux professionnels des CRA",
 				content: legalsContent.contactProsCra,
 			},
+			contactParticuliers: {
+				title: "Adressez-nous vos questions sur l'autisme et les TND",
+				content: legalsContent.contactParticuliers,
+			},
 		},
 	});
 

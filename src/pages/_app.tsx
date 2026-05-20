@@ -128,13 +128,7 @@ function App({ Component, pageProps }: AppPropsWithGlobal) {
 						},
 						{
 							text: "Contact particuliers",
-							linkProps: {
-								href: "https://www.autismeinfoservice.fr/contact",
-								"aria-label": "Contact particuliers, nouvelle fenêtre",
-								title: "Contact particuliers, nouvelle fenêtre",
-								target: "_blank",
-								rel: "noopener noreferrer",
-							},
+							linkProps: { href: "/contact-particuliers" },
 						},
 						{
 							text: "Contact professionnels",
