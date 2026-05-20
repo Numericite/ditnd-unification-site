@@ -41,13 +41,13 @@ export interface AugmentedPracticalGuideViews extends PracticalGuideView {
 
 export const practicalGuidesRouter = createTRPCRouter({
 	getBySlug: publicProcedure
-		.input(z.object({ slug: z.string(), draft: z.boolean().optional() }))
+		.input(z.object({ slug: z.string() }))
 		.query(async ({ input, ctx }) => {
 			const result = await ctx.payload.find({
 				collection: "practical-guides",
 				limit: 0,
 				depth: 2,
-				draft: input.draft ?? false,
+				draft: false,
 				where: {
 					slug: {
 						equals: input.slug,
