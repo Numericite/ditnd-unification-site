@@ -3,11 +3,13 @@ import Alert from "@codegouvfr/react-dsfr/Alert";
 import Button from "@codegouvfr/react-dsfr/Button";
 import { Input } from "@codegouvfr/react-dsfr/Input";
 import { Select } from "@codegouvfr/react-dsfr/Select";
+import { useForm } from "@tanstack/react-form";
 import { useState } from "react";
 import { tss } from "tss-react/dsfr";
 import { api } from "~/utils/api";
-import { INVALID_MESSAGE_REGEX } from "~/utils/contactForm";
+import { zodValidator } from "~/utils/contactForm";
 import {
+	contactProsCraSchema,
 	PROFILE_LABELS,
 	PROFILE_VALUES,
 	type Profile,
@@ -16,20 +18,29 @@ import {
 	WISH_VALUES,
 } from "~/utils/contactProsCra";
 
-type FieldName =
-	| "profile"
-	| "firstName"
-	| "lastName"
-	| "craName"
-	| "craRole"
-	| "wish"
-	| "message"
-	| "phone"
-	| "email";
+type FormShape = {
+	profile: Profile;
+	firstName: string;
+	lastName: string;
+	craName: string;
+	craRole: string;
+	wish: Wish | "";
+	message: string;
+	phone: string;
+	email: string;
+};
 
-type FormValues = Record<FieldName, string>;
-
-type FormErrors = Partial<Record<FieldName, string>>;
+const initialValues: FormShape = {
+	profile: PROFILE_VALUES[0],
+	firstName: "",
+	lastName: "",
+	craName: "",
+	craRole: "",
+	wish: "",
+	message: "",
+	phone: "",
+	email: "",
+};
 
 const MESSAGE_HINT = (
 	<>
@@ -49,128 +60,46 @@ const PHONE_HINT =
 const EMAIL_HINT =
 	"Format adresse courriel attendu. Exemple : jean.dupond@service.tld";
 
-const initialValues: FormValues = {
-	profile: PROFILE_VALUES[0],
-	firstName: "",
-	lastName: "",
-	craName: "",
-	craRole: "",
-	wish: "",
-	message: "",
-	phone: "",
-	email: "",
-};
-
-function validate(values: FormValues): FormErrors {
-	const errors: FormErrors = {};
-
-	if (!values.profile) errors.profile = "Veuillez sélectionner votre profil.";
-	if (!values.firstName.trim())
-		errors.firstName = "Veuillez renseigner votre prénom.";
-	if (!values.lastName.trim())
-		errors.lastName = "Veuillez renseigner votre nom de famille.";
-	if (!values.craName.trim())
-		errors.craName = "Veuillez renseigner le nom de votre CRA.";
-	if (!values.craRole.trim())
-		errors.craRole = "Veuillez renseigner votre fonction au sein du CRA.";
-	if (!values.wish) errors.wish = "Veuillez sélectionner une option.";
-
-	const trimmedMessage = values.message.trim();
-	if (!trimmedMessage) {
-		errors.message = "Veuillez renseigner votre message.";
-	} else if (trimmedMessage.length < 15) {
-		errors.message = "Votre message doit comporter au moins 15 caractères.";
-	} else if (trimmedMessage.length > 1000) {
-		errors.message = "Votre message ne doit pas dépasser 1000 caractères.";
-	} else if (INVALID_MESSAGE_REGEX.test(trimmedMessage)) {
-		errors.message =
-			"Votre message contient des caractères spéciaux non autorisés.";
+function firstErrorMessage(errors: ReadonlyArray<unknown>): string | undefined {
+	const first = errors[0];
+	if (!first) return undefined;
+	if (typeof first === "string") return first;
+	if (typeof first === "object" && first !== null && "message" in first) {
+		const msg = (first as { message: unknown }).message;
+		return typeof msg === "string" ? msg : undefined;
 	}
-
-	if (values.phone.trim() && !/^\d{10}$/.test(values.phone.trim())) {
-		errors.phone =
-			"Le numéro doit être composé de 10 chiffres sans espace ni caractère spécial.";
-	}
-
-	const trimmedEmail = values.email.trim();
-	if (!trimmedEmail) {
-		errors.email = "Veuillez renseigner votre email professionnel.";
-	} else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(trimmedEmail)) {
-		errors.email = "Veuillez renseigner une adresse email valide.";
-	}
-
-	return errors;
+	return undefined;
 }
 
 export default function ContactProsCraForm() {
 	const { classes, cx } = useStyles();
 
-	const [values, setValues] = useState<FormValues>(initialValues);
-	const [errors, setErrors] = useState<FormErrors>({});
-	const [submitState, setSubmitState] = useState<
-		"idle" | "submitting" | "success" | "error"
-	>("idle");
-
 	const submitMutation = api.contact.submitProsCra.useMutation();
+	const [networkError, setNetworkError] = useState(false);
+	const [success, setSuccess] = useState(false);
 
-	const updateField = (field: FieldName, value: string) => {
-		setValues((prev) => ({ ...prev, [field]: value }));
-		if (errors[field]) {
-			setErrors((prev) => {
-				const next = { ...prev };
-				delete next[field];
-				return next;
-			});
-		}
-	};
-
-	const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-		e.preventDefault();
-
-		const validation = validate(values);
-		setErrors(validation);
-
-		if (Object.keys(validation).length > 0) {
-			setSubmitState("error");
-			requestAnimationFrame(() => {
-				const firstErrorField = document.querySelector<HTMLElement>(
-					".fr-input-group--error, .fr-select-group--error",
-				);
-				firstErrorField?.scrollIntoView({
-					behavior: "smooth",
-					block: "center",
+	const form = useForm({
+		defaultValues: initialValues,
+		validators: {
+			onSubmit: zodValidator(contactProsCraSchema),
+		},
+		onSubmit: async ({ value, formApi }) => {
+			setNetworkError(false);
+			try {
+				await submitMutation.mutateAsync({
+					...value,
+					wish: value.wish as Wish,
+					phone: value.phone.trim() || undefined,
 				});
-			});
-			return;
-		}
+				setSuccess(true);
+				formApi.reset();
+			} catch {
+				setNetworkError(true);
+			}
+		},
+	});
 
-		setSubmitState("submitting");
-
-		try {
-			await submitMutation.mutateAsync({
-				profile: values.profile as Profile,
-				firstName: values.firstName.trim(),
-				lastName: values.lastName.trim(),
-				craName: values.craName.trim(),
-				craRole: values.craRole.trim(),
-				wish: values.wish as Wish,
-				message: values.message.trim(),
-				phone: values.phone.trim() || undefined,
-				email: values.email.trim(),
-			});
-
-			setSubmitState("success");
-			setValues(initialValues);
-		} catch {
-			setSubmitState("error");
-			setErrors({});
-		}
-	};
-
-	const getFieldState = (field: FieldName) =>
-		errors[field] ? "error" : "default";
-
-	if (submitState === "success") {
+	if (success) {
 		return (
 			<div className={cx(classes.alertWrapper)}>
 				<Alert
@@ -178,173 +107,240 @@ export default function ContactProsCraForm() {
 					title="Votre message a bien été envoyé"
 					description="Nous vous répondrons dans les meilleurs délais."
 					closable
-					onClose={() => setSubmitState("idle")}
+					onClose={() => setSuccess(false)}
 				/>
 			</div>
 		);
 	}
 
 	return (
-		<form onSubmit={handleSubmit} noValidate className={cx(classes.form)}>
+		<form
+			noValidate
+			className={cx(classes.form)}
+			onSubmit={(e) => {
+				e.preventDefault();
+				e.stopPropagation();
+				void form.handleSubmit().then(() => {
+					requestAnimationFrame(() => {
+						const firstErrorField = document.querySelector<HTMLElement>(
+							".fr-input-group--error, .fr-select-group--error",
+						);
+						firstErrorField?.scrollIntoView({
+							behavior: "smooth",
+							block: "center",
+						});
+					});
+				});
+			}}
+		>
 			<p className={fr.cx("fr-text--sm", "fr-mb-2w")}>
 				Sauf mention contraire, tous les champs sont obligatoires.
 			</p>
 
-			{submitState === "error" && Object.keys(errors).length === 0 && (
+			{networkError && (
 				<div className={cx(classes.alertWrapper)}>
 					<Alert
 						severity="error"
 						title="Une erreur est survenue"
 						description="Merci de réessayer dans quelques instants."
 						closable
-						onClose={() => setSubmitState("idle")}
+						onClose={() => setNetworkError(false)}
 					/>
 				</div>
 			)}
 
-			<Select
-				label="Votre profil"
-				nativeSelectProps={{
-					value: values.profile,
-					onChange: (e) => updateField("profile", e.target.value),
-					required: true,
-					"aria-required": true,
-					name: "profile",
-				}}
-				state={getFieldState("profile")}
-				stateRelatedMessage={errors.profile}
-			>
-				{PROFILE_VALUES.map((value) => (
-					<option key={value} value={value}>
-						{PROFILE_LABELS[value]}
-					</option>
-				))}
-			</Select>
+			<form.Field name="profile">
+				{(field) => (
+					<Select
+						label="Votre profil"
+						nativeSelectProps={{
+							value: field.state.value,
+							onChange: (e) => field.handleChange(e.target.value as Profile),
+							onBlur: field.handleBlur,
+							required: true,
+							"aria-required": true,
+							name: field.name,
+						}}
+						state={field.state.meta.errors.length > 0 ? "error" : "default"}
+						stateRelatedMessage={firstErrorMessage(field.state.meta.errors)}
+					>
+						{PROFILE_VALUES.map((value) => (
+							<option key={value} value={value}>
+								{PROFILE_LABELS[value]}
+							</option>
+						))}
+					</Select>
+				)}
+			</form.Field>
 
 			<div className={cx(classes.row)}>
-				<Input
-					label="Votre prénom"
-					state={getFieldState("firstName")}
-					stateRelatedMessage={errors.firstName}
-					nativeInputProps={{
-						value: values.firstName,
-						onChange: (e) => updateField("firstName", e.target.value),
-						required: true,
-						autoComplete: "given-name",
-						name: "firstName",
-					}}
-				/>
-				<Input
-					label="Votre nom de famille"
-					state={getFieldState("lastName")}
-					stateRelatedMessage={errors.lastName}
-					nativeInputProps={{
-						value: values.lastName,
-						onChange: (e) => updateField("lastName", e.target.value),
-						required: true,
-						autoComplete: "family-name",
-						name: "lastName",
-					}}
-				/>
+				<form.Field name="firstName">
+					{(field) => (
+						<Input
+							label="Votre prénom"
+							state={field.state.meta.errors.length > 0 ? "error" : "default"}
+							stateRelatedMessage={firstErrorMessage(field.state.meta.errors)}
+							nativeInputProps={{
+								value: field.state.value,
+								onChange: (e) => field.handleChange(e.target.value),
+								onBlur: field.handleBlur,
+								required: true,
+								autoComplete: "given-name",
+								name: field.name,
+							}}
+						/>
+					)}
+				</form.Field>
+				<form.Field name="lastName">
+					{(field) => (
+						<Input
+							label="Votre nom de famille"
+							state={field.state.meta.errors.length > 0 ? "error" : "default"}
+							stateRelatedMessage={firstErrorMessage(field.state.meta.errors)}
+							nativeInputProps={{
+								value: field.state.value,
+								onChange: (e) => field.handleChange(e.target.value),
+								onBlur: field.handleBlur,
+								required: true,
+								autoComplete: "family-name",
+								name: field.name,
+							}}
+						/>
+					)}
+				</form.Field>
 			</div>
 
-			<Input
-				label="Le nom de votre CRA"
-				state={getFieldState("craName")}
-				stateRelatedMessage={errors.craName}
-				nativeInputProps={{
-					value: values.craName,
-					onChange: (e) => updateField("craName", e.target.value),
-					required: true,
-					name: "craName",
-				}}
-			/>
+			<form.Field name="craName">
+				{(field) => (
+					<Input
+						label="Le nom de votre CRA"
+						state={field.state.meta.errors.length > 0 ? "error" : "default"}
+						stateRelatedMessage={firstErrorMessage(field.state.meta.errors)}
+						nativeInputProps={{
+							value: field.state.value,
+							onChange: (e) => field.handleChange(e.target.value),
+							onBlur: field.handleBlur,
+							required: true,
+							name: field.name,
+						}}
+					/>
+				)}
+			</form.Field>
 
-			<Input
-				label="Votre fonction au sein du CRA"
-				state={getFieldState("craRole")}
-				stateRelatedMessage={errors.craRole}
-				nativeInputProps={{
-					value: values.craRole,
-					onChange: (e) => updateField("craRole", e.target.value),
-					required: true,
-					name: "craRole",
-				}}
-			/>
+			<form.Field name="craRole">
+				{(field) => (
+					<Input
+						label="Votre fonction au sein du CRA"
+						state={field.state.meta.errors.length > 0 ? "error" : "default"}
+						stateRelatedMessage={firstErrorMessage(field.state.meta.errors)}
+						nativeInputProps={{
+							value: field.state.value,
+							onChange: (e) => field.handleChange(e.target.value),
+							onBlur: field.handleBlur,
+							required: true,
+							name: field.name,
+						}}
+					/>
+				)}
+			</form.Field>
 
-			<Select
-				label="Vous souhaitez"
-				nativeSelectProps={{
-					value: values.wish,
-					onChange: (e) => updateField("wish", e.target.value),
-					required: true,
-					"aria-required": true,
-					name: "wish",
-				}}
-				state={getFieldState("wish")}
-				stateRelatedMessage={errors.wish}
-			>
-				<option value="" disabled>
-					Sélectionnez une option
-				</option>
-				{WISH_VALUES.map((value) => (
-					<option key={value} value={value}>
-						{WISH_LABELS[value]}
-					</option>
-				))}
-			</Select>
+			<form.Field name="wish">
+				{(field) => (
+					<Select
+						label="Vous souhaitez"
+						nativeSelectProps={{
+							value: field.state.value,
+							onChange: (e) => field.handleChange(e.target.value as Wish | ""),
+							onBlur: field.handleBlur,
+							required: true,
+							"aria-required": true,
+							name: field.name,
+						}}
+						state={field.state.meta.errors.length > 0 ? "error" : "default"}
+						stateRelatedMessage={firstErrorMessage(field.state.meta.errors)}
+					>
+						<option value="" disabled>
+							Sélectionnez une option
+						</option>
+						{WISH_VALUES.map((value) => (
+							<option key={value} value={value}>
+								{WISH_LABELS[value]}
+							</option>
+						))}
+					</Select>
+				)}
+			</form.Field>
 
-			<Input
-				label="Votre message"
-				textArea
-				hintText={MESSAGE_HINT}
-				state={getFieldState("message")}
-				stateRelatedMessage={errors.message}
-				nativeTextAreaProps={{
-					value: values.message,
-					onChange: (e) => updateField("message", e.target.value),
-					required: true,
-					rows: 6,
-					maxLength: 1000,
-					name: "message",
-				}}
-			/>
+			<form.Field name="message">
+				{(field) => (
+					<Input
+						label="Votre message"
+						textArea
+						hintText={MESSAGE_HINT}
+						state={field.state.meta.errors.length > 0 ? "error" : "default"}
+						stateRelatedMessage={firstErrorMessage(field.state.meta.errors)}
+						nativeTextAreaProps={{
+							value: field.state.value,
+							onChange: (e) => field.handleChange(e.target.value),
+							onBlur: field.handleBlur,
+							required: true,
+							rows: 6,
+							maxLength: 1000,
+							name: field.name,
+						}}
+					/>
+				)}
+			</form.Field>
 
-			<Input
-				label="Votre numéro de téléphone (optionnel)"
-				hintText={PHONE_HINT}
-				state={getFieldState("phone")}
-				stateRelatedMessage={errors.phone}
-				nativeInputProps={{
-					type: "tel",
-					inputMode: "numeric",
-					value: values.phone,
-					onChange: (e) => updateField("phone", e.target.value),
-					autoComplete: "tel",
-					name: "phone",
-				}}
-			/>
+			<form.Field name="phone">
+				{(field) => (
+					<Input
+						label="Votre numéro de téléphone (optionnel)"
+						hintText={PHONE_HINT}
+						state={field.state.meta.errors.length > 0 ? "error" : "default"}
+						stateRelatedMessage={firstErrorMessage(field.state.meta.errors)}
+						nativeInputProps={{
+							type: "tel",
+							inputMode: "numeric",
+							value: field.state.value,
+							onChange: (e) => field.handleChange(e.target.value),
+							onBlur: field.handleBlur,
+							autoComplete: "tel",
+							name: field.name,
+						}}
+					/>
+				)}
+			</form.Field>
 
-			<Input
-				label="Votre email professionnel"
-				hintText={EMAIL_HINT}
-				state={getFieldState("email")}
-				stateRelatedMessage={errors.email}
-				nativeInputProps={{
-					type: "email",
-					value: values.email,
-					onChange: (e) => updateField("email", e.target.value),
-					required: true,
-					autoComplete: "email",
-					name: "email",
-				}}
-			/>
+			<form.Field name="email">
+				{(field) => (
+					<Input
+						label="Votre email professionnel"
+						hintText={EMAIL_HINT}
+						state={field.state.meta.errors.length > 0 ? "error" : "default"}
+						stateRelatedMessage={firstErrorMessage(field.state.meta.errors)}
+						nativeInputProps={{
+							type: "email",
+							value: field.state.value,
+							onChange: (e) => field.handleChange(e.target.value),
+							onBlur: field.handleBlur,
+							required: true,
+							autoComplete: "email",
+							name: field.name,
+						}}
+					/>
+				)}
+			</form.Field>
 
-			<div className={cx(classes.actions)}>
-				<Button type="submit" disabled={submitState === "submitting"}>
-					{submitState === "submitting" ? "Envoi en cours…" : "Envoyer"}
-				</Button>
-			</div>
+			<form.Subscribe selector={(state) => state.isSubmitting}>
+				{(isSubmitting) => (
+					<div className={cx(classes.actions)}>
+						<Button type="submit" disabled={isSubmitting}>
+							{isSubmitting ? "Envoi en cours…" : "Envoyer"}
+						</Button>
+					</div>
+				)}
+			</form.Subscribe>
 		</form>
 	);
 }

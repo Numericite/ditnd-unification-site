@@ -5,10 +5,11 @@ import Checkbox from "@codegouvfr/react-dsfr/Checkbox";
 import { Input } from "@codegouvfr/react-dsfr/Input";
 import { RadioButtons } from "@codegouvfr/react-dsfr/RadioButtons";
 import { Select } from "@codegouvfr/react-dsfr/Select";
+import { useForm } from "@tanstack/react-form";
 import { useState } from "react";
 import { tss } from "tss-react/dsfr";
 import { api } from "~/utils/api";
-import { INVALID_MESSAGE_REGEX } from "~/utils/contactForm";
+import { zodValidator } from "~/utils/contactForm";
 import {
 	AGE_RANGE_VALUES,
 	type AgeRange,
@@ -16,6 +17,7 @@ import {
 	type Civility,
 	CLASSIFICATION_VALUES,
 	type Classification,
+	contactParticuliersSchema,
 	DEPARTEMENT_VALUES,
 	OBJET_VALUES,
 	type Objet,
@@ -23,22 +25,7 @@ import {
 	type Sexe,
 } from "~/utils/contactParticuliers";
 
-type FieldName =
-	| "civility"
-	| "lastName"
-	| "firstName"
-	| "email"
-	| "emailConfirmation"
-	| "departement"
-	| "objet"
-	| "classification"
-	| "sexe"
-	| "ageRange"
-	| "message"
-	| "newsletter"
-	| "consent";
-
-type FormValues = {
+type FormShape = {
 	civility: Civility | "";
 	lastName: string;
 	firstName: string;
@@ -54,7 +41,21 @@ type FormValues = {
 	consent: boolean;
 };
 
-type FormErrors = Partial<Record<FieldName, string>>;
+const initialValues: FormShape = {
+	civility: "",
+	lastName: "",
+	firstName: "",
+	email: "",
+	emailConfirmation: "",
+	departement: "",
+	objet: "",
+	classification: "",
+	sexe: "",
+	ageRange: "",
+	message: "",
+	newsletter: false,
+	consent: false,
+};
 
 const MESSAGE_HINT = (
 	<>
@@ -71,144 +72,56 @@ const MESSAGE_HINT = (
 const EMAIL_HINT =
 	"Format adresse courriel attendu. Exemple : jean.dupond@service.tld";
 
-const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-
-const initialValues: FormValues = {
-	civility: "",
-	lastName: "",
-	firstName: "",
-	email: "",
-	emailConfirmation: "",
-	departement: "",
-	objet: "",
-	classification: "",
-	sexe: "",
-	ageRange: "",
-	message: "",
-	newsletter: false,
-	consent: false,
-};
-
-function validate(values: FormValues): FormErrors {
-	const errors: FormErrors = {};
-
-	if (!values.lastName.trim())
-		errors.lastName = "Veuillez renseigner votre nom.";
-	if (!values.firstName.trim())
-		errors.firstName = "Veuillez renseigner votre prénom.";
-
-	const trimmedEmail = values.email.trim();
-	if (!trimmedEmail) {
-		errors.email = "Veuillez renseigner votre courriel.";
-	} else if (!EMAIL_REGEX.test(trimmedEmail)) {
-		errors.email = "Veuillez renseigner une adresse email valide.";
+function firstErrorMessage(errors: ReadonlyArray<unknown>): string | undefined {
+	const first = errors[0];
+	if (!first) return undefined;
+	if (typeof first === "string") return first;
+	if (typeof first === "object" && first !== null && "message" in first) {
+		const msg = (first as { message: unknown }).message;
+		return typeof msg === "string" ? msg : undefined;
 	}
-
-	const trimmedEmailConfirmation = values.emailConfirmation.trim();
-	if (!trimmedEmailConfirmation) {
-		errors.emailConfirmation = "Veuillez confirmer votre courriel.";
-	} else if (trimmedEmail && trimmedEmail !== trimmedEmailConfirmation) {
-		errors.emailConfirmation =
-			"Les adresses email saisies ne correspondent pas.";
-	}
-
-	if (!values.objet)
-		errors.objet = "Veuillez sélectionner l'objet de votre demande.";
-	if (!values.classification)
-		errors.classification = "Veuillez sélectionner une option.";
-
-	const trimmedMessage = values.message.trim();
-	if (!trimmedMessage) {
-		errors.message = "Veuillez renseigner votre message.";
-	} else if (trimmedMessage.length < 15) {
-		errors.message = "Votre message doit comporter au moins 15 caractères.";
-	} else if (trimmedMessage.length > 2000) {
-		errors.message = "Votre message ne doit pas dépasser 2000 caractères.";
-	} else if (INVALID_MESSAGE_REGEX.test(trimmedMessage)) {
-		errors.message =
-			"Votre message contient des caractères spéciaux non autorisés.";
-	}
-
-	if (!values.consent) {
-		errors.consent = "Vous devez accepter pour soumettre le formulaire.";
-	}
-
-	return errors;
+	return undefined;
 }
 
 export default function ContactParticuliersForm() {
 	const { classes, cx } = useStyles();
 
-	const [values, setValues] = useState<FormValues>(initialValues);
-	const [errors, setErrors] = useState<FormErrors>({});
-	const [submitState, setSubmitState] = useState<
-		"idle" | "submitting" | "success" | "error"
-	>("idle");
-
 	const submitMutation = api.contact.submitParticuliers.useMutation();
+	const [networkError, setNetworkError] = useState(false);
+	const [success, setSuccess] = useState(false);
 
-	const updateField = <K extends FieldName>(field: K, value: FormValues[K]) => {
-		setValues((prev) => ({ ...prev, [field]: value }));
-		if (errors[field]) {
-			setErrors((prev) => {
-				const next = { ...prev };
-				delete next[field];
-				return next;
-			});
-		}
-	};
-
-	const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-		e.preventDefault();
-
-		const validation = validate(values);
-		setErrors(validation);
-
-		if (Object.keys(validation).length > 0) {
-			setSubmitState("error");
-			requestAnimationFrame(() => {
-				const firstErrorField = document.querySelector<HTMLElement>(
-					".fr-input-group--error, .fr-select-group--error, .fr-fieldset--error",
-				);
-				firstErrorField?.scrollIntoView({
-					behavior: "smooth",
-					block: "center",
+	const form = useForm({
+		defaultValues: initialValues,
+		validators: {
+			onSubmit: zodValidator(contactParticuliersSchema),
+		},
+		onSubmit: async ({ value, formApi }) => {
+			setNetworkError(false);
+			try {
+				await submitMutation.mutateAsync({
+					civility: value.civility || undefined,
+					lastName: value.lastName,
+					firstName: value.firstName,
+					email: value.email,
+					emailConfirmation: value.emailConfirmation,
+					departement: value.departement || undefined,
+					objet: value.objet as Objet,
+					classification: value.classification as Classification,
+					sexe: value.sexe || undefined,
+					ageRange: value.ageRange || undefined,
+					message: value.message,
+					newsletter: value.newsletter,
+					consent: true,
 				});
-			});
-			return;
-		}
+				setSuccess(true);
+				formApi.reset();
+			} catch {
+				setNetworkError(true);
+			}
+		},
+	});
 
-		setSubmitState("submitting");
-
-		try {
-			await submitMutation.mutateAsync({
-				civility: values.civility || undefined,
-				lastName: values.lastName.trim(),
-				firstName: values.firstName.trim(),
-				email: values.email.trim(),
-				emailConfirmation: values.emailConfirmation.trim(),
-				departement: values.departement || undefined,
-				objet: values.objet as Objet,
-				classification: values.classification as Classification,
-				sexe: values.sexe || undefined,
-				ageRange: values.ageRange || undefined,
-				message: values.message.trim(),
-				newsletter: values.newsletter,
-				consent: true,
-			});
-
-			setSubmitState("success");
-			setValues(initialValues);
-		} catch {
-			setSubmitState("error");
-			setErrors({});
-		}
-	};
-
-	const getFieldState = (field: FieldName) =>
-		errors[field] ? "error" : "default";
-
-	if (submitState === "success") {
+	if (success) {
 		return (
 			<div className={cx(classes.alertWrapper)}>
 				<Alert
@@ -216,265 +129,351 @@ export default function ContactParticuliersForm() {
 					title="Votre message a bien été envoyé"
 					description="Nous vous répondrons dans les meilleurs délais."
 					closable
-					onClose={() => setSubmitState("idle")}
+					onClose={() => setSuccess(false)}
 				/>
 			</div>
 		);
 	}
 
 	return (
-		<form onSubmit={handleSubmit} noValidate className={cx(classes.form)}>
+		<form
+			noValidate
+			className={cx(classes.form)}
+			onSubmit={(e) => {
+				e.preventDefault();
+				e.stopPropagation();
+				void form.handleSubmit().then(() => {
+					requestAnimationFrame(() => {
+						const firstErrorField = document.querySelector<HTMLElement>(
+							".fr-input-group--error, .fr-select-group--error, .fr-fieldset--error",
+						);
+						firstErrorField?.scrollIntoView({
+							behavior: "smooth",
+							block: "center",
+						});
+					});
+				});
+			}}
+		>
 			<p className={fr.cx("fr-text--sm", "fr-mb-2w")}>
 				Les champs suivis d&apos;un astérisque (*) sont obligatoires.
 			</p>
 
-			{submitState === "error" && Object.keys(errors).length === 0 && (
+			{networkError && (
 				<div className={cx(classes.alertWrapper)}>
 					<Alert
 						severity="error"
 						title="Une erreur est survenue"
 						description="Merci de réessayer dans quelques instants."
 						closable
-						onClose={() => setSubmitState("idle")}
+						onClose={() => setNetworkError(false)}
 					/>
 				</div>
 			)}
 
-			<RadioButtons
-				legend="Civilité"
-				orientation="horizontal"
-				options={CIVILITY_VALUES.map((opt) => ({
-					label: opt,
-					nativeInputProps: {
-						name: "civility",
-						value: opt,
-						checked: values.civility === opt,
-						onChange: () => updateField("civility", opt),
-					},
-				}))}
-			/>
+			<form.Field name="civility">
+				{(field) => (
+					<RadioButtons
+						legend="Civilité"
+						orientation="horizontal"
+						options={CIVILITY_VALUES.map((opt) => ({
+							label: opt,
+							nativeInputProps: {
+								name: field.name,
+								value: opt,
+								checked: field.state.value === opt,
+								onChange: () => field.handleChange(opt),
+							},
+						}))}
+					/>
+				)}
+			</form.Field>
 
 			<div className={cx(classes.row)}>
-				<Input
-					label="Nom *"
-					state={getFieldState("lastName")}
-					stateRelatedMessage={errors.lastName}
-					nativeInputProps={{
-						value: values.lastName,
-						onChange: (e) => updateField("lastName", e.target.value),
-						required: true,
-						maxLength: 255,
-						autoComplete: "family-name",
-						placeholder: "Indiquez votre nom",
-						name: "lastName",
-					}}
-				/>
-				<Input
-					label="Prénom *"
-					state={getFieldState("firstName")}
-					stateRelatedMessage={errors.firstName}
-					nativeInputProps={{
-						value: values.firstName,
-						onChange: (e) => updateField("firstName", e.target.value),
-						required: true,
-						maxLength: 255,
-						autoComplete: "given-name",
-						placeholder: "Indiquez votre prénom",
-						name: "firstName",
-					}}
-				/>
+				<form.Field name="lastName">
+					{(field) => (
+						<Input
+							label="Nom *"
+							state={field.state.meta.errors.length > 0 ? "error" : "default"}
+							stateRelatedMessage={firstErrorMessage(field.state.meta.errors)}
+							nativeInputProps={{
+								value: field.state.value,
+								onChange: (e) => field.handleChange(e.target.value),
+								onBlur: field.handleBlur,
+								required: true,
+								maxLength: 255,
+								autoComplete: "family-name",
+								placeholder: "Indiquez votre nom",
+								name: field.name,
+							}}
+						/>
+					)}
+				</form.Field>
+				<form.Field name="firstName">
+					{(field) => (
+						<Input
+							label="Prénom *"
+							state={field.state.meta.errors.length > 0 ? "error" : "default"}
+							stateRelatedMessage={firstErrorMessage(field.state.meta.errors)}
+							nativeInputProps={{
+								value: field.state.value,
+								onChange: (e) => field.handleChange(e.target.value),
+								onBlur: field.handleBlur,
+								required: true,
+								maxLength: 255,
+								autoComplete: "given-name",
+								placeholder: "Indiquez votre prénom",
+								name: field.name,
+							}}
+						/>
+					)}
+				</form.Field>
 			</div>
 
 			<div className={cx(classes.row)}>
-				<Input
-					label="Courriel *"
-					hintText={EMAIL_HINT}
-					state={getFieldState("email")}
-					stateRelatedMessage={errors.email}
-					nativeInputProps={{
-						type: "email",
-						value: values.email,
-						onChange: (e) => updateField("email", e.target.value),
-						required: true,
-						maxLength: 254,
-						autoComplete: "email",
-						placeholder: "Indiquez votre courriel",
-						name: "email",
-					}}
-				/>
-				<Input
-					label="Confirmation de courriel *"
-					state={getFieldState("emailConfirmation")}
-					stateRelatedMessage={errors.emailConfirmation}
-					nativeInputProps={{
-						type: "email",
-						value: values.emailConfirmation,
-						onChange: (e) => updateField("emailConfirmation", e.target.value),
-						required: true,
-						maxLength: 254,
-						autoComplete: "email",
-						placeholder: "Confirmez votre courriel",
-						onPaste: (e) => e.preventDefault(),
-						name: "emailConfirmation",
-					}}
-				/>
+				<form.Field name="email">
+					{(field) => (
+						<Input
+							label="Courriel *"
+							hintText={EMAIL_HINT}
+							state={field.state.meta.errors.length > 0 ? "error" : "default"}
+							stateRelatedMessage={firstErrorMessage(field.state.meta.errors)}
+							nativeInputProps={{
+								type: "email",
+								value: field.state.value,
+								onChange: (e) => field.handleChange(e.target.value),
+								onBlur: field.handleBlur,
+								required: true,
+								maxLength: 254,
+								autoComplete: "email",
+								placeholder: "Indiquez votre courriel",
+								name: field.name,
+							}}
+						/>
+					)}
+				</form.Field>
+				<form.Field name="emailConfirmation">
+					{(field) => (
+						<Input
+							label="Confirmation de courriel *"
+							state={field.state.meta.errors.length > 0 ? "error" : "default"}
+							stateRelatedMessage={firstErrorMessage(field.state.meta.errors)}
+							nativeInputProps={{
+								type: "email",
+								value: field.state.value,
+								onChange: (e) => field.handleChange(e.target.value),
+								onBlur: field.handleBlur,
+								required: true,
+								maxLength: 254,
+								autoComplete: "email",
+								placeholder: "Confirmez votre courriel",
+								onPaste: (e) => e.preventDefault(),
+								name: field.name,
+							}}
+						/>
+					)}
+				</form.Field>
 			</div>
 
-			<Select
-				label="Département"
-				nativeSelectProps={{
-					value: values.departement,
-					onChange: (e) => updateField("departement", e.target.value),
-					name: "departement",
-				}}
-			>
-				<option value="">- Aucun(e) -</option>
-				{DEPARTEMENT_VALUES.map((opt) => (
-					<option key={opt} value={opt}>
-						{opt}
-					</option>
-				))}
-			</Select>
+			<form.Field name="departement">
+				{(field) => (
+					<Select
+						label="Département"
+						nativeSelectProps={{
+							value: field.state.value,
+							onChange: (e) => field.handleChange(e.target.value),
+							onBlur: field.handleBlur,
+							name: field.name,
+						}}
+					>
+						<option value="">- Aucun(e) -</option>
+						{DEPARTEMENT_VALUES.map((opt) => (
+							<option key={opt} value={opt}>
+								{opt}
+							</option>
+						))}
+					</Select>
+				)}
+			</form.Field>
 
 			<h2 className={fr.cx("fr-h3", "fr-mt-4w", "fr-mb-1w")}>Votre demande</h2>
 
 			<div className={cx(classes.row)}>
-				<Select
-					label="Objet de la demande *"
-					nativeSelectProps={{
-						value: values.objet,
-						onChange: (e) => updateField("objet", e.target.value as Objet | ""),
-						required: true,
-						"aria-required": true,
-						name: "objet",
-					}}
-					state={getFieldState("objet")}
-					stateRelatedMessage={errors.objet}
-				>
-					<option value="" disabled>
-						Quel est l&apos;objet de votre demande ?
-					</option>
-					{OBJET_VALUES.map((opt) => (
-						<option key={opt} value={opt}>
-							{opt}
-						</option>
-					))}
-				</Select>
-				<Select
-					label="Classification *"
-					nativeSelectProps={{
-						value: values.classification,
-						onChange: (e) =>
-							updateField(
-								"classification",
-								e.target.value as Classification | "",
-							),
-						required: true,
-						"aria-required": true,
-						name: "classification",
-					}}
-					state={getFieldState("classification")}
-					stateRelatedMessage={errors.classification}
-				>
-					<option value="" disabled>
-						Qui êtes-vous ?
-					</option>
-					{CLASSIFICATION_VALUES.map((opt) => (
-						<option key={opt} value={opt}>
-							{opt}
-						</option>
-					))}
-				</Select>
+				<form.Field name="objet">
+					{(field) => (
+						<Select
+							label="Objet de la demande *"
+							nativeSelectProps={{
+								value: field.state.value,
+								onChange: (e) =>
+									field.handleChange(e.target.value as Objet | ""),
+								onBlur: field.handleBlur,
+								required: true,
+								"aria-required": true,
+								name: field.name,
+							}}
+							state={field.state.meta.errors.length > 0 ? "error" : "default"}
+							stateRelatedMessage={firstErrorMessage(field.state.meta.errors)}
+						>
+							<option value="" disabled>
+								Quel est l&apos;objet de votre demande ?
+							</option>
+							{OBJET_VALUES.map((opt) => (
+								<option key={opt} value={opt}>
+									{opt}
+								</option>
+							))}
+						</Select>
+					)}
+				</form.Field>
+				<form.Field name="classification">
+					{(field) => (
+						<Select
+							label="Classification *"
+							nativeSelectProps={{
+								value: field.state.value,
+								onChange: (e) =>
+									field.handleChange(e.target.value as Classification | ""),
+								onBlur: field.handleBlur,
+								required: true,
+								"aria-required": true,
+								name: field.name,
+							}}
+							state={field.state.meta.errors.length > 0 ? "error" : "default"}
+							stateRelatedMessage={firstErrorMessage(field.state.meta.errors)}
+						>
+							<option value="" disabled>
+								Qui êtes-vous ?
+							</option>
+							{CLASSIFICATION_VALUES.map((opt) => (
+								<option key={opt} value={opt}>
+									{opt}
+								</option>
+							))}
+						</Select>
+					)}
+				</form.Field>
 			</div>
 
 			<div className={cx(classes.row)}>
-				<Select
-					label="Sexe de la personne concernée"
-					nativeSelectProps={{
-						value: values.sexe,
-						onChange: (e) => updateField("sexe", e.target.value as Sexe | ""),
-						name: "sexe",
-					}}
-				>
-					<option value="">Indiquez le sexe de la personne concernée</option>
-					{SEXE_VALUES.map((opt) => (
-						<option key={opt} value={opt}>
-							{opt}
-						</option>
-					))}
-				</Select>
-				<Select
-					label="Tranche d'âge"
-					nativeSelectProps={{
-						value: values.ageRange,
-						onChange: (e) =>
-							updateField("ageRange", e.target.value as AgeRange | ""),
-						name: "ageRange",
-					}}
-				>
-					<option value="">
-						Choisissez l&apos;âge de la personne concernée
-					</option>
-					{AGE_RANGE_VALUES.map((opt) => (
-						<option key={opt} value={opt}>
-							{opt}
-						</option>
-					))}
-				</Select>
+				<form.Field name="sexe">
+					{(field) => (
+						<Select
+							label="Sexe de la personne concernée"
+							nativeSelectProps={{
+								value: field.state.value,
+								onChange: (e) =>
+									field.handleChange(e.target.value as Sexe | ""),
+								onBlur: field.handleBlur,
+								name: field.name,
+							}}
+						>
+							<option value="">
+								Indiquez le sexe de la personne concernée
+							</option>
+							{SEXE_VALUES.map((opt) => (
+								<option key={opt} value={opt}>
+									{opt}
+								</option>
+							))}
+						</Select>
+					)}
+				</form.Field>
+				<form.Field name="ageRange">
+					{(field) => (
+						<Select
+							label="Tranche d'âge"
+							nativeSelectProps={{
+								value: field.state.value,
+								onChange: (e) =>
+									field.handleChange(e.target.value as AgeRange | ""),
+								onBlur: field.handleBlur,
+								name: field.name,
+							}}
+						>
+							<option value="">
+								Choisissez l&apos;âge de la personne concernée
+							</option>
+							{AGE_RANGE_VALUES.map((opt) => (
+								<option key={opt} value={opt}>
+									{opt}
+								</option>
+							))}
+						</Select>
+					)}
+				</form.Field>
 			</div>
 
-			<Input
-				label="Message *"
-				textArea
-				hintText={MESSAGE_HINT}
-				state={getFieldState("message")}
-				stateRelatedMessage={errors.message}
-				nativeTextAreaProps={{
-					value: values.message,
-					onChange: (e) => updateField("message", e.target.value),
-					required: true,
-					rows: 6,
-					maxLength: 2000,
-					placeholder: "Votre message",
-					name: "message",
-				}}
-			/>
-
-			<Checkbox
-				options={[
-					{
-						label: "J'accepte de recevoir la newsletter Maison de l'autisme.",
-						nativeInputProps: {
-							name: "newsletter",
-							checked: values.newsletter,
-							onChange: (e) => updateField("newsletter", e.target.checked),
-						},
-					},
-				]}
-			/>
-
-			<Checkbox
-				state={getFieldState("consent")}
-				stateRelatedMessage={errors.consent}
-				options={[
-					{
-						label:
-							"En soumettant ce formulaire j'accepte que les informations saisies soient exploitées pour permettre de me recontacter. *",
-						nativeInputProps: {
-							name: "consent",
-							checked: values.consent,
-							onChange: (e) => updateField("consent", e.target.checked),
+			<form.Field name="message">
+				{(field) => (
+					<Input
+						label="Message *"
+						textArea
+						hintText={MESSAGE_HINT}
+						state={field.state.meta.errors.length > 0 ? "error" : "default"}
+						stateRelatedMessage={firstErrorMessage(field.state.meta.errors)}
+						nativeTextAreaProps={{
+							value: field.state.value,
+							onChange: (e) => field.handleChange(e.target.value),
+							onBlur: field.handleBlur,
 							required: true,
-						},
-					},
-				]}
-			/>
+							rows: 6,
+							maxLength: 2000,
+							placeholder: "Votre message",
+							name: field.name,
+						}}
+					/>
+				)}
+			</form.Field>
 
-			<div className={cx(classes.actions)}>
-				<Button type="submit" disabled={submitState === "submitting"}>
-					{submitState === "submitting" ? "Envoi en cours…" : "Envoyer"}
-				</Button>
-			</div>
+			<form.Field name="newsletter">
+				{(field) => (
+					<Checkbox
+						options={[
+							{
+								label:
+									"J'accepte de recevoir la newsletter Maison de l'autisme.",
+								nativeInputProps: {
+									name: field.name,
+									checked: field.state.value,
+									onChange: (e) => field.handleChange(e.target.checked),
+								},
+							},
+						]}
+					/>
+				)}
+			</form.Field>
+
+			<form.Field name="consent">
+				{(field) => (
+					<Checkbox
+						state={field.state.meta.errors.length > 0 ? "error" : "default"}
+						stateRelatedMessage={firstErrorMessage(field.state.meta.errors)}
+						options={[
+							{
+								label:
+									"En soumettant ce formulaire j'accepte que les informations saisies soient exploitées pour permettre de me recontacter. *",
+								nativeInputProps: {
+									name: field.name,
+									checked: field.state.value,
+									onChange: (e) => field.handleChange(e.target.checked),
+									required: true,
+								},
+							},
+						]}
+					/>
+				)}
+			</form.Field>
+
+			<form.Subscribe selector={(state) => state.isSubmitting}>
+				{(isSubmitting) => (
+					<div className={cx(classes.actions)}>
+						<Button type="submit" disabled={isSubmitting}>
+							{isSubmitting ? "Envoi en cours…" : "Envoyer"}
+						</Button>
+					</div>
+				)}
+			</form.Subscribe>
 		</form>
 	);
 }

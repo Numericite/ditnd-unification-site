@@ -1,73 +1,11 @@
 import { TRPCError } from "@trpc/server";
-import { z } from "zod";
 import { createTRPCRouter, publicProcedure } from "~/server/api/trpc";
-import { INVALID_MESSAGE_REGEX } from "~/utils/contactForm";
+import { contactParticuliersSchema } from "~/utils/contactParticuliers";
 import {
-	AGE_RANGE_VALUES,
-	CIVILITY_VALUES,
-	CLASSIFICATION_VALUES,
-	OBJET_VALUES,
-	SEXE_VALUES,
-} from "~/utils/contactParticuliers";
-import {
+	contactProsCraSchema,
 	PROFILE_LABELS,
-	PROFILE_VALUES,
 	WISH_LABELS,
-	WISH_VALUES,
 } from "~/utils/contactProsCra";
-
-const contactProsCraSchema = z.object({
-	profile: z.enum(PROFILE_VALUES),
-	firstName: z.string().trim().min(1),
-	lastName: z.string().trim().min(1),
-	craName: z.string().trim().min(1),
-	craRole: z.string().trim().min(1),
-	wish: z.enum(WISH_VALUES),
-	message: z
-		.string()
-		.trim()
-		.min(15)
-		.max(1000)
-		.refine((val) => !INVALID_MESSAGE_REGEX.test(val), {
-			message: "Le message contient des caractères spéciaux non autorisés.",
-		}),
-	phone: z
-		.string()
-		.trim()
-		.optional()
-		.refine((val) => !val || /^\d{10}$/.test(val), {
-			message: "Le numéro doit être composé de 10 chiffres.",
-		}),
-	email: z.string().trim().email(),
-});
-
-const contactParticuliersSchema = z
-	.object({
-		civility: z.enum(CIVILITY_VALUES).optional(),
-		lastName: z.string().trim().min(1).max(255),
-		firstName: z.string().trim().min(1).max(255),
-		email: z.string().trim().email().max(254),
-		emailConfirmation: z.string().trim().email().max(254),
-		departement: z.string().trim().max(255).optional(),
-		objet: z.enum(OBJET_VALUES),
-		classification: z.enum(CLASSIFICATION_VALUES),
-		sexe: z.enum(SEXE_VALUES).optional(),
-		ageRange: z.enum(AGE_RANGE_VALUES).optional(),
-		message: z
-			.string()
-			.trim()
-			.min(15)
-			.max(2000)
-			.refine((val) => !INVALID_MESSAGE_REGEX.test(val), {
-				message: "Le message contient des caractères spéciaux non autorisés.",
-			}),
-		newsletter: z.boolean().optional(),
-		consent: z.literal(true),
-	})
-	.refine((data) => data.email === data.emailConfirmation, {
-		message: "Les adresses email ne correspondent pas.",
-		path: ["emailConfirmation"],
-	});
 
 const escapeHtml = (str: string) =>
 	str
