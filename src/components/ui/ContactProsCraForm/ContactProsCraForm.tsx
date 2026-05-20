@@ -6,6 +6,7 @@ import { Select } from "@codegouvfr/react-dsfr/Select";
 import { useForm } from "@tanstack/react-form";
 import { useState } from "react";
 import { tss } from "tss-react/dsfr";
+import Honeypot from "~/components/ui/Honeypot";
 import { api } from "~/utils/api";
 import { zodValidator } from "~/utils/contactForm";
 import {
@@ -28,6 +29,7 @@ type FormShape = {
 	message: string;
 	phone: string;
 	email: string;
+	website: string;
 };
 
 const initialValues: FormShape = {
@@ -40,6 +42,7 @@ const initialValues: FormShape = {
 	message: "",
 	phone: "",
 	email: "",
+	website: "",
 };
 
 const MESSAGE_HINT = (
@@ -308,6 +311,16 @@ export default function ContactProsCraForm() {
 							autoComplete: "tel",
 							name: field.name,
 						}}
+					/>
+				)}
+			</form.Field>
+
+			<form.Field name="website">
+				{(field) => (
+					<Honeypot
+						name={field.name}
+						value={field.state.value}
+						onChange={field.handleChange}
 					/>
 				)}
 			</form.Field>

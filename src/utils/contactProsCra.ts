@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { INVALID_MESSAGE_REGEX } from "~/utils/contactForm";
+import { honeypotSchema, INVALID_MESSAGE_REGEX } from "~/utils/contactForm";
 
 export const PROFILE_VALUES = ["pro-cra"] as const;
 export type Profile = (typeof PROFILE_VALUES)[number];
@@ -55,6 +55,7 @@ export const contactProsCraSchema = z.object({
 		.trim()
 		.min(1, "Veuillez renseigner votre email professionnel.")
 		.email("Veuillez renseigner une adresse email valide."),
+	website: honeypotSchema,
 });
 
 export type ContactProsCraInput = z.infer<typeof contactProsCraSchema>;
