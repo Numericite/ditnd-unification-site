@@ -42,5 +42,11 @@
 		".next/dev/types/**/*.ts",
 		"src/pages/parcours/[persona]"
 	],
-	"exclude": ["node_modules", "generated", "./src/payload/migrations/**"]
+	"exclude": [
+		"node_modules",
+		"generated",
+		"./src/payload/migrations/**",
+		"cypress",
+		"cypress.config.ts"
+	]
 }

@@ -1,5 +1,9 @@
 import { z } from "zod";
-import { honeypotSchema, INVALID_MESSAGE_REGEX } from "~/utils/contactForm";
+import {
+	honeypotSchema,
+	INVALID_MESSAGE_REGEX,
+	optionalEnum,
+} from "~/utils/contactForm";
 
 export const CIVILITY_VALUES = ["Madame", "Monsieur"] as const;
 export type Civility = (typeof CIVILITY_VALUES)[number];
@@ -146,7 +150,7 @@ export const DEPARTEMENT_VALUES = [
 ] as const;
 
 export const contactParticuliersSchema = z.object({
-	civility: z.enum(CIVILITY_VALUES).optional(),
+	civility: optionalEnum(CIVILITY_VALUES),
 	lastName: z.string().trim().min(1, "Veuillez renseigner votre nom.").max(255),
 	firstName: z
 		.string()
@@ -168,8 +172,8 @@ export const contactParticuliersSchema = z.object({
 	classification: z.enum(CLASSIFICATION_VALUES, {
 		errorMap: () => ({ message: "Veuillez sélectionner une option." }),
 	}),
-	sexe: z.enum(SEXE_VALUES).optional(),
-	ageRange: z.enum(AGE_RANGE_VALUES).optional(),
+	sexe: optionalEnum(SEXE_VALUES),
+	ageRange: optionalEnum(AGE_RANGE_VALUES),
 	message: z
 		.string()
 		.trim()

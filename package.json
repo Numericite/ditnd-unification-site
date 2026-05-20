@@ -20,6 +20,8 @@
 		"seed:glossary": "PAYLOAD_CONFIG_PATH=./src/payload/payload.config.ts payload run ./src/payload/seed/glossary.ts",
 		"test-chatbot:ab": "payload run tests/chabot/eval.ts -- --ab",
 		"test-chatbot:prompt": "payload run tests/chabot/eval.ts -- --prompt=",
+		"cypress:open": "cypress open",
+		"cypress:run": "cypress run",
 		"prepare": "husky"
 	},
 	"lint-staged": {
@@ -67,6 +69,7 @@
 		"@types/react": "19.0.0",
 		"@types/react-dom": "19.0.0",
 		"@types/sanitize-html": "^2.16.0",
+		"cypress": "^14.5.1",
 		"husky": "^9.1.7",
 		"lint-staged": "^16.4.0",
 		"typescript": "5.8.2"

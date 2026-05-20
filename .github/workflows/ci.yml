@@ -1,0 +1,112 @@
+name: CI
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+env:
+  NODE_VERSION: "20"
+
+jobs:
+  build:
+    name: Lint, typecheck & build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: yarn
+
+      - name: Install dependencies
+        run: yarn install --frozen-lockfile
+
+      - name: Biome check
+        run: yarn run check
+
+      - name: TypeScript check
+        run: yarn typecheck
+
+      - name: Next.js build
+        run: yarn build
+        env:
+          PAYLOAD_SECRET: ci-build-secret
+          POSTGRESQL_ADDON_URI: postgres://user:password@localhost:5432/ci-build
+          NEXT_PUBLIC_NOINDEX: "true"
+
+  e2e:
+    name: Cypress E2E
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: pgvector/pgvector:pg17
+        env:
+          POSTGRES_USER: user
+          POSTGRES_PASSWORD: password
+          POSTGRES_DB: maisondelautisme-site
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U user -d maisondelautisme-site"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 10
+      maildev:
+        image: maildev/maildev:2.1.0
+        ports:
+          - 1025:1025
+          - 1080:1080
+        # The image's baked-in HEALTHCHECK reports "unhealthy" reliably
+        # (also reproducible locally). The container itself is up in <1s
+        # per its own logs, so override with a no-op check.
+        options: --health-cmd="exit 0" --health-interval=5s --health-retries=1
+    env:
+      PAYLOAD_SECRET: ci-e2e-secret-please-rotate
+      POSTGRESQL_ADDON_URI: postgres://user:password@localhost:5432/maisondelautisme-site
+      SMTP_HOST: localhost
+      SMTP_PORT: "1025"
+      SMTP_FROM_ADDRESS: ci@maisondelautisme.test
+      SMTP_FROM_NAME: CI
+      CONTACT_PROS_CRA_RECIPIENT: contact@maisondelautisme.test
+      CONTACT_PARTICULIERS_RECIPIENT: contact@maisondelautisme.test
+      NEXT_PUBLIC_NOINDEX: "true"
+      # Available on internal PRs; empty on forks. The chatbot E2E suite
+      # gates the real LLM test on these being present.
+      ALBERT_API_KEY: ${{ secrets.ALBERT_API_KEY }}
+      ALBERT_API_URL: ${{ secrets.ALBERT_API_URL }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: yarn
+
+      - name: Install dependencies
+        run: yarn install --frozen-lockfile
+
+      - name: Seed database
+        run: yarn seed:dev
+
+      - name: Build app
+        run: yarn build
+
+      - name: Run Cypress
+        uses: cypress-io/github-action@v6
+        env:
+          CYPRESS_LLM_TESTS_ENABLED: ${{ secrets.ALBERT_API_KEY != '' }}
+        with:
+          install: false
+          start: yarn start
+          wait-on: "http://localhost:3000"
+          wait-on-timeout: 180
+
+      - name: Upload Cypress screenshots on failure
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: cypress-screenshots
+          path: cypress/screenshots
+          if-no-files-found: ignore
