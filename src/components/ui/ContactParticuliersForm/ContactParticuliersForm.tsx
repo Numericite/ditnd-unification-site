@@ -157,7 +157,7 @@ export default function ContactParticuliersForm() {
 			}}
 		>
 			<p className={fr.cx("fr-text--sm", "fr-mb-2w")}>
-				Les champs suivis d&apos;un astérisque (*) sont obligatoires.
+				Sauf mention contraire, tous les champs sont obligatoires.
 			</p>
 
 			{networkError && (
@@ -175,7 +175,7 @@ export default function ContactParticuliersForm() {
 			<form.Field name="civility">
 				{(field) => (
 					<RadioButtons
-						legend="Civilité"
+						legend="Civilité (optionnel)"
 						orientation="horizontal"
 						options={CIVILITY_VALUES.map((opt) => ({
 							label: opt,
@@ -194,7 +194,7 @@ export default function ContactParticuliersForm() {
 				<form.Field name="lastName">
 					{(field) => (
 						<Input
-							label="Nom *"
+							label="Nom"
 							state={field.state.meta.errors.length > 0 ? "error" : "default"}
 							stateRelatedMessage={firstErrorMessage(field.state.meta.errors)}
 							nativeInputProps={{
@@ -213,7 +213,7 @@ export default function ContactParticuliersForm() {
 				<form.Field name="firstName">
 					{(field) => (
 						<Input
-							label="Prénom *"
+							label="Prénom"
 							state={field.state.meta.errors.length > 0 ? "error" : "default"}
 							stateRelatedMessage={firstErrorMessage(field.state.meta.errors)}
 							nativeInputProps={{
@@ -233,7 +233,7 @@ export default function ContactParticuliersForm() {
 			<form.Field name="email">
 				{(field) => (
 					<Input
-						label="Courriel *"
+						label="Courriel"
 						hintText={EMAIL_HINT}
 						state={field.state.meta.errors.length > 0 ? "error" : "default"}
 						stateRelatedMessage={firstErrorMessage(field.state.meta.errors)}
@@ -255,7 +255,7 @@ export default function ContactParticuliersForm() {
 			<form.Field name="departement">
 				{(field) => (
 					<Select
-						label="Département"
+						label="Département (optionnel)"
 						nativeSelectProps={{
 							value: field.state.value,
 							onChange: (e) => field.handleChange(e.target.value),
@@ -263,7 +263,7 @@ export default function ContactParticuliersForm() {
 							name: field.name,
 						}}
 					>
-						<option value="">- Aucun(e) -</option>
+						<option value="">Aucun</option>
 						{DEPARTEMENT_VALUES.map((opt) => (
 							<option key={opt} value={opt}>
 								{opt}
@@ -279,7 +279,7 @@ export default function ContactParticuliersForm() {
 				<form.Field name="objet">
 					{(field) => (
 						<Select
-							label="Objet de la demande *"
+							label="Objet de la demande"
 							nativeSelectProps={{
 								value: field.state.value,
 								onChange: (e) =>
@@ -306,7 +306,7 @@ export default function ContactParticuliersForm() {
 				<form.Field name="classification">
 					{(field) => (
 						<Select
-							label="Classification *"
+							label="Classification"
 							nativeSelectProps={{
 								value: field.state.value,
 								onChange: (e) =>
@@ -336,7 +336,7 @@ export default function ContactParticuliersForm() {
 				<form.Field name="sexe">
 					{(field) => (
 						<Select
-							label="Sexe de la personne concernée"
+							label="Sexe de la personne concernée (optionnel)"
 							nativeSelectProps={{
 								value: field.state.value,
 								onChange: (e) =>
@@ -359,7 +359,7 @@ export default function ContactParticuliersForm() {
 				<form.Field name="ageRange">
 					{(field) => (
 						<Select
-							label="Tranche d'âge"
+							label="Tranche d'âge (optionnel)"
 							nativeSelectProps={{
 								value: field.state.value,
 								onChange: (e) =>
@@ -384,7 +384,7 @@ export default function ContactParticuliersForm() {
 			<form.Field name="message">
 				{(field) => (
 					<Input
-						label="Message *"
+						label="Message"
 						textArea
 						hintText={MESSAGE_HINT}
 						state={field.state.meta.errors.length > 0 ? "error" : "default"}
@@ -439,7 +439,7 @@ export default function ContactParticuliersForm() {
 						options={[
 							{
 								label:
-									"En soumettant ce formulaire j'accepte que les informations saisies soient exploitées pour permettre de me recontacter. *",
+									"En soumettant ce formulaire j'accepte que les informations saisies soient exploitées pour permettre de me recontacter.",
 								nativeInputProps: {
 									name: field.name,
 									checked: field.state.value,
