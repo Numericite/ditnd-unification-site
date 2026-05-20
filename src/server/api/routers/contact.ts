@@ -19,6 +19,14 @@ export const contactRouter = createTRPCRouter({
 	submitProsCra: publicProcedure
 		.input(contactProsCraSchema)
 		.mutation(async ({ ctx, input }) => {
+			if (input.website && input.website.trim() !== "") {
+				ctx.payload.logger.warn(
+					{ honeypot: input.website },
+					"Contact pros CRA: honeypot filled, dropping submission",
+				);
+				return { ok: true };
+			}
+
 			const recipient = process.env.CONTACT_PROS_CRA_RECIPIENT;
 
 			if (!recipient) {
@@ -90,6 +98,14 @@ export const contactRouter = createTRPCRouter({
 	submitParticuliers: publicProcedure
 		.input(contactParticuliersSchema)
 		.mutation(async ({ ctx, input }) => {
+			if (input.website && input.website.trim() !== "") {
+				ctx.payload.logger.warn(
+					{ honeypot: input.website },
+					"Contact particuliers: honeypot filled, dropping submission",
+				);
+				return { ok: true };
+			}
+
 			const recipient = process.env.CONTACT_PARTICULIERS_RECIPIENT;
 
 			if (!recipient) {

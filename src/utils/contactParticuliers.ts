@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { INVALID_MESSAGE_REGEX } from "~/utils/contactForm";
+import { honeypotSchema, INVALID_MESSAGE_REGEX } from "~/utils/contactForm";
 
 export const CIVILITY_VALUES = ["Madame", "Monsieur"] as const;
 export type Civility = (typeof CIVILITY_VALUES)[number];
@@ -184,6 +184,7 @@ export const contactParticuliersSchema = z.object({
 			message: "Vous devez accepter pour soumettre le formulaire.",
 		}),
 	}),
+	website: honeypotSchema,
 });
 
 export type ContactParticuliersInput = z.infer<

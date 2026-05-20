@@ -1,6 +1,10 @@
-import type { z } from "zod";
+import { z } from "zod";
 
 export const INVALID_MESSAGE_REGEX = /[<>{}[\]\\]/;
+
+export const HONEYPOT_FIELD_NAME = "website";
+
+export const honeypotSchema = z.string().optional();
 
 export function zodValidator<Schema extends z.ZodTypeAny>(schema: Schema) {
 	return ({ value }: { value: unknown }) => {
