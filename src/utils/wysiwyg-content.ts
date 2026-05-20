@@ -11169,4 +11169,37 @@ export const legalsContent = {
 			direction: null,
 		},
 	},
+	contactParticuliers: {
+		root: {
+			type: "root",
+			format: "",
+			indent: 0,
+			version: 1,
+
+			children: [
+				{
+					type: "paragraph",
+					format: "",
+					indent: 0,
+					version: 1,
+
+					children: [
+						{
+							mode: "normal",
+							text: "Une équipe de répondants s'appuyant sur un réseau d'experts adresse vos questions.",
+							type: "text",
+							style: "",
+							detail: 0,
+							format: 0,
+							version: 1,
+						},
+					],
+					direction: null,
+					textStyle: "",
+					textFormat: 0,
+				},
+			],
+			direction: null,
+		},
+	},
 } satisfies Record<string, DefaultTypedEditorState>;

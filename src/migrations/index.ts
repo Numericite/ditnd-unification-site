@@ -19,6 +19,7 @@ import * as migration_20260422_100000_footer_contact_pros_cra from './20260422_1
 import * as migration_20260518_120000_bge_m3_embeddings from './20260518_120000_bge_m3_embeddings';
 import * as migration_20260518_140000_glossary from './20260518_140000_glossary';
 import * as migration_20260520_120000_footer_drop_cgu_terms_of_use from './20260520_120000_footer_drop_cgu_terms_of_use';
+import * as migration_20260520_140000_footer_contact_particuliers from './20260520_140000_footer_contact_particuliers';
 
 export const migrations = [
   {
@@ -125,5 +126,10 @@ export const migrations = [
     up: migration_20260520_120000_footer_drop_cgu_terms_of_use.up,
     down: migration_20260520_120000_footer_drop_cgu_terms_of_use.down,
     name: '20260520_120000_footer_drop_cgu_terms_of_use'
+  },
+  {
+    up: migration_20260520_140000_footer_contact_particuliers.up,
+    down: migration_20260520_140000_footer_contact_particuliers.down,
+    name: '20260520_140000_footer_contact_particuliers'
   },
 ];
