@@ -1,6 +1,14 @@
 import { TRPCError } from "@trpc/server";
 import { z } from "zod";
 import { createTRPCRouter, publicProcedure } from "~/server/api/trpc";
+import {
+	AGE_RANGE_VALUES,
+	CIVILITY_VALUES,
+	CLASSIFICATION_VALUES,
+	INVALID_MESSAGE_REGEX,
+	OBJET_VALUES,
+	SEXE_VALUES,
+} from "~/utils/contactParticuliers";
 
 const WISH_LABELS = {
 	newsletter: "Vous inscrire à la newsletter (pour les pros des CRA)",
@@ -11,8 +19,6 @@ const WISH_LABELS = {
 const PROFILE_LABELS = {
 	"pro-cra": "Un professionnel de CRA",
 } as const;
-
-const INVALID_MESSAGE_REGEX = /[<>{}[\]\\]/;
 
 const contactProsCraSchema = z.object({
 	profile: z.enum(["pro-cra"]),
@@ -39,50 +45,18 @@ const contactProsCraSchema = z.object({
 	email: z.string().trim().email(),
 });
 
-const PARTICULIERS_CIVILITY_VALUES = ["Madame", "Monsieur"] as const;
-const PARTICULIERS_SEXE_VALUES = ["Féminin", "Masculin"] as const;
-const PARTICULIERS_AGE_VALUES = [
-	"De 0 à 3 ans",
-	"De 4 à 12 ans",
-	"De 13 à 18 ans",
-	"De 18 à 25 ans",
-	"De 26 à 50 ans",
-	"Plus de 50 ans",
-] as const;
-const PARTICULIERS_OBJET_VALUES = [
-	"Diagnostic",
-	"Santé",
-	"Social",
-	"Éducation",
-	"Accompagnement",
-	"Droit",
-	"Autre",
-] as const;
-const PARTICULIERS_CLASSIFICATION_VALUES = [
-	"Usager concerné",
-	"Parent d’un enfant concerné",
-	"Proche d'une personne concernée",
-	"Professionnel de santé",
-	"Professionnel encadrant",
-	"Enseignant",
-	"Membre associatif",
-	"Journaliste",
-	"Partenaire",
-	"Autre",
-] as const;
-
 const contactParticuliersSchema = z
 	.object({
-		civility: z.enum(PARTICULIERS_CIVILITY_VALUES).optional(),
+		civility: z.enum(CIVILITY_VALUES).optional(),
 		lastName: z.string().trim().min(1).max(255),
 		firstName: z.string().trim().min(1).max(255),
 		email: z.string().trim().email().max(254),
 		emailConfirmation: z.string().trim().email().max(254),
 		departement: z.string().trim().max(255).optional(),
-		objet: z.enum(PARTICULIERS_OBJET_VALUES),
-		classification: z.enum(PARTICULIERS_CLASSIFICATION_VALUES),
-		sexe: z.enum(PARTICULIERS_SEXE_VALUES).optional(),
-		ageRange: z.enum(PARTICULIERS_AGE_VALUES).optional(),
+		objet: z.enum(OBJET_VALUES),
+		classification: z.enum(CLASSIFICATION_VALUES),
+		sexe: z.enum(SEXE_VALUES).optional(),
+		ageRange: z.enum(AGE_RANGE_VALUES).optional(),
 		message: z
 			.string()
 			.trim()
