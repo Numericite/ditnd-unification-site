@@ -1,9 +1,18 @@
 import type { GlobalConfig } from "payload";
+import { hideForNonAdmin, isAdmin } from "~/payload/hooks";
 import { standardFields } from "~/payload/fields/standards";
 
 export const CMSHome: GlobalConfig = {
 	slug: "home",
-	label: "CMS - Accueil",
+	label: "Accueil",
+	admin: {
+		group: { fr: "Pages" },
+		hidden: hideForNonAdmin,
+	},
+	access: {
+		read: isAdmin,
+		update: isAdmin,
+	},
 	fields: [
 		{
 			type: "tabs",

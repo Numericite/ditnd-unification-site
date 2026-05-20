@@ -1,10 +1,22 @@
 import type { CollectionConfig } from "payload";
 import { standardFields } from "../fields/standards";
+import { hideForNonAdmin, isAdmin } from "../hooks";
 
 export const Personas: CollectionConfig = {
 	slug: "personas",
 	admin: {
 		useAsTitle: "name",
+		group: { fr: "Taxonomies" },
+		hidden: hideForNonAdmin,
+	},
+	access: {
+		create: isAdmin,
+		update: isAdmin,
+		delete: isAdmin,
+	},
+	labels: {
+		singular: "Persona",
+		plural: "Personas",
 	},
 	orderable: true,
 	fields: [

@@ -20,6 +20,7 @@ import { Themes } from "./collections/Themes";
 import { Journeys } from "./collections/Journeys";
 import { Medias } from "./collections/Medias";
 import { Glossary } from "./collections/Glossary";
+import { GlossaryCategories } from "./collections/GlossaryCategories";
 import { en } from "@payloadcms/translations/languages/en";
 import { fr } from "@payloadcms/translations/languages/fr";
 
@@ -28,6 +29,8 @@ import {
 	addPracticalGuidesTableVector,
 	addCoursesTable,
 	addCoursesTableVector,
+	hideForNonAdmin,
+	isAdmin,
 } from "./hooks";
 
 const hasAwsCreds = Boolean(
@@ -105,16 +108,17 @@ export default buildConfig({
 		},
 	},
 	collections: [
-		Users,
+		Medias,
+		PracticalGuides,
+		Courses,
+		Journeys,
+		PracticalGuideViews,
+		Glossary,
+		GlossaryCategories,
 		Personas,
 		Conditions,
-		Courses,
-		PracticalGuides,
-		PracticalGuideViews,
 		Themes,
-		Journeys,
-		Medias,
-		Glossary,
+		Users,
 	],
 	globals: [CMSHome, CMSFooter, CMSAbout],
 	editor: lexicalEditor(),
@@ -155,6 +159,19 @@ export default buildConfig({
 			beforeSync: beforeSyncPracticalGuide,
 			searchOverrides: {
 				slug: "search-results",
+				labels: {
+					singular: "Résultat de recherche",
+					plural: "Résultats de recherche",
+				},
+				admin: {
+					group: { fr: "Autre" },
+					hidden: hideForNonAdmin,
+				},
+				access: {
+					create: isAdmin,
+					update: isAdmin,
+					delete: isAdmin,
+				},
 				fields: ({ defaultFields }) => [
 					...defaultFields,
 					{

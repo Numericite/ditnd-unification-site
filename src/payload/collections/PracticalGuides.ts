@@ -156,6 +156,7 @@ export const PracticalGuides: CollectionConfig = {
 	slug: "practical-guides",
 	admin: {
 		useAsTitle: "title",
+		group: { fr: "Contenus" },
 	},
 	hooks: {
 		beforeDelete: [beforeDeletePracticalGuide],

@@ -1,4 +1,5 @@
 import type { GlobalConfig } from "payload";
+import { hideForNonAdmin, isAdmin } from "~/payload/hooks";
 import { standardFields } from "~/payload/fields/standards";
 
 const imageBannerField = {
@@ -11,7 +12,15 @@ const imageBannerField = {
 
 export const CMSFooter: GlobalConfig = {
 	slug: "footer",
-	label: "CMS - Footer",
+	label: "Footer",
+	admin: {
+		group: { fr: "Pages" },
+		hidden: hideForNonAdmin,
+	},
+	access: {
+		read: isAdmin,
+		update: isAdmin,
+	},
 	fields: [
 		standardFields.title,
 		{

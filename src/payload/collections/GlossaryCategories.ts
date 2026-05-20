@@ -1,12 +1,12 @@
 import type { CollectionConfig } from "payload";
-import { standardFields } from "../fields/standards";
 import { hideForNonAdmin, isAdmin } from "../hooks";
 
-export const Themes: CollectionConfig = {
-	slug: "themes",
+export const GlossaryCategories: CollectionConfig = {
+	slug: "glossary-categories",
 	admin: {
 		useAsTitle: "name",
-		group: { fr: "Taxonomies" },
+		group: { fr: "Glossaire" },
+		defaultColumns: ["name"],
 		hidden: hideForNonAdmin,
 	},
 	access: {
@@ -15,23 +15,16 @@ export const Themes: CollectionConfig = {
 		delete: isAdmin,
 	},
 	labels: {
-		singular: "Thème",
-		plural: "Thèmes",
+		singular: "Catégorie du glossaire",
+		plural: "Catégories du glossaire",
 	},
 	fields: [
 		{
 			name: "name",
 			type: "text",
 			required: true,
-			label: { fr: "Nom" },
-		},
-		standardFields.description,
-		{
-			name: "slug",
-			type: "text",
-			required: true,
 			unique: true,
-			label: { fr: "Identifiant texte" },
+			label: { fr: "Nom" },
 		},
 	],
 };

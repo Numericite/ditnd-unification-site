@@ -10,6 +10,12 @@ export const isAdmin = ({ req }: { req: PayloadRequest }) => {
 	return user.role === "admin";
 };
 
+// Used as `admin.hidden`; Payload narrows `user` differently for collections
+// (ClientUser, never null) vs globals (User | null), so we accept either.
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export const hideForNonAdmin = ({ user }: { user: any }): boolean =>
+	user?.role !== "admin";
+
 export const addPracticalGuidesTable: PostgresAdapter["beforeSchemaInit"][number] =
 	({ schema }) => {
 		return {
