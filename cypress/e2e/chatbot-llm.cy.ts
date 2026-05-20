@@ -31,7 +31,11 @@ describe("Chatbot — real Albert LLM (opt-in)", () => {
 			.invoke("text")
 			.should("have.length.greaterThan", 10);
 
-		// The "Poser une autre question" button should be available.
-		cy.contains("button", "Poser une autre question").should("be.visible");
+		// The "Poser une autre question" button should be available — it may
+		// be below the fold when the response is long, so scroll into view
+		// before asserting visibility.
+		cy.contains("button", "Poser une autre question")
+			.scrollIntoView()
+			.should("be.visible");
 	});
 });
