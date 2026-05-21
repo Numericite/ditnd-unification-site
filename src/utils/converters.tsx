@@ -27,6 +27,7 @@ import { Table } from "@codegouvfr/react-dsfr/Table";
 import { Download } from "@codegouvfr/react-dsfr/Download";
 import { Quote, type QuoteProps } from "@codegouvfr/react-dsfr/Quote";
 import { CallOut, type CallOutProps } from "@codegouvfr/react-dsfr/CallOut";
+import MapBlockRenderer from "~/components/ui/CmsPage/MapBlockRenderer";
 
 interface CitationFields {
 	quote?: string;
@@ -349,6 +350,22 @@ export const calloutConverter: JSXConverter<SerializedBlockNode> = ({
 	);
 };
 
+export const mapConverter: JSXConverter<SerializedBlockNode> = ({ node }) => {
+	const value = node.fields as
+		| { map?: number | { id?: number }; height?: number }
+		| undefined;
+	if (!value?.map) return null;
+	const mapId =
+		typeof value.map === "number"
+			? value.map
+			: typeof value.map === "object" && typeof value.map.id === "number"
+				? value.map.id
+				: null;
+	if (mapId === null) return null;
+	const height = typeof value.height === "number" ? value.height : 480;
+	return <MapBlockRenderer mapId={mapId} height={height} />;
+};
+
 export const customImageSizeConverter: JSXConverter<SerializedBlockNode> = ({
 	node,
 }) => {
@@ -511,6 +528,7 @@ export const getConverters = () => ({
 		citation: citationConverter,
 		highlight: highlightConverter,
 		callout: calloutConverter,
+		map: mapConverter,
 	},
 	link: linkConverter,
 	table: tableConverter,

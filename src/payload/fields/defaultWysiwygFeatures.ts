@@ -31,6 +31,9 @@ export const defaultWysiwygFeatures = ({
 				"conditions",
 				"journeys",
 				"themes",
+				"map-categories",
+				"map-markers",
+				"maps",
 			],
 		}),
 	];

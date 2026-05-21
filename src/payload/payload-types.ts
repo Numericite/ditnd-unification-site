@@ -74,6 +74,9 @@ export interface Config {
 		"practical-guide-views": PracticalGuideView;
 		glossary: Glossary;
 		"glossary-categories": GlossaryCategory;
+		"map-categories": MapCategory;
+		"map-markers": MapMarker;
+		maps: Map;
 		personas: Persona;
 		conditions: Condition;
 		themes: Theme;
@@ -104,6 +107,9 @@ export interface Config {
 		"glossary-categories":
 			| GlossaryCategoriesSelect<false>
 			| GlossaryCategoriesSelect<true>;
+		"map-categories": MapCategoriesSelect<false> | MapCategoriesSelect<true>;
+		"map-markers": MapMarkersSelect<false> | MapMarkersSelect<true>;
+		maps: MapsSelect<false> | MapsSelect<true>;
 		personas: PersonasSelect<false> | PersonasSelect<true>;
 		conditions: ConditionsSelect<false> | ConditionsSelect<true>;
 		themes: ThemesSelect<false> | ThemesSelect<true>;
@@ -136,9 +142,7 @@ export interface Config {
 		about: AboutSelect<false> | AboutSelect<true>;
 	};
 	locale: null;
-	user: User & {
-		collection: "users";
-	};
+	user: User;
 	jobs: {
 		tasks: unknown;
 		workflows: unknown;
@@ -447,6 +451,117 @@ export interface GlossaryCategory {
 	createdAt: string;
 }
 /**
+ * Types de points géolocalisés (ex : MDPH, CRA). Chaque catégorie regroupe une famille de marqueurs qui pourra être affichée sur une ou plusieurs cartes.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "map-categories".
+ */
+export interface MapCategory {
+	id: number;
+	/**
+	 * Nom affiché dans la légende des cartes (ex : « MDPH », « CRA »).
+	 */
+	name: string;
+	/**
+	 * Identifiant stable utilisé en interne (kebab-case).
+	 */
+	slug: string;
+	/**
+	 * Couleur DSFR appliquée aux marqueurs de cette catégorie.
+	 */
+	colorVariant?:
+		| (
+				| "green-tilleul-verveine"
+				| "green-bourgeon"
+				| "green-emeraude"
+				| "green-menthe"
+				| "green-archipel"
+				| "blue-ecume"
+				| "blue-cumulus"
+				| "purple-glycine"
+				| "pink-macaron"
+				| "pink-tuile"
+				| "yellow-tournesol"
+				| "yellow-moutarde"
+				| "orange-terre-battue"
+				| "brown-cafe-creme"
+				| "brown-caramel"
+				| "brown-opera"
+				| "beige-gris-galet"
+		  )
+		| null;
+	/**
+	 * Identifiant d'icône DSFR (ex : fr-icon-map-pin-2-fill). Facultatif.
+	 */
+	iconId?: string | null;
+	description?: string | null;
+	updatedAt: string;
+	createdAt: string;
+}
+/**
+ * Points géolocalisés rattachés à une catégorie. Les coordonnées sont remplies automatiquement à partir de l'adresse via api-adresse.data.gouv.fr.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "map-markers".
+ */
+export interface MapMarker {
+	id: number;
+	name: string;
+	category: number | MapCategory;
+	address: string;
+	postalCode?: string | null;
+	city: string;
+	/**
+	 * Rempli automatiquement à partir de l'adresse. Modifiable pour ajuster manuellement.
+	 */
+	latitude?: number | null;
+	/**
+	 * Rempli automatiquement à partir de l'adresse. Modifiable pour ajuster manuellement.
+	 */
+	longitude?: number | null;
+	phone?: string | null;
+	email?: string | null;
+	website?: string | null;
+	/**
+	 * Description affichée dans l'infobulle du point sur la carte.
+	 */
+	description?: string | null;
+	updatedAt: string;
+	createdAt: string;
+}
+/**
+ * Cartes composées d'une ou plusieurs catégories de points. Une carte peut être insérée dans un contenu via le bloc « Carte ».
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "maps".
+ */
+export interface Map {
+	id: number;
+	/**
+	 * Nom utilisé en interne pour retrouver la carte (non affiché).
+	 */
+	name: string;
+	slug: string;
+	/**
+	 * Titre optionnel affiché au-dessus de la carte. Si vide, la carte s'affiche sans titre.
+	 */
+	title?: string | null;
+	description?: string | null;
+	/**
+	 * Toutes les catégories sélectionnées seront affichées sur la carte avec leurs marqueurs.
+	 */
+	categories: (number | MapCategory)[];
+	defaultLatitude?: number | null;
+	defaultLongitude?: number | null;
+	defaultZoom?: number | null;
+	/**
+	 * Si activé, le cadrage par défaut est ignoré quand des marqueurs existent.
+	 */
+	fitToMarkers?: boolean | null;
+	updatedAt: string;
+	createdAt: string;
+}
+/**
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "users".
  */
@@ -472,6 +587,7 @@ export interface User {
 		  }[]
 		| null;
 	password?: string | null;
+	collection: "users";
 }
 /**
  * This is a collection of automatically created search results. These results are used by the global site search and will be updated automatically as documents in the CMS are created or updated.
@@ -547,6 +663,18 @@ export interface PayloadLockedDocument {
 		| ({
 				relationTo: "glossary-categories";
 				value: number | GlossaryCategory;
+		  } | null)
+		| ({
+				relationTo: "map-categories";
+				value: number | MapCategory;
+		  } | null)
+		| ({
+				relationTo: "map-markers";
+				value: number | MapMarker;
+		  } | null)
+		| ({
+				relationTo: "maps";
+				value: number | Map;
 		  } | null)
 		| ({
 				relationTo: "personas";
@@ -787,6 +915,55 @@ export interface GlossarySelect<T extends boolean = true> {
  */
 export interface GlossaryCategoriesSelect<T extends boolean = true> {
 	name?: T;
+	updatedAt?: T;
+	createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "map-categories_select".
+ */
+export interface MapCategoriesSelect<T extends boolean = true> {
+	name?: T;
+	slug?: T;
+	colorVariant?: T;
+	iconId?: T;
+	description?: T;
+	updatedAt?: T;
+	createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "map-markers_select".
+ */
+export interface MapMarkersSelect<T extends boolean = true> {
+	name?: T;
+	category?: T;
+	address?: T;
+	postalCode?: T;
+	city?: T;
+	latitude?: T;
+	longitude?: T;
+	phone?: T;
+	email?: T;
+	website?: T;
+	description?: T;
+	updatedAt?: T;
+	createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "maps_select".
+ */
+export interface MapsSelect<T extends boolean = true> {
+	name?: T;
+	slug?: T;
+	title?: T;
+	description?: T;
+	categories?: T;
+	defaultLatitude?: T;
+	defaultLongitude?: T;
+	defaultZoom?: T;
+	fitToMarkers?: T;
 	updatedAt?: T;
 	createdAt?: T;
 }

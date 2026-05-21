@@ -21,6 +21,9 @@ import { Journeys } from "./collections/Journeys";
 import { Medias } from "./collections/Medias";
 import { Glossary } from "./collections/Glossary";
 import { GlossaryCategories } from "./collections/GlossaryCategories";
+import { MapCategories } from "./collections/MapCategories";
+import { MapMarkers } from "./collections/MapMarkers";
+import { Maps } from "./collections/Maps";
 import { en } from "@payloadcms/translations/languages/en";
 import { fr } from "@payloadcms/translations/languages/fr";
 
@@ -115,6 +118,9 @@ export default buildConfig({
 		PracticalGuideViews,
 		Glossary,
 		GlossaryCategories,
+		MapCategories,
+		MapMarkers,
+		Maps,
 		Personas,
 		Conditions,
 		Themes,
