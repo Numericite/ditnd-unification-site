@@ -3,7 +3,7 @@ import { fr } from "@codegouvfr/react-dsfr";
 import { useRef, useState } from "react";
 import type { PersonaTile } from "../../HomePage/PersonaTiles";
 import type { PersonaTypes } from "../../HomePage/PersonaTiles";
-import { pictogramMap } from "~/utils/tools";
+import { pictogramMap } from "~/utils/pictograms";
 
 type Props = {
 	tiles: PersonaTile[];

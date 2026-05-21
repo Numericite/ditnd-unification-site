@@ -5,7 +5,8 @@ import SubMenuCustom from "./SubMenuCustom";
 import Button from "@codegouvfr/react-dsfr/Button";
 import Header from "@codegouvfr/react-dsfr/Header";
 import { chatbotOpenStore, personStore } from "~/state/store";
-import { personsAndProTiles, skipLinks } from "~/utils/tools";
+import { personsAndProTiles } from "~/utils/pictograms";
+import { skipLinks } from "~/utils/tools";
 import SkipLinks from "@codegouvfr/react-dsfr/SkipLinks";
 
 export default function MainNavigation() {

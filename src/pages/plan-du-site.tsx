@@ -4,7 +4,7 @@ import Head from "next/head";
 import { tss } from "tss-react/dsfr";
 import PageContent from "~/components/ui/PageContent";
 import { personStore, tdhStore } from "~/state/store";
-import { personsAndProTiles } from "~/utils/tools";
+import { personsAndProTiles } from "~/utils/pictograms";
 
 export default function PlanDuSite() {
 	const { classes, cx } = useStyles();
