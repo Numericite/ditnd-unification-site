@@ -8,7 +8,7 @@ import { useState } from "react";
 import { useRouter } from "next/router";
 import { EmptyScreenZone } from "~/components/ui/EmptyScreenZone";
 import { homeCMSStore, personStore } from "~/state/store";
-import { personsAndProTiles } from "~/utils/tools";
+import { personsAndProTiles } from "~/utils/pictograms";
 import Image from "next/image";
 import PageContent from "~/components/ui/PageContent";
 import type { GetServerSideProps } from "next";

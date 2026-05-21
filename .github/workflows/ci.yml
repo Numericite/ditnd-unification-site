@@ -6,18 +6,22 @@ on:
     branches: [main]
 
 env:
-  NODE_VERSION: "20"
+  NODE_VERSION: "24"
 
 jobs:
   build:
-    name: Lint, typecheck & build
+    name: Lint, typecheck & build (Node ${{ matrix.node-version }})
     runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        node-version: ["22", "24"]
     steps:
       - uses: actions/checkout@v4
 
       - uses: actions/setup-node@v4
         with:
-          node-version: ${{ env.NODE_VERSION }}
+          node-version: ${{ matrix.node-version }}
           cache: yarn
 
       - name: Install dependencies
@@ -28,6 +32,12 @@ jobs:
 
       - name: TypeScript check
         run: yarn typecheck
+
+      - name: Payload generate types
+        run: npx payload generate:types
+        env:
+          PAYLOAD_SECRET: ci-build-secret
+          POSTGRESQL_ADDON_URI: postgres://user:password@localhost:5432/ci-build
 
       - name: Next.js build
         run: yarn build

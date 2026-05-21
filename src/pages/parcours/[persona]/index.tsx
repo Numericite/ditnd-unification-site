@@ -5,7 +5,7 @@ import { tss } from "tss-react/dsfr";
 import { PersonaTiles, type TagItem } from "~/components/HomePage/PersonaTiles";
 import PageContent from "~/components/ui/PageContent";
 import { personStore, proStore, tdhStore } from "~/state/store";
-import { personsAndProTiles } from "~/utils/tools";
+import { personsAndProTiles } from "~/utils/pictograms";
 
 function isProfessional(persona_slug: string) {
 	return persona_slug === "professional";
