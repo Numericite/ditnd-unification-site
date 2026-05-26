@@ -6,6 +6,7 @@ import { CitationBlock } from "../plugins/blocks/CitationBlock";
 import { CustomImageBlock } from "../plugins/blocks/CustomImageBlock";
 import { YouTubeBlock } from "../plugins/blocks/YouTubeBlock";
 import { HighlightBlock } from "../plugins/blocks/HighlightBlock";
+import { LangBlock } from "../plugins/blocks/LangBlock";
 import { defaultWysiwygFeatures } from "./defaultWysiwygFeatures";
 
 export const standardFields = {
@@ -85,6 +86,7 @@ export const standardFields = {
 						HighlightBlock,
 						CalloutBlock,
 					],
+					inlineBlocks: [LangBlock],
 				}),
 			],
 		}),
