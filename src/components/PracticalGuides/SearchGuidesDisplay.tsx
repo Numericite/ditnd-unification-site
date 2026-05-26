@@ -107,15 +107,29 @@ export const SearchGuidesDisplay = ({
 	const total = data?.total ?? 0;
 	const pageCount = data?.pageCount ?? 0;
 
+	const hasResults = !!items && items.length > 0;
+
 	return (
 		<>
 			<SearchBarUI value={query} onClick={(query) => setQuery(query)} />
+			<div
+				className={fr.cx("fr-mt-3w")}
+				style={{ textAlign: "right", minHeight: "1.25rem" }}
+			>
+				<output
+					className={fr.cx("fr-text--sm", "fr-mb-0")}
+					aria-live="polite"
+					aria-atomic="true"
+				>
+					{isLoading ? "" : `${total} ${total > 1 ? "résultats" : "résultat"}`}
+				</output>
+			</div>
 			{isLoading ? (
 				<EmptyScreenZone>
 					<Loader />
 				</EmptyScreenZone>
-			) : !items || items.length === 0 ? (
-				<div className={fr.cx("fr-my-2w")} role="alert" aria-live="assertive">
+			) : !hasResults ? (
+				<div id="results" tabIndex={-1} className={fr.cx("fr-my-2w")}>
 					Aucune fiche pratique trouvée
 				</div>
 			) : (
@@ -124,14 +138,6 @@ export const SearchGuidesDisplay = ({
 					tabIndex={-1}
 					className={fr.cx("fr-grid-row", "fr-grid-row--gutters", "fr-pt-3w")}
 				>
-					<div className={fr.cx("fr-col-12")} style={{ textAlign: "right" }}>
-						<output
-							className={fr.cx("fr-text--sm", "fr-mb-0")}
-							aria-live="polite"
-						>
-							{total} {total > 1 ? "résultats" : "résultat"}
-						</output>
-					</div>
 					<CardsDisplayGroup
 						className={fr.cx("fr-col-lg-6")}
 						guides={items}

@@ -71,7 +71,15 @@ function App({ Component, pageProps }: AppPropsWithGlobal) {
 	}
 
 	useEffect(() => {
-		const handleRouteChange = () => {
+		// Shallow navigations only update the querystring on the same page (e.g.
+		// search/filter/pagination state). Refocusing #contenu in that case steals
+		// focus from the active control and silences any aria-live announcements
+		// happening at the same time (RGAA 7.5 / 12.8).
+		const handleRouteChange = (
+			_url: string,
+			{ shallow }: { shallow: boolean },
+		) => {
+			if (shallow) return;
 			document.getElementById("contenu")?.focus({ preventScroll: true });
 		};
 		router.events.on("routeChangeComplete", handleRouteChange);
