@@ -7,7 +7,7 @@ import {
 import { SearchGuidesDisplay } from "~/components/PracticalGuides/SearchGuidesDisplay";
 import { useState } from "react";
 import Breadcrumb from "@codegouvfr/react-dsfr/Breadcrumb";
-import SkipLinks from "@codegouvfr/react-dsfr/SkipLinks";
+import SingleSkipLink from "~/components/ui/SingleSkipLink";
 import { tss } from "tss-react/dsfr";
 import { deserialize } from "~/utils/tools";
 import PageContent from "~/components/ui/PageContent";
@@ -69,13 +69,9 @@ export default function PracticalGuides({
 						>
 							<div className={fr.cx("fr-p-3w")}>
 								<h2 className={fr.cx("fr-h4")}>Affiner la recherche</h2>
-								<SkipLinks
-									links={[
-										{
-											label: "Aller aux résultats de recherche",
-											anchor: "#results",
-										},
-									]}
+								<SingleSkipLink
+									label="Aller aux résultats de recherche"
+									anchor="#results"
 								/>
 								<div className={fr.cx("fr-mt-2w")}>
 									<GuidesFiltersDisplay setFilters={setFilters} />

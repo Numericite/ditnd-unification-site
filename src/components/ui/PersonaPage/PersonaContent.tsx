@@ -1,9 +1,9 @@
 import { fr } from "@codegouvfr/react-dsfr";
 import type { AugmentedCourse } from "~/server/api/routers/courses";
 import { slugify } from "~/utils/tools";
-import SkipLinks from "@codegouvfr/react-dsfr/SkipLinks";
 import type { AugmentedPracticalGuide } from "~/server/api/routers/practical-guides";
 import CardsDisplayGroup from "../Cards/CardsDisplayGroup";
+import SingleSkipLink from "../SingleSkipLink";
 
 type Props = {
 	courses?: AugmentedCourse[];
@@ -44,14 +44,7 @@ export default function PersonaContent({
 					/>
 				)}
 			</div>
-			<SkipLinks
-				links={[
-					{
-						label: "Retour au sommaire",
-						anchor: "#summary",
-					},
-				]}
-			/>
+			<SingleSkipLink label="Retour au sommaire" anchor="#summary" />
 		</>
 	);
 }
