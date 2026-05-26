@@ -13,7 +13,7 @@ export default function LiteYouTube({ videoId }: { videoId: string }) {
 				onClick={() => setIsLoaded(true)}
 				className={classes.liteButton}
 			>
-				<span className={fr.cx("fr-sr-only")}>Lire la vidéo YouTube</span>
+				<span className={fr.cx("fr-sr-only")}>Voir la vidéo YouTube</span>
 				<div
 					className={classes.ytThumbnail}
 					style={{
