@@ -1,15 +1,20 @@
 import {
+	BlocksFeature,
 	EXPERIMENTAL_TableFeature,
 	FixedToolbarFeature,
 	HeadingFeature,
 	RelationshipFeature,
 	type FeatureProviderServer,
 } from "@payloadcms/richtext-lexical";
+import type { Block } from "payload";
+import { LangBlock } from "../plugins/blocks/LangBlock";
 
 export const defaultWysiwygFeatures = ({
 	defaultFeatures,
+	blocks = [],
 }: {
 	defaultFeatures: FeatureProviderServer[];
+	blocks?: Block[];
 }) => {
 	return [
 		...defaultFeatures.filter(
@@ -32,6 +37,10 @@ export const defaultWysiwygFeatures = ({
 				"journeys",
 				"themes",
 			],
+		}),
+		BlocksFeature({
+			blocks,
+			inlineBlocks: [LangBlock],
 		}),
 	];
 };
