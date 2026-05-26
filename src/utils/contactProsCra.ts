@@ -54,7 +54,9 @@ export const contactProsCraSchema = z.object({
 		.string()
 		.trim()
 		.min(1, "Veuillez renseigner votre email professionnel.")
-		.email("Veuillez renseigner une adresse email valide."),
+		.email(
+			"Veuillez renseigner une adresse email valide, par exemple : prenom.nom@exemple.fr.",
+		),
 	website: honeypotSchema,
 });
 
