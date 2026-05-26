@@ -71,7 +71,12 @@ function App({ Component, pageProps }: AppPropsWithGlobal) {
 	}
 
 	useEffect(() => {
-		const handleRouteChange = () => {
+		// Skip shallow navs so filter/search/pagination don't steal focus mid-update.
+		const handleRouteChange = (
+			_url: string,
+			{ shallow }: { shallow: boolean },
+		) => {
+			if (shallow) return;
 			document.getElementById("contenu")?.focus({ preventScroll: true });
 		};
 		router.events.on("routeChangeComplete", handleRouteChange);

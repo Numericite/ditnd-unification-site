@@ -8,6 +8,7 @@ import { useSearchParams } from "next/navigation";
 import { useRouter } from "next/router";
 import CardsDisplayGroup from "../ui/Cards/CardsDisplayGroup";
 import { EmptyScreenZone } from "../ui/EmptyScreenZone";
+import { ResultsCount } from "../ui/SearchPage/ResultsCount";
 import { DEFAULT_PAGE_SIZE, type PaginatedResult } from "~/utils/pagination";
 import type { AugmentedCourse } from "~/server/api/routers/courses";
 
@@ -115,15 +116,18 @@ export const SearchCoursesDisplay = ({
 	const total = data?.total ?? 0;
 	const pageCount = data?.pageCount ?? 0;
 
+	const hasResults = !!items && items.length > 0;
+
 	return (
 		<>
 			<SearchBarUI value={query} onClick={(query) => setQuery(query)} />
+			<ResultsCount total={total} hidden={isLoading} />
 			{isLoading ? (
 				<EmptyScreenZone>
 					<Loader />
 				</EmptyScreenZone>
-			) : !items || items.length === 0 ? (
-				<div className={fr.cx("fr-my-2w")} role="alert" aria-live="assertive">
+			) : !hasResults ? (
+				<div id="results" tabIndex={-1} className={fr.cx("fr-my-2w")}>
 					Aucune formation trouvée
 				</div>
 			) : (
@@ -132,14 +136,6 @@ export const SearchCoursesDisplay = ({
 					tabIndex={-1}
 					className={fr.cx("fr-grid-row", "fr-grid-row--gutters", "fr-pt-3w")}
 				>
-					<div className={fr.cx("fr-col-12")} style={{ textAlign: "right" }}>
-						<output
-							className={fr.cx("fr-text--sm", "fr-mb-0")}
-							aria-live="polite"
-						>
-							{total} {total > 1 ? "résultats" : "résultat"}
-						</output>
-					</div>
 					<CardsDisplayGroup
 						className={fr.cx(
 							"fr-col-12",
