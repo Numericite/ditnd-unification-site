@@ -71,10 +71,7 @@ function App({ Component, pageProps }: AppPropsWithGlobal) {
 	}
 
 	useEffect(() => {
-		// Shallow navigations only update the querystring on the same page (e.g.
-		// search/filter/pagination state). Refocusing #contenu in that case steals
-		// focus from the active control and silences any aria-live announcements
-		// happening at the same time (RGAA 7.5 / 12.8).
+		// Skip shallow navs so filter/search/pagination don't steal focus mid-update.
 		const handleRouteChange = (
 			_url: string,
 			{ shallow }: { shallow: boolean },

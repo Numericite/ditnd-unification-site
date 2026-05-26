@@ -9,6 +9,7 @@ import CardsDisplayGroup from "../ui/Cards/CardsDisplayGroup";
 import { useSearchParams } from "next/navigation";
 import { useRouter } from "next/router";
 import { EmptyScreenZone } from "../ui/EmptyScreenZone";
+import { ResultsCount } from "../ui/SearchPage/ResultsCount";
 import { DEFAULT_PAGE_SIZE, type PaginatedResult } from "~/utils/pagination";
 import type { AugmentedPracticalGuide } from "~/server/api/routers/practical-guides";
 
@@ -112,18 +113,7 @@ export const SearchGuidesDisplay = ({
 	return (
 		<>
 			<SearchBarUI value={query} onClick={(query) => setQuery(query)} />
-			<div
-				className={fr.cx("fr-mt-3w")}
-				style={{ textAlign: "right", minHeight: "1.25rem" }}
-			>
-				<output
-					className={fr.cx("fr-text--sm", "fr-mb-0")}
-					aria-live="polite"
-					aria-atomic="true"
-				>
-					{isLoading ? "" : `${total} ${total > 1 ? "résultats" : "résultat"}`}
-				</output>
-			</div>
+			<ResultsCount total={total} hidden={isLoading} />
 			{isLoading ? (
 				<EmptyScreenZone>
 					<Loader />
