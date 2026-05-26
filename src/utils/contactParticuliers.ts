@@ -161,7 +161,9 @@ export const contactParticuliersSchema = z.object({
 		.string()
 		.trim()
 		.min(1, "Veuillez renseigner votre courriel.")
-		.email("Veuillez renseigner une adresse email valide.")
+		.email(
+			"Veuillez renseigner une adresse email valide, par exemple : prenom.nom@exemple.fr.",
+		)
 		.max(254),
 	departement: z.string().trim().max(255).optional(),
 	objet: z.enum(OBJET_VALUES, {

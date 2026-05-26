@@ -2,7 +2,7 @@ import { fr } from "@codegouvfr/react-dsfr";
 import Head from "next/head";
 import { useState, type Dispatch, type SetStateAction } from "react";
 import Breadcrumb from "@codegouvfr/react-dsfr/Breadcrumb";
-import SkipLinks from "@codegouvfr/react-dsfr/SkipLinks";
+import SingleSkipLink from "~/components/ui/SingleSkipLink";
 import {
 	SearchCoursesDisplay,
 	type CoursesFiltersQuery,
@@ -69,13 +69,9 @@ export default function Courses({
 						>
 							<div className={fr.cx("fr-p-3w")}>
 								<h2 className={fr.cx("fr-h4")}>Affiner la recherche</h2>
-								<SkipLinks
-									links={[
-										{
-											label: "Aller aux résultats de recherche",
-											anchor: "#results",
-										},
-									]}
+								<SingleSkipLink
+									label="Aller aux résultats de recherche"
+									anchor="#results"
 								/>
 								<div className={fr.cx("fr-mt-2w")}>
 									<CoursesFiltersDisplay

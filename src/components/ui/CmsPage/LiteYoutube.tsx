@@ -11,9 +11,9 @@ export default function LiteYouTube({ videoId }: { videoId: string }) {
 			<button
 				type="button"
 				onClick={() => setIsLoaded(true)}
-				aria-label="Lire la vidéo YouTube"
 				className={classes.liteButton}
 			>
+				<span className={fr.cx("fr-sr-only")}>Voir la vidéo YouTube</span>
 				<div
 					className={classes.ytThumbnail}
 					style={{
