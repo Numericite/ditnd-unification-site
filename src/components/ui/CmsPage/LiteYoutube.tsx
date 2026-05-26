@@ -42,6 +42,7 @@ const useStyles = tss.withName(LiteYouTube.name).create(() => ({
 	liteButton: {
 		all: "unset",
 		display: "block",
+		width: "100%",
 		cursor: "pointer",
 		"&:focus-visible": {
 			outline: `2px solid ${fr.colors.decisions.border.plain.info.default}`,
