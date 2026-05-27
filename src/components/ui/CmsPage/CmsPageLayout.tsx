@@ -83,9 +83,7 @@ export default function CmsPageLayout({
 		</>
 	);
 
-	const toolbar = headerToolbar ? (
-		<div className={classes.headerToolbar}>{headerToolbar}</div>
-	) : null;
+	const toolbar = headerToolbar ? <div>{headerToolbar}</div> : null;
 
 	if (!hasSummary) {
 		return (
@@ -105,16 +103,16 @@ export default function CmsPageLayout({
 	return (
 		<div className={fr.cx("fr-grid-row", "fr-grid-row--gutters")}>
 			{banner && <div className={fr.cx("fr-col-12")}>{banner}</div>}
-			<div className={fr.cx("fr-col-12")}>{heading}</div>
+			<div className={fr.cx("fr-col-12")}>
+				{heading}
+				{toolbar}
+			</div>
 			<SummaryContent
 				menuLinks={links}
 				title="Sommaire"
 				className={cx(classes.summarySticky)}
 			/>
-			<div className={fr.cx("fr-col-12", "fr-col-lg-9")}>
-				{toolbar}
-				{body}
-			</div>
+			<div className={fr.cx("fr-col-12", "fr-col-lg-9")}>{body}</div>
 		</div>
 	);
 }
@@ -141,8 +139,5 @@ const useStyles = tss.withName(CmsPageLayout.name).create(() => ({
 		".fr-summary__link:before": {
 			visibility: "hidden",
 		},
-	},
-	headerToolbar: {
-		marginBottom: fr.spacing("3w"),
 	},
 }));

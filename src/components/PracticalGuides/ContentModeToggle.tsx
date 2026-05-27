@@ -1,4 +1,6 @@
+import { fr } from "@codegouvfr/react-dsfr";
 import { SegmentedControl } from "@codegouvfr/react-dsfr/SegmentedControl";
+import { useState } from "react";
 
 export type ContentMode = "standard" | "simplified";
 
@@ -14,37 +16,57 @@ function persistMode(mode: ContentMode) {
 	document.cookie = `${CONTENT_MODE_COOKIE}=${mode}; path=/; max-age=${maxAge}; samesite=lax${secure}`;
 }
 
+function announcementFor(mode: ContentMode): string {
+	return mode === "simplified"
+		? "La version simplifiée de la fiche est affichée."
+		: "La version standard de la fiche est affichée.";
+}
+
 type Props = {
 	mode: ContentMode;
 	onChange: (mode: ContentMode) => void;
 };
 
 export default function ContentModeToggle({ mode, onChange }: Props) {
+	// Announcement is empty on first render (avoids reading an unsolicited
+	// status on page load) and only filled after a user-initiated change.
+	const [announcement, setAnnouncement] = useState("");
+
 	const select = (next: ContentMode) => {
 		persistMode(next);
 		onChange(next);
+		setAnnouncement(announcementFor(next));
 	};
 
 	return (
-		<SegmentedControl
-			hideLegend
-			legend="Affichage de la fiche"
-			segments={[
-				{
-					label: "Version standard",
-					nativeInputProps: {
-						checked: mode === "standard",
-						onChange: () => select("standard"),
+		<>
+			<SegmentedControl
+				hideLegend
+				legend="Choisir la version d'affichage de la fiche"
+				segments={[
+					{
+						label: "Version standard",
+						nativeInputProps: {
+							checked: mode === "standard",
+							onChange: () => select("standard"),
+						},
 					},
-				},
-				{
-					label: "Version simplifiée",
-					nativeInputProps: {
-						checked: mode === "simplified",
-						onChange: () => select("simplified"),
+					{
+						label: "Version simplifiée",
+						nativeInputProps: {
+							checked: mode === "simplified",
+							onChange: () => select("simplified"),
+						},
 					},
-				},
-			]}
-		/>
+				]}
+			/>
+			<output
+				className={fr.cx("fr-sr-only")}
+				aria-live="polite"
+				aria-atomic="true"
+			>
+				{announcement}
+			</output>
+		</>
 	);
 }
