@@ -1,4 +1,4 @@
-import { useMemo } from "react";
+import { type ReactNode, useMemo } from "react";
 import CmsPageLayout from "../ui/CmsPage/CmsPageLayout";
 import type { AugmentedPracticalGuide } from "~/server/api/routers/practical-guides";
 import type { Link } from "~/utils/tools";
@@ -6,8 +6,10 @@ import RecommendedContent from "./RecommendedContent";
 
 export default function PracticalGuidesDisplay({
 	guide,
+	headerToolbar,
 }: {
 	guide: AugmentedPracticalGuide;
+	headerToolbar?: ReactNode;
 }) {
 	const extraLinks = useMemo<Link[]>(() => {
 		const links: Link[] = [];
@@ -42,6 +44,7 @@ export default function PracticalGuidesDisplay({
 			updatedAt={guide.updatedAt}
 			showShareSocials
 			extraLinks={extraLinks}
+			headerToolbar={headerToolbar}
 		>
 			<RecommendedContent
 				guides={guide["practical-guides"]}

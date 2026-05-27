@@ -1,6 +1,4 @@
-import { fr } from "@codegouvfr/react-dsfr";
 import { ToggleSwitch } from "@codegouvfr/react-dsfr/ToggleSwitch";
-import { tss } from "tss-react/dsfr";
 
 export type ContentMode = "standard" | "simplified";
 
@@ -22,27 +20,17 @@ type Props = {
 };
 
 export default function ContentModeToggle({ mode, onChange }: Props) {
-	const { classes } = useStyles();
-
 	return (
-		<div className={classes.container}>
-			<ToggleSwitch
-				label="Version simplifiée"
-				helperText="Une version plus simple de la fiche, plus facile à lire."
-				checked={mode === "simplified"}
-				onChange={(checked) => {
-					const next: ContentMode = checked ? "simplified" : "standard";
-					persistMode(next);
-					onChange(next);
-				}}
-				labelPosition="left"
-			/>
-		</div>
+		<ToggleSwitch
+			label="Version simplifiée"
+			helperText="Une version plus simple de la fiche, plus facile à lire."
+			checked={mode === "simplified"}
+			onChange={(checked) => {
+				const next: ContentMode = checked ? "simplified" : "standard";
+				persistMode(next);
+				onChange(next);
+			}}
+			labelPosition="left"
+		/>
 	);
 }
-
-const useStyles = tss.withName(ContentModeToggle.name).create(() => ({
-	container: {
-		marginBottom: fr.spacing("2w"),
-	},
-}));

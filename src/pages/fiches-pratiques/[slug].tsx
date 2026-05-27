@@ -125,11 +125,15 @@ export default function PracticalGuidePage({
 					}}
 					segments={breadcrumbSegments}
 				/>
-				{isSimplifiedReady && (
-					<ContentModeToggle mode={mode} onChange={setMode} />
-				)}
 				<PageContent>
-					<PracticalGuidesDisplay guide={displayedGuide} />
+					<PracticalGuidesDisplay
+						guide={displayedGuide}
+						headerToolbar={
+							isSimplifiedReady ? (
+								<ContentModeToggle mode={mode} onChange={setMode} />
+							) : undefined
+						}
+					/>
 				</PageContent>
 			</div>
 		</>
