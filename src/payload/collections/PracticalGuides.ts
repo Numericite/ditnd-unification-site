@@ -5,6 +5,7 @@ import type {
 	CollectionConfig,
 } from "payload";
 import { sql } from "@payloadcms/db-postgres";
+import { HeadingFeature, lexicalEditor } from "@payloadcms/richtext-lexical";
 import { slugify } from "~/utils/tools";
 import { standardFields } from "../fields/standards";
 import { generateEmbedding } from "../services/embedding";
@@ -214,6 +215,67 @@ export const PracticalGuides: CollectionConfig = {
 			},
 		},
 		standardFields.wysiwyg,
+		{
+			name: "contentSimplified",
+			type: "richText",
+			required: false,
+			label: { fr: "Contenu simplifié (généré automatiquement)" },
+			admin: {
+				readOnly: true,
+				description:
+					"Version simplifiée du contenu, régénérée automatiquement à chaque publication.",
+			},
+			editor: lexicalEditor({
+				features: ({ defaultFeatures }) => [
+					...defaultFeatures.filter(
+						(feature) =>
+							![
+								"align",
+								"blockquote",
+								"checklist",
+								"heading",
+								"horizontalRule",
+								"indent",
+								"inlineCode",
+								"italic",
+								"strikethrough",
+								"subscript",
+								"superscript",
+								"underline",
+							].includes(feature.key),
+					),
+					HeadingFeature({ enabledHeadingSizes: ["h2", "h3"] }),
+				],
+			}),
+		},
+		{
+			name: "simplifiedGenerationStatus",
+			type: "select",
+			required: false,
+			label: { fr: "Statut génération simplifiée" },
+			options: [
+				{ value: "pending", label: { fr: "En cours" } },
+				{ value: "ready", label: { fr: "Prêt" } },
+				{ value: "failed", label: { fr: "Échec" } },
+			],
+			admin: {
+				position: "sidebar",
+				readOnly: true,
+			},
+		},
+		{
+			name: "simplifiedGeneratedAt",
+			type: "date",
+			required: false,
+			label: { fr: "Dernière génération simplifiée" },
+			admin: {
+				position: "sidebar",
+				readOnly: true,
+				date: {
+					displayFormat: "dd/MM/yyyy HH:mm",
+				},
+			},
+		},
 		{
 			name: "persona",
 			type: "relationship",
