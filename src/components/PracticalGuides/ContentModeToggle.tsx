@@ -1,4 +1,4 @@
-import { ToggleSwitch } from "@codegouvfr/react-dsfr/ToggleSwitch";
+import { SegmentedControl } from "@codegouvfr/react-dsfr/SegmentedControl";
 
 export type ContentMode = "standard" | "simplified";
 
@@ -20,17 +20,31 @@ type Props = {
 };
 
 export default function ContentModeToggle({ mode, onChange }: Props) {
+	const select = (next: ContentMode) => {
+		persistMode(next);
+		onChange(next);
+	};
+
 	return (
-		<ToggleSwitch
-			label="Version simplifiée"
-			helperText="Une version plus simple de la fiche, plus facile à lire."
-			checked={mode === "simplified"}
-			onChange={(checked) => {
-				const next: ContentMode = checked ? "simplified" : "standard";
-				persistMode(next);
-				onChange(next);
-			}}
-			labelPosition="left"
+		<SegmentedControl
+			hideLegend
+			legend="Affichage de la fiche"
+			segments={[
+				{
+					label: "Version standard",
+					nativeInputProps: {
+						checked: mode === "standard",
+						onChange: () => select("standard"),
+					},
+				},
+				{
+					label: "Version simplifiée",
+					nativeInputProps: {
+						checked: mode === "simplified",
+						onChange: () => select("simplified"),
+					},
+				},
+			]}
 		/>
 	);
 }

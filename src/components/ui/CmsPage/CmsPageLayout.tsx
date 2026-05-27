@@ -84,9 +84,7 @@ export default function CmsPageLayout({
 	);
 
 	const toolbar = headerToolbar ? (
-		<div className={cx(fr.cx("fr-col-12"), classes.headerToolbar)}>
-			{headerToolbar}
-		</div>
+		<div className={classes.headerToolbar}>{headerToolbar}</div>
 	) : null;
 
 	if (!hasSummary) {
@@ -97,11 +95,7 @@ export default function CmsPageLayout({
 					className={fr.cx("fr-col-12", "fr-col-lg-8", "fr-col-offset-lg-2")}
 				>
 					{heading}
-				</div>
-				{toolbar}
-				<div
-					className={fr.cx("fr-col-12", "fr-col-lg-8", "fr-col-offset-lg-2")}
-				>
+					{toolbar}
 					{body}
 				</div>
 			</div>
@@ -112,13 +106,15 @@ export default function CmsPageLayout({
 		<div className={fr.cx("fr-grid-row", "fr-grid-row--gutters")}>
 			{banner && <div className={fr.cx("fr-col-12")}>{banner}</div>}
 			<div className={fr.cx("fr-col-12")}>{heading}</div>
-			{toolbar}
 			<SummaryContent
 				menuLinks={links}
 				title="Sommaire"
 				className={cx(classes.summarySticky)}
 			/>
-			<div className={fr.cx("fr-col-12", "fr-col-lg-9")}>{body}</div>
+			<div className={fr.cx("fr-col-12", "fr-col-lg-9")}>
+				{toolbar}
+				{body}
+			</div>
 		</div>
 	);
 }
@@ -147,13 +143,6 @@ const useStyles = tss.withName(CmsPageLayout.name).create(() => ({
 		},
 	},
 	headerToolbar: {
-		position: "sticky",
-		top: 0,
-		zIndex: 10,
-		display: "flex",
-		justifyContent: "flex-end",
-		background: fr.colors.decisions.background.default.grey.default,
-		paddingTop: fr.spacing("1w"),
-		paddingBottom: fr.spacing("1w"),
+		marginBottom: fr.spacing("3w"),
 	},
 }));
