@@ -10,11 +10,18 @@ import "maplibre-gl/dist/maplibre-gl.css";
 import { fr } from "@codegouvfr/react-dsfr";
 import { tss } from "tss-react/dsfr";
 import { dsfrAccentHex } from "~/utils/dsfr-color-hex";
+import { getMarkerGeo } from "~/utils/map-geo";
+import MapFilterDrawer, {
+	type ActiveFilters,
+	type FilterOption,
+} from "./MapFilterDrawer";
 import type {
 	MapCategorySummary,
 	MapMarkerSummary,
 	MapPayload,
 } from "~/server/api/routers/maps";
+import Button from "@codegouvfr/react-dsfr/Button";
+import Icon from "@mui/material/Icon";
 
 const osmStyle: StyleSpecification = {
 	version: 8,
@@ -49,6 +56,12 @@ export default function MapDisplay({ map, height }: Props) {
 	);
 	const [mapRef, setMapRef] = useState<MapRef | null>(null);
 	const itemRefs = useRef<Map<number, HTMLButtonElement>>(new Map());
+	const [isDrawerOpen, setIsDrawerOpen] = useState(false);
+	const [activeFilters, setActiveFilters] = useState<ActiveFilters>({
+		regions: [],
+		departements: [],
+		categories: [],
+	});
 
 	const categoryById = useMemo(() => {
 		const lookup = new Map<number, MapCategorySummary>();
@@ -109,13 +122,95 @@ export default function MapDisplay({ map, height }: Props) {
 		[mapRef],
 	);
 
-	const categoriesWithMarkers = useMemo(
+	const availableRegions = useMemo<FilterOption[]>(() => {
+		const seen = new Map<string, string>();
+		for (const m of map.markers) {
+			const geo = getMarkerGeo(m.postalCode);
+			if (geo && !seen.has(geo.region)) seen.set(geo.region, geo.region);
+		}
+		return Array.from(seen.entries())
+			.map(([code, label]) => ({ code, label }))
+			.sort((a, b) => a.label.localeCompare(b.label, "fr"));
+	}, [map.markers]);
+
+	const availableDepartements = useMemo<FilterOption[]>(() => {
+		const seen = new Map<string, string>();
+		for (const m of map.markers) {
+			const geo = getMarkerGeo(m.postalCode);
+			if (geo && !seen.has(geo.code))
+				seen.set(geo.code, `${geo.code} — ${geo.name}`);
+		}
+		return Array.from(seen.entries())
+			.map(([code, label]) => ({ code, label }))
+			.sort((a, b) => a.code.localeCompare(b.code, "fr", { numeric: true }));
+	}, [map.markers]);
+
+	const availableCategories = useMemo(
 		() =>
 			map.categories.filter((cat) =>
 				map.markers.some((m) => m.categoryId === cat.id),
 			),
 		[map.categories, map.markers],
 	);
+
+	const filteredMarkers = useMemo(() => {
+		return map.markers.filter((marker) => {
+			if (
+				activeFilters.categories.length > 0 &&
+				!activeFilters.categories.includes(marker.categoryId)
+			)
+				return false;
+
+			const geo = getMarkerGeo(marker.postalCode);
+
+			if (activeFilters.departements.length > 0) {
+				if (!geo || !activeFilters.departements.includes(geo.code))
+					return false;
+			}
+			if (activeFilters.regions.length > 0) {
+				if (!geo || !activeFilters.regions.includes(geo.region)) return false;
+			}
+			return true;
+		});
+	}, [map.markers, activeFilters]);
+
+	const activeFilterCount =
+		activeFilters.regions.length +
+		activeFilters.departements.length +
+		activeFilters.categories.length;
+
+	const categoriesWithMarkers = useMemo(
+		() =>
+			map.categories.filter((cat) =>
+				filteredMarkers.some((m) => m.categoryId === cat.id),
+			),
+		[map.categories, filteredMarkers],
+	);
+
+	useEffect(() => {
+		if (
+			selectedMarker &&
+			!filteredMarkers.some((m) => m.id === selectedMarker.id)
+		) {
+			setSelectedMarker(null);
+		}
+	}, [filteredMarkers, selectedMarker]);
+
+	const handleRegionsChange = useCallback((codes: string[]) => {
+		setActiveFilters((prev) => ({ ...prev, regions: codes }));
+	}, []);
+
+	const handleDepartementsChange = useCallback((codes: string[]) => {
+		setActiveFilters((prev) => ({ ...prev, departements: codes }));
+	}, []);
+
+	const handleCategoriesChange = useCallback((ids: number[]) => {
+		setActiveFilters((prev) => ({ ...prev, categories: ids }));
+	}, []);
+
+	const handleResetFilters = useCallback(() => {
+		setActiveFilters({ regions: [], departements: [], categories: [] });
+	}, []);
 
 	return (
 		<figure className={`${fr.cx("fr-my-3v")} ${classes.figure}`}>
@@ -125,8 +220,25 @@ export default function MapDisplay({ map, height }: Props) {
 
 			<div className={classes.splitContainer} style={{ height }}>
 				<div className={classes.sidebar}>
+					<div className={classes.sidebarHeader}>
+						<Button
+							size="small"
+							priority="tertiary"
+							iconId="fr-icon-filter-line"
+							onClick={() => setIsDrawerOpen(true)}
+						>
+							Filtres
+							{activeFilterCount > 0 ? (
+								<span className={classes.filterBadge}>{activeFilterCount}</span>
+							) : null}
+						</Button>
+						<span className={classes.resultCount}>
+							{filteredMarkers.length} / {map.markers.length}
+						</span>
+					</div>
+
 					<ul className={classes.markerList}>
-						{map.markers.map((marker) => {
+						{filteredMarkers.map((marker) => {
 							const category = categoryById.get(marker.categoryId);
 							const color = dsfrAccentHex(category?.colorVariant);
 							const isSelected = selectedMarker?.id === marker.id;
@@ -146,10 +258,10 @@ export default function MapDisplay({ map, height }: Props) {
 										aria-expanded={isSelected}
 										aria-pressed={isSelected}
 									>
-										<span
-											className={classes.markerDot}
+										<Icon
 											aria-hidden="true"
-											style={{ backgroundColor: color }}
+											className="fr-icon-map-pin-2-fill"
+											style={{ color }}
 										/>
 										<span className={classes.markerInfo}>
 											<span className={classes.markerName}>{marker.name}</span>
@@ -209,7 +321,7 @@ export default function MapDisplay({ map, height }: Props) {
 						onClick={() => setSelectedMarker(null)}
 					>
 						<NavigationControl position="top-right" showCompass={false} />
-						{map.markers.map((marker) => {
+						{filteredMarkers.map((marker) => {
 							const category = categoryById.get(marker.categoryId);
 							const color = dsfrAccentHex(category?.colorVariant);
 							const isSelected = selectedMarker?.id === marker.id;
@@ -225,31 +337,17 @@ export default function MapDisplay({ map, height }: Props) {
 										handleSelectFromMap(marker);
 									}}
 								>
-									<button
-										type="button"
-										aria-label={`${marker.name}${category ? ` — ${category.name}` : ""}`}
-										aria-pressed={isSelected}
+									<Button
 										className={cx(
 											classes.pin,
 											isSelected && classes.pinSelected,
 										)}
+										aria-label={`${marker.name}${category ? ` — ${category.name}` : ""}`}
+										aria-pressed={isSelected}
+										iconId="fr-icon-map-pin-2-fill"
 										style={{ color }}
-									>
-										<svg
-											width="28"
-											height="36"
-											viewBox="0 0 24 32"
-											aria-hidden="true"
-										>
-											<path
-												fill="currentColor"
-												stroke="#ffffff"
-												strokeWidth="1.5"
-												d="M12 1c5.5 0 10 4.3 10 9.6 0 7.4-10 20.4-10 20.4S2 18 2 10.6C2 5.3 6.5 1 12 1z"
-											/>
-											<circle cx="12" cy="10" r="3.2" fill="#ffffff" />
-										</svg>
-									</button>
+										title={marker.name}
+									/>
 								</Marker>
 							);
 						})}
@@ -257,14 +355,28 @@ export default function MapDisplay({ map, height }: Props) {
 				</div>
 			</div>
 
+			<MapFilterDrawer
+				isOpen={isDrawerOpen}
+				onClose={() => setIsDrawerOpen(false)}
+				availableRegions={availableRegions}
+				availableDepartements={availableDepartements}
+				availableCategories={availableCategories}
+				activeFilters={activeFilters}
+				onRegionsChange={handleRegionsChange}
+				onDepartementsChange={handleDepartementsChange}
+				onCategoriesChange={handleCategoriesChange}
+				onReset={handleResetFilters}
+				totalActive={activeFilterCount}
+			/>
+
 			{categoriesWithMarkers.length > 1 ? (
 				<ul className={classes.legend} aria-label="Légende">
 					{categoriesWithMarkers.map((cat) => (
 						<li key={cat.id} className={classes.legendItem}>
-							<span
+							<Icon
 								aria-hidden="true"
-								className={classes.legendDot}
-								style={{ backgroundColor: dsfrAccentHex(cat.colorVariant) }}
+								className="fr-icon-map-pin-2-fill"
+								style={{ color: dsfrAccentHex(cat.colorVariant) }}
 							/>
 							<span>{cat.name}</span>
 						</li>
@@ -305,6 +417,43 @@ const useStyles = tss.withName(MapDisplay.name).create(() => ({
 		height: "100%",
 	},
 
+	sidebarHeader: {
+		position: "sticky",
+		top: 0,
+		zIndex: 1,
+		display: "flex",
+		alignItems: "center",
+		justifyContent: "space-between",
+		gap: "0.5rem",
+		padding: "0.625rem 1rem",
+		backgroundColor: fr.colors.decisions.background.default.grey.default,
+		borderBottom: `1px solid ${fr.colors.decisions.border.default.grey.default}`,
+	},
+	filterBtn: {
+		position: "relative",
+		flexShrink: 0,
+	},
+	filterBadge: {
+		display: "inline-flex",
+		alignItems: "center",
+		justifyContent: "center",
+		marginLeft: "0.375rem",
+		width: "1.125rem",
+		height: "1.125rem",
+		borderRadius: "50%",
+		backgroundColor:
+			fr.colors.decisions.background.actionHigh.blueFrance.default,
+		color: fr.colors.decisions.text.inverted.grey.default,
+		fontSize: "0.6875rem",
+		fontWeight: 700,
+		lineHeight: 1,
+	},
+	resultCount: {
+		fontSize: "0.75rem",
+		color: fr.colors.decisions.text.mention.grey.default,
+		whiteSpace: "nowrap",
+	},
+
 	markerList: {
 		listStyle: "none",
 		margin: 0,
@@ -321,7 +470,9 @@ const useStyles = tss.withName(MapDisplay.name).create(() => ({
 		alignItems: "flex-start",
 		gap: "0.625rem",
 		width: "100%",
+		minWidth: 0,
 		padding: "0.75rem 1rem",
+		boxSizing: "border-box",
 		cursor: "pointer",
 		color: fr.colors.decisions.text.default.grey.default,
 		transition: "background-color 0.15s ease, border-color 0.15s ease",
@@ -331,14 +482,6 @@ const useStyles = tss.withName(MapDisplay.name).create(() => ({
 	},
 	markerItemBtnSelected: {
 		backgroundColor: fr.colors.decisions.background.alt.grey.default,
-	},
-	markerDot: {
-		flexShrink: 0,
-		marginTop: "0.25rem",
-		display: "inline-block",
-		width: "0.625rem",
-		height: "0.625rem",
-		borderRadius: "50%",
 	},
 	markerInfo: {
 		display: "flex",
@@ -351,11 +494,17 @@ const useStyles = tss.withName(MapDisplay.name).create(() => ({
 		fontSize: "0.875rem",
 		color: fr.colors.decisions.text.label.grey.default,
 		lineHeight: 1.3,
+		overflow: "hidden",
+		textOverflow: "ellipsis",
+		whiteSpace: "nowrap",
 	},
 	markerCity: {
 		fontSize: "0.75rem",
 		color: fr.colors.decisions.text.mention.grey.default,
 		lineHeight: 1.3,
+		overflow: "hidden",
+		textOverflow: "ellipsis",
+		whiteSpace: "nowrap",
 	},
 
 	markerDetailsWrapper: {
@@ -379,12 +528,7 @@ const useStyles = tss.withName(MapDisplay.name).create(() => ({
 	},
 
 	pin: {
-		all: "unset",
-		cursor: "pointer",
-		display: "block",
-		lineHeight: 0,
-		transition: "transform 0.15s ease, filter 0.15s ease",
-		transformOrigin: "bottom center",
+		background: "transparent",
 		"&:hover": {
 			backgroundColor: "transparent !important",
 		},
@@ -393,10 +537,11 @@ const useStyles = tss.withName(MapDisplay.name).create(() => ({
 			outlineOffset: "2px",
 			borderRadius: "2px",
 		},
+		transition: "transform 0.15s ease, filter 0.15s ease",
+		transformOrigin: "bottom center",
 	},
 	pinSelected: {
 		transform: "scale(1.35)",
-		filter: "drop-shadow(0 2px 6px rgba(0,0,0,0.45))",
 	},
 
 	legend: {
