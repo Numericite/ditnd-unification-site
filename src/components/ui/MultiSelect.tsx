@@ -101,12 +101,17 @@ export default function MultiSelect({
 
 	return (
 		<div ref={containerRef} className={classes.root}>
-			<p className={cx(fr.cx("fr-label"), classes.labelP)} id={`${id}-label`}>
+			<label
+				className={cx(fr.cx("fr-label"), classes.label)}
+				htmlFor={`${id}-trigger`}
+				id={`${id}-label`}
+			>
 				{label}
 				{hint ? <span className={fr.cx("fr-hint-text")}>{hint}</span> : null}
-			</p>
+			</label>
 
 			<button
+				id={`${id}-trigger`}
 				type="button"
 				className={cx(
 					classes.trigger,
@@ -189,7 +194,7 @@ const useStyles = tss.withName("MultiSelect").create(() => ({
 		position: "relative",
 	},
 
-	labelP: {
+	label: {
 		margin: 0,
 		marginBottom: "0.5rem",
 	},
