@@ -28,6 +28,12 @@ export type MapMarkerSummary = Pick<
 	categoryId: number;
 };
 
+export type AllowedFilters = {
+	region: boolean;
+	departement: boolean;
+	category: boolean;
+};
+
 export type MapPayload = {
 	id: number;
 	slug: string;
@@ -38,6 +44,7 @@ export type MapPayload = {
 	defaultLongitude: number | null;
 	defaultZoom: number | null;
 	fitToMarkers: boolean;
+	allowedFilters: AllowedFilters;
 	categories: MapCategorySummary[];
 	markers: MapMarkerSummary[];
 };
@@ -105,6 +112,12 @@ const buildPayload = async (
 		})
 		.filter((m): m is MapMarkerSummary => m !== null);
 
+	const doc = map as MapDoc & {
+		allowFilterByCategory?: boolean | null;
+		allowFilterByRegion?: boolean | null;
+		allowFilterByDepartement?: boolean | null;
+	};
+
 	return {
 		id: map.id,
 		slug: map.slug,
@@ -115,6 +128,11 @@ const buildPayload = async (
 		defaultLongitude: map.defaultLongitude ?? null,
 		defaultZoom: map.defaultZoom ?? null,
 		fitToMarkers: map.fitToMarkers ?? true,
+		allowedFilters: {
+			category: doc.allowFilterByCategory ?? true,
+			region: doc.allowFilterByRegion ?? true,
+			departement: doc.allowFilterByDepartement ?? true,
+		},
 		categories: categoryDocs.map(toSummary),
 		markers,
 	};

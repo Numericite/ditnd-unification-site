@@ -61,6 +61,34 @@ export const Maps: CollectionConfig = {
 		},
 		{
 			type: "collapsible",
+			label: { fr: "Filtres autorisés" },
+			admin: {
+				description:
+					"Choisissez quels filtres sont disponibles sur cette carte. Si aucun filtre n'est activé, le module de filtrage ne s'affichera pas.",
+			},
+			fields: [
+				{
+					name: "allowFilterByCategory",
+					type: "checkbox",
+					defaultValue: true,
+					label: { fr: "Filtre par catégorie" },
+				},
+				{
+					name: "allowFilterByRegion",
+					type: "checkbox",
+					defaultValue: true,
+					label: { fr: "Filtre par région" },
+				},
+				{
+					name: "allowFilterByDepartement",
+					type: "checkbox",
+					defaultValue: true,
+					label: { fr: "Filtre par département" },
+				},
+			],
+		},
+		{
+			type: "collapsible",
 			label: { fr: "Cadrage par défaut" },
 			admin: { initCollapsed: true },
 			fields: [

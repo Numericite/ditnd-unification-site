@@ -179,6 +179,11 @@ export default function MapDisplay({ map, height }: Props) {
 		activeFilters.departements.length +
 		activeFilters.categories.length;
 
+	const hasFilters =
+		map.allowedFilters.region ||
+		map.allowedFilters.departement ||
+		map.allowedFilters.category;
+
 	const categoriesWithMarkers = useMemo(
 		() =>
 			map.categories.filter((cat) =>
@@ -221,17 +226,21 @@ export default function MapDisplay({ map, height }: Props) {
 			<div className={classes.splitContainer} style={{ height }}>
 				<div className={classes.sidebar}>
 					<div className={classes.sidebarHeader}>
-						<Button
-							size="small"
-							priority="tertiary"
-							iconId="fr-icon-filter-line"
-							onClick={() => setIsDrawerOpen(true)}
-						>
-							Filtres
-							{activeFilterCount > 0 ? (
-								<span className={classes.filterBadge}>{activeFilterCount}</span>
-							) : null}
-						</Button>
+						{hasFilters ? (
+							<Button
+								size="small"
+								priority="tertiary"
+								iconId="fr-icon-filter-line"
+								onClick={() => setIsDrawerOpen(true)}
+							>
+								Filtres
+								{activeFilterCount > 0 ? (
+									<span className={classes.filterBadge}>
+										{activeFilterCount}
+									</span>
+								) : null}
+							</Button>
+						) : null}
 						<span className={classes.resultCount}>
 							{filteredMarkers.length} / {map.markers.length}
 						</span>
@@ -355,19 +364,22 @@ export default function MapDisplay({ map, height }: Props) {
 				</div>
 			</div>
 
-			<MapFilterDrawer
-				isOpen={isDrawerOpen}
-				onClose={() => setIsDrawerOpen(false)}
-				availableRegions={availableRegions}
-				availableDepartements={availableDepartements}
-				availableCategories={availableCategories}
-				activeFilters={activeFilters}
-				onRegionsChange={handleRegionsChange}
-				onDepartementsChange={handleDepartementsChange}
-				onCategoriesChange={handleCategoriesChange}
-				onReset={handleResetFilters}
-				totalActive={activeFilterCount}
-			/>
+			{hasFilters ? (
+				<MapFilterDrawer
+					isOpen={isDrawerOpen}
+					onClose={() => setIsDrawerOpen(false)}
+					allowedFilters={map.allowedFilters}
+					availableRegions={availableRegions}
+					availableDepartements={availableDepartements}
+					availableCategories={availableCategories}
+					activeFilters={activeFilters}
+					onRegionsChange={handleRegionsChange}
+					onDepartementsChange={handleDepartementsChange}
+					onCategoriesChange={handleCategoriesChange}
+					onReset={handleResetFilters}
+					totalActive={activeFilterCount}
+				/>
+			) : null}
 
 			{categoriesWithMarkers.length > 1 ? (
 				<ul className={classes.legend} aria-label="Légende">

@@ -2,6 +2,7 @@ import { fr } from "@codegouvfr/react-dsfr";
 import Button from "@codegouvfr/react-dsfr/Button";
 import Drawer from "@mui/material/Drawer";
 import { tss } from "tss-react/dsfr";
+import type { AllowedFilters } from "~/server/api/routers/maps";
 import MultiSelect from "~/components/ui/MultiSelect";
 
 export type FilterOption = {
@@ -23,6 +24,7 @@ export type ActiveFilters = {
 type Props = {
 	isOpen: boolean;
 	onClose: () => void;
+	allowedFilters: AllowedFilters;
 	availableRegions: FilterOption[];
 	availableDepartements: FilterOption[];
 	availableCategories: CategoryOption[];
@@ -37,6 +39,7 @@ type Props = {
 export default function MapFilterDrawer({
 	isOpen,
 	onClose,
+	allowedFilters,
 	availableRegions,
 	availableDepartements,
 	availableCategories,
@@ -93,7 +96,7 @@ export default function MapFilterDrawer({
 					Réinitialiser ({totalActive})
 				</Button>
 
-				{availableCategories.length > 1 ? (
+				{allowedFilters.category && availableCategories.length > 1 ? (
 					<MultiSelect
 						id="filter-categories"
 						label="Catégorie"
@@ -106,7 +109,7 @@ export default function MapFilterDrawer({
 					/>
 				) : null}
 
-				{availableRegions.length > 0 ? (
+				{allowedFilters.region && availableRegions.length > 0 ? (
 					<MultiSelect
 						id="filter-regions"
 						label="Région"
@@ -119,7 +122,7 @@ export default function MapFilterDrawer({
 					/>
 				) : null}
 
-				{availableDepartements.length > 0 ? (
+				{allowedFilters.departement && availableDepartements.length > 0 ? (
 					<MultiSelect
 						id="filter-departements"
 						label="Département"

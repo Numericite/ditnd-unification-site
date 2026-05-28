@@ -22,6 +22,7 @@ import * as migration_20260520_120000_footer_drop_cgu_terms_of_use from './20260
 import * as migration_20260520_140000_footer_contact_particuliers from './20260520_140000_footer_contact_particuliers';
 import * as migration_20260520_160000_glossary_categories from './20260520_160000_glossary_categories';
 import * as migration_20260521_120000_cartography from './20260521_120000_cartography';
+import * as migration_20260528_121817 from './20260528_121817';
 
 export const migrations = [
   {
@@ -107,41 +108,46 @@ export const migrations = [
   {
     up: migration_20260422_064546_about_global.up,
     down: migration_20260422_064546_about_global.down,
-    name: '20260422_064546_about_global'
+    name: '20260422_064546_about_global',
   },
   {
     up: migration_20260422_100000_footer_contact_pros_cra.up,
     down: migration_20260422_100000_footer_contact_pros_cra.down,
-    name: '20260422_100000_footer_contact_pros_cra'
+    name: '20260422_100000_footer_contact_pros_cra',
   },
   {
     up: migration_20260518_120000_bge_m3_embeddings.up,
     down: migration_20260518_120000_bge_m3_embeddings.down,
-    name: '20260518_120000_bge_m3_embeddings'
+    name: '20260518_120000_bge_m3_embeddings',
   },
   {
     up: migration_20260518_140000_glossary.up,
     down: migration_20260518_140000_glossary.down,
-    name: '20260518_140000_glossary'
+    name: '20260518_140000_glossary',
   },
   {
     up: migration_20260520_120000_footer_drop_cgu_terms_of_use.up,
     down: migration_20260520_120000_footer_drop_cgu_terms_of_use.down,
-    name: '20260520_120000_footer_drop_cgu_terms_of_use'
+    name: '20260520_120000_footer_drop_cgu_terms_of_use',
   },
   {
     up: migration_20260520_140000_footer_contact_particuliers.up,
     down: migration_20260520_140000_footer_contact_particuliers.down,
-    name: '20260520_140000_footer_contact_particuliers'
+    name: '20260520_140000_footer_contact_particuliers',
   },
   {
     up: migration_20260520_160000_glossary_categories.up,
     down: migration_20260520_160000_glossary_categories.down,
-    name: '20260520_160000_glossary_categories'
+    name: '20260520_160000_glossary_categories',
   },
   {
     up: migration_20260521_120000_cartography.up,
     down: migration_20260521_120000_cartography.down,
-    name: '20260521_120000_cartography'
+    name: '20260521_120000_cartography',
+  },
+  {
+    up: migration_20260528_121817.up,
+    down: migration_20260528_121817.down,
+    name: '20260528_121817'
   },
 ];
