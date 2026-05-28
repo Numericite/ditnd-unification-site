@@ -22,7 +22,6 @@ import type {
 	MapPayload,
 } from "~/server/api/routers/maps";
 import Button from "@codegouvfr/react-dsfr/Button";
-import Icon from "@mui/material/Icon";
 
 const osmStyle: StyleSpecification = {
 	version: 8,
@@ -303,9 +302,9 @@ export default function MapDisplay({ map, height }: Props) {
 										aria-expanded={isSelected}
 										aria-pressed={isSelected}
 									>
-										<Icon
+										<i
 											aria-hidden="true"
-											className="fr-icon-map-pin-2-fill"
+											className={fr.cx("fr-icon-map-pin-2-fill")}
 											style={{ color }}
 										/>
 										<span className={classes.markerInfo}>
@@ -459,9 +458,9 @@ export default function MapDisplay({ map, height }: Props) {
 				<ul className={classes.legend} aria-label="Légende">
 					{categoriesWithMarkers.map((cat) => (
 						<li key={cat.id} className={classes.legendItem}>
-							<Icon
+							<i
 								aria-hidden="true"
-								className="fr-icon-map-pin-2-fill"
+								className={fr.cx("fr-icon-map-pin-2-fill")}
 								style={{ color: dsfrAccentHex(cat.colorVariant) }}
 							/>
 							<span>{cat.name}</span>
