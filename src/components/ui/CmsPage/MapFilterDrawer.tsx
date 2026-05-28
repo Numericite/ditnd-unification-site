@@ -59,7 +59,7 @@ export default function MapFilterDrawer({
 	onReset,
 	totalActive,
 }: Props) {
-	const { classes, cx } = useStyles();
+	const { classes } = useStyles();
 
 	return (
 		<Drawer
@@ -82,17 +82,12 @@ export default function MapFilterDrawer({
 		>
 			<div className={classes.drawerHeader}>
 				<h2 className={classes.drawerTitle}>Filtres</h2>
-				<button
-					type="button"
-					className={cx(
-						fr.cx("fr-btn", "fr-btn--tertiary-no-outline", "fr-btn--sm"),
-						classes.closeBtn,
-					)}
+				<Button
+					priority="tertiary no outline"
+					iconId="fr-icon-close-line"
 					onClick={onClose}
-					aria-label="Fermer le panneau des filtres"
-				>
-					<span className={fr.cx("fr-icon-close-line")} aria-hidden="true" />
-				</button>
+					title="Fermer le panneau des filtres"
+				/>
 			</div>
 
 			<div className={classes.drawerBody}>
@@ -218,9 +213,6 @@ const useStyles = tss.withName("MapFilterDrawer").create(() => ({
 		fontSize: "1.125rem",
 		fontWeight: 700,
 		color: fr.colors.decisions.text.title.grey.default,
-	},
-	closeBtn: {
-		flexShrink: 0,
 	},
 
 	drawerBody: {
