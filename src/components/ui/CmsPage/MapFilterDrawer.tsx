@@ -1,8 +1,12 @@
 import { fr } from "@codegouvfr/react-dsfr";
 import Button from "@codegouvfr/react-dsfr/Button";
+import Checkbox from "@codegouvfr/react-dsfr/Checkbox";
 import Drawer from "@mui/material/Drawer";
 import { tss } from "tss-react/dsfr";
-import type { AllowedFilters } from "~/server/api/routers/maps";
+import type {
+	AllowedCustomFieldFilter,
+	AllowedFilters,
+} from "~/server/api/routers/maps";
 import MultiSelect from "~/components/ui/MultiSelect";
 
 export type FilterOption = {
@@ -19,12 +23,14 @@ export type ActiveFilters = {
 	regions: string[];
 	departements: string[];
 	categories: number[];
+	customFields: Record<string, string[]>;
 };
 
 type Props = {
 	isOpen: boolean;
 	onClose: () => void;
 	allowedFilters: AllowedFilters;
+	allowedCustomFieldFilters: AllowedCustomFieldFilter[];
 	availableRegions: FilterOption[];
 	availableDepartements: FilterOption[];
 	availableCategories: CategoryOption[];
@@ -32,6 +38,7 @@ type Props = {
 	onRegionsChange: (codes: string[]) => void;
 	onDepartementsChange: (codes: string[]) => void;
 	onCategoriesChange: (ids: number[]) => void;
+	onCustomFieldChange: (key: string, values: string[]) => void;
 	onReset: () => void;
 	totalActive: number;
 };
@@ -40,6 +47,7 @@ export default function MapFilterDrawer({
 	isOpen,
 	onClose,
 	allowedFilters,
+	allowedCustomFieldFilters,
 	availableRegions,
 	availableDepartements,
 	availableCategories,
@@ -47,6 +55,7 @@ export default function MapFilterDrawer({
 	onRegionsChange,
 	onDepartementsChange,
 	onCategoriesChange,
+	onCustomFieldChange,
 	onReset,
 	totalActive,
 }: Props) {
@@ -134,6 +143,59 @@ export default function MapFilterDrawer({
 						onChange={onDepartementsChange}
 					/>
 				) : null}
+
+				{allowedCustomFieldFilters.map((f) => {
+					const filterKey = `${f.categoryId}::${f.key}`;
+					const selected = activeFilters.customFields[filterKey] ?? [];
+
+					if (f.fieldType === "checkbox") {
+						const toggle = (val: string, checked: boolean) =>
+							onCustomFieldChange(
+								filterKey,
+								checked
+									? [...selected, val]
+									: selected.filter((v) => v !== val),
+							);
+						return (
+							<div key={filterKey} className={classes.checkboxFilter}>
+								<Checkbox
+									legend={f.label}
+									className={classes.checkbox}
+									options={[
+										{
+											label: "Oui",
+											nativeInputProps: {
+												checked: selected.includes("true"),
+												onChange: (e) => toggle("true", e.target.checked),
+											},
+										},
+										{
+											label: "Non",
+											nativeInputProps: {
+												checked: selected.includes("false"),
+												onChange: (e) => toggle("false", e.target.checked),
+											},
+										},
+									]}
+								/>
+							</div>
+						);
+					}
+
+					return (
+						<MultiSelect
+							key={filterKey}
+							id={`filter-custom-${filterKey}`}
+							label={f.label}
+							options={(f.options ?? []).map((o) => ({
+								value: o.value,
+								label: o.label,
+							}))}
+							selectedValues={selected}
+							onChange={(values) => onCustomFieldChange(filterKey, values)}
+						/>
+					);
+				})}
 			</div>
 		</Drawer>
 	);
@@ -168,5 +230,16 @@ const useStyles = tss.withName("MapFilterDrawer").create(() => ({
 		flexDirection: "column",
 		gap: "1.5rem",
 		overflowY: "auto",
+	},
+
+	checkboxFilter: {
+		width: "100%",
+		"& .fr-form-group": { marginBottom: 0 },
+		"& .fr-fieldset": { minInlineSize: 0, width: "100%" },
+		"& .fr-fieldset__legend": { paddingLeft: 0 },
+	},
+
+	checkbox: {
+		margin: "0 !important",
 	},
 }));

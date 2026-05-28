@@ -16,6 +16,7 @@ import MapFilterDrawer, {
 	type FilterOption,
 } from "./MapFilterDrawer";
 import type {
+	CustomFieldDef,
 	MapCategorySummary,
 	MapMarkerSummary,
 	MapPayload,
@@ -61,6 +62,7 @@ export default function MapDisplay({ map, height }: Props) {
 		regions: [],
 		departements: [],
 		categories: [],
+		customFields: {},
 	});
 
 	const categoryById = useMemo(() => {
@@ -170,6 +172,20 @@ export default function MapDisplay({ map, height }: Props) {
 			if (activeFilters.regions.length > 0) {
 				if (!geo || !activeFilters.regions.includes(geo.region)) return false;
 			}
+
+			for (const [filterKey, selectedValues] of Object.entries(
+				activeFilters.customFields,
+			)) {
+				if (selectedValues.length === 0) continue;
+				const sep = filterKey.indexOf("::");
+				const categoryId = Number(filterKey.slice(0, sep));
+				const fieldKey = filterKey.slice(sep + 2);
+				if (marker.categoryId !== categoryId) continue;
+				const raw = marker.metadata?.[fieldKey];
+				const strVal = raw == null ? null : String(raw);
+				if (strVal === null || !selectedValues.includes(strVal)) return false;
+			}
+
 			return true;
 		});
 	}, [map.markers, activeFilters]);
@@ -177,12 +193,17 @@ export default function MapDisplay({ map, height }: Props) {
 	const activeFilterCount =
 		activeFilters.regions.length +
 		activeFilters.departements.length +
-		activeFilters.categories.length;
+		activeFilters.categories.length +
+		Object.values(activeFilters.customFields).reduce(
+			(acc, vals) => acc + vals.length,
+			0,
+		);
 
 	const hasFilters =
 		map.allowedFilters.region ||
 		map.allowedFilters.departement ||
-		map.allowedFilters.category;
+		map.allowedFilters.category ||
+		map.allowedCustomFieldFilters.length > 0;
 
 	const categoriesWithMarkers = useMemo(
 		() =>
@@ -213,8 +234,23 @@ export default function MapDisplay({ map, height }: Props) {
 		setActiveFilters((prev) => ({ ...prev, categories: ids }));
 	}, []);
 
+	const handleCustomFieldChange = useCallback(
+		(key: string, values: string[]) => {
+			setActiveFilters((prev) => ({
+				...prev,
+				customFields: { ...prev.customFields, [key]: values },
+			}));
+		},
+		[],
+	);
+
 	const handleResetFilters = useCallback(() => {
-		setActiveFilters({ regions: [], departements: [], categories: [] });
+		setActiveFilters({
+			regions: [],
+			departements: [],
+			categories: [],
+			customFields: {},
+		});
 	}, []);
 
 	return (
@@ -297,6 +333,42 @@ export default function MapDisplay({ map, height }: Props) {
 													{marker.description}
 												</p>
 											) : null}
+											{category?.customFields &&
+											category.customFields.length > 0
+												? category.customFields.map((f: CustomFieldDef) => {
+														const raw = marker.metadata?.[f.key];
+														if (raw === undefined || raw === null) return null;
+														let display: string;
+														if (f.type === "checkbox") {
+															display = raw ? "Oui" : "Non";
+														} else if (f.type === "select") {
+															const opt = f.options?.find(
+																(o) => o.value === String(raw),
+															);
+															display = opt ? opt.label : String(raw);
+														} else {
+															display = String(raw);
+														}
+														return (
+															<p
+																key={f.key}
+																className={classes.markerDetailLine}
+															>
+																<span
+																	style={{
+																		fontWeight: 600,
+																		color:
+																			fr.colors.decisions.text.label.grey
+																				.default,
+																	}}
+																>
+																	{f.label} :
+																</span>{" "}
+																{display}
+															</p>
+														);
+													})
+												: null}
 											{marker.phone ? (
 												<p className={classes.markerDetailLine}>
 													<a href={`tel:${marker.phone}`}>{marker.phone}</a>
@@ -369,6 +441,7 @@ export default function MapDisplay({ map, height }: Props) {
 					isOpen={isDrawerOpen}
 					onClose={() => setIsDrawerOpen(false)}
 					allowedFilters={map.allowedFilters}
+					allowedCustomFieldFilters={map.allowedCustomFieldFilters}
 					availableRegions={availableRegions}
 					availableDepartements={availableDepartements}
 					availableCategories={availableCategories}
@@ -376,6 +449,7 @@ export default function MapDisplay({ map, height }: Props) {
 					onRegionsChange={handleRegionsChange}
 					onDepartementsChange={handleDepartementsChange}
 					onCategoriesChange={handleCategoriesChange}
+					onCustomFieldChange={handleCustomFieldChange}
 					onReset={handleResetFilters}
 					totalActive={activeFilterCount}
 				/>

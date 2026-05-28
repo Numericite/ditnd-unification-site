@@ -85,6 +85,19 @@ export const Maps: CollectionConfig = {
 					defaultValue: true,
 					label: { fr: "Filtre par département" },
 				},
+				{
+					name: "allowedCustomFieldFilters",
+					type: "json",
+					defaultValue: [],
+					label: { fr: "Filtres par champs personnalisés" },
+					admin: {
+						description:
+							"Activez les champs personnalisés (case à cocher ou liste) qui seront disponibles comme filtres sur cette carte.",
+						components: {
+							Field: "../payload/components/CustomFieldFiltersEditor",
+						},
+					},
+				},
 			],
 		},
 		{

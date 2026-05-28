@@ -134,5 +134,17 @@ export const MapMarkers: CollectionConfig = {
 					"Description affichée dans l'infobulle du point sur la carte.",
 			},
 		},
+		{
+			name: "metadata",
+			type: "json",
+			label: { fr: "Informations complémentaires" },
+			admin: {
+				description:
+					"Champs supplémentaires définis dans la catégorie de ce marker.",
+				components: {
+					Field: "../payload/components/MetadataField",
+				},
+			},
+		},
 	],
 };

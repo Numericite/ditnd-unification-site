@@ -64,5 +64,90 @@ export const MapCategories: CollectionConfig = {
 			required: false,
 			label: { fr: "Description" },
 		},
+		{
+			name: "customFields",
+			type: "array",
+			label: { fr: "Champs personnalisés" },
+			labels: {
+				singular: "Champ",
+				plural: "Champs",
+			},
+			admin: {
+				description:
+					"Champs supplémentaires affichés dans les formulaires des marqueurs de cette catégorie.",
+				initCollapsed: true,
+			},
+			fields: [
+				{
+					type: "row",
+					fields: [
+						{
+							name: "label",
+							type: "text",
+							required: true,
+							label: { fr: "Libellé" },
+							admin: { width: "50%" },
+						},
+						{
+							name: "key",
+							type: "text",
+							required: true,
+							label: { fr: "Identifiant (clé)" },
+							admin: {
+								width: "50%",
+								description:
+									"Identifiant unique, sans espaces (ex : isPoleAdulte).",
+							},
+						},
+					],
+				},
+				{
+					name: "type",
+					type: "select",
+					required: true,
+					defaultValue: "text",
+					label: { fr: "Type de champ" },
+					options: [
+						{ label: "Case à cocher", value: "checkbox" },
+						{ label: "Texte", value: "text" },
+						{ label: "Liste de choix", value: "select" },
+					],
+				},
+				{
+					name: "options",
+					type: "array",
+					label: { fr: "Options" },
+					labels: {
+						singular: "Option",
+						plural: "Options",
+					},
+					admin: {
+						condition: (_, siblingData) => siblingData?.type === "select",
+						description: "Options disponibles pour ce champ de type liste.",
+					},
+					fields: [
+						{
+							type: "row",
+							fields: [
+								{
+									name: "label",
+									type: "text",
+									required: true,
+									label: { fr: "Libellé" },
+									admin: { width: "50%" },
+								},
+								{
+									name: "value",
+									type: "text",
+									required: true,
+									label: { fr: "Valeur" },
+									admin: { width: "50%" },
+								},
+							],
+						},
+					],
+				},
+			],
+		},
 	],
 };

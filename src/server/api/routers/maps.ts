@@ -6,10 +6,20 @@ import type {
 	MapMarker,
 } from "~/payload/payload-types";
 
+export type CustomFieldDef = {
+	id?: string | null;
+	label: string;
+	key: string;
+	type: "checkbox" | "text" | "select";
+	options?: Array<{ id?: string | null; label: string; value: string }> | null;
+};
+
 export type MapCategorySummary = Pick<
 	MapCategory,
 	"id" | "name" | "slug" | "colorVariant" | "iconId"
->;
+> & {
+	customFields: CustomFieldDef[];
+};
 
 export type MapMarkerSummary = Pick<
 	MapMarker,
@@ -26,12 +36,21 @@ export type MapMarkerSummary = Pick<
 	| "description"
 > & {
 	categoryId: number;
+	metadata: Record<string, unknown> | null;
 };
 
 export type AllowedFilters = {
 	region: boolean;
 	departement: boolean;
 	category: boolean;
+};
+
+export type AllowedCustomFieldFilter = {
+	categoryId: number;
+	key: string;
+	label: string;
+	fieldType: "checkbox" | "select";
+	options?: Array<{ label: string; value: string }>;
 };
 
 export type MapPayload = {
@@ -45,6 +64,7 @@ export type MapPayload = {
 	defaultZoom: number | null;
 	fitToMarkers: boolean;
 	allowedFilters: AllowedFilters;
+	allowedCustomFieldFilters: AllowedCustomFieldFilter[];
 	categories: MapCategorySummary[];
 	markers: MapMarkerSummary[];
 };
@@ -55,6 +75,7 @@ const toSummary = (category: MapCategory): MapCategorySummary => ({
 	slug: category.slug,
 	colorVariant: category.colorVariant ?? null,
 	iconId: category.iconId ?? null,
+	customFields: category.customFields ?? [],
 });
 
 const toMarkerSummary = (
@@ -73,6 +94,13 @@ const toMarkerSummary = (
 	website: marker.website ?? null,
 	description: marker.description ?? null,
 	categoryId,
+	metadata:
+		marker.metadata !== null &&
+		marker.metadata !== undefined &&
+		typeof marker.metadata === "object" &&
+		!Array.isArray(marker.metadata)
+			? (marker.metadata as Record<string, unknown>)
+			: null,
 });
 
 const buildPayload = async (
@@ -116,7 +144,40 @@ const buildPayload = async (
 		allowFilterByCategory?: boolean | null;
 		allowFilterByRegion?: boolean | null;
 		allowFilterByDepartement?: boolean | null;
+		allowedCustomFieldFilters?: unknown;
 	};
+
+	const rawCustomFilters = Array.isArray(doc.allowedCustomFieldFilters)
+		? (doc.allowedCustomFieldFilters as Array<{
+				categoryId: number;
+				key: string;
+			}>)
+		: [];
+
+	const allowedCustomFieldFilters: AllowedCustomFieldFilter[] = [];
+	for (const { categoryId, key } of rawCustomFilters) {
+		const cat = categoryDocs.find((c) => c.id === categoryId);
+		if (!cat) continue;
+		const fieldDef = cat.customFields?.find((f) => f.key === key);
+		if (
+			!fieldDef ||
+			(fieldDef.type !== "checkbox" && fieldDef.type !== "select")
+		)
+			continue;
+		const entry: AllowedCustomFieldFilter = {
+			categoryId,
+			key,
+			label: fieldDef.label,
+			fieldType: fieldDef.type,
+		};
+		if (fieldDef.type === "select") {
+			entry.options = (fieldDef.options ?? []).map((o) => ({
+				label: o.label,
+				value: o.value,
+			}));
+		}
+		allowedCustomFieldFilters.push(entry);
+	}
 
 	return {
 		id: map.id,
@@ -128,6 +189,7 @@ const buildPayload = async (
 		defaultLongitude: map.defaultLongitude ?? null,
 		defaultZoom: map.defaultZoom ?? null,
 		fitToMarkers: map.fitToMarkers ?? true,
+		allowedCustomFieldFilters,
 		allowedFilters: {
 			category: doc.allowFilterByCategory ?? true,
 			region: doc.allowFilterByRegion ?? true,
