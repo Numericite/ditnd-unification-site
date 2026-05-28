@@ -300,7 +300,7 @@ export default function MapDisplay({ map, height }: Props) {
 										)}
 										onClick={() => handleSelectFromSidebar(marker)}
 										aria-expanded={isSelected}
-										aria-pressed={isSelected}
+										aria-controls={`marker-details-${marker.id}`}
 									>
 										<i
 											aria-hidden="true"
@@ -320,6 +320,7 @@ export default function MapDisplay({ map, height }: Props) {
 									</button>
 
 									<div
+										id={`marker-details-${marker.id}`}
 										className={cx(
 											classes.markerDetailsWrapper,
 											isSelected && classes.markerDetailsOpen,
