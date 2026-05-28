@@ -35,6 +35,7 @@ export default function MultiSelect({
 	const [isOpen, setIsOpen] = useState(false);
 	const [search, setSearch] = useState("");
 	const containerRef = useRef<HTMLDivElement>(null);
+	const panelRef = useRef<HTMLDivElement>(null);
 	const searchInputRef = useRef<HTMLInputElement>(null);
 
 	const filteredOptions = options.filter((opt) =>
@@ -80,6 +81,26 @@ export default function MultiSelect({
 		document.addEventListener("keydown", handleKey);
 		return () => document.removeEventListener("keydown", handleKey);
 	}, [isOpen]);
+
+	const handlePanelKeyDown = (e: React.KeyboardEvent<HTMLDivElement>) => {
+		if (!["ArrowDown", "ArrowUp", "Home", "End"].includes(e.key)) return;
+		e.preventDefault();
+		const panel = panelRef.current;
+		if (!panel) return;
+		const focusable = Array.from(
+			panel.querySelectorAll<HTMLElement>(
+				'input[type="search"], button, input[type="checkbox"]',
+			),
+		).filter((el) => !(el as HTMLInputElement | HTMLButtonElement).disabled);
+		if (focusable.length === 0) return;
+		const current = document.activeElement as HTMLElement;
+		const idx = focusable.indexOf(current);
+		if (e.key === "ArrowDown") focusable[(idx + 1) % focusable.length]?.focus();
+		else if (e.key === "ArrowUp")
+			focusable[(idx - 1 + focusable.length) % focusable.length]?.focus();
+		else if (e.key === "Home") focusable[0]?.focus();
+		else if (e.key === "End") focusable[focusable.length - 1]?.focus();
+	};
 
 	const handleToggle = (value: string) => {
 		onChange(
@@ -128,7 +149,13 @@ export default function MultiSelect({
 			</button>
 
 			{isOpen ? (
-				<div className={classes.panel}>
+				// biome-ignore lint/a11y/useSemanticElements: keyboard nav handler on panel wrapper
+				<div
+					ref={panelRef}
+					className={classes.panel}
+					onKeyDown={handlePanelKeyDown}
+					role="group"
+				>
 					<div className={classes.searchBar}>
 						<Input
 							label="Rechercher"
