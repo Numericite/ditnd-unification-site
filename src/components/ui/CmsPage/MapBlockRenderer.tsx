@@ -1,5 +1,6 @@
 import dynamic from "next/dynamic";
 import { fr } from "@codegouvfr/react-dsfr";
+import Alert from "@codegouvfr/react-dsfr/Alert";
 import { tss } from "tss-react/dsfr";
 import { api } from "~/utils/api";
 
@@ -19,9 +20,11 @@ export default function MapBlockRenderer({ mapId, height }: Props) {
 
 	if (isError) {
 		return (
-			<div className={fr.cx("fr-my-3v", "fr-alert", "fr-alert--warning")}>
-				<p>La carte demandée est indisponible.</p>
-			</div>
+			<Alert
+				className={fr.cx("fr-my-3v")}
+				severity="warning"
+				title="La carte demandée est indisponible."
+			/>
 		);
 	}
 
