@@ -223,7 +223,7 @@ const useStyles = tss.withName("MultiSelect").create(() => ({
 
 	label: {
 		margin: 0,
-		marginBottom: "0.5rem",
+		marginBottom: fr.spacing("2v"),
 	},
 
 	trigger: {
@@ -232,7 +232,7 @@ const useStyles = tss.withName("MultiSelect").create(() => ({
 		alignItems: "center",
 		justifyContent: "space-between",
 		width: "100%",
-		padding: "0.5rem 1rem",
+		padding: `${fr.spacing("2v")} ${fr.spacing("4v")}`,
 		boxSizing: "border-box",
 		backgroundColor: fr.colors.decisions.background.contrast.grey.default,
 		color: fr.colors.decisions.text.default.grey.default,
@@ -267,9 +267,9 @@ const useStyles = tss.withName("MultiSelect").create(() => ({
 		display: "flex",
 		alignItems: "center",
 		justifyContent: "center",
-		gap: "0.5rem",
+		gap: fr.spacing("2v"),
 		width: "100%",
-		padding: "0.75rem 1rem",
+		padding: `${fr.spacing("3v")} ${fr.spacing("4v")}`,
 		boxSizing: "border-box",
 		cursor: "pointer",
 		color: fr.colors.decisions.text.actionHigh.blueFrance.default,
@@ -282,12 +282,12 @@ const useStyles = tss.withName("MultiSelect").create(() => ({
 	},
 
 	searchBar: {
-		paddingInline: "0.75rem",
+		paddingInline: fr.spacing("3v"),
 		borderBottom: `1px solid ${fr.colors.decisions.border.default.grey.default}`,
 	},
 	searchInputGroup: {
 		padding: "0 !important",
-		marginBottom: "0.5rem",
+		marginBottom: fr.spacing("2v"),
 		"& .fr-input-wrap": {
 			color: `${fr.colors.decisions.text.mention.grey.default} !important`,
 		},
@@ -295,15 +295,15 @@ const useStyles = tss.withName("MultiSelect").create(() => ({
 
 	checkboxRoot: {
 		margin: "0 !important",
-		padding: "1rem",
+		padding: fr.spacing("4v"),
 	},
 	checkList: {
 		maxHeight: "260px",
 		overflowY: "auto",
-		paddingRight: "0.25rem",
+		paddingRight: fr.spacing("1v"),
 	},
 	noResults: {
-		margin: "0.5rem 0",
+		margin: `${fr.spacing("2v")} 0`,
 		fontSize: "0.875rem",
 		color: fr.colors.decisions.text.mention.grey.default,
 	},

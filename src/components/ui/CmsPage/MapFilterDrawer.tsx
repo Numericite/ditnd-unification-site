@@ -201,7 +201,7 @@ const useStyles = tss.withName("MapFilterDrawer").create(() => ({
 		display: "flex",
 		alignItems: "center",
 		justifyContent: "space-between",
-		padding: "1rem 1.25rem",
+		padding: `${fr.spacing("4v")} ${fr.spacing("5v")}`,
 		borderBottom: `1px solid ${fr.colors.decisions.border.default.grey.default}`,
 		position: "sticky",
 		top: 0,
@@ -217,10 +217,10 @@ const useStyles = tss.withName("MapFilterDrawer").create(() => ({
 
 	drawerBody: {
 		flex: 1,
-		padding: "1rem 1.25rem",
+		padding: `${fr.spacing("4v")} ${fr.spacing("5v")}`,
 		display: "flex",
 		flexDirection: "column",
-		gap: "1.5rem",
+		gap: fr.spacing("6v"),
 		overflowY: "auto",
 	},
 

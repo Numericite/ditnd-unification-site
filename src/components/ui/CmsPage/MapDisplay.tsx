@@ -483,7 +483,7 @@ const useStyles = tss.withName(MapDisplay.name).create(() => ({
 	},
 	caption: {
 		fontWeight: 700,
-		marginBottom: "0.5rem",
+		marginBottom: fr.spacing("2v"),
 		color: fr.colors.decisions.text.title.grey.default,
 	},
 
@@ -514,7 +514,7 @@ const useStyles = tss.withName(MapDisplay.name).create(() => ({
 		display: "flex",
 		alignItems: "center",
 		justifyContent: "space-between",
-		gap: "0.5rem",
+		gap: fr.spacing("2v"),
 		padding: "0.625rem 1rem",
 		backgroundColor: fr.colors.decisions.background.default.grey.default,
 		borderBottom: `1px solid ${fr.colors.decisions.border.default.grey.default}`,
@@ -560,7 +560,7 @@ const useStyles = tss.withName(MapDisplay.name).create(() => ({
 		gap: "0.625rem",
 		width: "100% !important",
 		minWidth: "0 !important",
-		padding: "0.75rem 1rem !important",
+		padding: `${fr.spacing("3v")} ${fr.spacing("4v")} !important`,
 		boxSizing: "border-box",
 		color: `${fr.colors.decisions.text.default.grey.default} !important`,
 		transition: "background-color 0.15s ease !important",
@@ -637,15 +637,15 @@ const useStyles = tss.withName(MapDisplay.name).create(() => ({
 	legend: {
 		listStyle: "none",
 		padding: 0,
-		margin: "0.5rem 0 0",
+		margin: `${fr.spacing("2v")} 0 0`,
 		display: "flex",
 		flexWrap: "wrap",
-		gap: "0.5rem 1rem",
+		gap: `${fr.spacing("2v")} ${fr.spacing("4v")}`,
 	},
 	legendItem: {
 		display: "inline-flex",
 		alignItems: "center",
-		gap: "0.5rem",
+		gap: fr.spacing("2v"),
 		fontSize: "0.875rem",
 	},
 	legendDot: {
