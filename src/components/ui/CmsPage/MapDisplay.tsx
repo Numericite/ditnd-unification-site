@@ -288,12 +288,16 @@ export default function MapDisplay({ map, height }: Props) {
 							const isSelected = selectedMarker?.id === marker.id;
 							return (
 								<li key={marker.id} className={classes.markerListItem}>
-									<button
+									<Button
 										ref={(el) => {
-											if (el) itemRefs.current.set(marker.id, el);
+											if (el)
+												itemRefs.current.set(
+													marker.id,
+													el as HTMLButtonElement,
+												);
 											else itemRefs.current.delete(marker.id);
 										}}
-										type="button"
+										priority="tertiary no outline"
 										className={cx(
 											classes.markerItemBtn,
 											isSelected && classes.markerItemBtnSelected,
@@ -317,7 +321,7 @@ export default function MapDisplay({ map, height }: Props) {
 												</span>
 											) : null}
 										</span>
-									</button>
+									</Button>
 
 									<div
 										id={`marker-details-${marker.id}`}
@@ -551,19 +555,18 @@ const useStyles = tss.withName(MapDisplay.name).create(() => ({
 		gap: 0,
 	},
 	markerItemBtn: {
-		all: "unset",
-		display: "flex",
-		alignItems: "flex-start",
+		display: "flex !important",
+		alignItems: "flex-start !important",
 		gap: "0.625rem",
-		width: "100%",
-		minWidth: 0,
-		padding: "0.75rem 1rem",
+		width: "100% !important",
+		minWidth: "0 !important",
+		padding: "0.75rem 1rem !important",
 		boxSizing: "border-box",
-		cursor: "pointer",
-		color: fr.colors.decisions.text.default.grey.default,
-		transition: "background-color 0.15s ease, border-color 0.15s ease",
+		color: `${fr.colors.decisions.text.default.grey.default} !important`,
+		transition: "background-color 0.15s ease !important",
 		"&:hover": {
 			backgroundColor: `${fr.colors.decisions.background.alt.grey.default} !important`,
+			color: `${fr.colors.decisions.text.default.grey.default} !important`,
 		},
 	},
 	markerItemBtnSelected: {
@@ -585,6 +588,7 @@ const useStyles = tss.withName(MapDisplay.name).create(() => ({
 		whiteSpace: "nowrap",
 	},
 	markerCity: {
+		textAlign: "start",
 		fontSize: "0.75rem",
 		color: fr.colors.decisions.text.mention.grey.default,
 		lineHeight: 1.3,
