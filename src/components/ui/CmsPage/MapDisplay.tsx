@@ -1,8 +1,9 @@
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import {
 	default as MapGL,
 	Marker,
 	NavigationControl,
+	Popup,
 	type MapRef,
 	type StyleSpecification,
 } from "react-map-gl/maplibre";
@@ -58,7 +59,6 @@ export default function MapDisplay({ map, height }: Props) {
 		null,
 	);
 	const [mapRef, setMapRef] = useState<MapRef | null>(null);
-	const itemRefs = useRef<Map<number, HTMLButtonElement>>(new Map());
 	const [isDrawerOpen, setIsDrawerOpen] = useState(false);
 	const [viewMode, setViewMode] = useState<"map" | "table">("map");
 	const [activeFilters, setActiveFilters] = useState<ActiveFilters>({
@@ -97,17 +97,7 @@ export default function MapDisplay({ map, height }: Props) {
 		mapRef.fitBounds(bounds, { padding: 48, maxZoom: 13, duration: 0 });
 	}, [mapRef, map.fitToMarkers, map.markers]);
 
-	useEffect(() => {
-		if (!selectedMarker) return;
-		const el = itemRefs.current.get(selectedMarker.id);
-		if (el) el.scrollIntoView({ behavior: "smooth", block: "nearest" });
-	}, [selectedMarker]);
-
-	const handleSelectFromMap = useCallback((marker: MapMarkerSummary) => {
-		setSelectedMarker((prev) => (prev?.id === marker.id ? null : marker));
-	}, []);
-
-	const handleSelectFromSidebar = useCallback(
+	const handleSelectFromMap = useCallback(
 		(marker: MapMarkerSummary) => {
 			setSelectedMarker((prev) => (prev?.id === marker.id ? null : marker));
 			if (
@@ -121,6 +111,7 @@ export default function MapDisplay({ map, height }: Props) {
 					center: [marker.longitude as number, marker.latitude as number],
 					zoom: Math.max(mapRef.getZoom(), 10),
 					duration: 800,
+					padding: { top: 300, bottom: 40, left: 40, right: 40 },
 				});
 			}
 		},
@@ -322,6 +313,10 @@ export default function MapDisplay({ map, height }: Props) {
 		[filteredMarkers, tableConfig, categoryById],
 	);
 
+	const popupCategory = selectedMarker
+		? categoryById.get(selectedMarker.categoryId)
+		: null;
+
 	return (
 		<figure className={`${fr.cx("fr-my-3v")} ${classes.figure}`}>
 			{map.title ? (
@@ -389,169 +384,143 @@ export default function MapDisplay({ map, height }: Props) {
 
 			{viewMode === "map" ? (
 				<>
-					<div className={classes.splitContainer} style={{ height }}>
-						<div className={classes.sidebar}>
-							<ul className={classes.markerList}>
-								{filteredMarkers.map((marker) => {
-									const category = categoryById.get(marker.categoryId);
-									const color = dsfrAccentHex(category?.colorVariant);
-									const isSelected = selectedMarker?.id === marker.id;
-									return (
-										<li key={marker.id} className={classes.markerListItem}>
+					<div className={classes.mapContainer} style={{ height }}>
+						<MapGL
+							ref={setMapRef}
+							initialViewState={initialView}
+							mapStyle={osmStyle}
+							attributionControl={{ compact: true }}
+							onClick={() => setSelectedMarker(null)}
+						>
+							<NavigationControl position="top-right" showCompass={false} />
+
+							{filteredMarkers.map((marker) => {
+								const category = categoryById.get(marker.categoryId);
+								const color = dsfrAccentHex(category?.colorVariant);
+								const isSelected = selectedMarker?.id === marker.id;
+								return (
+									<Marker
+										key={marker.id}
+										longitude={marker.longitude as number}
+										latitude={marker.latitude as number}
+										anchor="bottom"
+										style={{ zIndex: isSelected ? 10 : 1 }}
+										onClick={(e) => {
+											e.originalEvent.stopPropagation();
+											handleSelectFromMap(marker);
+										}}
+									>
+										<Button
+											className={cx(
+												classes.pin,
+												isSelected && classes.pinSelected,
+											)}
+											aria-label={`${marker.name}${category ? ` — ${category.name}` : ""}`}
+											aria-pressed={isSelected}
+											iconId="fr-icon-map-pin-2-fill"
+											style={{ color }}
+											title={marker.name}
+										/>
+									</Marker>
+								);
+							})}
+
+							{selectedMarker && (
+								<Popup
+									longitude={selectedMarker.longitude as number}
+									latitude={selectedMarker.latitude as number}
+									anchor="bottom"
+									offset={[0, -32]}
+									closeButton={false}
+									closeOnClick={false}
+									onClose={() => setSelectedMarker(null)}
+									className={classes.popup}
+									maxWidth="20rem"
+								>
+									<div className={classes.popupInner}>
+										<div className={classes.popupHeader}>
+											<strong className={classes.popupName}>
+												{selectedMarker.name}
+											</strong>
 											<Button
-												ref={(el) => {
-													if (el)
-														itemRefs.current.set(
-															marker.id,
-															el as HTMLButtonElement,
-														);
-													else itemRefs.current.delete(marker.id);
-												}}
 												priority="tertiary no outline"
-												className={cx(
-													classes.markerItemBtn,
-													isSelected && classes.markerItemBtnSelected,
-												)}
-												onClick={() => handleSelectFromSidebar(marker)}
-												aria-expanded={isSelected}
-												aria-controls={`marker-details-${marker.id}`}
-											>
-												<i
-													aria-hidden="true"
-													className={fr.cx("fr-icon-map-pin-2-fill")}
-													style={{ color }}
-												/>
-												<span className={classes.markerInfo}>
-													<span className={classes.markerName}>
-														{marker.name}
-													</span>
-													{marker.city ? (
-														<span className={classes.markerCity}>
-															{[marker.postalCode, marker.city]
-																.filter(Boolean)
-																.join(" ")}
-														</span>
-													) : null}
-												</span>
-											</Button>
-
-											<div
-												id={`marker-details-${marker.id}`}
-												className={cx(
-													classes.markerDetailsWrapper,
-													isSelected && classes.markerDetailsOpen,
-												)}
-												aria-hidden={!isSelected}
-											>
-												<div className={classes.markerDetailsInner}>
-													{marker.description ? (
-														<p className={classes.markerDetailLine}>
-															{marker.description}
-														</p>
-													) : null}
-													{category?.customFields &&
-													category.customFields.length > 0
-														? category.customFields.map((f: CustomFieldDef) => {
-																const raw = marker.metadata?.[f.key];
-																if (raw === undefined || raw === null)
-																	return null;
-																let display: string;
-																if (f.type === "checkbox") {
-																	display = raw ? "Oui" : "Non";
-																} else if (f.type === "select") {
-																	const opt = f.options?.find(
-																		(o) => o.value === String(raw),
-																	);
-																	display = opt ? opt.label : String(raw);
-																} else {
-																	display = String(raw);
-																}
-																return (
-																	<p
-																		key={f.key}
-																		className={classes.markerDetailLine}
-																	>
-																		<span
-																			style={{
-																				fontWeight: 600,
-																				color:
-																					fr.colors.decisions.text.label.grey
-																						.default,
-																			}}
-																		>
-																			{f.label} :
-																		</span>{" "}
-																		{display}
-																	</p>
-																);
-															})
-														: null}
-													{marker.phone ? (
-														<p className={classes.markerDetailLine}>
-															<a href={`tel:${marker.phone}`}>{marker.phone}</a>
-														</p>
-													) : null}
-													{marker.website ? (
-														<p className={classes.markerDetailLine}>
-															<a
-																href={marker.website}
-																target="_blank"
-																rel="noopener noreferrer"
-															>
-																Site web <span aria-hidden="true">↗</span>
-															</a>
-														</p>
-													) : null}
-												</div>
-											</div>
-										</li>
-									);
-								})}
-							</ul>
-						</div>
-
-						<div className={classes.mapArea}>
-							<MapGL
-								ref={setMapRef}
-								initialViewState={initialView}
-								mapStyle={osmStyle}
-								attributionControl={{ compact: true }}
-								onClick={() => setSelectedMarker(null)}
-							>
-								<NavigationControl position="top-right" showCompass={false} />
-								{filteredMarkers.map((marker) => {
-									const category = categoryById.get(marker.categoryId);
-									const color = dsfrAccentHex(category?.colorVariant);
-									const isSelected = selectedMarker?.id === marker.id;
-									return (
-										<Marker
-											key={marker.id}
-											longitude={marker.longitude as number}
-											latitude={marker.latitude as number}
-											anchor="bottom"
-											style={{ zIndex: isSelected ? 10 : 1 }}
-											onClick={(e) => {
-												e.originalEvent.stopPropagation();
-												handleSelectFromMap(marker);
-											}}
-										>
-											<Button
-												className={cx(
-													classes.pin,
-													isSelected && classes.pinSelected,
-												)}
-												aria-label={`${marker.name}${category ? ` — ${category.name}` : ""}`}
-												aria-pressed={isSelected}
-												iconId="fr-icon-map-pin-2-fill"
-												style={{ color }}
-												title={marker.name}
+												iconId="fr-icon-close-line"
+												size="small"
+												onClick={() => setSelectedMarker(null)}
+												title="Fermer"
 											/>
-										</Marker>
-									);
-								})}
-							</MapGL>
-						</div>
+										</div>
+
+										{selectedMarker.city ? (
+											<p className={classes.popupCity}>
+												{[selectedMarker.postalCode, selectedMarker.city]
+													.filter(Boolean)
+													.join(" ")}
+											</p>
+										) : null}
+
+										{selectedMarker.description ? (
+											<p className={classes.popupLine}>
+												{selectedMarker.description}
+											</p>
+										) : null}
+
+										{popupCategory?.customFields &&
+										popupCategory.customFields.length > 0
+											? popupCategory.customFields.map((f: CustomFieldDef) => {
+													const raw = selectedMarker.metadata?.[f.key];
+													if (raw === undefined || raw === null) return null;
+													let display: string;
+													if (f.type === "checkbox") {
+														display = raw ? "Oui" : "Non";
+													} else if (f.type === "select") {
+														const opt = f.options?.find(
+															(o) => o.value === String(raw),
+														);
+														display = opt ? opt.label : String(raw);
+													} else {
+														display = String(raw);
+													}
+													return (
+														<p key={f.key} className={classes.popupLine}>
+															<span className={classes.popupFieldLabel}>
+																{f.label} :
+															</span>{" "}
+															{display}
+														</p>
+													);
+												})
+											: null}
+
+										{selectedMarker.phone ? (
+											<p className={classes.popupLine}>
+												<a
+													href={`tel:${selectedMarker.phone}`}
+													className={fr.cx("fr-link")}
+												>
+													{selectedMarker.phone}
+												</a>
+											</p>
+										) : null}
+
+										{selectedMarker.website ? (
+											<p className={classes.popupLine}>
+												<a
+													href={selectedMarker.website}
+													target="_blank"
+													rel="noopener noreferrer"
+													className={fr.cx("fr-link")}
+												>
+													Site web
+												</a>
+											</p>
+										) : null}
+									</div>
+								</Popup>
+							)}
+						</MapGL>
 					</div>
+
 					{categoriesWithMarkers.length > 1 ? (
 						<ul className={classes.legend} aria-label="Légende">
 							{categoriesWithMarkers.map((cat) => (
@@ -631,24 +600,11 @@ const useStyles = tss.withName(MapDisplay.name).create(() => ({
 		},
 	},
 
-	splitContainer: {
-		display: "flex",
+	mapContainer: {
 		width: "100%",
 		border: `1px solid ${fr.colors.decisions.border.default.grey.default}`,
 		borderRadius: "0.25rem",
 		overflow: "hidden",
-	},
-	sidebar: {
-		width: "25%",
-		flexShrink: 0,
-		overflowY: "auto",
-		borderRight: `1px solid ${fr.colors.decisions.border.default.grey.default}`,
-		backgroundColor: fr.colors.decisions.background.default.grey.default,
-	},
-	mapArea: {
-		flex: 1,
-		minWidth: 0,
-		height: "100%",
 	},
 
 	filterBadge: {
@@ -672,79 +628,6 @@ const useStyles = tss.withName(MapDisplay.name).create(() => ({
 		whiteSpace: "nowrap",
 	},
 
-	markerList: {
-		listStyle: "none",
-		margin: 0,
-		padding: "0 !important",
-	},
-	markerListItem: {
-		display: "flex",
-		flexDirection: "column",
-		gap: 0,
-	},
-	markerItemBtn: {
-		display: "flex !important",
-		alignItems: "flex-start !important",
-		gap: "0.625rem",
-		width: "100% !important",
-		minWidth: "0 !important",
-		padding: `${fr.spacing("3v")} ${fr.spacing("4v")} !important`,
-		boxSizing: "border-box",
-		color: `${fr.colors.decisions.text.default.grey.default} !important`,
-		transition: "background-color 0.15s ease !important",
-		"&:hover": {
-			backgroundColor: `${fr.colors.decisions.background.alt.grey.default} !important`,
-			color: `${fr.colors.decisions.text.default.grey.default} !important`,
-		},
-	},
-	markerItemBtnSelected: {
-		backgroundColor: fr.colors.decisions.background.alt.grey.default,
-	},
-	markerInfo: {
-		display: "flex",
-		flexDirection: "column",
-		gap: "0.125rem",
-		minWidth: 0,
-	},
-	markerName: {
-		fontWeight: 600,
-		fontSize: "0.875rem",
-		color: fr.colors.decisions.text.label.grey.default,
-		lineHeight: 1.3,
-		overflow: "hidden",
-		textOverflow: "ellipsis",
-		whiteSpace: "nowrap",
-	},
-	markerCity: {
-		textAlign: "start",
-		fontSize: "0.75rem",
-		color: fr.colors.decisions.text.mention.grey.default,
-		lineHeight: 1.3,
-		overflow: "hidden",
-		textOverflow: "ellipsis",
-		whiteSpace: "nowrap",
-	},
-
-	markerDetailsWrapper: {
-		maxHeight: "0px",
-		overflow: "hidden",
-		transition: "max-height 0.3s ease",
-	},
-	markerDetailsOpen: {
-		maxHeight: "300px",
-	},
-	markerDetailsInner: {
-		padding: "0.5rem 1rem 0.75rem calc(1rem + 0.625rem + 0.625rem)",
-		backgroundColor: fr.colors.decisions.background.alt.grey.default,
-	},
-	markerDetailLine: {
-		margin: 0,
-		marginTop: "0.375rem",
-		fontSize: "0.8125rem",
-		lineHeight: 1.45,
-		color: fr.colors.decisions.text.default.grey.default,
-	},
-
 	pin: {
 		background: "transparent",
 		"&:hover": {
@@ -762,6 +645,54 @@ const useStyles = tss.withName(MapDisplay.name).create(() => ({
 		transform: "scale(1.35)",
 	},
 
+	popup: {
+		zIndex: 20,
+		"& .maplibregl-popup-content": {
+			padding: 0,
+			borderRadius: "0.25rem",
+			boxShadow: "0 4px 20px rgba(0,0,0,0.18)",
+			backgroundColor: fr.colors.decisions.background.default.grey.default,
+			border: `1px solid ${fr.colors.decisions.border.default.grey.default}`,
+		},
+		"& .maplibregl-popup-tip": {
+			borderTopColor: `${fr.colors.decisions.border.default.grey.default} !important`,
+		},
+	},
+	popupInner: {
+		padding: `${fr.spacing("3v")} ${fr.spacing("3v")} ${fr.spacing("3v")} ${fr.spacing("4v")}`,
+		maxWidth: "20rem",
+	},
+	popupHeader: {
+		display: "flex",
+		alignItems: "flex-start",
+		justifyContent: "space-between",
+		gap: fr.spacing("2v"),
+		marginBottom: fr.spacing("1v"),
+	},
+	popupName: {
+		fontSize: "0.9375rem",
+		fontWeight: 700,
+		color: fr.colors.decisions.text.title.grey.default,
+		lineHeight: 1.3,
+	},
+	popupCity: {
+		margin: 0,
+		fontSize: "0.75rem",
+		color: fr.colors.decisions.text.mention.grey.default,
+		lineHeight: 1.4,
+	},
+	popupLine: {
+		margin: 0,
+		marginTop: fr.spacing("2v"),
+		fontSize: "0.8125rem",
+		lineHeight: 1.45,
+		color: fr.colors.decisions.text.default.grey.default,
+	},
+	popupFieldLabel: {
+		fontWeight: 600,
+		color: fr.colors.decisions.text.label.grey.default,
+	},
+
 	legend: {
 		listStyle: "none",
 		padding: 0,
@@ -775,13 +706,5 @@ const useStyles = tss.withName(MapDisplay.name).create(() => ({
 		alignItems: "center",
 		gap: fr.spacing("2v"),
 		fontSize: "0.875rem",
-	},
-	legendDot: {
-		display: "inline-block",
-		width: "0.75rem",
-		height: "0.75rem",
-		borderRadius: "50%",
-		border: "1.5px solid #ffffff",
-		boxShadow: `0 0 0 1px ${fr.colors.decisions.border.default.grey.default}`,
 	},
 }));
