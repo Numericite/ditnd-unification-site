@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
+import Link from "next/link";
 import {
 	default as MapGL,
 	Marker,
@@ -306,14 +307,15 @@ export default function MapDisplay({ map, height }: Props) {
 					...(hasPhone
 						? [
 								marker.phone ? (
-									<a
+									<Link
 										key="phone"
 										href={`tel:${marker.phone}`}
 										className={fr.cx("fr-link")}
 										style={{ whiteSpace: "nowrap" }}
+										title={`Appeler : ${marker.name}`}
 									>
 										{marker.phone}
-									</a>
+									</Link>
 								) : (
 									"—"
 								),
@@ -322,16 +324,17 @@ export default function MapDisplay({ map, height }: Props) {
 					...(hasWebsite
 						? [
 								marker.website ? (
-									<a
+									<Link
 										key="website"
 										href={marker.website}
 										target="_blank"
 										rel="noopener noreferrer"
 										className={fr.cx("fr-link")}
 										style={{ whiteSpace: "nowrap" }}
+										title={`Accéder au site web : ${marker.name}, nouvelle fenêtre`}
 									>
-										Site web
-									</a>
+										Accéder au site web
+									</Link>
 								) : (
 									"—"
 								),
@@ -528,25 +531,27 @@ export default function MapDisplay({ map, height }: Props) {
 
 											{selectedMarker.phone ? (
 												<p className={classes.popupLine}>
-													<a
+													<Link
 														href={`tel:${selectedMarker.phone}`}
 														className={fr.cx("fr-link")}
+														title={`Appeler : ${selectedMarker.name}`}
 													>
 														{selectedMarker.phone}
-													</a>
+													</Link>
 												</p>
 											) : null}
 
 											{selectedMarker.website ? (
 												<p className={classes.popupLine}>
-													<a
+													<Link
 														href={selectedMarker.website}
 														target="_blank"
 														rel="noopener noreferrer"
 														className={fr.cx("fr-link")}
+														title={`Accéder au site web : ${selectedMarker.name}, nouvelle fenêtre`}
 													>
-														Site web
-													</a>
+														Accéder au site web
+													</Link>
 												</p>
 											) : null}
 										</div>
