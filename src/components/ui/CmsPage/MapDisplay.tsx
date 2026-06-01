@@ -229,9 +229,9 @@ export default function MapDisplay({ map, height }: Props) {
 	const categoriesWithMarkers = useMemo(
 		() =>
 			map.categories.filter((cat) =>
-				filteredMarkers.some((m) => m.categoryId === cat.id),
+				map.markers.some((m) => m.categoryId === cat.id),
 			),
-		[map.categories, filteredMarkers],
+		[map.categories, map.markers],
 	);
 
 	useEffect(() => {
