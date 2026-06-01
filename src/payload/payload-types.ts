@@ -495,6 +495,30 @@ export interface MapCategory {
 	 */
 	iconId?: string | null;
 	description?: string | null;
+	/**
+	 * Champs supplémentaires affichés dans les formulaires des marqueurs de cette catégorie.
+	 */
+	customFields?:
+		| {
+				label: string;
+				/**
+				 * Identifiant unique, sans espaces (ex : isPoleAdulte).
+				 */
+				key: string;
+				type: "checkbox" | "text" | "select";
+				/**
+				 * Options disponibles pour ce champ de type liste.
+				 */
+				options?:
+					| {
+							label: string;
+							value: string;
+							id?: string | null;
+					  }[]
+					| null;
+				id?: string | null;
+		  }[]
+		| null;
 	updatedAt: string;
 	createdAt: string;
 }
@@ -526,6 +550,18 @@ export interface MapMarker {
 	 * Description affichée dans l'infobulle du point sur la carte.
 	 */
 	description?: string | null;
+	/**
+	 * Champs supplémentaires définis dans la catégorie de ce marker.
+	 */
+	metadata?:
+		| {
+				[k: string]: unknown;
+		  }
+		| unknown[]
+		| string
+		| number
+		| boolean
+		| null;
 	updatedAt: string;
 	createdAt: string;
 }
@@ -551,6 +587,21 @@ export interface Map {
 	 * Toutes les catégories sélectionnées seront affichées sur la carte avec leurs marqueurs.
 	 */
 	categories: (number | MapCategory)[];
+	allowFilterByCategory?: boolean | null;
+	allowFilterByRegion?: boolean | null;
+	allowFilterByDepartement?: boolean | null;
+	/**
+	 * Activez les champs personnalisés (case à cocher ou liste) qui seront disponibles comme filtres sur cette carte.
+	 */
+	allowedCustomFieldFilters?:
+		| {
+				[k: string]: unknown;
+		  }
+		| unknown[]
+		| string
+		| number
+		| boolean
+		| null;
 	defaultLatitude?: number | null;
 	defaultLongitude?: number | null;
 	defaultZoom?: number | null;
@@ -928,6 +979,21 @@ export interface MapCategoriesSelect<T extends boolean = true> {
 	colorVariant?: T;
 	iconId?: T;
 	description?: T;
+	customFields?:
+		| T
+		| {
+				label?: T;
+				key?: T;
+				type?: T;
+				options?:
+					| T
+					| {
+							label?: T;
+							value?: T;
+							id?: T;
+					  };
+				id?: T;
+		  };
 	updatedAt?: T;
 	createdAt?: T;
 }
@@ -947,6 +1013,7 @@ export interface MapMarkersSelect<T extends boolean = true> {
 	email?: T;
 	website?: T;
 	description?: T;
+	metadata?: T;
 	updatedAt?: T;
 	createdAt?: T;
 }
@@ -960,6 +1027,10 @@ export interface MapsSelect<T extends boolean = true> {
 	title?: T;
 	description?: T;
 	categories?: T;
+	allowFilterByCategory?: T;
+	allowFilterByRegion?: T;
+	allowFilterByDepartement?: T;
+	allowedCustomFieldFilters?: T;
 	defaultLatitude?: T;
 	defaultLongitude?: T;
 	defaultZoom?: T;
