@@ -22,6 +22,8 @@ import type {
 	MapPayload,
 } from "~/server/api/routers/maps";
 import Button from "@codegouvfr/react-dsfr/Button";
+import { SegmentedControl } from "@codegouvfr/react-dsfr/SegmentedControl";
+import { Table } from "@codegouvfr/react-dsfr/Table";
 
 const osmStyle: StyleSpecification = {
 	version: 8,
@@ -57,6 +59,7 @@ export default function MapDisplay({ map, height }: Props) {
 	const [mapRef, setMapRef] = useState<MapRef | null>(null);
 	const itemRefs = useRef<Map<number, HTMLButtonElement>>(new Map());
 	const [isDrawerOpen, setIsDrawerOpen] = useState(false);
+	const [viewMode, setViewMode] = useState<"map" | "table">("map");
 	const [activeFilters, setActiveFilters] = useState<ActiveFilters>({
 		regions: [],
 		departements: [],
@@ -152,6 +155,24 @@ export default function MapDisplay({ map, height }: Props) {
 				map.markers.some((m) => m.categoryId === cat.id),
 			),
 		[map.categories, map.markers],
+	);
+
+	const tableConfig = useMemo(() => {
+		const hasPhone = map.markers.some((m) => m.phone);
+		const hasWebsite = map.markers.some((m) => m.website);
+		const showCategory = map.categories.length > 1;
+		return { hasPhone, hasWebsite, showCategory };
+	}, [map.markers, map.categories]);
+
+	const tableHeaders = useMemo(
+		() => [
+			"Nom",
+			...(tableConfig.showCategory ? ["Catégorie"] : []),
+			"Ville",
+			...(tableConfig.hasPhone ? ["Téléphone"] : []),
+			...(tableConfig.hasWebsite ? ["Site web"] : []),
+		],
+		[tableConfig],
 	);
 
 	const filteredMarkers = useMemo(() => {
@@ -252,193 +273,295 @@ export default function MapDisplay({ map, height }: Props) {
 		});
 	}, []);
 
+	const tableData = useMemo(
+		() =>
+			filteredMarkers.map((marker) => {
+				const category = categoryById.get(marker.categoryId);
+				const { hasPhone, hasWebsite, showCategory } = tableConfig;
+				return [
+					marker.name,
+					...(showCategory ? [category?.name ?? "—"] : []),
+					[marker.postalCode, marker.city].filter(Boolean).join(" ") || "—",
+					...(hasPhone
+						? [
+								marker.phone ? (
+									<a
+										key="phone"
+										href={`tel:${marker.phone}`}
+										className={fr.cx("fr-link")}
+										style={{ whiteSpace: "nowrap" }}
+									>
+										{marker.phone}
+									</a>
+								) : (
+									"—"
+								),
+							]
+						: []),
+					...(hasWebsite
+						? [
+								marker.website ? (
+									<a
+										key="website"
+										href={marker.website}
+										target="_blank"
+										rel="noopener noreferrer"
+										className={fr.cx("fr-link")}
+										style={{ whiteSpace: "nowrap" }}
+									>
+										Site web
+									</a>
+								) : (
+									"—"
+								),
+							]
+						: []),
+				];
+			}),
+		[filteredMarkers, tableConfig, categoryById],
+	);
+
 	return (
 		<figure className={`${fr.cx("fr-my-3v")} ${classes.figure}`}>
 			{map.title ? (
 				<figcaption className={classes.caption}>{map.title}</figcaption>
 			) : null}
 
-			<div className={classes.splitContainer} style={{ height }}>
-				<div className={classes.sidebar}>
-					<div className={classes.sidebarHeader}>
-						{hasFilters ? (
-							<Button
-								size="small"
-								priority="tertiary"
-								iconId="fr-icon-filter-line"
-								onClick={() => setIsDrawerOpen(true)}
-							>
-								Filtres
-								{activeFilterCount > 0 ? (
-									<span className={classes.filterBadge}>
-										{activeFilterCount}
-									</span>
-								) : null}
-							</Button>
-						) : null}
-						<span className={classes.resultCount}>
-							{filteredMarkers.length} / {map.markers.length}
-						</span>
-					</div>
-
-					<ul className={classes.markerList}>
-						{filteredMarkers.map((marker) => {
-							const category = categoryById.get(marker.categoryId);
-							const color = dsfrAccentHex(category?.colorVariant);
-							const isSelected = selectedMarker?.id === marker.id;
-							return (
-								<li key={marker.id} className={classes.markerListItem}>
-									<Button
-										ref={(el) => {
-											if (el)
-												itemRefs.current.set(
-													marker.id,
-													el as HTMLButtonElement,
-												);
-											else itemRefs.current.delete(marker.id);
-										}}
-										priority="tertiary no outline"
-										className={cx(
-											classes.markerItemBtn,
-											isSelected && classes.markerItemBtnSelected,
-										)}
-										onClick={() => handleSelectFromSidebar(marker)}
-										aria-expanded={isSelected}
-										aria-controls={`marker-details-${marker.id}`}
-									>
-										<i
-											aria-hidden="true"
-											className={fr.cx("fr-icon-map-pin-2-fill")}
-											style={{ color }}
-										/>
-										<span className={classes.markerInfo}>
-											<span className={classes.markerName}>{marker.name}</span>
-											{marker.city ? (
-												<span className={classes.markerCity}>
-													{[marker.postalCode, marker.city]
-														.filter(Boolean)
-														.join(" ")}
-												</span>
-											) : null}
-										</span>
-									</Button>
-
-									<div
-										id={`marker-details-${marker.id}`}
-										className={cx(
-											classes.markerDetailsWrapper,
-											isSelected && classes.markerDetailsOpen,
-										)}
-										aria-hidden={!isSelected}
-									>
-										<div className={classes.markerDetailsInner}>
-											{marker.description ? (
-												<p className={classes.markerDetailLine}>
-													{marker.description}
-												</p>
-											) : null}
-											{category?.customFields &&
-											category.customFields.length > 0
-												? category.customFields.map((f: CustomFieldDef) => {
-														const raw = marker.metadata?.[f.key];
-														if (raw === undefined || raw === null) return null;
-														let display: string;
-														if (f.type === "checkbox") {
-															display = raw ? "Oui" : "Non";
-														} else if (f.type === "select") {
-															const opt = f.options?.find(
-																(o) => o.value === String(raw),
-															);
-															display = opt ? opt.label : String(raw);
-														} else {
-															display = String(raw);
-														}
-														return (
-															<p
-																key={f.key}
-																className={classes.markerDetailLine}
-															>
-																<span
-																	style={{
-																		fontWeight: 600,
-																		color:
-																			fr.colors.decisions.text.label.grey
-																				.default,
-																	}}
-																>
-																	{f.label} :
-																</span>{" "}
-																{display}
-															</p>
-														);
-													})
-												: null}
-											{marker.phone ? (
-												<p className={classes.markerDetailLine}>
-													<a href={`tel:${marker.phone}`}>{marker.phone}</a>
-												</p>
-											) : null}
-											{marker.website ? (
-												<p className={classes.markerDetailLine}>
-													<a
-														href={marker.website}
-														target="_blank"
-														rel="noopener noreferrer"
-													>
-														Site web <span aria-hidden="true">↗</span>
-													</a>
-												</p>
-											) : null}
-										</div>
-									</div>
-								</li>
-							);
-						})}
-					</ul>
-				</div>
-
-				<div className={classes.mapArea}>
-					<MapGL
-						ref={setMapRef}
-						initialViewState={initialView}
-						mapStyle={osmStyle}
-						attributionControl={{ compact: true }}
-						onClick={() => setSelectedMarker(null)}
-					>
-						<NavigationControl position="top-right" showCompass={false} />
-						{filteredMarkers.map((marker) => {
-							const category = categoryById.get(marker.categoryId);
-							const color = dsfrAccentHex(category?.colorVariant);
-							const isSelected = selectedMarker?.id === marker.id;
-							return (
-								<Marker
-									key={marker.id}
-									longitude={marker.longitude as number}
-									latitude={marker.latitude as number}
-									anchor="bottom"
-									style={{ zIndex: isSelected ? 10 : 1 }}
-									onClick={(e) => {
-										e.originalEvent.stopPropagation();
-										handleSelectFromMap(marker);
-									}}
-								>
-									<Button
-										className={cx(
-											classes.pin,
-											isSelected && classes.pinSelected,
-										)}
-										aria-label={`${marker.name}${category ? ` — ${category.name}` : ""}`}
-										aria-pressed={isSelected}
-										iconId="fr-icon-map-pin-2-fill"
-										style={{ color }}
-										title={marker.name}
-									/>
-								</Marker>
-							);
-						})}
-					</MapGL>
+			<div className={classes.controls}>
+				<SegmentedControl
+					hideLegend
+					legend="Mode d'affichage"
+					segments={[
+						{
+							label: "Carte",
+							iconId: "fr-icon-road-map-line",
+							nativeInputProps: {
+								name: "view-mode",
+								checked: viewMode === "map",
+								onChange: () => setViewMode("map"),
+							},
+						},
+						{
+							label: "Tableau",
+							iconId: "fr-icon-table-line",
+							nativeInputProps: {
+								name: "view-mode",
+								checked: viewMode === "table",
+								onChange: () => setViewMode("table"),
+							},
+						},
+					]}
+				/>
+				<div className={classes.controlsRight}>
+					{hasFilters ? (
+						<Button
+							size="small"
+							priority="tertiary"
+							iconId="fr-icon-filter-line"
+							onClick={() => setIsDrawerOpen(true)}
+						>
+							Filtres
+							{activeFilterCount > 0 ? (
+								<span className={classes.filterBadge}>{activeFilterCount}</span>
+							) : null}
+						</Button>
+					) : null}
+					<span className={classes.resultCount}>
+						{filteredMarkers.length} / {map.markers.length}
+					</span>
 				</div>
 			</div>
+
+			{viewMode === "map" ? (
+				<>
+					<div className={classes.splitContainer} style={{ height }}>
+						<div className={classes.sidebar}>
+							<ul className={classes.markerList}>
+								{filteredMarkers.map((marker) => {
+									const category = categoryById.get(marker.categoryId);
+									const color = dsfrAccentHex(category?.colorVariant);
+									const isSelected = selectedMarker?.id === marker.id;
+									return (
+										<li key={marker.id} className={classes.markerListItem}>
+											<Button
+												ref={(el) => {
+													if (el)
+														itemRefs.current.set(
+															marker.id,
+															el as HTMLButtonElement,
+														);
+													else itemRefs.current.delete(marker.id);
+												}}
+												priority="tertiary no outline"
+												className={cx(
+													classes.markerItemBtn,
+													isSelected && classes.markerItemBtnSelected,
+												)}
+												onClick={() => handleSelectFromSidebar(marker)}
+												aria-expanded={isSelected}
+												aria-controls={`marker-details-${marker.id}`}
+											>
+												<i
+													aria-hidden="true"
+													className={fr.cx("fr-icon-map-pin-2-fill")}
+													style={{ color }}
+												/>
+												<span className={classes.markerInfo}>
+													<span className={classes.markerName}>
+														{marker.name}
+													</span>
+													{marker.city ? (
+														<span className={classes.markerCity}>
+															{[marker.postalCode, marker.city]
+																.filter(Boolean)
+																.join(" ")}
+														</span>
+													) : null}
+												</span>
+											</Button>
+
+											<div
+												id={`marker-details-${marker.id}`}
+												className={cx(
+													classes.markerDetailsWrapper,
+													isSelected && classes.markerDetailsOpen,
+												)}
+												aria-hidden={!isSelected}
+											>
+												<div className={classes.markerDetailsInner}>
+													{marker.description ? (
+														<p className={classes.markerDetailLine}>
+															{marker.description}
+														</p>
+													) : null}
+													{category?.customFields &&
+													category.customFields.length > 0
+														? category.customFields.map((f: CustomFieldDef) => {
+																const raw = marker.metadata?.[f.key];
+																if (raw === undefined || raw === null)
+																	return null;
+																let display: string;
+																if (f.type === "checkbox") {
+																	display = raw ? "Oui" : "Non";
+																} else if (f.type === "select") {
+																	const opt = f.options?.find(
+																		(o) => o.value === String(raw),
+																	);
+																	display = opt ? opt.label : String(raw);
+																} else {
+																	display = String(raw);
+																}
+																return (
+																	<p
+																		key={f.key}
+																		className={classes.markerDetailLine}
+																	>
+																		<span
+																			style={{
+																				fontWeight: 600,
+																				color:
+																					fr.colors.decisions.text.label.grey
+																						.default,
+																			}}
+																		>
+																			{f.label} :
+																		</span>{" "}
+																		{display}
+																	</p>
+																);
+															})
+														: null}
+													{marker.phone ? (
+														<p className={classes.markerDetailLine}>
+															<a href={`tel:${marker.phone}`}>{marker.phone}</a>
+														</p>
+													) : null}
+													{marker.website ? (
+														<p className={classes.markerDetailLine}>
+															<a
+																href={marker.website}
+																target="_blank"
+																rel="noopener noreferrer"
+															>
+																Site web <span aria-hidden="true">↗</span>
+															</a>
+														</p>
+													) : null}
+												</div>
+											</div>
+										</li>
+									);
+								})}
+							</ul>
+						</div>
+
+						<div className={classes.mapArea}>
+							<MapGL
+								ref={setMapRef}
+								initialViewState={initialView}
+								mapStyle={osmStyle}
+								attributionControl={{ compact: true }}
+								onClick={() => setSelectedMarker(null)}
+							>
+								<NavigationControl position="top-right" showCompass={false} />
+								{filteredMarkers.map((marker) => {
+									const category = categoryById.get(marker.categoryId);
+									const color = dsfrAccentHex(category?.colorVariant);
+									const isSelected = selectedMarker?.id === marker.id;
+									return (
+										<Marker
+											key={marker.id}
+											longitude={marker.longitude as number}
+											latitude={marker.latitude as number}
+											anchor="bottom"
+											style={{ zIndex: isSelected ? 10 : 1 }}
+											onClick={(e) => {
+												e.originalEvent.stopPropagation();
+												handleSelectFromMap(marker);
+											}}
+										>
+											<Button
+												className={cx(
+													classes.pin,
+													isSelected && classes.pinSelected,
+												)}
+												aria-label={`${marker.name}${category ? ` — ${category.name}` : ""}`}
+												aria-pressed={isSelected}
+												iconId="fr-icon-map-pin-2-fill"
+												style={{ color }}
+												title={marker.name}
+											/>
+										</Marker>
+									);
+								})}
+							</MapGL>
+						</div>
+					</div>
+					{categoriesWithMarkers.length > 1 ? (
+						<ul className={classes.legend} aria-label="Légende">
+							{categoriesWithMarkers.map((cat) => (
+								<li key={cat.id} className={classes.legendItem}>
+									<i
+										aria-hidden="true"
+										className={fr.cx("fr-icon-map-pin-2-fill")}
+										style={{ color: dsfrAccentHex(cat.colorVariant) }}
+									/>
+									<span>{cat.name}</span>
+								</li>
+							))}
+						</ul>
+					) : null}
+				</>
+			) : (
+				<div className={classes.tableContainer}>
+					<Table
+						caption={map.title ?? "Marqueurs de la carte"}
+						headers={tableHeaders}
+						data={tableData}
+						noCaption={!!map.title}
+					/>
+				</div>
+			)}
 
 			{hasFilters ? (
 				<MapFilterDrawer
@@ -458,21 +581,6 @@ export default function MapDisplay({ map, height }: Props) {
 					totalActive={activeFilterCount}
 				/>
 			) : null}
-
-			{categoriesWithMarkers.length > 1 ? (
-				<ul className={classes.legend} aria-label="Légende">
-					{categoriesWithMarkers.map((cat) => (
-						<li key={cat.id} className={classes.legendItem}>
-							<i
-								aria-hidden="true"
-								className={fr.cx("fr-icon-map-pin-2-fill")}
-								style={{ color: dsfrAccentHex(cat.colorVariant) }}
-							/>
-							<span>{cat.name}</span>
-						</li>
-					))}
-				</ul>
-			) : null}
 		</figure>
 	);
 }
@@ -485,6 +593,27 @@ const useStyles = tss.withName(MapDisplay.name).create(() => ({
 		fontWeight: 700,
 		marginBottom: fr.spacing("2v"),
 		color: fr.colors.decisions.text.title.grey.default,
+	},
+
+	controls: {
+		display: "flex",
+		alignItems: "center",
+		justifyContent: "space-between",
+		gap: fr.spacing("4v"),
+		marginBottom: fr.spacing("3v"),
+		flexWrap: "wrap",
+	},
+	controlsRight: {
+		display: "flex",
+		alignItems: "center",
+		gap: fr.spacing("3v"),
+		flexShrink: 0,
+	},
+	tableContainer: {
+		overflowX: "auto",
+		"& .fr-table": {
+			margin: "0 !important",
+		},
 	},
 
 	splitContainer: {
@@ -507,22 +636,6 @@ const useStyles = tss.withName(MapDisplay.name).create(() => ({
 		height: "100%",
 	},
 
-	sidebarHeader: {
-		position: "sticky",
-		top: 0,
-		zIndex: 1,
-		display: "flex",
-		alignItems: "center",
-		justifyContent: "space-between",
-		gap: fr.spacing("2v"),
-		padding: "0.625rem 1rem",
-		backgroundColor: fr.colors.decisions.background.default.grey.default,
-		borderBottom: `1px solid ${fr.colors.decisions.border.default.grey.default}`,
-	},
-	filterBtn: {
-		position: "relative",
-		flexShrink: 0,
-	},
 	filterBadge: {
 		display: "inline-flex",
 		alignItems: "center",
