@@ -12,6 +12,7 @@ type MarkerInput = {
 	phone?: string;
 	website?: string;
 	description?: string;
+	metadata?: Record<string, unknown>;
 };
 
 // ─── Catégories ──────────────────────────────────────────────────────────────
@@ -24,6 +25,13 @@ const mapCategories = [
 		iconId: "fr-icon-map-pin-2-fill",
 		description:
 			"Les CRA sont des structures régionales qui proposent un appui aux professionnels et aux familles concernées par les troubles du spectre autistique.",
+		customFields: [
+			{
+				label: "Pôle Adulte",
+				key: "pole-adulte",
+				type: "checkbox" as const,
+			},
+		],
 	},
 	{
 		name: "Maison Départementale des Personnes Handicapées",
@@ -49,6 +57,7 @@ const craMarkers: MarkerInput[] = [
 		website: "https://www.craif.org",
 		description:
 			"Centre de Ressources Autisme Île-de-France, situé à l'Hôpital Robert Debré.",
+		metadata: { "pole-adulte": true },
 	},
 	{
 		name: "CRA Paris 9ème",
@@ -59,6 +68,7 @@ const craMarkers: MarkerInput[] = [
 		longitude: 2.3347,
 		phone: "01 44 53 30 00",
 		description: "Antenne parisienne de proximité du réseau CRA Île-de-France.",
+		metadata: { "pole-adulte": false },
 	},
 	{
 		name: "CRA Bretagne",
@@ -71,6 +81,7 @@ const craMarkers: MarkerInput[] = [
 		website: "https://www.cra-bretagne.fr",
 		description:
 			"Centre de Ressources Autisme Bretagne, rattaché au CHU de Rennes.",
+		metadata: { "pole-adulte": true },
 	},
 	{
 		name: "CRA Normandie",
@@ -82,6 +93,7 @@ const craMarkers: MarkerInput[] = [
 		phone: "02 32 88 87 26",
 		description:
 			"Centre de Ressources Autisme Normandie, basé au CHU de Rouen.",
+		// pole-adulte absent : données non disponibles
 	},
 	{
 		name: "CRA Pays de la Loire",
@@ -94,6 +106,7 @@ const craMarkers: MarkerInput[] = [
 		website: "https://www.cra-paysdelaloire.fr",
 		description:
 			"Centre de Ressources Autisme Pays de la Loire, au CHU de Nantes.",
+		metadata: { "pole-adulte": true },
 	},
 	{
 		name: "CRA Provence-Alpes-Côte d'Azur",
@@ -106,6 +119,7 @@ const craMarkers: MarkerInput[] = [
 		website: "https://www.cra-paca.fr",
 		description:
 			"Centre de Ressources Autisme PACA, situé à l'Hôpital de la Timone.",
+		metadata: { "pole-adulte": false },
 	},
 	{
 		name: "CRA Occitanie",
@@ -118,6 +132,7 @@ const craMarkers: MarkerInput[] = [
 		website: "https://www.cra-occitanie.fr",
 		description:
 			"Centre de Ressources Autisme Occitanie, au sein de l'Hôpital La Grave.",
+		metadata: { "pole-adulte": true },
 	},
 	{
 		name: "CRA Nouvelle-Aquitaine",
@@ -130,6 +145,7 @@ const craMarkers: MarkerInput[] = [
 		website: "https://www.cra-aquitaine.fr",
 		description:
 			"Centre de Ressources Autisme Nouvelle-Aquitaine, au CHU de Bordeaux.",
+		// pole-adulte absent : données non disponibles
 	},
 	{
 		name: "CRA Auvergne-Rhône-Alpes",
@@ -142,6 +158,7 @@ const craMarkers: MarkerInput[] = [
 		website: "https://www.cra-ra.org",
 		description:
 			"Centre de Ressources Autisme Auvergne-Rhône-Alpes, au Centre Hospitalier Le Vinatier.",
+		metadata: { "pole-adulte": true },
 	},
 	{
 		name: "CRA Hauts-de-France",
@@ -154,6 +171,7 @@ const craMarkers: MarkerInput[] = [
 		website: "https://www.cra-hdf.fr",
 		description:
 			"Centre de Ressources Autisme Hauts-de-France, au CHU de Lille.",
+		metadata: { "pole-adulte": false },
 	},
 	{
 		name: "CRA Grand Est",
@@ -165,6 +183,7 @@ const craMarkers: MarkerInput[] = [
 		phone: "03 88 11 68 56",
 		description:
 			"Centre de Ressources Autisme Grand Est, aux Hôpitaux Universitaires de Strasbourg.",
+		// pole-adulte absent : données non disponibles
 	},
 ];
 
@@ -351,12 +370,14 @@ async function createMapMarker(
 	data: MarkerInput,
 	categoryId: number,
 ): Promise<void> {
+	const { metadata, ...rest } = data;
 	try {
 		await payload.create({
 			collection: "map-markers",
 			data: {
-				...data,
+				...rest,
 				category: categoryId,
+				...(metadata !== undefined ? { metadata } : {}),
 			},
 		});
 	} catch (error) {
@@ -370,6 +391,7 @@ async function createMap(
 	payload: Payload,
 	data: typeof mapData,
 	categoryIds: number[],
+	allowedCustomFieldFilters: Array<{ categoryId: number; key: string }>,
 ): Promise<void> {
 	try {
 		await payload.create({
@@ -377,6 +399,7 @@ async function createMap(
 			data: {
 				...data,
 				categories: categoryIds,
+				allowedCustomFieldFilters,
 			},
 		});
 	} catch (error) {
@@ -418,6 +441,8 @@ export async function seedCartography(payload: Payload) {
 		await createMapMarker(payload, marker, mdphCategoryId);
 	}
 
-	// 4. Créer la carte (avec les deux catégories)
-	await createMap(payload, mapData, categoryIds);
+	// 4. Créer la carte (avec les deux catégories + filtre custom field CRA)
+	await createMap(payload, mapData, categoryIds, [
+		{ categoryId: craCategoryId, key: "pole-adulte" },
+	]);
 }
