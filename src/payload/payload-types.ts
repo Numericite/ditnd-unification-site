@@ -136,9 +136,7 @@ export interface Config {
 		about: AboutSelect<false> | AboutSelect<true>;
 	};
 	locale: null;
-	user: User & {
-		collection: "users";
-	};
+	user: User;
 	jobs: {
 		tasks: unknown;
 		workflows: unknown;
@@ -316,6 +314,7 @@ export interface Condition {
 	 * Description courte affichée sur les cartes (120 caractères max)
 	 */
 	description: string;
+	fullDescription: string;
 	acronym: string;
 	slug: string;
 	textColor: string;
@@ -472,6 +471,7 @@ export interface User {
 		  }[]
 		| null;
 	password?: string | null;
+	collection: "users";
 }
 /**
  * This is a collection of automatically created search results. These results are used by the global site search and will be updated automatically as documents in the CMS are created or updated.
@@ -813,6 +813,7 @@ export interface ConditionsSelect<T extends boolean = true> {
 	_order?: T;
 	name?: T;
 	description?: T;
+	fullDescription?: T;
 	acronym?: T;
 	slug?: T;
 	textColor?: T;
