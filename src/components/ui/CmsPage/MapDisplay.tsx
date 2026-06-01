@@ -661,7 +661,7 @@ const useStyles = tss.withName(MapDisplay.name).create(() => ({
 		position: "absolute",
 		top: fr.spacing("3v"),
 		left: fr.spacing("3v"),
-		width: "17rem",
+		width: `min(17rem, calc(100% - ${fr.spacing("3v")} - ${fr.spacing("3v")} - ${fr.spacing("12v")}))`,
 		zIndex: 30,
 	},
 
