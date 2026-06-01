@@ -762,6 +762,7 @@ const useStyles = tss.withName(MapDisplay.name).create(() => ({
 		margin: `${fr.spacing("2v")} 0 0`,
 		display: "flex",
 		flexWrap: "wrap",
+		paddingLeft: "0 !important",
 		gap: `${fr.spacing("2v")} ${fr.spacing("4v")}`,
 	},
 	legendItem: {
