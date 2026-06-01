@@ -15,6 +15,7 @@ import MapFilterDrawer, {
 	type ActiveFilters,
 	type FilterOption,
 } from "./MapFilterDrawer";
+import ActiveFilterTags from "./ActiveFilterTags";
 import type {
 	CustomFieldDef,
 	MapCategorySummary,
@@ -371,6 +372,20 @@ export default function MapDisplay({ map, height }: Props) {
 					</span>
 				</div>
 			</div>
+
+			{hasFilters && activeFilterCount > 0 ? (
+				<ActiveFilterTags
+					activeFilters={activeFilters}
+					availableRegions={availableRegions}
+					availableDepartements={availableDepartements}
+					availableCategories={availableCategories}
+					allowedCustomFieldFilters={map.allowedCustomFieldFilters}
+					onRegionsChange={handleRegionsChange}
+					onDepartementsChange={handleDepartementsChange}
+					onCategoriesChange={handleCategoriesChange}
+					onCustomFieldChange={handleCustomFieldChange}
+				/>
+			) : null}
 
 			{viewMode === "map" ? (
 				<>

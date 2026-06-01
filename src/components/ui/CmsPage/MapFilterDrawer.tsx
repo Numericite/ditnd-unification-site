@@ -8,6 +8,7 @@ import type {
 	AllowedFilters,
 } from "~/server/api/routers/maps";
 import MultiSelect from "~/components/ui/MultiSelect";
+import ActiveFilterTags from "./ActiveFilterTags";
 
 export type FilterOption = {
 	code: string;
@@ -99,6 +100,20 @@ export default function MapFilterDrawer({
 				>
 					Réinitialiser ({totalActive})
 				</Button>
+
+				<div className={classes.activeTagsWrapper}>
+					<ActiveFilterTags
+						activeFilters={activeFilters}
+						availableRegions={availableRegions}
+						availableDepartements={availableDepartements}
+						availableCategories={availableCategories}
+						allowedCustomFieldFilters={allowedCustomFieldFilters}
+						onRegionsChange={onRegionsChange}
+						onDepartementsChange={onDepartementsChange}
+						onCategoriesChange={onCategoriesChange}
+						onCustomFieldChange={onCustomFieldChange}
+					/>
+				</div>
 
 				{allowedFilters.category && availableCategories.length > 1 ? (
 					<MultiSelect
@@ -222,6 +237,12 @@ const useStyles = tss.withName("MapFilterDrawer").create(() => ({
 		flexDirection: "column",
 		gap: fr.spacing("6v"),
 		overflowY: "auto",
+	},
+
+	activeTagsWrapper: {
+		maxHeight: "9rem",
+		overflowY: "auto",
+		marginBottom: `-${fr.spacing("3v")}`,
 	},
 
 	checkboxFilter: {
