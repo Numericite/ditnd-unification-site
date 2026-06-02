@@ -1,5 +1,23 @@
-import type { CollectionConfig } from "payload";
+import type { CollectionBeforeDeleteHook, CollectionConfig } from "payload";
+import { APIError } from "payload";
 import { dsfrAccentColors } from "~/utils/dsfr-colors";
+
+const beforeDeleteMapCategory: CollectionBeforeDeleteHook = async ({
+	id,
+	req,
+}) => {
+	const { totalDocs } = await req.payload.count({
+		collection: "map-markers",
+		where: { category: { equals: id } },
+		req,
+	});
+	if (totalDocs > 0) {
+		throw new APIError(
+			`Impossible de supprimer cette catégorie : ${totalDocs} point(s) de carte y sont rattachés.`,
+			400,
+		);
+	}
+};
 
 export const MapCategories: CollectionConfig = {
 	slug: "map-categories",
@@ -13,6 +31,9 @@ export const MapCategories: CollectionConfig = {
 	labels: {
 		singular: "Catégorie de carte",
 		plural: "Catégories de carte",
+	},
+	hooks: {
+		beforeDelete: [beforeDeleteMapCategory],
 	},
 	fields: [
 		{
