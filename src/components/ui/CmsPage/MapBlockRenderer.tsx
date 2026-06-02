@@ -18,7 +18,7 @@ export default function MapBlockRenderer({ mapId, height }: Props) {
 	const { classes } = useStyles();
 	const { data, isLoading, isError } = api.maps.byId.useQuery({ id: mapId });
 
-	if (isError) {
+	if (isError || (!isLoading && !data)) {
 		return (
 			<Alert
 				className={fr.cx("fr-my-3v")}
