@@ -168,5 +168,14 @@ export const MapCategories: CollectionConfig = {
 				},
 			],
 		},
+		{
+			name: "excelTemplateExport",
+			type: "ui",
+			admin: {
+				components: {
+					Field: "../payload/components/MapCategoryExcelExport",
+				},
+			},
+		},
 	],
 };
