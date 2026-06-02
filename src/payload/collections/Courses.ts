@@ -4,6 +4,7 @@ import type {
 	CollectionConfig,
 } from "payload";
 import { sql } from "@payloadcms/db-postgres";
+import { slugify } from "~/utils/tools";
 import { standardFields } from "../fields/standards";
 import { generateEmbedding } from "../services/embedding";
 
@@ -106,12 +107,35 @@ export const Courses: CollectionConfig = {
 			required: true,
 			label: { fr: "Titre" },
 		},
+		{
+			name: "slug",
+			type: "text",
+			required: true,
+			label: { fr: "Identifiant texte" },
+			admin: {
+				position: "sidebar",
+				readOnly: true,
+				hidden: true,
+			},
+			hooks: {
+				beforeChange: [
+					async ({ siblingData }) => {
+						if (!siblingData?.title) return "";
+						return slugify(siblingData.title);
+					},
+				],
+			},
+		},
 		standardFields.longDescription,
 		{
 			name: "link",
 			type: "text",
 			required: true,
 			label: { fr: "Lien externe" },
+		},
+		{
+			...standardFields.wysiwyg,
+			required: false,
 		},
 		{
 			name: "type",
