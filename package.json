@@ -25,7 +25,7 @@
 		"prepare": "husky"
 	},
 	"lint-staged": {
-		"*": "biome check --write --no-errors-on-unmatched --files-ignore-unknown=true"
+		"*": "biome check --write --unsafe"
 	},
 	"dependencies": {
 		"@codegouvfr/react-dsfr": "1.29.0",
