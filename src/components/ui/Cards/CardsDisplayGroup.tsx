@@ -42,7 +42,9 @@ export default function CardsDisplayGroup({
 										imageAlt=""
 										conditions={[course.condition]}
 										themes={[course.theme]}
-										redirect={course.link}
+										redirect={
+											course.slug ? `/formations/${course.slug}` : course.link
+										}
 										titleAs={titleAs}
 										kind={kind}
 									/>

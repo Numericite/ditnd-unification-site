@@ -380,8 +380,24 @@ export interface Theme {
 export interface Course {
 	id: number;
 	title: string;
+	slug: string;
 	description: string;
 	link: string;
+	content?: {
+		root: {
+			type: string;
+			children: {
+				type: any;
+				version: number;
+				[k: string]: unknown;
+			}[];
+			direction: ("ltr" | "rtl") | null;
+			format: "left" | "start" | "center" | "right" | "end" | "justify" | "";
+			indent: number;
+			version: number;
+		};
+		[k: string]: unknown;
+	} | null;
 	type: "MOOC" | "Webinaire" | "Présentiel";
 	theme: number | Theme;
 	persona: number | Persona;
@@ -730,8 +746,10 @@ export interface PracticalGuidesSelect<T extends boolean = true> {
  */
 export interface CoursesSelect<T extends boolean = true> {
 	title?: T;
+	slug?: T;
 	description?: T;
 	link?: T;
+	content?: T;
 	type?: T;
 	theme?: T;
 	persona?: T;
