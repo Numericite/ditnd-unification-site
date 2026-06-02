@@ -10,6 +10,7 @@ import { api } from "~/utils/api";
 import { Loader } from "~/components/ui/Loader";
 import { EmptyScreenZone } from "~/components/ui/EmptyScreenZone";
 import CardsDisplayGroup from "~/components/ui/Cards/CardsDisplayGroup";
+import { ResultsCount } from "~/components/ui/SearchPage/ResultsCount";
 import PageContent from "~/components/ui/PageContent";
 import { tss } from "tss-react/dsfr";
 import type { GetServerSideProps } from "next";
@@ -116,195 +117,191 @@ export default function Recherche({ initialQuery, initialData }: Props) {
 						<p className={fr.cx("fr-mt-4w", "fr-text--lg")}>
 							Saisissez un terme pour lancer la recherche.
 						</p>
-					) : isLoading ? (
-						<EmptyScreenZone>
-							<Loader />
-						</EmptyScreenZone>
 					) : (
-						<div
-							className={fr.cx(
-								"fr-grid-row",
-								"fr-grid-row--gutters",
-								"fr-pt-3w",
-							)}
-						>
-							{data?.glossary && (
-								<div className={fr.cx("fr-col-12")}>
-									<CallOut
-										className={fr.cx("fr-mb-0")}
-										title={data.glossary.name}
-										buttonProps={
-											data.glossary.link
-												? {
-														children: "Consulter la source",
-														linkProps: {
-															href: data.glossary.link,
-															target: "_blank",
-															rel: "noopener noreferrer",
-														},
-													}
-												: undefined
-										}
-									>
-										{data.glossary.description}
-									</CallOut>
-								</div>
-							)}
-							<div
-								className={fr.cx("fr-col-12")}
-								style={{ textAlign: "right" }}
-							>
-								<output
-									className={fr.cx("fr-text--sm", "fr-mb-0")}
-									aria-live="polite"
-								>
-									{totalCount} {totalCount > 1 ? "résultats" : "résultat"}
-								</output>
-							</div>
-
-							{totalCount === 0 ? (
-								<div className={fr.cx("fr-callout")}>
-									<p className={fr.cx("fr-callout__text")}>
-										Aucun contenu ne correspond à votre recherche. Essayez avec
-										d'autres termes ou consultez nos{" "}
-										<a href="/fiches-pratiques">fiches pratiques</a> et{" "}
-										<a href="/formations">formations</a>.
-									</p>
-								</div>
+						<>
+							<ResultsCount total={totalCount} hidden={isLoading} />
+							{isLoading ? (
+								<EmptyScreenZone>
+									<Loader />
+								</EmptyScreenZone>
 							) : (
-								<Tabs
-									label="Résultats de recherche par type de contenu"
-									tabs={[
-										{
-											label: `Tout (${totalCount})`,
-											isDefault: true,
-											content: (
-												<div className={fr.cx("fr-pt-2w")}>
-													{guidesCount > 0 && (
-														<section aria-labelledby="section-guides-all">
-															<h2
-																id="section-guides-all"
-																className={fr.cx("fr-h4", "fr-mb-2w")}
-															>
-																Fiches pratiques ({guidesCount})
-															</h2>
-															<div
-																className={fr.cx(
-																	"fr-grid-row",
-																	"fr-grid-row--gutters",
-																)}
-															>
-																<CardsDisplayGroup
-																	className={fr.cx(
-																		"fr-col-12",
-																		"fr-col-sm-6",
-																		"fr-col-lg-4",
-																	)}
-																	guides={data?.guides}
-																	kind="guides"
-																	titleAs="h3"
-																/>
-															</div>
-														</section>
-													)}
+								<div
+									className={fr.cx(
+										"fr-grid-row",
+										"fr-grid-row--gutters",
+										"fr-pt-3w",
+									)}
+								>
+									{data?.glossary && (
+										<div className={fr.cx("fr-col-12")}>
+											<CallOut
+												className={fr.cx("fr-mb-0")}
+												title={data.glossary.name}
+												buttonProps={
+													data.glossary.link
+														? {
+																children: "Consulter la source",
+																linkProps: {
+																	href: data.glossary.link,
+																	target: "_blank",
+																	rel: "noopener noreferrer",
+																},
+															}
+														: undefined
+												}
+											>
+												{data.glossary.description}
+											</CallOut>
+										</div>
+									)}
+									{totalCount === 0 ? (
+										<div className={fr.cx("fr-callout")}>
+											<p className={fr.cx("fr-callout__text")}>
+												Aucun contenu ne correspond à votre recherche. Essayez
+												avec d'autres termes ou consultez nos{" "}
+												<a href="/fiches-pratiques">fiches pratiques</a> et{" "}
+												<a href="/formations">formations</a>.
+											</p>
+										</div>
+									) : (
+										<Tabs
+											label="Résultats de recherche par type de contenu"
+											tabs={[
+												{
+													label: `Tout (${totalCount})`,
+													isDefault: true,
+													content: (
+														<div className={fr.cx("fr-pt-2w")}>
+															{guidesCount > 0 && (
+																<section aria-labelledby="section-guides-all">
+																	<h2
+																		id="section-guides-all"
+																		className={fr.cx("fr-h4", "fr-mb-2w")}
+																	>
+																		Fiches pratiques ({guidesCount})
+																	</h2>
+																	<div
+																		className={fr.cx(
+																			"fr-grid-row",
+																			"fr-grid-row--gutters",
+																		)}
+																	>
+																		<CardsDisplayGroup
+																			className={fr.cx(
+																				"fr-col-12",
+																				"fr-col-sm-6",
+																				"fr-col-lg-4",
+																			)}
+																			guides={data?.guides}
+																			kind="guides"
+																			titleAs="h3"
+																		/>
+																	</div>
+																</section>
+															)}
 
-													{coursesCount > 0 && (
-														<section
-															aria-labelledby="section-courses-all"
-															className={cx(
-																guidesCount > 0 ? classes.sectionSpacing : "",
-															)}
-														>
-															<h2
-																id="section-courses-all"
-																className={fr.cx("fr-h4", "fr-mb-2w")}
-															>
-																Formations ({coursesCount})
-															</h2>
-															<div
-																className={fr.cx(
-																	"fr-grid-row",
-																	"fr-grid-row--gutters",
-																)}
-															>
-																<CardsDisplayGroup
-																	className={fr.cx(
-																		"fr-col-12",
-																		"fr-col-sm-6",
-																		"fr-col-lg-4",
+															{coursesCount > 0 && (
+																<section
+																	aria-labelledby="section-courses-all"
+																	className={cx(
+																		guidesCount > 0
+																			? classes.sectionSpacing
+																			: "",
 																	)}
-																	courses={data?.courses}
-																	kind="courses"
-																	titleAs="h3"
-																/>
+																>
+																	<h2
+																		id="section-courses-all"
+																		className={fr.cx("fr-h4", "fr-mb-2w")}
+																	>
+																		Formations ({coursesCount})
+																	</h2>
+																	<div
+																		className={fr.cx(
+																			"fr-grid-row",
+																			"fr-grid-row--gutters",
+																		)}
+																	>
+																		<CardsDisplayGroup
+																			className={fr.cx(
+																				"fr-col-12",
+																				"fr-col-sm-6",
+																				"fr-col-lg-4",
+																			)}
+																			courses={data?.courses}
+																			kind="courses"
+																			titleAs="h3"
+																		/>
+																	</div>
+																</section>
+															)}
+														</div>
+													),
+												},
+												{
+													label: `Fiches pratiques (${guidesCount})`,
+													content:
+														guidesCount > 0 ? (
+															<div className={fr.cx("fr-pt-2w")}>
+																<div
+																	className={fr.cx(
+																		"fr-grid-row",
+																		"fr-grid-row--gutters",
+																	)}
+																>
+																	<CardsDisplayGroup
+																		className={fr.cx(
+																			"fr-col-12",
+																			"fr-col-sm-6",
+																			"fr-col-lg-4",
+																		)}
+																		guides={data?.guides}
+																		kind="guides"
+																		titleAs="h3"
+																	/>
+																</div>
 															</div>
-														</section>
-													)}
-												</div>
-											),
-										},
-										{
-											label: `Fiches pratiques (${guidesCount})`,
-											content:
-												guidesCount > 0 ? (
-													<div className={fr.cx("fr-pt-2w")}>
-														<div
-															className={fr.cx(
-																"fr-grid-row",
-																"fr-grid-row--gutters",
-															)}
-														>
-															<CardsDisplayGroup
-																className={fr.cx(
-																	"fr-col-12",
-																	"fr-col-sm-6",
-																	"fr-col-lg-4",
-																)}
-																guides={data?.guides}
-																kind="guides"
-																titleAs="h3"
-															/>
-														</div>
-													</div>
-												) : (
-													<p className={fr.cx("fr-mt-2w")}>
-														Aucune fiche pratique trouvée pour cette recherche.
-													</p>
-												),
-										},
-										{
-											label: `Formations (${coursesCount})`,
-											content:
-												coursesCount > 0 ? (
-													<div className={fr.cx("fr-pt-2w")}>
-														<div
-															className={fr.cx(
-																"fr-grid-row",
-																"fr-grid-row--gutters",
-															)}
-														>
-															<CardsDisplayGroup
-																className={fr.cx(
-																	"fr-col-12",
-																	"fr-col-sm-6",
-																	"fr-col-lg-4",
-																)}
-																courses={data?.courses}
-																kind="courses"
-																titleAs="h3"
-															/>
-														</div>
-													</div>
-												) : (
-													<p className={fr.cx("fr-mt-2w")}>
-														Aucune formation trouvée pour cette recherche.
-													</p>
-												),
-										},
-									]}
-								/>
+														) : (
+															<p className={fr.cx("fr-mt-2w")}>
+																Aucune fiche pratique trouvée pour cette
+																recherche.
+															</p>
+														),
+												},
+												{
+													label: `Formations (${coursesCount})`,
+													content:
+														coursesCount > 0 ? (
+															<div className={fr.cx("fr-pt-2w")}>
+																<div
+																	className={fr.cx(
+																		"fr-grid-row",
+																		"fr-grid-row--gutters",
+																	)}
+																>
+																	<CardsDisplayGroup
+																		className={fr.cx(
+																			"fr-col-12",
+																			"fr-col-sm-6",
+																			"fr-col-lg-4",
+																		)}
+																		courses={data?.courses}
+																		kind="courses"
+																		titleAs="h3"
+																	/>
+																</div>
+															</div>
+														) : (
+															<p className={fr.cx("fr-mt-2w")}>
+																Aucune formation trouvée pour cette recherche.
+															</p>
+														),
+												},
+											]}
+										/>
+									)}
+								</div>
 							)}
-						</div>
+						</>
 					)}
 				</PageContent>
 			</div>

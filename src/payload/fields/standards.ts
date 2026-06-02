@@ -1,4 +1,4 @@
-import { BlocksFeature, lexicalEditor } from "@payloadcms/richtext-lexical";
+import { lexicalEditor } from "@payloadcms/richtext-lexical";
 import type { Field } from "payload";
 import { AccordionBlock } from "../plugins/blocks/AccordionBlock";
 import { CalloutBlock } from "../plugins/blocks/CalloutBlock";
@@ -75,9 +75,9 @@ export const standardFields = {
 				hideGutter: false,
 			},
 
-			features: ({ defaultFeatures }) => [
-				...defaultWysiwygFeatures({ defaultFeatures }),
-				BlocksFeature({
+			features: ({ defaultFeatures }) =>
+				defaultWysiwygFeatures({
+					defaultFeatures,
 					blocks: [
 						AccordionBlock,
 						CustomImageBlock,
@@ -88,7 +88,6 @@ export const standardFields = {
 						MapBlock,
 					],
 				}),
-			],
 		}),
 	},
 	image: {

@@ -2,6 +2,7 @@ import type {
 	DefaultNodeTypes,
 	DefaultTypedEditorState,
 	SerializedBlockNode,
+	SerializedInlineBlockNode,
 } from "@payloadcms/richtext-lexical";
 import {
 	defaultJSXConverters,
@@ -452,6 +453,16 @@ export const customImageSizeConverter: JSXConverter<SerializedBlockNode> = ({
 	);
 };
 
+export const langConverter: JSXConverter<SerializedInlineBlockNode> = ({
+	node,
+}) => {
+	const { text, lang } = node.fields as { text?: string; lang?: string };
+
+	if (!text || !lang) return null;
+
+	return <span lang={lang}>{text}</span>;
+};
+
 export const youtubeConverter: JSXConverter<SerializedBlockNode> = ({
 	node,
 }) => {
@@ -529,6 +540,9 @@ export const getConverters = () => ({
 		highlight: highlightConverter,
 		callout: calloutConverter,
 		map: mapConverter,
+	},
+	inlineBlocks: {
+		lang: langConverter,
 	},
 	link: linkConverter,
 	table: tableConverter,

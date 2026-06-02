@@ -29,6 +29,12 @@ export const Conditions: CollectionConfig = {
 		},
 		standardFields.description,
 		{
+			name: "fullDescription",
+			type: "textarea",
+			required: true,
+			label: { fr: "Description complète" },
+		},
+		{
 			name: "acronym",
 			type: "text",
 			required: true,
