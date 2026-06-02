@@ -22,6 +22,7 @@ import * as migration_20260520_120000_footer_drop_cgu_terms_of_use from './20260
 import * as migration_20260520_140000_footer_contact_particuliers from './20260520_140000_footer_contact_particuliers';
 import * as migration_20260520_160000_glossary_categories from './20260520_160000_glossary_categories';
 import * as migration_20260601_140613_add_full_description_condition from './20260601_140613_add_full_description_condition';
+import * as migration_20260602_095234_add_maps from './20260602_095234_add_maps';
 
 export const migrations = [
   {
@@ -142,6 +143,11 @@ export const migrations = [
   {
     up: migration_20260601_140613_add_full_description_condition.up,
     down: migration_20260601_140613_add_full_description_condition.down,
-    name: '20260601_140613_add_full_description_condition'
+    name: '20260601_140613_add_full_description_condition',
+  },
+  {
+    up: migration_20260602_095234_add_maps.up,
+    down: migration_20260602_095234_add_maps.down,
+    name: '20260602_095234_add_maps'
   },
 ];
