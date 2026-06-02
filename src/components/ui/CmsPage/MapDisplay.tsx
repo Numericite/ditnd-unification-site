@@ -29,23 +29,25 @@ import Button from "@codegouvfr/react-dsfr/Button";
 import { SegmentedControl } from "@codegouvfr/react-dsfr/SegmentedControl";
 import { Table } from "@codegouvfr/react-dsfr/Table";
 
-const osmStyle: StyleSpecification = {
+const ignStyle: StyleSpecification = {
 	version: 8,
 	sources: {
-		osm: {
+		ign: {
 			type: "raster",
 			tiles: [
-				"https://a.tile.openstreetmap.org/{z}/{x}/{y}.png",
-				"https://b.tile.openstreetmap.org/{z}/{x}/{y}.png",
-				"https://c.tile.openstreetmap.org/{z}/{x}/{y}.png",
+				"https://data.geopf.fr/wmts?" +
+					"SERVICE=WMTS&REQUEST=GetTile&VERSION=1.0.0" +
+					"&LAYER=GEOGRAPHICALGRIDSYSTEMS.PLANIGNV2" +
+					"&STYLE=normal&TILEMATRIXSET=PM&FORMAT=image/png" +
+					"&TILEMATRIX={z}&TILEROW={y}&TILECOL={x}",
 			],
 			tileSize: 256,
 			attribution:
-				'© <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener noreferrer">OpenStreetMap</a>',
+				'© <a href="https://www.ign.fr" target="_blank" rel="noopener noreferrer">IGN</a> / Géoplateforme',
 			maxzoom: 19,
 		},
 	},
-	layers: [{ id: "osm", type: "raster", source: "osm" }],
+	layers: [{ id: "ign", type: "raster", source: "ign" }],
 };
 
 const FRANCE_CENTER = { latitude: 46.6, longitude: 2.3, zoom: 5 };
@@ -84,20 +86,6 @@ export default function MapDisplay({ map, height }: Props) {
 		}),
 		[map.defaultLatitude, map.defaultLongitude, map.defaultZoom],
 	);
-
-	useEffect(() => {
-		if (!mapRef) return;
-		if (!map.fitToMarkers) return;
-		if (map.markers.length === 0) return;
-
-		const lngs = map.markers.map((m) => m.longitude as number);
-		const lats = map.markers.map((m) => m.latitude as number);
-		const bounds: [[number, number], [number, number]] = [
-			[Math.min(...lngs), Math.min(...lats)],
-			[Math.max(...lngs), Math.max(...lats)],
-		];
-		mapRef.fitBounds(bounds, { padding: 48, maxZoom: 13, duration: 0 });
-	}, [mapRef, map.fitToMarkers, map.markers]);
 
 	const flyToMarker = useCallback(
 		(marker: MapMarkerSummary) => {
@@ -421,9 +409,21 @@ export default function MapDisplay({ map, height }: Props) {
 							<MapGL
 								ref={setMapRef}
 								initialViewState={initialView}
-								mapStyle={osmStyle}
+								mapStyle={ignStyle}
 								attributionControl={{ compact: true }}
 								onClick={() => setSelectedMarker(null)}
+								onLoad={(e) => {
+									if (!map.fitToMarkers || map.markers.length === 0) return;
+									const lngs = map.markers.map((m) => m.longitude as number);
+									const lats = map.markers.map((m) => m.latitude as number);
+									e.target.fitBounds(
+										[
+											[Math.min(...lngs), Math.min(...lats)],
+											[Math.max(...lngs), Math.max(...lats)],
+										],
+										{ padding: 48, maxZoom: 13, duration: 0 },
+									);
+								}}
 							>
 								<NavigationControl position="top-right" showCompass={false} />
 
