@@ -11,7 +11,7 @@ function isProfessional(persona_slug: string) {
 	return persona_slug === "professional";
 }
 
-function isProfessionalSub(persona_slug: string) {
+function isProfessionalSub(_persona_slug: string) {
 	// TODO: Réactiver le sous-niveau spécifique aux professionnels
 	// return persona_slug.startsWith("pro") && persona_slug !== "professional";
 	return false;

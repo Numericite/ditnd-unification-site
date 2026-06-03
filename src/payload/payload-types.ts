@@ -334,6 +334,7 @@ export interface Condition {
 	 * Description courte affichée sur les cartes (120 caractères max)
 	 */
 	description: string;
+	fullDescription: string;
 	acronym: string;
 	slug: string;
 	textColor: string;
@@ -835,6 +836,7 @@ export interface ConditionsSelect<T extends boolean = true> {
 	_order?: T;
 	name?: T;
 	description?: T;
+	fullDescription?: T;
 	acronym?: T;
 	slug?: T;
 	textColor?: T;
