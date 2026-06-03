@@ -42,8 +42,7 @@ export const MapCategories: CollectionConfig = {
 			required: true,
 			label: { fr: "Nom" },
 			admin: {
-				description:
-					"Nom affiché dans la légende des cartes (ex : « MDPH », « CRA »).",
+				description: "Nom affiché dans la légende des cartes.",
 			},
 		},
 		{
@@ -116,8 +115,7 @@ export const MapCategories: CollectionConfig = {
 							label: { fr: "Identifiant (clé)" },
 							admin: {
 								width: "50%",
-								description:
-									"Identifiant unique, sans espaces (ex : isPoleAdulte).",
+								description: "Identifiant unique, sans espaces.",
 							},
 						},
 					],

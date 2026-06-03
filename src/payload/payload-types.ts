@@ -460,7 +460,7 @@ export interface GlossaryCategory {
 export interface MapCategory {
 	id: number;
 	/**
-	 * Nom affiché dans la légende des cartes (ex : « MDPH », « CRA »).
+	 * Nom affiché dans la légende des cartes.
 	 */
 	name: string;
 	/**
@@ -503,7 +503,7 @@ export interface MapCategory {
 		| {
 				label: string;
 				/**
-				 * Identifiant unique, sans espaces (ex : isPoleAdulte).
+				 * Identifiant unique, sans espaces.
 				 */
 				key: string;
 				type: "checkbox" | "text" | "select";
