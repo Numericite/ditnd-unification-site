@@ -585,6 +585,10 @@ export interface Map {
 	title?: string | null;
 	description?: string | null;
 	/**
+	 * Fond de carte Géoplateforme IGN. Le Plan IGN reste le plus lisible pour repérer une adresse ; les photographies aériennes n'affichent pas les noms de rue.
+	 */
+	basemap: "plan-ign" | "aerial";
+	/**
 	 * Toutes les catégories sélectionnées seront affichées sur la carte avec leurs marqueurs.
 	 */
 	categories: (number | MapCategory)[];
@@ -1027,6 +1031,7 @@ export interface MapsSelect<T extends boolean = true> {
 	slug?: T;
 	title?: T;
 	description?: T;
+	basemap?: T;
 	categories?: T;
 	allowFilterByCategory?: T;
 	allowFilterByRegion?: T;

@@ -1,4 +1,5 @@
 import type { CollectionConfig } from "payload";
+import { BASEMAP_OPTIONS, DEFAULT_BASEMAP } from "~/utils/map-basemaps";
 
 export const Maps: CollectionConfig = {
 	slug: "maps",
@@ -46,6 +47,18 @@ export const Maps: CollectionConfig = {
 			type: "textarea",
 			required: false,
 			label: { fr: "Description" },
+		},
+		{
+			name: "basemap",
+			type: "select",
+			required: true,
+			defaultValue: DEFAULT_BASEMAP,
+			label: { fr: "Fond de carte" },
+			options: BASEMAP_OPTIONS,
+			admin: {
+				description:
+					"Fond de carte Géoplateforme IGN. Le Plan IGN reste le plus lisible pour repérer une adresse ; les photographies aériennes n'affichent pas les noms de rue.",
+			},
 		},
 		{
 			name: "categories",

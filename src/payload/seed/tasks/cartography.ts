@@ -1540,6 +1540,7 @@ const mapData = {
 	title: "Structures d'accompagnement en France",
 	description:
 		"Retrouvez les Centres de Ressources Autisme (CRA) et les Maisons Départementales des Personnes Handicapées (MDPH) sur le territoire français.",
+	basemap: "plan-ign" as const,
 	defaultLatitude: 46.6,
 	defaultLongitude: 2.3,
 	defaultZoom: 5,

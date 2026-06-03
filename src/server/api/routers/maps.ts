@@ -5,6 +5,7 @@ import type {
 	MapCategory,
 	MapMarker,
 } from "~/payload/payload-types";
+import { type BasemapKey, DEFAULT_BASEMAP } from "~/utils/map-basemaps";
 
 export type CustomFieldDef = {
 	id?: string | null;
@@ -58,6 +59,7 @@ export type MapPayload = {
 	slug: string;
 	name: string;
 	title: string | null;
+	basemap: BasemapKey;
 	description: string | null;
 	defaultLatitude: number | null;
 	defaultLongitude: number | null;
@@ -185,6 +187,7 @@ const buildPayload = async (
 		name: map.name,
 		title: map.title ?? null,
 		description: map.description ?? null,
+		basemap: map.basemap ?? DEFAULT_BASEMAP,
 		defaultLatitude: map.defaultLatitude ?? null,
 		defaultLongitude: map.defaultLongitude ?? null,
 		defaultZoom: map.defaultZoom ?? null,

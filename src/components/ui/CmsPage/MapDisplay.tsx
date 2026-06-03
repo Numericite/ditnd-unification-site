@@ -6,13 +6,13 @@ import {
 	NavigationControl,
 	Popup,
 	type MapRef,
-	type StyleSpecification,
 } from "react-map-gl/maplibre";
 import "maplibre-gl/dist/maplibre-gl.css";
 import { fr } from "@codegouvfr/react-dsfr";
 import { tss } from "tss-react/dsfr";
 import { dsfrAccentHex } from "~/utils/dsfr-color-hex";
 import { getMarkerGeo } from "~/utils/map-geo";
+import { buildBasemapStyle } from "~/utils/map-basemaps";
 import MapFilterDrawer, {
 	type ActiveFilters,
 	type FilterOption,
@@ -28,27 +28,6 @@ import type {
 import Button from "@codegouvfr/react-dsfr/Button";
 import { SegmentedControl } from "@codegouvfr/react-dsfr/SegmentedControl";
 import { Table } from "@codegouvfr/react-dsfr/Table";
-
-const ignStyle: StyleSpecification = {
-	version: 8,
-	sources: {
-		ign: {
-			type: "raster",
-			tiles: [
-				"https://data.geopf.fr/wmts?" +
-					"SERVICE=WMTS&REQUEST=GetTile&VERSION=1.0.0" +
-					"&LAYER=GEOGRAPHICALGRIDSYSTEMS.PLANIGNV2" +
-					"&STYLE=normal&TILEMATRIXSET=PM&FORMAT=image/png" +
-					"&TILEMATRIX={z}&TILEROW={y}&TILECOL={x}",
-			],
-			tileSize: 256,
-			attribution:
-				'© <a href="https://www.ign.fr" target="_blank" rel="noopener noreferrer">IGN</a> / Géoplateforme',
-			maxzoom: 19,
-		},
-	},
-	layers: [{ id: "ign", type: "raster", source: "ign" }],
-};
 
 const FRANCE_CENTER = { latitude: 46.6, longitude: 2.3, zoom: 5 };
 
@@ -71,6 +50,8 @@ export default function MapDisplay({ map, height }: Props) {
 		categories: [],
 		customFields: {},
 	});
+
+	const mapStyle = useMemo(() => buildBasemapStyle(map.basemap), [map.basemap]);
 
 	const categoryById = useMemo(() => {
 		const lookup = new Map<number, MapCategorySummary>();
@@ -409,7 +390,7 @@ export default function MapDisplay({ map, height }: Props) {
 							<MapGL
 								ref={setMapRef}
 								initialViewState={initialView}
-								mapStyle={ignStyle}
+								mapStyle={mapStyle}
 								attributionControl={{ compact: true }}
 								onClick={() => setSelectedMarker(null)}
 								onLoad={(e) => {

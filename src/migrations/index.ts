@@ -23,6 +23,7 @@ import * as migration_20260520_140000_footer_contact_particuliers from './202605
 import * as migration_20260520_160000_glossary_categories from './20260520_160000_glossary_categories';
 import * as migration_20260601_140613_add_full_description_condition from './20260601_140613_add_full_description_condition';
 import * as migration_20260602_095234_add_maps from './20260602_095234_add_maps';
+import * as migration_20260603_065804_add_map_basemap from './20260603_065804_add_map_basemap';
 
 export const migrations = [
   {
@@ -148,6 +149,11 @@ export const migrations = [
   {
     up: migration_20260602_095234_add_maps.up,
     down: migration_20260602_095234_add_maps.down,
-    name: '20260602_095234_add_maps'
+    name: '20260602_095234_add_maps',
+  },
+  {
+    up: migration_20260603_065804_add_map_basemap.up,
+    down: migration_20260603_065804_add_map_basemap.down,
+    name: '20260603_065804_add_map_basemap'
   },
 ];
