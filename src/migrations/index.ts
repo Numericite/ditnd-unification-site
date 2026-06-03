@@ -21,6 +21,7 @@ import * as migration_20260518_140000_glossary from './20260518_140000_glossary'
 import * as migration_20260520_120000_footer_drop_cgu_terms_of_use from './20260520_120000_footer_drop_cgu_terms_of_use';
 import * as migration_20260520_140000_footer_contact_particuliers from './20260520_140000_footer_contact_particuliers';
 import * as migration_20260520_160000_glossary_categories from './20260520_160000_glossary_categories';
+import * as migration_20260527_120000_simplified_content from './20260527_120000_simplified_content';
 import * as migration_20260601_140613_add_full_description_condition from './20260601_140613_add_full_description_condition';
 
 export const migrations = [
@@ -138,6 +139,11 @@ export const migrations = [
     up: migration_20260520_160000_glossary_categories.up,
     down: migration_20260520_160000_glossary_categories.down,
     name: '20260520_160000_glossary_categories'
+  },
+  {
+    up: migration_20260527_120000_simplified_content.up,
+    down: migration_20260527_120000_simplified_content.down,
+    name: '20260527_120000_simplified_content'
   },
   {
     up: migration_20260601_140613_add_full_description_condition.up,

@@ -1,10 +1,14 @@
 import { api } from "~/utils/api";
 import Breadcrumb from "@codegouvfr/react-dsfr/Breadcrumb";
 import PracticalGuidesDisplay from "~/components/PracticalGuides/PracticalGuidesDisplay";
+import ContentModeToggle, {
+	CONTENT_MODE_COOKIE,
+	type ContentMode,
+} from "~/components/PracticalGuides/ContentModeToggle";
 import { fr } from "@codegouvfr/react-dsfr";
 import PageContent from "~/components/ui/PageContent";
 import SeoMeta from "~/components/ui/SeoMeta";
-import { useEffect } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { personStore, proStore } from "~/state/store";
 import type { Media } from "~/payload/payload-types";
 import type { GetServerSideProps } from "next";
@@ -48,9 +52,14 @@ function getParcoursBreadcrumbSegments(
 type Props = {
 	guide: AugmentedPracticalGuide;
 	from: string | null;
+	initialMode: ContentMode;
 };
 
-export default function PracticalGuidePage({ guide, from }: Props) {
+export default function PracticalGuidePage({
+	guide,
+	from,
+	initialMode,
+}: Props) {
 	const { mutate: incremenView } =
 		api.practicalGuide.incrementView.useMutation();
 
@@ -59,6 +68,18 @@ export default function PracticalGuidePage({ guide, from }: Props) {
 			incremenView({ guideId: guide.id });
 		}
 	}, [guide?.id]);
+
+	const [mode, setMode] = useState<ContentMode>(initialMode);
+
+	const isSimplifiedReady =
+		guide.simplifiedGenerationStatus === "ready" && !!guide.contentSimplified;
+
+	const displayedGuide = useMemo(() => {
+		if (mode === "simplified" && isSimplifiedReady && guide.contentSimplified) {
+			return { ...guide, content: guide.contentSimplified };
+		}
+		return guide;
+	}, [guide, mode, isSimplifiedReady]);
 
 	const parcoursSegments = getParcoursBreadcrumbSegments(from ?? undefined);
 	const breadcrumbSegments: BreadcrumbSegment[] = parcoursSegments ?? [
@@ -105,7 +126,14 @@ export default function PracticalGuidePage({ guide, from }: Props) {
 					segments={breadcrumbSegments}
 				/>
 				<PageContent>
-					<PracticalGuidesDisplay guide={guide} />
+					<PracticalGuidesDisplay
+						guide={displayedGuide}
+						headerToolbar={
+							isSimplifiedReady ? (
+								<ContentModeToggle mode={mode} onChange={setMode} />
+							) : undefined
+						}
+					/>
 				</PageContent>
 			</div>
 		</>
@@ -116,6 +144,9 @@ export const getServerSideProps: GetServerSideProps<Props> = async (ctx) => {
 	const slug = ctx.params?.slug as string | undefined;
 	const fromParam = ctx.query.from;
 	const from = typeof fromParam === "string" ? fromParam : null;
+	const cookieMode = ctx.req.cookies?.[CONTENT_MODE_COOKIE];
+	const initialMode: ContentMode =
+		cookieMode === "simplified" ? "simplified" : "standard";
 
 	if (!slug) {
 		return { notFound: true };
@@ -134,6 +165,7 @@ export const getServerSideProps: GetServerSideProps<Props> = async (ctx) => {
 			props: {
 				guide,
 				from,
+				initialMode,
 			},
 		};
 	} catch {
