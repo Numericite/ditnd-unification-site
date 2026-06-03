@@ -627,6 +627,10 @@ const useStyles = tss.withName(MapDisplay.name).create(() => ({
 		"& .fr-table": {
 			margin: "0 !important",
 		},
+		"& .fr-table th, & .fr-table td": {
+			whiteSpace: "nowrap",
+			verticalAlign: "middle",
+		},
 	},
 
 	mapWrapper: {
