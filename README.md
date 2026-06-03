@@ -43,6 +43,10 @@ Stack : [Next.js](https://nextjs.org), [Payload CMS](https://payloadcms.com), [t
 
    > ⚠ `seed:dev` drops and recreates the database (`PAYLOAD_DROP_DATABASE=true`).
 
+   To reseed a single dataset without touching the rest, use the targeted
+   commands `yarn seed:glossary` or `yarn seed:cartography` (see the scripts
+   table below).
+
 5. **Run the dev server**
 
    ```bash
@@ -54,16 +58,18 @@ Stack : [Next.js](https://nextjs.org), [Payload CMS](https://payloadcms.com), [t
 
 ## Useful scripts
 
-| Command            | Description                                  |
-| ------------------ | -------------------------------------------- |
-| `yarn dev`         | Start Next.js in dev mode (Turbopack)        |
-| `yarn build`       | Production build                             |
-| `yarn start`       | Run the production build                     |
-| `yarn typecheck`   | TypeScript check                             |
-| `yarn check`       | Biome lint/format check                      |
-| `yarn check:write` | Biome lint/format with autofix               |
-| `yarn seed:dev`    | Drop the DB and reseed (development)         |
-| `yarn seed:prod`   | Seed without dropping (production)           |
+| Command                  | Description                                            |
+| ------------------------ | ------------------------------------------------------ |
+| `yarn dev`               | Start Next.js in dev mode (Turbopack)                  |
+| `yarn build`             | Production build                                       |
+| `yarn start`             | Run the production build                               |
+| `yarn typecheck`         | TypeScript check                                       |
+| `yarn check`             | Biome lint/format check                                |
+| `yarn check:write`       | Biome lint/format with autofix                         |
+| `yarn seed:dev`          | Drop the DB and reseed everything (development)        |
+| `yarn seed:prod`         | Seed everything without dropping (production)          |
+| `yarn seed:glossary`     | Reseed only the glossary (deletes & recreates entries) |
+| `yarn seed:cartography`  | Reseed only the cartography (upsert by slug)           |
 
 ## Code quality
 
