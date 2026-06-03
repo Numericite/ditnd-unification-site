@@ -16,7 +16,10 @@ const buildQuery = (
 export const geocodeMarker: CollectionBeforeChangeHook = async ({
 	data,
 	originalDoc,
+	context,
 }) => {
+	if (context?.skipGeocode) return data;
+
 	const query = buildQuery(data.address, data.postalCode, data.city);
 	if (!query) return data;
 
