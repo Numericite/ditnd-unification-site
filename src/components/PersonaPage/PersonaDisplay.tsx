@@ -72,14 +72,15 @@ export default function PersonaDisplay({
 			)}
 			<div className={fr.cx("fr-container", "fr-py-4w")}>
 				<h2>{`${viewCourses ? "Formations" : "Fiches pratiques"}`}</h2>
-				<p className={fr.cx("fr-text--md")}>
-					{`Ces ${viewCourses ? "formations" : "fiches pratiques"} vous accompagnent pour comprendre l’autisme,
-					repérer les besoins de votre proche et connaître les démarches et
-					soutiens existants. Les contenus sont classés par thématiques afin de
-					faciliter vos recherches : santé, scolarité, vie quotidienne, droits
-					et accompagnement. Vous y trouverez également des ressources concrètes
-					pour vous aider au quotidien.`}
-				</p>
+				{(viewCourses
+					? journey.courseDescription
+					: journey.practicalGuideDescription) && (
+					<p className={fr.cx("fr-text--md")}>
+						{viewCourses
+							? journey.courseDescription
+							: journey.practicalGuideDescription}
+					</p>
+				)}
 				<div className={fr.cx("fr-grid-row", "fr-grid-row--gutters")}>
 					<SummaryContent
 						className={cx(classes.whiteSummarySticky)}

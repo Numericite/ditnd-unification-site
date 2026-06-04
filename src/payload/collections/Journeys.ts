@@ -38,6 +38,18 @@ export const Journeys: CollectionConfig = {
 			},
 		},
 		{
+			name: "practicalGuideDescription",
+			type: "textarea",
+			required: false,
+			label: { fr: "Description de l'onglet \"Je m'informe\"" },
+		},
+		{
+			name: "courseDescription",
+			type: "textarea",
+			required: false,
+			label: { fr: 'Description de l\'onglet "Je me forme"' },
+		},
+		{
 			name: "chapter",
 			type: "array",
 			required: true,

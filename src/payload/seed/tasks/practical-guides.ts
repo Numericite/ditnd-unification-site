@@ -108,6 +108,7 @@ async function createPracticalGuide(
 		await payload.create({
 			collection: "practical-guides",
 			data: { ...data, _status: "published" },
+			context: { skipSimplification: true },
 		});
 	} catch (error) {
 		throw new Error(

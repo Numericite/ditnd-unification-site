@@ -23,10 +23,8 @@ function extractTextFromLexical(node: unknown): string {
 	return "";
 }
 
-// Context flag set by the recursive payload.update calls we issue from
-// runSimplification(). When present, the hook becomes a no-op so we don't
-// re-index vectors or re-trigger Albert on our own bookkeeping writes.
 const SIMPLIFICATION_INTERNAL_FLAG = "simplificationInternalUpdate";
+const SIMPLIFICATION_SKIP_FLAG = "skipSimplification";
 
 function shouldTriggerSimplification(
 	doc: { _status?: string | null; content?: unknown },
@@ -185,10 +183,10 @@ const afterChangePracticalGuide: CollectionAfterChangeHook = async ({
 		console.error("[VectorSearch] Failed to index guide:", doc.id, err);
 	}
 
-	// Fire-and-forget the simplified-content generation. Albert calls can
-	// take 30-60s; we don't block the editor's publish on that. Errors are
-	// trapped inside runSimplification — this Promise never rejects.
-	if (shouldTriggerSimplification(doc, previousDoc)) {
+	if (
+		shouldTriggerSimplification(doc, previousDoc) &&
+		!context?.[SIMPLIFICATION_SKIP_FLAG]
+	) {
 		void runSimplification(req.payload, doc.id, doc.content);
 	}
 

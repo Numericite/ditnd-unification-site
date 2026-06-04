@@ -422,6 +422,8 @@ export interface Journey {
 	journey_name: string;
 	persona: number | Persona;
 	image?: (number | null) | Media;
+	practicalGuideDescription?: string | null;
+	courseDescription?: string | null;
 	chapter: {
 		"chapter-name": string;
 		"practical-guides": (number | PracticalGuide)[];
@@ -774,6 +776,8 @@ export interface JourneysSelect<T extends boolean = true> {
 	journey_name?: T;
 	persona?: T;
 	image?: T;
+	practicalGuideDescription?: T;
+	courseDescription?: T;
 	chapter?:
 		| T
 		| {
