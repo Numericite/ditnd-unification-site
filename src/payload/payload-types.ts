@@ -142,6 +142,9 @@ export interface Config {
 		about: AboutSelect<false> | AboutSelect<true>;
 	};
 	locale: null;
+	widgets: {
+		collections: CollectionsWidget;
+	};
 	user: User;
 	jobs: {
 		tasks: unknown;
@@ -290,6 +293,26 @@ export interface PracticalGuide {
 		};
 		[k: string]: unknown;
 	};
+	/**
+	 * Version simplifiée du contenu, régénérée automatiquement à chaque publication.
+	 */
+	contentSimplified?: {
+		root: {
+			type: string;
+			children: {
+				type: any;
+				version: number;
+				[k: string]: unknown;
+			}[];
+			direction: ("ltr" | "rtl") | null;
+			format: "left" | "start" | "center" | "right" | "end" | "justify" | "";
+			indent: number;
+			version: number;
+		};
+		[k: string]: unknown;
+	} | null;
+	simplifiedGenerationStatus?: ("pending" | "ready" | "failed") | null;
+	simplifiedGeneratedAt?: string | null;
 	persona: (number | Persona)[];
 	themes: (number | Theme)[];
 	"practical-guides"?: (number | PracticalGuide)[] | null;
@@ -891,6 +914,9 @@ export interface PracticalGuidesSelect<T extends boolean = true> {
 	description?: T;
 	conditions?: T;
 	content?: T;
+	contentSimplified?: T;
+	simplifiedGenerationStatus?: T;
+	simplifiedGeneratedAt?: T;
 	persona?: T;
 	themes?: T;
 	"practical-guides"?: T;
@@ -1441,6 +1467,16 @@ export interface AboutSelect<T extends boolean = true> {
 	updatedAt?: T;
 	createdAt?: T;
 	globalType?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "collections_widget".
+ */
+export interface CollectionsWidget {
+	data?: {
+		[k: string]: unknown;
+	};
+	width: "full";
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
