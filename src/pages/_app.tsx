@@ -17,6 +17,7 @@ import {
 import { tss } from "tss-react/dsfr";
 import ChatBot from "~/components/Chatbot/Chatbot";
 import "~/utils/styles/keyframes.css";
+import "~/utils/styles/contrast.css";
 import MainNavigation from "~/components/ui/Navigation/MainNavigation";
 import SeoMeta from "~/components/ui/SeoMeta";
 import { fr } from "@codegouvfr/react-dsfr";
