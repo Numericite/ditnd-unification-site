@@ -9,6 +9,9 @@ export const MapMarkers: CollectionConfig = {
 		group: "Cartographie",
 		description:
 			"Points géolocalisés rattachés à une catégorie. Les coordonnées sont remplies automatiquement à partir de l'adresse via api-adresse.data.gouv.fr.",
+		components: {
+			beforeListTable: ["../payload/components/MapMarkersImportLink"],
+		},
 	},
 	labels: {
 		singular: "Point de carte",

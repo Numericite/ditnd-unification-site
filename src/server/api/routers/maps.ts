@@ -6,6 +6,7 @@ import type {
 	MapMarker,
 } from "~/payload/payload-types";
 import { type BasemapKey, DEFAULT_BASEMAP } from "~/utils/map-basemaps";
+import { geocodeAddress } from "~/payload/lib/geocode";
 
 export type CustomFieldDef = {
 	id?: string | null;
@@ -126,6 +127,34 @@ const buildPayload = async (
 					where: { category: { in: categoryIds } },
 				})
 			: { docs: [] as MapMarker[] };
+
+	// Géocoder les marqueurs sans coordonnées et persister le résultat
+	const BATCH = 5;
+	const docsToGeocode = markersResult.docs.filter(
+		(m) => typeof m.latitude !== "number" || typeof m.longitude !== "number",
+	);
+	for (let i = 0; i < docsToGeocode.length; i += BATCH) {
+		await Promise.all(
+			docsToGeocode.slice(i, i + BATCH).map(async (m) => {
+				const coords = await geocodeAddress(m.address, m.postalCode, m.city);
+				if (!coords) return;
+				m.latitude = coords.latitude;
+				m.longitude = coords.longitude;
+				await ctx.payload
+					.update({
+						collection: "map-markers",
+						id: m.id,
+						data: { latitude: coords.latitude, longitude: coords.longitude },
+					})
+					.catch((err) =>
+						console.warn(
+							`[maps] Failed to persist coords for marker ${m.id}:`,
+							err,
+						),
+					);
+			}),
+		);
+	}
 
 	const markers = markersResult.docs
 		.map((m) => {

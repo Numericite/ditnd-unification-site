@@ -76,6 +76,15 @@ export default buildConfig({
 		importMap: {
 			baseDir: path.resolve(dirname),
 		},
+		components: {
+			views: {
+				MapImport: {
+					Component: "./views/MapImportView",
+					path: "/map-import",
+					exact: true,
+				},
+			},
+		},
 		livePreview: {
 			url: ({ data, collectionConfig }) => {
 				if (!data || collectionConfig?.slug !== "practical-guides") return;
