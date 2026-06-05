@@ -1,0 +1,89 @@
+/* Light theme : disabled input label */
+:root[data-fr-theme="light"] .fr-input-group--disabled label,
+:root[data-fr-theme="light"] .fr-input-group--disabled .fr-hint-text,
+:root[data-fr-theme="light"] .fr-select-group--disabled label,
+:root[data-fr-theme="light"] .fr-select-group--disabled .fr-hint-text,
+:root[data-fr-theme="light"] .fr-label--disabled,
+:root[data-fr-theme="light"] .fr-label--disabled .fr-hint-text,
+:root[data-fr-theme="light"] .fr-fieldset:disabled .fr-label,
+:root[data-fr-theme="light"] .fr-fieldset:disabled .fr-hint-text,
+:root[data-fr-theme="light"] .fr-fieldset input:disabled + label,
+:root[data-fr-theme="light"] .fr-fieldset input:disabled + label .fr-hint-text,
+:root:not([data-fr-theme]) .fr-input-group--disabled label,
+:root:not([data-fr-theme]) .fr-input-group--disabled .fr-hint-text,
+:root:not([data-fr-theme]) .fr-select-group--disabled label,
+:root:not([data-fr-theme]) .fr-select-group--disabled .fr-hint-text,
+:root:not([data-fr-theme]) .fr-label--disabled,
+:root:not([data-fr-theme]) .fr-label--disabled .fr-hint-text,
+:root:not([data-fr-theme]) .fr-fieldset:disabled .fr-label,
+:root:not([data-fr-theme]) .fr-fieldset:disabled .fr-hint-text,
+:root:not([data-fr-theme]) .fr-fieldset input:disabled + label,
+:root:not([data-fr-theme]) .fr-fieldset input:disabled + label .fr-hint-text {
+	color: #595959;
+}
+
+/* Dark theme : disabled input label */
+:root[data-fr-theme="dark"] .fr-input-group--disabled label,
+:root[data-fr-theme="dark"] .fr-input-group--disabled .fr-hint-text,
+:root[data-fr-theme="dark"] .fr-select-group--disabled label,
+:root[data-fr-theme="dark"] .fr-select-group--disabled .fr-hint-text,
+:root[data-fr-theme="dark"] .fr-label--disabled,
+:root[data-fr-theme="dark"] .fr-label--disabled .fr-hint-text,
+:root[data-fr-theme="dark"] .fr-fieldset:disabled .fr-label,
+:root[data-fr-theme="dark"] .fr-fieldset:disabled .fr-hint-text,
+:root[data-fr-theme="dark"] .fr-fieldset input:disabled + label,
+:root[data-fr-theme="dark"] .fr-fieldset input:disabled + label .fr-hint-text {
+	color: #a1a1a1;
+}
+
+/* Dark theme : button secondary hover */
+:root[data-fr-theme="dark"] .fr-btn--secondary:hover,
+:root[data-fr-theme="dark"] .fr-btn--secondary:focus-visible:hover {
+	color: #bdbdf9;
+}
+
+/* Dark theme : button tertiary hover */
+:root[data-fr-theme="dark"] .fr-btn--tertiary:hover,
+:root[data-fr-theme="dark"] .fr-btn--sort:hover,
+:root[data-fr-theme="dark"] .fr-btn--account:hover {
+	color: #bdbdf9;
+}
+
+/* Dark theme : button tertiary no outline hover */
+:root[data-fr-theme="dark"] .fr-btn--tertiary-no-outline:hover,
+:root[data-fr-theme="dark"] .fr-btn--close:hover,
+:root[data-fr-theme="dark"] .fr-btn--display:hover,
+:root[data-fr-theme="dark"] .fr-btn--fullscreen:hover,
+:root[data-fr-theme="dark"] .fr-btn--tooltip:hover {
+	color: #bdbdf9;
+}
+
+/* Dark theme : display (Paramètres d'affichage) button hover */
+:root[data-fr-theme="dark"] #fr-theme-modal-control-button:hover {
+	/* color: #C4C4C4 !important; */
+}
+
+/* Dark theme : active nav item hover */
+:root[data-fr-theme="dark"]
+	.fr-nav__link[aria-current]:not([aria-current="false"]):hover,
+:root[data-fr-theme="dark"]
+	.fr-nav__btn[aria-current]:not([aria-current="false"]):hover {
+	color: #bdbdf9;
+	background-color: #333333;
+}
+
+/* Dark theme : accordion button hover */
+:root[data-fr-theme="dark"] .fr-accordion__btn:hover {
+	color: #bdbdf9;
+}
+
+/* Dark theme : clickable tag hover */
+:root[data-fr-theme="dark"] a.fr-tag:hover,
+:root[data-fr-theme="dark"] button.fr-tag:hover,
+:root[data-fr-theme="dark"] input[type="button"].fr-tag:hover,
+:root[data-fr-theme="dark"] input[type="image"].fr-tag:hover,
+:root[data-fr-theme="dark"] input[type="reset"].fr-tag:hover,
+:root[data-fr-theme="dark"] input[type="submit"].fr-tag:hover {
+	color: #bdbdf9;
+	background-color: #303054;
+}
