@@ -96,7 +96,7 @@ export const PersonaTiles = ({
 			const slug = pendingFocusToTileSlug.current;
 			pendingFocusToTileSlug.current = null;
 			const wrapper = gridWrapperRef.current.querySelector<HTMLElement>(
-				`[data-slug="${slug}"]`,
+				`[data-slug="${CSS.escape(slug)}"]`,
 			);
 			wrapper?.querySelector<HTMLButtonElement>("button")?.focus();
 		}
