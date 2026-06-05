@@ -148,10 +148,16 @@ export default function ContactParticuliersForm() {
 						const firstErrorField = document.querySelector<HTMLElement>(
 							".fr-input-group--error, .fr-select-group--error, .fr-fieldset--error",
 						);
-						firstErrorField?.scrollIntoView({
-							behavior: "smooth",
-							block: "center",
-						});
+						if (firstErrorField) {
+							firstErrorField.scrollIntoView({
+								behavior: "smooth",
+								block: "center",
+							});
+							const focusable = firstErrorField.querySelector<HTMLElement>(
+								"input, select, textarea",
+							);
+							focusable?.focus({ preventScroll: true });
+						}
 					});
 				});
 			}}
