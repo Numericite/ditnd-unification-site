@@ -128,10 +128,12 @@ export const SearchGuidesDisplay = ({
 					tabIndex={-1}
 					className={fr.cx("fr-grid-row", "fr-grid-row--gutters", "fr-pt-3w")}
 				>
+					<h2 className="fr-sr-only">Résultats de recherche</h2>
 					<CardsDisplayGroup
 						className={fr.cx("fr-col-lg-6")}
 						guides={items}
 						kind="guides"
+						titleAs="h3"
 					/>
 					{pageCount > 1 && (
 						<div
