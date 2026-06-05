@@ -136,6 +136,7 @@ export const SearchCoursesDisplay = ({
 					tabIndex={-1}
 					className={fr.cx("fr-grid-row", "fr-grid-row--gutters", "fr-pt-3w")}
 				>
+					<h2 className="fr-sr-only">Résultats de recherche</h2>
 					<CardsDisplayGroup
 						className={fr.cx(
 							"fr-col-12",
@@ -145,6 +146,7 @@ export const SearchCoursesDisplay = ({
 						)}
 						courses={items}
 						kind="courses"
+						titleAs="h3"
 					/>
 					{pageCount > 1 && (
 						<div
