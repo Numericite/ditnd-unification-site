@@ -30,13 +30,19 @@ import { MetaTitleComponent as MetaTitleComponent_a8a977ebc872c5d5ea7ee689724c08
 import { MetaDescriptionComponent as MetaDescriptionComponent_a8a977ebc872c5d5ea7ee689724c0860 } from "@payloadcms/plugin-seo/client";
 import { MetaImageComponent as MetaImageComponent_a8a977ebc872c5d5ea7ee689724c0860 } from "@payloadcms/plugin-seo/client";
 import { PreviewComponent as PreviewComponent_a8a977ebc872c5d5ea7ee689724c0860 } from "@payloadcms/plugin-seo/client";
+import { default as default_cd31b5ee51188f80370eaec27fcfca00 } from "../../../payload/components/MapCategoryExcelExport";
+import { default as default_1dc9df847c6c8ec54f552b6626b54e17 } from "../../../payload/components/MetadataField";
+import { default as default_ab9295f833f2f5fee5779f5535e576a4 } from "../../../payload/components/MapMarkersImportLink";
+import { default as default_30b019d33d2d57b9c17407beecd72e60 } from "../../../payload/components/CustomFieldFiltersEditor";
 import { default as default_22a653d96dc1a6313610d55237ed703e } from "../../../payload/components/ColorPicker";
 import { LinkToDoc as LinkToDoc_aead06e4cbf6b2620c5c51c9ab283634 } from "@payloadcms/plugin-search/client";
 import { ReindexButton as ReindexButton_aead06e4cbf6b2620c5c51c9ab283634 } from "@payloadcms/plugin-search/client";
 import { FolderTypeField as FolderTypeField_2b8867833a34864a02ddf429b0728a40 } from "@payloadcms/next/client";
 import { S3ClientUploadHandler as S3ClientUploadHandler_f97aa6c64367fa259c5bc0567239ef24 } from "@payloadcms/storage-s3/client";
+import { default as default_4bf3fd4f8b9e4bf53a867035a745e24a } from "../../../payload/views/MapImportView";
 import { CollectionCards as CollectionCards_f9c02e79a4aed9a3924487c0cd4cafb1 } from "@payloadcms/next/rsc";
 
+/** @type import('payload').ImportMap */
 export const importMap = {
 	"@payloadcms/next/rsc#FolderTableCell":
 		FolderTableCell_f9c02e79a4aed9a3924487c0cd4cafb1,
@@ -102,6 +108,14 @@ export const importMap = {
 		MetaImageComponent_a8a977ebc872c5d5ea7ee689724c0860,
 	"@payloadcms/plugin-seo/client#PreviewComponent":
 		PreviewComponent_a8a977ebc872c5d5ea7ee689724c0860,
+	"../payload/components/MapCategoryExcelExport#default":
+		default_cd31b5ee51188f80370eaec27fcfca00,
+	"../payload/components/MetadataField#default":
+		default_1dc9df847c6c8ec54f552b6626b54e17,
+	"../payload/components/MapMarkersImportLink#default":
+		default_ab9295f833f2f5fee5779f5535e576a4,
+	"../payload/components/CustomFieldFiltersEditor#default":
+		default_30b019d33d2d57b9c17407beecd72e60,
 	"../payload/components/ColorPicker#default":
 		default_22a653d96dc1a6313610d55237ed703e,
 	"@payloadcms/plugin-search/client#LinkToDoc":
@@ -112,6 +126,7 @@ export const importMap = {
 		FolderTypeField_2b8867833a34864a02ddf429b0728a40,
 	"@payloadcms/storage-s3/client#S3ClientUploadHandler":
 		S3ClientUploadHandler_f97aa6c64367fa259c5bc0567239ef24,
+	"./views/MapImportView#default": default_4bf3fd4f8b9e4bf53a867035a745e24a,
 	"@payloadcms/next/rsc#CollectionCards":
 		CollectionCards_f9c02e79a4aed9a3924487c0cd4cafb1,
 };

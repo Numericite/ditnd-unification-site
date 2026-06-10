@@ -18,6 +18,7 @@ type Props = {
 	showShareSocials?: boolean;
 	extraLinks?: Link[];
 	children?: ReactNode;
+	headerToolbar?: ReactNode;
 };
 
 export default function CmsPageLayout({
@@ -29,6 +30,7 @@ export default function CmsPageLayout({
 	showShareSocials = false,
 	extraLinks,
 	children,
+	headerToolbar,
 }: Props) {
 	const { classes, cx } = useStyles();
 
@@ -81,6 +83,8 @@ export default function CmsPageLayout({
 		</>
 	);
 
+	const toolbar = headerToolbar ? <div>{headerToolbar}</div> : null;
+
 	if (!hasSummary) {
 		return (
 			<div className={fr.cx("fr-grid-row", "fr-grid-row--gutters")}>
@@ -89,6 +93,7 @@ export default function CmsPageLayout({
 					className={fr.cx("fr-col-12", "fr-col-lg-8", "fr-col-offset-lg-2")}
 				>
 					{heading}
+					{toolbar}
 					{body}
 				</div>
 			</div>
@@ -98,7 +103,10 @@ export default function CmsPageLayout({
 	return (
 		<div className={fr.cx("fr-grid-row", "fr-grid-row--gutters")}>
 			{banner && <div className={fr.cx("fr-col-12")}>{banner}</div>}
-			<div className={fr.cx("fr-col-12")}>{heading}</div>
+			<div className={fr.cx("fr-col-12")}>
+				{heading}
+				{toolbar}
+			</div>
 			<SummaryContent
 				menuLinks={links}
 				title="Sommaire"

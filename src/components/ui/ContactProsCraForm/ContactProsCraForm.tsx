@@ -128,10 +128,16 @@ export default function ContactProsCraForm() {
 						const firstErrorField = document.querySelector<HTMLElement>(
 							".fr-input-group--error, .fr-select-group--error",
 						);
-						firstErrorField?.scrollIntoView({
-							behavior: "smooth",
-							block: "center",
-						});
+						if (firstErrorField) {
+							firstErrorField.scrollIntoView({
+								behavior: "smooth",
+								block: "center",
+							});
+							const focusable = firstErrorField.querySelector<HTMLElement>(
+								"input, select, textarea",
+							);
+							focusable?.focus({ preventScroll: true });
+						}
 					});
 				});
 			}}

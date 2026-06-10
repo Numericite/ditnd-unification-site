@@ -1,5 +1,5 @@
 import { fr } from "@codegouvfr/react-dsfr";
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 import { homeCMSStore, proStore, tdhStore } from "~/state/store";
 import { PersonaGrid } from "../ui/HomePage/PersonaGrid";
 import Tag from "@codegouvfr/react-dsfr/Tag";
@@ -73,6 +73,35 @@ export const PersonaTiles = ({
 		titleByDisplay[defaultDisplay || "default"],
 	);
 
+	const pendingFocusToTag = useRef(false);
+	const tagsContainerRef = useRef<HTMLDivElement>(null);
+	const pendingFocusToTileSlug = useRef<string | null>(null);
+	const gridWrapperRef = useRef<HTMLDivElement>(null);
+
+	useEffect(() => {
+		if (
+			pendingFocusToTag.current &&
+			tags.length > 0 &&
+			tagsContainerRef.current
+		) {
+			pendingFocusToTag.current = false;
+			const buttons =
+				tagsContainerRef.current.querySelectorAll<HTMLButtonElement>("button");
+			buttons[buttons.length - 1]?.focus();
+		}
+	}, [tags]);
+
+	useEffect(() => {
+		if (pendingFocusToTileSlug.current && gridWrapperRef.current) {
+			const slug = pendingFocusToTileSlug.current;
+			pendingFocusToTileSlug.current = null;
+			const wrapper = gridWrapperRef.current.querySelector<HTMLElement>(
+				`[data-slug="${CSS.escape(slug)}"]`,
+			);
+			wrapper?.querySelector<HTMLButtonElement>("button")?.focus();
+		}
+	}, [display]);
+
 	const professionalPersonas = proStore.get();
 
 	const router = useRouter();
@@ -86,6 +115,7 @@ export const PersonaTiles = ({
 	const tdhTiles = [...tdh];
 
 	const handleClick = (tile: PersonaTile, prevDisplay: PersonaTypes) => {
+		pendingFocusToTag.current = true;
 		setTags((prev) => [
 			...prev,
 			{
@@ -131,6 +161,7 @@ export const PersonaTiles = ({
 	function deleteTag(tag: TagItem) {
 		const isDismissible = tag.dismissible ?? true;
 		if (isDismissible) {
+			pendingFocusToTileSlug.current = tag.slug;
 			setDisplay(tag.display);
 			setSubTitle(titleByDisplay[tag.display]);
 			tag.display === "default"
@@ -244,7 +275,10 @@ export const PersonaTiles = ({
 				</div>
 
 				{!hideTags && (
-					<div className={cx(fr.cx("fr-grid-row", "fr-grid-row--gutters"))}>
+					<div
+						ref={tagsContainerRef}
+						className={cx(fr.cx("fr-grid-row", "fr-grid-row--gutters"))}
+					>
 						{tags.map((tag, index) => (
 							<Tag
 								key={index}
@@ -252,6 +286,7 @@ export const PersonaTiles = ({
 								dismissible
 								nativeButtonProps={{
 									onClick: () => deleteTag(tag),
+									"aria-label": `Retirer "${tag.label}" et refaire votre choix`,
 								}}
 							>
 								{tag.label}
@@ -260,7 +295,7 @@ export const PersonaTiles = ({
 					</div>
 				)}
 
-				{renderContent()}
+				<div ref={gridWrapperRef}>{renderContent()}</div>
 			</fieldset>
 		</>
 	);

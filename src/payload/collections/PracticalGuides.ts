@@ -3,11 +3,14 @@ import type {
 	CollectionAfterDeleteHook,
 	CollectionBeforeDeleteHook,
 	CollectionConfig,
+	Payload,
 } from "payload";
 import { sql } from "@payloadcms/db-postgres";
+import { HeadingFeature, lexicalEditor } from "@payloadcms/richtext-lexical";
 import { slugify } from "~/utils/tools";
 import { standardFields } from "../fields/standards";
 import { generateEmbedding } from "../services/embedding";
+import { generateSimplifiedContent } from "../services/contentSimplification";
 
 function extractTextFromLexical(node: unknown): string {
 	if (!node || typeof node !== "object") return "";
@@ -20,11 +23,70 @@ function extractTextFromLexical(node: unknown): string {
 	return "";
 }
 
+const SIMPLIFICATION_INTERNAL_FLAG = "simplificationInternalUpdate";
+const SIMPLIFICATION_SKIP_FLAG = "skipSimplification";
+
+function shouldTriggerSimplification(
+	doc: { _status?: string | null; content?: unknown },
+	previousDoc: { _status?: string | null; content?: unknown } | undefined,
+): boolean {
+	if (doc._status !== "published") return false;
+	if (previousDoc?._status !== "published") return true;
+	return JSON.stringify(doc.content) !== JSON.stringify(previousDoc.content);
+}
+
+async function runSimplification(
+	payload: Payload,
+	docId: number | string,
+	content: unknown,
+): Promise<void> {
+	try {
+		await payload.update({
+			collection: "practical-guides",
+			id: docId,
+			data: { simplifiedGenerationStatus: "pending" },
+			context: { [SIMPLIFICATION_INTERNAL_FLAG]: true },
+		});
+
+		const result = await generateSimplifiedContent(content);
+
+		if (result.ok) {
+			await payload.update({
+				collection: "practical-guides",
+				id: docId,
+				data: {
+					contentSimplified: result.lexical,
+					simplifiedGenerationStatus: "ready",
+					simplifiedGeneratedAt: new Date().toISOString(),
+				},
+				context: { [SIMPLIFICATION_INTERNAL_FLAG]: true },
+			});
+		} else {
+			console.error(`[Simplification] Guide ${docId} failed: ${result.error}`);
+			await payload.update({
+				collection: "practical-guides",
+				id: docId,
+				data: { simplifiedGenerationStatus: "failed" },
+				context: { [SIMPLIFICATION_INTERNAL_FLAG]: true },
+			});
+		}
+	} catch (err) {
+		console.error(
+			`[Simplification] Unexpected failure for guide ${docId}:`,
+			err,
+		);
+	}
+}
+
 const afterChangePracticalGuide: CollectionAfterChangeHook = async ({
 	doc,
+	previousDoc,
 	req,
+	context,
 }) => {
 	if (!req?.payload?.db) return doc;
+	// Internal bookkeeping update: skip both vector indexing and simplification.
+	if (context?.[SIMPLIFICATION_INTERNAL_FLAG] === true) return doc;
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	const db = req.payload.db as any;
 
@@ -121,6 +183,13 @@ const afterChangePracticalGuide: CollectionAfterChangeHook = async ({
 		console.error("[VectorSearch] Failed to index guide:", doc.id, err);
 	}
 
+	if (
+		shouldTriggerSimplification(doc, previousDoc) &&
+		!context?.[SIMPLIFICATION_SKIP_FLAG]
+	) {
+		void runSimplification(req.payload, doc.id, doc.content);
+	}
+
 	return doc;
 };
 
@@ -214,6 +283,67 @@ export const PracticalGuides: CollectionConfig = {
 			},
 		},
 		standardFields.wysiwyg,
+		{
+			name: "contentSimplified",
+			type: "richText",
+			required: false,
+			label: { fr: "Contenu simplifié (généré automatiquement)" },
+			admin: {
+				readOnly: true,
+				description:
+					"Version simplifiée du contenu, régénérée automatiquement à chaque publication.",
+			},
+			editor: lexicalEditor({
+				features: ({ defaultFeatures }) => [
+					...defaultFeatures.filter(
+						(feature) =>
+							![
+								"align",
+								"blockquote",
+								"checklist",
+								"heading",
+								"horizontalRule",
+								"indent",
+								"inlineCode",
+								"italic",
+								"strikethrough",
+								"subscript",
+								"superscript",
+								"underline",
+							].includes(feature.key),
+					),
+					HeadingFeature({ enabledHeadingSizes: ["h2", "h3"] }),
+				],
+			}),
+		},
+		{
+			name: "simplifiedGenerationStatus",
+			type: "select",
+			required: false,
+			label: { fr: "Statut génération simplifiée" },
+			options: [
+				{ value: "pending", label: { fr: "En cours" } },
+				{ value: "ready", label: { fr: "Prêt" } },
+				{ value: "failed", label: { fr: "Échec" } },
+			],
+			admin: {
+				position: "sidebar",
+				readOnly: true,
+			},
+		},
+		{
+			name: "simplifiedGeneratedAt",
+			type: "date",
+			required: false,
+			label: { fr: "Dernière génération simplifiée" },
+			admin: {
+				position: "sidebar",
+				readOnly: true,
+				date: {
+					displayFormat: "dd/MM/yyyy HH:mm",
+				},
+			},
+		},
 		{
 			name: "persona",
 			type: "relationship",
