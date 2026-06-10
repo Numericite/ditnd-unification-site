@@ -25,6 +25,7 @@ import * as migration_20260527_120000_simplified_content from './20260527_120000
 import * as migration_20260601_140613_add_full_description_condition from './20260601_140613_add_full_description_condition';
 import * as migration_20260602_095234_add_maps from './20260602_095234_add_maps';
 import * as migration_20260603_065804_add_map_basemap from './20260603_065804_add_map_basemap';
+import * as migration_20260603_145206_add_description_journey from './20260603_145206_add_description_journey';
 
 export const migrations = [
   {
@@ -145,7 +146,7 @@ export const migrations = [
   {
     up: migration_20260527_120000_simplified_content.up,
     down: migration_20260527_120000_simplified_content.down,
-    name: '20260527_120000_simplified_content'
+    name: '20260527_120000_simplified_content',
   },
   {
     up: migration_20260601_140613_add_full_description_condition.up,
@@ -160,6 +161,11 @@ export const migrations = [
   {
     up: migration_20260603_065804_add_map_basemap.up,
     down: migration_20260603_065804_add_map_basemap.down,
-    name: '20260603_065804_add_map_basemap'
+    name: '20260603_065804_add_map_basemap',
+  },
+  {
+    up: migration_20260603_145206_add_description_journey.up,
+    down: migration_20260603_145206_add_description_journey.down,
+    name: '20260603_145206_add_description_journey',
   },
 ];

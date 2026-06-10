@@ -4,6 +4,10 @@ const journeys = [
 	{
 		journey_name: "Je suis un parent ou un proche intéressé par l'autisme",
 		persona: 1,
+		practicalGuideDescription:
+			"Ces fiches pratiques vous accompagnent pour comprendre l'autisme, repérer les besoins de votre proche et connaître les démarches et soutiens existants. Les contenus sont classés par thématiques afin de faciliter vos recherches.",
+		courseDescription:
+			"Ces formations vous permettent d'approfondir vos connaissances sur l'autisme et de développer des compétences pour mieux accompagner votre proche au quotidien.",
 		chapter: [
 			{
 				"chapter-name": "Comprendre l'autisme chez mon enfant / proche",
@@ -35,6 +39,8 @@ async function createJourneys(
 	data: {
 		journey_name: string;
 		persona: number;
+		practicalGuideDescription?: string;
+		courseDescription?: string;
 		chapter: {
 			"chapter-name": string;
 			"practical-guides": number[];
