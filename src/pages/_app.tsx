@@ -110,7 +110,7 @@ function App({ Component, pageProps }: AppPropsWithGlobal) {
 				<Footer
 					id="footer"
 					className={cx(classes.footer)}
-					accessibility="non compliant"
+					accessibility="partially compliant"
 					contentDescription={footerTitle}
 					websiteMapLinkProps={{
 						href: "/plan-du-site",
