@@ -105,11 +105,11 @@ export default function MapDisplay({ map, height }: Props) {
 	);
 
 	const handleGeoSearch = useCallback(
-		(lat: number, lng: number) => {
+		(lat: number, lng: number, zoom: number) => {
 			if (!mapRef) return;
 			mapRef.flyTo({
 				center: [lng, lat],
-				zoom: 12,
+				zoom,
 				duration: 800,
 				padding: { top: 80, bottom: 40, left: 40, right: 40 },
 			});

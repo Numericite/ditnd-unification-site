@@ -4,6 +4,7 @@ import Button from "@codegouvfr/react-dsfr/Button";
 import SearchBar from "@codegouvfr/react-dsfr/SearchBar/SearchBar";
 import { tss } from "tss-react/dsfr";
 import { dsfrAccentHex } from "~/utils/dsfr-color-hex";
+import { normalizeForSearch } from "~/utils/tools";
 import type {
 	MapCategorySummary,
 	MapMarkerSummary,
@@ -13,8 +14,82 @@ type Props = {
 	markers: MapMarkerSummary[];
 	categoryById: Map<number, MapCategorySummary>;
 	onSelect: (marker: MapMarkerSummary) => void;
-	onGeoSearch: (lat: number, lng: number) => void;
+	onGeoSearch: (lat: number, lng: number, zoom: number) => void;
 };
+
+type GeoKind = "municipality" | "department" | "region";
+
+type GeoResult = {
+	id: string;
+	label: string;
+	context: string | null;
+	kind: GeoKind;
+	latitude: number;
+	longitude: number;
+};
+
+const GEOCODE_ENDPOINT = "https://data.geopf.fr/geocodage/search/";
+const GEO_MIN_QUERY_LENGTH = 3;
+const GEO_MAX_RESULTS = 5;
+const GEO_DEBOUNCE_MS = 300;
+
+const GEO_KIND_LABEL: Record<GeoKind, string> = {
+	municipality: "Commune",
+	department: "Département",
+	region: "Région",
+};
+
+const GEO_KIND_ZOOM: Record<GeoKind, number> = {
+	municipality: 12,
+	department: 9,
+	region: 8,
+};
+
+function parseGeoFeatures(features: unknown[]): GeoResult[] {
+	const results: GeoResult[] = [];
+	for (const feature of features as Array<{
+		geometry?: { coordinates?: [number, number] };
+		properties?: Record<string, any>;
+	}>) {
+		const coords = feature.geometry?.coordinates;
+		const props = feature.properties;
+		if (!coords || !props) continue;
+		const [longitude, latitude] = coords;
+
+		if (props._type === "poi") {
+			const categories: string[] = Array.isArray(props.category)
+				? props.category
+				: [];
+			const kind: GeoKind | null = categories.includes("région")
+				? "region"
+				: categories.includes("département")
+					? "department"
+					: null;
+			if (!kind || typeof props.toponym !== "string") continue;
+			results.push({
+				id: String(props.extrafields?.cleabs ?? `${longitude},${latitude}`),
+				label: props.toponym,
+				context: null,
+				kind,
+				latitude,
+				longitude,
+			});
+		} else if (props.type === "municipality") {
+			const label = props.name ?? props.label;
+			if (typeof label !== "string" || label.includes("Arrondissement"))
+				continue;
+			results.push({
+				id: String(props.id ?? `${longitude},${latitude}`),
+				label,
+				context: typeof props.context === "string" ? props.context : null,
+				kind: "municipality",
+				latitude,
+				longitude,
+			});
+		}
+	}
+	return results.slice(0, GEO_MAX_RESULTS);
+}
 
 export default function MapSearch({
 	markers,
@@ -26,74 +101,114 @@ export default function MapSearch({
 	const [query, setQuery] = useState("");
 	const [isOpen, setIsOpen] = useState(false);
 	const [activeIndex, setActiveIndex] = useState(-1);
+	const [geoResults, setGeoResults] = useState<GeoResult[]>([]);
+	const [isGeoLoading, setIsGeoLoading] = useState(false);
 	const containerRef = useRef<HTMLDivElement>(null);
 	const inputRef = useRef<HTMLInputElement>(null);
 
-	const results = useMemo(() => {
-		const q = query.trim().toLowerCase();
+	const markerResults = useMemo(() => {
+		const q = normalizeForSearch(query.trim());
 		if (q.length < 2) return [];
 		return markers
 			.filter(
 				(m) =>
-					m.name.toLowerCase().includes(q) ||
-					m.city?.toLowerCase().includes(q) ||
+					normalizeForSearch(m.name).includes(q) ||
+					(m.city ? normalizeForSearch(m.city).includes(q) : false) ||
 					m.postalCode?.includes(q),
 			)
 			.slice(0, 8);
 	}, [markers, query]);
 
+	useEffect(() => {
+		const q = query.trim();
+		if (q.length < GEO_MIN_QUERY_LENGTH) {
+			setGeoResults([]);
+			setIsGeoLoading(false);
+			return;
+		}
+		setIsGeoLoading(true);
+		const controller = new AbortController();
+		const timer = setTimeout(async () => {
+			try {
+				const params = new URLSearchParams({
+					q,
+					index: "poi,address",
+					type: "municipality",
+					category: "département,région",
+					limit: "10",
+				});
+				const res = await fetch(`${GEOCODE_ENDPOINT}?${params.toString()}`, {
+					signal: controller.signal,
+				});
+				if (!res.ok) {
+					setGeoResults([]);
+					return;
+				}
+				const data = await res.json();
+				setGeoResults(parseGeoFeatures(data.features ?? []));
+			} catch {
+				// aborted or network error: keep previous results
+			} finally {
+				if (!controller.signal.aborted) setIsGeoLoading(false);
+			}
+		}, GEO_DEBOUNCE_MS);
+		return () => {
+			clearTimeout(timer);
+			controller.abort();
+		};
+	}, [query]);
+
+	const totalResults = markerResults.length + geoResults.length;
+
+	const closeDropdown = useCallback(() => {
+		setQuery("");
+		setIsOpen(false);
+		setActiveIndex(-1);
+		setGeoResults([]);
+	}, []);
+
 	const handleSelect = useCallback(
 		(marker: MapMarkerSummary) => {
-			setQuery("");
-			setIsOpen(false);
-			setActiveIndex(-1);
+			closeDropdown();
 			onSelect(marker);
 		},
-		[onSelect],
+		[closeDropdown, onSelect],
 	);
 
-	const handleGeocode = useCallback(
-		async (text: string) => {
-			const q = text.trim();
-			if (q.length < 2) return;
-			setIsOpen(false);
-			setActiveIndex(-1);
-			try {
-				const res = await fetch(
-					`https://api-adresse.data.gouv.fr/search/?q=${encodeURIComponent(q)}&limit=1`,
-				);
-				if (!res.ok) return;
-				const data = await res.json();
-				const feature = data.features?.[0];
-				if (!feature) return;
-				const [lng, lat] = feature.geometry.coordinates as [number, number];
-				setQuery("");
-				onGeoSearch(lat, lng);
-			} catch {
-				// silently ignore network errors
+	const handleGeoSelect = useCallback(
+		(geo: GeoResult) => {
+			closeDropdown();
+			onGeoSearch(geo.latitude, geo.longitude, GEO_KIND_ZOOM[geo.kind]);
+		},
+		[closeDropdown, onGeoSearch],
+	);
+
+	const selectIndex = useCallback(
+		(index: number) => {
+			if (index < markerResults.length) {
+				const marker = markerResults[index];
+				if (marker) handleSelect(marker);
+			} else {
+				const geo = geoResults[index - markerResults.length];
+				if (geo) handleGeoSelect(geo);
 			}
 		},
-		[onGeoSearch],
+		[markerResults, geoResults, handleSelect, handleGeoSelect],
 	);
 
 	const handleKeyDown = (e: React.KeyboardEvent) => {
 		if (e.key === "ArrowDown") {
 			e.preventDefault();
 			setIsOpen(true);
-			setActiveIndex((prev) => (prev + 1) % Math.max(results.length, 1));
+			setActiveIndex((prev) => (prev + 1) % Math.max(totalResults, 1));
 		} else if (e.key === "ArrowUp") {
 			e.preventDefault();
 			setActiveIndex(
-				(prev) => (prev - 1 + results.length) % Math.max(results.length, 1),
+				(prev) => (prev - 1 + totalResults) % Math.max(totalResults, 1),
 			);
 		} else if (e.key === "Enter") {
 			e.preventDefault();
-			if (activeIndex >= 0) {
-				const marker = results[activeIndex];
-				if (marker) handleSelect(marker);
-			} else {
-				handleGeocode(query);
-			}
+			if (totalResults > 0) selectIndex(activeIndex >= 0 ? activeIndex : 0);
 		} else if (e.key === "Escape") {
 			setIsOpen(false);
 			setActiveIndex(-1);
@@ -116,8 +231,8 @@ export default function MapSearch({
 	}, []);
 
 	const showNoResults =
-		isOpen && query.trim().length >= 2 && results.length === 0;
-	const showDropdown = isOpen && results.length > 0;
+		isOpen && query.trim().length >= 2 && totalResults === 0 && !isGeoLoading;
+	const showDropdown = isOpen && totalResults > 0;
 
 	return (
 		<div ref={containerRef} className={classes.container}>
@@ -142,12 +257,19 @@ export default function MapSearch({
 						autoComplete="off"
 					/>
 				)}
-				onButtonClick={(text) => handleGeocode(text)}
+				onButtonClick={() => {
+					if (totalResults > 0) selectIndex(activeIndex >= 0 ? activeIndex : 0);
+				}}
 			/>
 
 			{showDropdown ? (
 				<ul className={classes.dropdown}>
-					{results.map((marker, i) => {
+					{markerResults.length > 0 ? (
+						<li aria-hidden="true" className={classes.groupLabel}>
+							Sur la carte
+						</li>
+					) : null}
+					{markerResults.map((marker, i) => {
 						const category = categoryById.get(marker.categoryId);
 						const color = dsfrAccentHex(category?.colorVariant);
 						return (
@@ -176,6 +298,50 @@ export default function MapSearch({
 													.filter(Boolean)
 													.join(" ")}
 											</span>
+										) : null}
+									</span>
+								</Button>
+							</li>
+						);
+					})}
+
+					{geoResults.length > 0 ? (
+						<li aria-hidden="true" className={classes.groupLabel}>
+							Lieux en France
+						</li>
+					) : null}
+					{geoResults.map((geo, i) => {
+						const index = markerResults.length + i;
+						return (
+							<li key={geo.id}>
+								<Button
+									priority="tertiary no outline"
+									className={cx(
+										classes.result,
+										activeIndex === index && classes.resultActive,
+									)}
+									onClick={() => handleGeoSelect(geo)}
+									nativeButtonProps={{
+										onMouseEnter: () => setActiveIndex(index),
+									}}
+								>
+									<i
+										aria-hidden="true"
+										className={cx(
+											fr.cx("fr-icon-map-pin-2-line"),
+											classes.geoIcon,
+										)}
+										style={{ flexShrink: 0 }}
+									/>
+									<span className={classes.resultText}>
+										<span className={classes.resultName}>
+											{geo.label}
+											<span className={classes.kindTag}>
+												{GEO_KIND_LABEL[geo.kind]}
+											</span>
+										</span>
+										{geo.context ? (
+											<span className={classes.resultCity}>{geo.context}</span>
 										) : null}
 									</span>
 								</Button>
@@ -215,8 +381,16 @@ const useStyles = tss.withName("MapSearch").create(() => ({
 		padding: `${fr.spacing("1v")} 0`,
 		paddingLeft: "0 !important",
 		zIndex: 40,
-		maxHeight: "16rem",
+		maxHeight: "20rem",
 		overflowY: "auto",
+	},
+	groupLabel: {
+		padding: `${fr.spacing("2v")} ${fr.spacing("3v")} ${fr.spacing("1v")}`,
+		fontSize: "0.6875rem",
+		fontWeight: 700,
+		textTransform: "uppercase",
+		letterSpacing: "0.04em",
+		color: fr.colors.decisions.text.mention.grey.default,
 	},
 	result: {
 		display: "flex !important",
@@ -245,6 +419,22 @@ const useStyles = tss.withName("MapSearch").create(() => ({
 	resultCity: {
 		fontSize: "0.75rem",
 		color: fr.colors.decisions.text.mention.grey.default,
+	},
+	geoIcon: {
+		color: fr.colors.decisions.text.mention.grey.default,
+	},
+	kindTag: {
+		display: "inline-block",
+		marginLeft: fr.spacing("2v"),
+		padding: `0 ${fr.spacing("1v")}`,
+		borderRadius: "0.25rem",
+		fontSize: "0.625rem",
+		fontWeight: 700,
+		textTransform: "uppercase",
+		letterSpacing: "0.03em",
+		verticalAlign: "middle",
+		backgroundColor: fr.colors.decisions.background.contrast.info.default,
+		color: fr.colors.decisions.text.default.info.default,
 	},
 	noResults: {
 		position: "absolute",
