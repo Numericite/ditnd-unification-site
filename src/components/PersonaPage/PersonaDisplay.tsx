@@ -75,7 +75,7 @@ export default function PersonaDisplay({
 				{(viewCourses
 					? journey.courseDescription
 					: journey.practicalGuideDescription) && (
-					<p className={fr.cx("fr-text--md")}>
+					<p className={cx(fr.cx("fr-text--md"), classes.tabDescription)}>
 						{viewCourses
 							? journey.courseDescription
 							: journey.practicalGuideDescription}
@@ -127,6 +127,9 @@ export default function PersonaDisplay({
 }
 
 const useStyles = tss.withName(PersonaDisplay.name).create(() => ({
+	tabDescription: {
+		whiteSpace: "pre-line",
+	},
 	whiteSummarySticky: {
 		position: "sticky",
 		top: "20px",
