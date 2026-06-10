@@ -44,8 +44,14 @@ export default function CardDisplay({
 			}
 		: { imageComponent: undefined };
 
+	const isExternalCourseLink =
+		kind === "courses" && redirect.startsWith("http");
 	const redirectText =
-		kind === "courses" ? "Accéder à la formation" : "Voir la fiche";
+		kind === "courses" && !isExternalCourseLink
+			? "Voir la formation"
+			: kind === "courses"
+				? "Accéder à la formation"
+				: "Voir la fiche";
 
 	return (
 		<Card
@@ -61,7 +67,7 @@ export default function CardDisplay({
 			desc={description ? shortenDescription(description) : undefined}
 			{...imgProps}
 			footer={
-				kind === "courses" ? (
+				isExternalCourseLink ? (
 					<a
 						className="fr-link fr-icon-arrow-right-line fr-link--icon-right"
 						href={redirect}

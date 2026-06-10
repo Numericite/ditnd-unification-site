@@ -1,4 +1,5 @@
 import type { Where } from "payload";
+import { TRPCError } from "@trpc/server";
 import { z } from "zod";
 import { sql } from "@payloadcms/db-postgres";
 import type {
@@ -27,6 +28,29 @@ export interface AugmentedCourse extends Course {
 }
 
 export const courseRouter = createTRPCRouter({
+	getBySlug: publicProcedure
+		.input(z.object({ slug: z.string() }))
+		.query(async ({ input, ctx }): Promise<AugmentedCourse> => {
+			const result = await ctx.payload.find({
+				collection: "courses",
+				depth: 1,
+				limit: 1,
+				where: {
+					slug: { equals: input.slug },
+				},
+			});
+
+			const course = result.docs[0];
+			if (!course) {
+				throw new TRPCError({
+					code: "NOT_FOUND",
+					message: `No course found for slug: ${input.slug}`,
+				});
+			}
+
+			return course as AugmentedCourse;
+		}),
+
 	getByFilters: publicProcedure
 		.input(
 			z.object({
