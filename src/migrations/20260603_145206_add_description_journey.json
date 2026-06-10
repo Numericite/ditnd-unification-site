@@ -578,25 +578,6 @@
           "primaryKey": false,
           "notNull": false
         },
-        "content_simplified": {
-          "name": "content_simplified",
-          "type": "jsonb",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "simplified_generation_status": {
-          "name": "simplified_generation_status",
-          "type": "enum_practical_guides_simplified_generation_status",
-          "typeSchema": "public",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "simplified_generated_at": {
-          "name": "simplified_generated_at",
-          "type": "timestamp(3) with time zone",
-          "primaryKey": false,
-          "notNull": false
-        },
         "image_id": {
           "name": "image_id",
           "type": "integer",
@@ -1093,25 +1074,6 @@
         "version_content": {
           "name": "version_content",
           "type": "jsonb",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "version_content_simplified": {
-          "name": "version_content_simplified",
-          "type": "jsonb",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "version_simplified_generation_status": {
-          "name": "version_simplified_generation_status",
-          "type": "enum__practical_guides_v_version_simplified_generation_status",
-          "typeSchema": "public",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "version_simplified_generated_at": {
-          "name": "version_simplified_generated_at",
-          "type": "timestamp(3) with time zone",
           "primaryKey": false,
           "notNull": false
         },
@@ -2618,6 +2580,763 @@
       "checkConstraints": {},
       "isRLSEnabled": false
     },
+    "public.map_categories_custom_fields_options": {
+      "name": "map_categories_custom_fields_options",
+      "schema": "",
+      "columns": {
+        "_order": {
+          "name": "_order",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "_parent_id": {
+          "name": "_parent_id",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "id": {
+          "name": "id",
+          "type": "varchar",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "label": {
+          "name": "label",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "value": {
+          "name": "value",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        }
+      },
+      "indexes": {
+        "map_categories_custom_fields_options_order_idx": {
+          "name": "map_categories_custom_fields_options_order_idx",
+          "columns": [
+            {
+              "expression": "_order",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        },
+        "map_categories_custom_fields_options_parent_id_idx": {
+          "name": "map_categories_custom_fields_options_parent_id_idx",
+          "columns": [
+            {
+              "expression": "_parent_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        }
+      },
+      "foreignKeys": {
+        "map_categories_custom_fields_options_parent_id_fk": {
+          "name": "map_categories_custom_fields_options_parent_id_fk",
+          "tableFrom": "map_categories_custom_fields_options",
+          "tableTo": "map_categories_custom_fields",
+          "columnsFrom": [
+            "_parent_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
+    "public.map_categories_custom_fields": {
+      "name": "map_categories_custom_fields",
+      "schema": "",
+      "columns": {
+        "_order": {
+          "name": "_order",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "_parent_id": {
+          "name": "_parent_id",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "id": {
+          "name": "id",
+          "type": "varchar",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "label": {
+          "name": "label",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "key": {
+          "name": "key",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "type": {
+          "name": "type",
+          "type": "enum_map_categories_custom_fields_type",
+          "typeSchema": "public",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "'text'"
+        }
+      },
+      "indexes": {
+        "map_categories_custom_fields_order_idx": {
+          "name": "map_categories_custom_fields_order_idx",
+          "columns": [
+            {
+              "expression": "_order",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        },
+        "map_categories_custom_fields_parent_id_idx": {
+          "name": "map_categories_custom_fields_parent_id_idx",
+          "columns": [
+            {
+              "expression": "_parent_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        }
+      },
+      "foreignKeys": {
+        "map_categories_custom_fields_parent_id_fk": {
+          "name": "map_categories_custom_fields_parent_id_fk",
+          "tableFrom": "map_categories_custom_fields",
+          "tableTo": "map_categories",
+          "columnsFrom": [
+            "_parent_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
+    "public.map_categories": {
+      "name": "map_categories",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "serial",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "name": {
+          "name": "name",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "slug": {
+          "name": "slug",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "color_variant": {
+          "name": "color_variant",
+          "type": "enum_map_categories_color_variant",
+          "typeSchema": "public",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "icon_id": {
+          "name": "icon_id",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "description": {
+          "name": "description",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "updated_at": {
+          "name": "updated_at",
+          "type": "timestamp(3) with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp(3) with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        }
+      },
+      "indexes": {
+        "map_categories_slug_idx": {
+          "name": "map_categories_slug_idx",
+          "columns": [
+            {
+              "expression": "slug",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": true,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        },
+        "map_categories_updated_at_idx": {
+          "name": "map_categories_updated_at_idx",
+          "columns": [
+            {
+              "expression": "updated_at",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        },
+        "map_categories_created_at_idx": {
+          "name": "map_categories_created_at_idx",
+          "columns": [
+            {
+              "expression": "created_at",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        }
+      },
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
+    "public.map_markers": {
+      "name": "map_markers",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "serial",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "name": {
+          "name": "name",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "category_id": {
+          "name": "category_id",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "address": {
+          "name": "address",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "postal_code": {
+          "name": "postal_code",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "city": {
+          "name": "city",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "latitude": {
+          "name": "latitude",
+          "type": "numeric",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "longitude": {
+          "name": "longitude",
+          "type": "numeric",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "phone": {
+          "name": "phone",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "email": {
+          "name": "email",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "website": {
+          "name": "website",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "description": {
+          "name": "description",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "metadata": {
+          "name": "metadata",
+          "type": "jsonb",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "updated_at": {
+          "name": "updated_at",
+          "type": "timestamp(3) with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp(3) with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        }
+      },
+      "indexes": {
+        "map_markers_category_idx": {
+          "name": "map_markers_category_idx",
+          "columns": [
+            {
+              "expression": "category_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        },
+        "map_markers_updated_at_idx": {
+          "name": "map_markers_updated_at_idx",
+          "columns": [
+            {
+              "expression": "updated_at",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        },
+        "map_markers_created_at_idx": {
+          "name": "map_markers_created_at_idx",
+          "columns": [
+            {
+              "expression": "created_at",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        }
+      },
+      "foreignKeys": {
+        "map_markers_category_id_map_categories_id_fk": {
+          "name": "map_markers_category_id_map_categories_id_fk",
+          "tableFrom": "map_markers",
+          "tableTo": "map_categories",
+          "columnsFrom": [
+            "category_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "set null",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
+    "public.maps": {
+      "name": "maps",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "serial",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "name": {
+          "name": "name",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "slug": {
+          "name": "slug",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "title": {
+          "name": "title",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "description": {
+          "name": "description",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "basemap": {
+          "name": "basemap",
+          "type": "enum_maps_basemap",
+          "typeSchema": "public",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "'plan-ign'"
+        },
+        "allow_filter_by_category": {
+          "name": "allow_filter_by_category",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": false,
+          "default": true
+        },
+        "allow_filter_by_region": {
+          "name": "allow_filter_by_region",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": false,
+          "default": true
+        },
+        "allow_filter_by_departement": {
+          "name": "allow_filter_by_departement",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": false,
+          "default": true
+        },
+        "allowed_custom_field_filters": {
+          "name": "allowed_custom_field_filters",
+          "type": "jsonb",
+          "primaryKey": false,
+          "notNull": false,
+          "default": "'[]'::jsonb"
+        },
+        "default_latitude": {
+          "name": "default_latitude",
+          "type": "numeric",
+          "primaryKey": false,
+          "notNull": false,
+          "default": 46.6
+        },
+        "default_longitude": {
+          "name": "default_longitude",
+          "type": "numeric",
+          "primaryKey": false,
+          "notNull": false,
+          "default": 2.3
+        },
+        "default_zoom": {
+          "name": "default_zoom",
+          "type": "numeric",
+          "primaryKey": false,
+          "notNull": false,
+          "default": 5
+        },
+        "fit_to_markers": {
+          "name": "fit_to_markers",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": false,
+          "default": true
+        },
+        "updated_at": {
+          "name": "updated_at",
+          "type": "timestamp(3) with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp(3) with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        }
+      },
+      "indexes": {
+        "maps_slug_idx": {
+          "name": "maps_slug_idx",
+          "columns": [
+            {
+              "expression": "slug",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": true,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        },
+        "maps_updated_at_idx": {
+          "name": "maps_updated_at_idx",
+          "columns": [
+            {
+              "expression": "updated_at",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        },
+        "maps_created_at_idx": {
+          "name": "maps_created_at_idx",
+          "columns": [
+            {
+              "expression": "created_at",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        }
+      },
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
+    "public.maps_rels": {
+      "name": "maps_rels",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "serial",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "order": {
+          "name": "order",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "parent_id": {
+          "name": "parent_id",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "path": {
+          "name": "path",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "map_categories_id": {
+          "name": "map_categories_id",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        }
+      },
+      "indexes": {
+        "maps_rels_order_idx": {
+          "name": "maps_rels_order_idx",
+          "columns": [
+            {
+              "expression": "order",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        },
+        "maps_rels_parent_idx": {
+          "name": "maps_rels_parent_idx",
+          "columns": [
+            {
+              "expression": "parent_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        },
+        "maps_rels_path_idx": {
+          "name": "maps_rels_path_idx",
+          "columns": [
+            {
+              "expression": "path",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        },
+        "maps_rels_map_categories_id_idx": {
+          "name": "maps_rels_map_categories_id_idx",
+          "columns": [
+            {
+              "expression": "map_categories_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        }
+      },
+      "foreignKeys": {
+        "maps_rels_parent_fk": {
+          "name": "maps_rels_parent_fk",
+          "tableFrom": "maps_rels",
+          "tableTo": "maps",
+          "columnsFrom": [
+            "parent_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        },
+        "maps_rels_map_categories_fk": {
+          "name": "maps_rels_map_categories_fk",
+          "tableFrom": "maps_rels",
+          "tableTo": "map_categories",
+          "columnsFrom": [
+            "map_categories_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
     "public.personas": {
       "name": "personas",
       "schema": "",
@@ -3874,6 +4593,24 @@
           "primaryKey": false,
           "notNull": false
         },
+        "map_categories_id": {
+          "name": "map_categories_id",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "map_markers_id": {
+          "name": "map_markers_id",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "maps_id": {
+          "name": "maps_id",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        },
         "personas_id": {
           "name": "personas_id",
           "type": "integer",
@@ -4052,6 +4789,51 @@
           "columns": [
             {
               "expression": "glossary_categories_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        },
+        "payload_locked_documents_rels_map_categories_id_idx": {
+          "name": "payload_locked_documents_rels_map_categories_id_idx",
+          "columns": [
+            {
+              "expression": "map_categories_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        },
+        "payload_locked_documents_rels_map_markers_id_idx": {
+          "name": "payload_locked_documents_rels_map_markers_id_idx",
+          "columns": [
+            {
+              "expression": "map_markers_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        },
+        "payload_locked_documents_rels_maps_id_idx": {
+          "name": "payload_locked_documents_rels_maps_id_idx",
+          "columns": [
+            {
+              "expression": "maps_id",
               "isExpression": false,
               "asc": true,
               "nulls": "last"
@@ -4251,6 +5033,45 @@
           "tableTo": "glossary_categories",
           "columnsFrom": [
             "glossary_categories_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        },
+        "payload_locked_documents_rels_map_categories_fk": {
+          "name": "payload_locked_documents_rels_map_categories_fk",
+          "tableFrom": "payload_locked_documents_rels",
+          "tableTo": "map_categories",
+          "columnsFrom": [
+            "map_categories_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        },
+        "payload_locked_documents_rels_map_markers_fk": {
+          "name": "payload_locked_documents_rels_map_markers_fk",
+          "tableFrom": "payload_locked_documents_rels",
+          "tableTo": "map_markers",
+          "columnsFrom": [
+            "map_markers_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        },
+        "payload_locked_documents_rels_maps_fk": {
+          "name": "payload_locked_documents_rels_maps_fk",
+          "tableFrom": "payload_locked_documents_rels",
+          "tableTo": "maps",
+          "columnsFrom": [
+            "maps_id"
           ],
           "columnsTo": [
             "id"
@@ -5030,30 +5851,12 @@
     }
   },
   "enums": {
-    "public.enum_practical_guides_simplified_generation_status": {
-      "name": "enum_practical_guides_simplified_generation_status",
-      "schema": "public",
-      "values": [
-        "pending",
-        "ready",
-        "failed"
-      ]
-    },
     "public.enum_practical_guides_status": {
       "name": "enum_practical_guides_status",
       "schema": "public",
       "values": [
         "draft",
         "published"
-      ]
-    },
-    "public.enum__practical_guides_v_version_simplified_generation_status": {
-      "name": "enum__practical_guides_v_version_simplified_generation_status",
-      "schema": "public",
-      "values": [
-        "pending",
-        "ready",
-        "failed"
       ]
     },
     "public.enum__practical_guides_v_version_status": {
@@ -5070,7 +5873,47 @@
       "values": [
         "MOOC",
         "Webinaire",
-        "Présentiel"
+        "Pr\u00e9sentiel"
+      ]
+    },
+    "public.enum_map_categories_custom_fields_type": {
+      "name": "enum_map_categories_custom_fields_type",
+      "schema": "public",
+      "values": [
+        "checkbox",
+        "text",
+        "select"
+      ]
+    },
+    "public.enum_map_categories_color_variant": {
+      "name": "enum_map_categories_color_variant",
+      "schema": "public",
+      "values": [
+        "green-tilleul-verveine",
+        "green-bourgeon",
+        "green-emeraude",
+        "green-menthe",
+        "green-archipel",
+        "blue-ecume",
+        "blue-cumulus",
+        "purple-glycine",
+        "pink-macaron",
+        "pink-tuile",
+        "yellow-tournesol",
+        "yellow-moutarde",
+        "orange-terre-battue",
+        "brown-cafe-creme",
+        "brown-caramel",
+        "brown-opera",
+        "beige-gris-galet"
+      ]
+    },
+    "public.enum_maps_basemap": {
+      "name": "enum_maps_basemap",
+      "schema": "public",
+      "values": [
+        "plan-ign",
+        "aerial"
       ]
     },
     "public.enum_personas_pictogram": {

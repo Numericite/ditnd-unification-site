@@ -59,6 +59,7 @@ export const PersonaGrid = ({ tiles, onClick, ariaLabel }: Props) => {
 				return (
 					<div
 						key={index}
+						data-slug={tile.slug}
 						className={fr.cx(
 							"fr-col-12",
 							"fr-col-sm-6",
