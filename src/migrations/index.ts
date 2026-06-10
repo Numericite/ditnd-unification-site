@@ -27,6 +27,7 @@ import * as migration_20260602_095234_add_maps from './20260602_095234_add_maps'
 import * as migration_20260602_121945_add_slug_content_courses from './20260602_121945_add_slug_content_courses';
 import * as migration_20260603_065804_add_map_basemap from './20260603_065804_add_map_basemap';
 import * as migration_20260603_145206_add_description_journey from './20260603_145206_add_description_journey';
+import * as migration_20260610_064847_add_unique_slug_courses_guides from './20260610_064847_add_unique_slug_courses_guides';
 
 export const migrations = [
   {
@@ -173,5 +174,10 @@ export const migrations = [
     up: migration_20260603_145206_add_description_journey.up,
     down: migration_20260603_145206_add_description_journey.down,
     name: '20260603_145206_add_description_journey',
+  },
+  {
+    up: migration_20260610_064847_add_unique_slug_courses_guides.up,
+    down: migration_20260610_064847_add_unique_slug_courses_guides.down,
+    name: '20260610_064847_add_unique_slug_courses_guides'
   },
 ];

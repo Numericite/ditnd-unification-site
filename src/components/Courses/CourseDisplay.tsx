@@ -15,7 +15,6 @@ type Props = {
 
 export default function CourseDisplay({ course }: Props) {
 	const { classes, cx } = useStyles();
-	console.log(course);
 
 	const banner = course.image?.url ? (
 		<Image

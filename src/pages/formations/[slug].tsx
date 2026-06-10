@@ -1,4 +1,5 @@
 import Breadcrumb from "@codegouvfr/react-dsfr/Breadcrumb";
+import { TRPCError } from "@trpc/server";
 import { fr } from "@codegouvfr/react-dsfr";
 import Head from "next/head";
 import type { GetServerSideProps } from "next";
@@ -50,12 +51,12 @@ export const getServerSideProps: GetServerSideProps<Props> = async (ctx) => {
 	try {
 		const course = await caller.course.getBySlug({ slug });
 
-		if (!course) {
+		return { props: { course } };
+	} catch (error) {
+		if (error instanceof TRPCError && error.code === "NOT_FOUND") {
 			return { notFound: true };
 		}
 
-		return { props: { course } };
-	} catch {
-		return { notFound: true };
+		throw error;
 	}
 };

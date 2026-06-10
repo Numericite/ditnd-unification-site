@@ -111,6 +111,7 @@ export const Courses: CollectionConfig = {
 			name: "slug",
 			type: "text",
 			required: true,
+			unique: true,
 			label: { fr: "Identifiant texte" },
 			admin: {
 				position: "sidebar",

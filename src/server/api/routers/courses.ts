@@ -1,4 +1,5 @@
 import type { Where } from "payload";
+import { TRPCError } from "@trpc/server";
 import { z } from "zod";
 import { sql } from "@payloadcms/db-postgres";
 import type {
@@ -40,7 +41,12 @@ export const courseRouter = createTRPCRouter({
 			});
 
 			const course = result.docs[0];
-			if (!course) throw new Error(`No course found for slug: ${input.slug}`);
+			if (!course) {
+				throw new TRPCError({
+					code: "NOT_FOUND",
+					message: `No course found for slug: ${input.slug}`,
+				});
+			}
 
 			return course as AugmentedCourse;
 		}),
