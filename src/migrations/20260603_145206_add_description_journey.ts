@@ -3,7 +3,8 @@ import { type MigrateUpArgs, type MigrateDownArgs, sql } from '@payloadcms/db-po
 export async function up({ db }: MigrateUpArgs): Promise<void> {
   await db.execute(sql`
   ALTER TABLE "journeys" ADD COLUMN "practical_guide_description" varchar;
-  ALTER TABLE "journeys" ADD COLUMN "course_description" varchar;`)
+  ALTER TABLE "journeys" ADD COLUMN "course_description" varchar;
+  UPDATE "journeys" SET "practical_guide_description" = '[À RÉDIGER]', "course_description" = '[À RÉDIGER]';`)
 }
 
 export async function down({ db }: MigrateDownArgs): Promise<void> {
