@@ -1937,6 +1937,14 @@
     find-node-modules "^2.1.3"
     range-parser "^1.2.1"
 
+"@payloadcms/plugin-redirects@3.89.0":
+  version "3.89.0"
+  resolved "https://registry.yarnpkg.com/@payloadcms/plugin-redirects/-/plugin-redirects-3.89.0.tgz#5210408313f0ba65c558bd427fe028203fb8b278"
+  integrity sha512-8dvetrTEwLUosOt9zaRLQM/Y/bgXhajK/1Rgju2shcH3vwFuy191Mmh06YL5l+3qgf+qYMIwjB3Bwkd2NvDxcg==
+  dependencies:
+    "@payloadcms/translations" "3.89.0"
+    payload "3.89.0"
+
 "@payloadcms/plugin-search@3.89.0":
   version "3.89.0"
   resolved "https://registry.yarnpkg.com/@payloadcms/plugin-search/-/plugin-search-3.89.0.tgz#03f6fd72729eac422038bf6e53cff2e8e2341e6d"
