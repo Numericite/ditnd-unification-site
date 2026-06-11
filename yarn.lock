@@ -2011,6 +2011,14 @@
     find-node-modules "^2.1.3"
     range-parser "^1.2.1"
 
+"@payloadcms/plugin-redirects@3.85.0":
+  version "3.85.0"
+  resolved "https://registry.yarnpkg.com/@payloadcms/plugin-redirects/-/plugin-redirects-3.85.0.tgz#3569b7d05702de99719620de935ad0af7dfb8e41"
+  integrity sha512-3TNEY/NYHuGS83beVX/+XmjRadxSdHd96B9D1qin5Hg9zMeXeWhJ+1eQmWjxobzzZcAC6CVx+Nl0ghWA4QPofg==
+  dependencies:
+    "@payloadcms/translations" "3.85.0"
+    payload "3.85.0"
+
 "@payloadcms/plugin-search@3.85.0":
   version "3.85.0"
   resolved "https://registry.yarnpkg.com/@payloadcms/plugin-search/-/plugin-search-3.85.0.tgz#8cc52c9ad0723f54c097a820a02f98e3cdf83e42"
