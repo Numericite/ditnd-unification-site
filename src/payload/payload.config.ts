@@ -45,6 +45,7 @@ const hasAwsCreds = Boolean(
 import { CMSHome } from "./globals/cms/Home";
 import { CMSFooter } from "./globals/cms/Footer";
 import { CMSAbout } from "./globals/cms/About";
+import { CMSCartographie } from "./globals/cms/Cartographie";
 import { PracticalGuideViews } from "./collections/PracticalGuidesViews";
 
 const filename = fileURLToPath(import.meta.url);
@@ -135,7 +136,7 @@ export default buildConfig({
 		Themes,
 		Users,
 	],
-	globals: [CMSHome, CMSFooter, CMSAbout],
+	globals: [CMSHome, CMSFooter, CMSAbout, CMSCartographie],
 	editor: lexicalEditor(),
 	i18n: {
 		supportedLanguages: { en, fr },
