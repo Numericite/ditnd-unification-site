@@ -53,6 +53,7 @@ export default function CartographiePage({
 						content={content}
 						imageBanner={imageBanner}
 						showShareSocials
+						fullWidthWithoutSummary
 					/>
 				</PageContent>
 			</div>

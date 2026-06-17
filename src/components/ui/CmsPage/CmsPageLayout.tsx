@@ -19,6 +19,7 @@ type Props = {
 	extraLinks?: Link[];
 	children?: ReactNode;
 	headerToolbar?: ReactNode;
+	fullWidthWithoutSummary?: boolean;
 };
 
 export default function CmsPageLayout({
@@ -31,6 +32,7 @@ export default function CmsPageLayout({
 	extraLinks,
 	children,
 	headerToolbar,
+	fullWidthWithoutSummary = false,
 }: Props) {
 	const { classes, cx } = useStyles();
 
@@ -90,7 +92,12 @@ export default function CmsPageLayout({
 			<div className={fr.cx("fr-grid-row", "fr-grid-row--gutters")}>
 				{banner && <div className={fr.cx("fr-col-12")}>{banner}</div>}
 				<div
-					className={fr.cx("fr-col-12", "fr-col-lg-8", "fr-col-offset-lg-2")}
+					className={fr.cx(
+						"fr-col-12",
+						...(fullWidthWithoutSummary
+							? []
+							: (["fr-col-lg-8", "fr-col-offset-lg-2"] as const)),
+					)}
 				>
 					{heading}
 					{toolbar}
