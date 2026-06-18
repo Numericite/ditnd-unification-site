@@ -114,7 +114,7 @@ export default function MainNavigation() {
 					className={cx("ri-phone-line", classes.icon)}
 					aria-hidden="true"
 				/>
-				Ligne nationale d'écoute autisme :{" "}
+				Ligne nationale d'écoute :{" "}
 				<a href="tel:+33800714040" className={classes.phoneLink}>
 					0 800 71 40 40
 				</a>{" "}
