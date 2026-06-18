@@ -66,6 +66,7 @@ export type MapPayload = {
 	defaultLongitude: number | null;
 	defaultZoom: number | null;
 	fitToMarkers: boolean;
+	enableClustering: boolean;
 	allowedFilters: AllowedFilters;
 	allowedCustomFieldFilters: AllowedCustomFieldFilter[];
 	categories: MapCategorySummary[];
@@ -221,6 +222,7 @@ const buildPayload = async (
 		defaultLongitude: map.defaultLongitude ?? null,
 		defaultZoom: map.defaultZoom ?? null,
 		fitToMarkers: map.fitToMarkers ?? true,
+		enableClustering: map.enableClustering ?? true,
 		allowedCustomFieldFilters,
 		allowedFilters: {
 			category: doc.allowFilterByCategory ?? true,

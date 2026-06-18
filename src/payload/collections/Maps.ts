@@ -73,6 +73,16 @@ export const Maps: CollectionConfig = {
 			},
 		},
 		{
+			name: "enableClustering",
+			type: "checkbox",
+			defaultValue: true,
+			label: { fr: "Regrouper les marqueurs proches (clusters)" },
+			admin: {
+				description:
+					"Regroupe les marqueurs proches en clusters colorés selon leurs catégories. Le détail se déploie au zoom.",
+			},
+		},
+		{
 			type: "collapsible",
 			label: { fr: "Filtres autorisés" },
 			admin: {

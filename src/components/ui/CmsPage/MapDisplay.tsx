@@ -8,9 +8,11 @@ import {
 	type MapRef,
 } from "react-map-gl/maplibre";
 import "maplibre-gl/dist/maplibre-gl.css";
+import Supercluster from "supercluster";
 import { fr } from "@codegouvfr/react-dsfr";
 import { tss } from "tss-react/dsfr";
 import { dsfrAccentHex } from "~/utils/dsfr-color-hex";
+import MapClusterMarker from "./MapClusterMarker";
 import { getMarkerGeo } from "~/utils/map-geo";
 import { buildBasemapStyle } from "~/utils/map-basemaps";
 import MapFilterDrawer, {
@@ -67,6 +69,20 @@ export default function MapDisplay({ map, height }: Props) {
 		}),
 		[map.defaultLatitude, map.defaultLongitude, map.defaultZoom],
 	);
+
+	const [viewport, setViewport] = useState<{
+		bbox: [number, number, number, number];
+		zoom: number;
+	}>(() => ({
+		bbox: [-180, -85, 180, 85],
+		zoom: Math.round(initialView.zoom),
+	}));
+
+	const markerById = useMemo(() => {
+		const lookup = new Map<number, MapMarkerSummary>();
+		for (const m of map.markers) lookup.set(m.id, m);
+		return lookup;
+	}, [map.markers]);
 
 	const flyToMarker = useCallback(
 		(marker: MapMarkerSummary) => {
@@ -200,6 +216,106 @@ export default function MapDisplay({ map, height }: Props) {
 			return true;
 		});
 	}, [map.markers, activeFilters]);
+
+	const clusterIndex = useMemo(() => {
+		if (!map.enableClustering) return null;
+		const index = new Supercluster<
+			{ markerId: number; categoryId: number },
+			{ counts: Record<string, number> }
+		>({
+			radius: 60,
+			maxZoom: 16,
+			map: (props) => ({ counts: { [props.categoryId]: 1 } }),
+			reduce: (acc, props) => {
+				for (const [key, value] of Object.entries(props.counts)) {
+					acc.counts[key] = (acc.counts[key] ?? 0) + value;
+				}
+			},
+		});
+		index.load(
+			filteredMarkers
+				.filter((m) => m.longitude != null && m.latitude != null)
+				.map((m) => ({
+					type: "Feature" as const,
+					properties: { markerId: m.id, categoryId: m.categoryId },
+					geometry: {
+						type: "Point" as const,
+						coordinates: [m.longitude as number, m.latitude as number],
+					},
+				})),
+		);
+		return index;
+	}, [filteredMarkers, map.enableClustering]);
+
+	const clusters = useMemo(
+		() =>
+			clusterIndex
+				? clusterIndex.getClusters(viewport.bbox, viewport.zoom)
+				: [],
+		[clusterIndex, viewport],
+	);
+
+	const updateViewport = useCallback(
+		(instance: {
+			getBounds: () => {
+				getWest: () => number;
+				getSouth: () => number;
+				getEast: () => number;
+				getNorth: () => number;
+			};
+			getZoom: () => number;
+		}) => {
+			const b = instance.getBounds();
+			setViewport({
+				bbox: [b.getWest(), b.getSouth(), b.getEast(), b.getNorth()],
+				zoom: Math.round(instance.getZoom()),
+			});
+		},
+		[],
+	);
+
+	const handleClusterClick = useCallback(
+		(clusterId: number, longitude: number, latitude: number) => {
+			if (!clusterIndex || !mapRef) return;
+			const zoom = Math.min(
+				clusterIndex.getClusterExpansionZoom(clusterId),
+				16,
+			);
+			mapRef.flyTo({ center: [longitude, latitude], zoom, duration: 600 });
+		},
+		[clusterIndex, mapRef],
+	);
+
+	const renderSingleMarker = useCallback(
+		(marker: MapMarkerSummary) => {
+			const category = categoryById.get(marker.categoryId);
+			const color = dsfrAccentHex(category?.colorVariant);
+			const isSelected = selectedMarker?.id === marker.id;
+			return (
+				<Marker
+					key={marker.id}
+					longitude={marker.longitude as number}
+					latitude={marker.latitude as number}
+					anchor="bottom"
+					style={{ zIndex: isSelected ? 10 : 1 }}
+					onClick={(e) => {
+						e.originalEvent.stopPropagation();
+						handleSelectFromMap(marker);
+					}}
+				>
+					<Button
+						className={cx(classes.pin, isSelected && classes.pinSelected)}
+						aria-label={`${marker.name}${category ? ` — ${category.name}` : ""}`}
+						aria-pressed={isSelected}
+						iconId="fr-icon-map-pin-2-fill"
+						style={{ color }}
+						title={marker.name}
+					/>
+				</Marker>
+			);
+		},
+		[categoryById, selectedMarker, handleSelectFromMap, classes, cx],
+	);
 
 	const activeFilterCount =
 		activeFilters.regions.length +
@@ -393,51 +509,67 @@ export default function MapDisplay({ map, height }: Props) {
 								mapStyle={mapStyle}
 								attributionControl={{ compact: true }}
 								onClick={() => setSelectedMarker(null)}
+								onMoveEnd={(e) => updateViewport(e.target)}
 								onLoad={(e) => {
-									if (!map.fitToMarkers || map.markers.length === 0) return;
-									const lngs = map.markers.map((m) => m.longitude as number);
-									const lats = map.markers.map((m) => m.latitude as number);
-									e.target.fitBounds(
-										[
-											[Math.min(...lngs), Math.min(...lats)],
-											[Math.max(...lngs), Math.max(...lats)],
-										],
-										{ padding: 48, maxZoom: 13, duration: 0 },
-									);
+									if (map.fitToMarkers && map.markers.length > 0) {
+										const lngs = map.markers.map((m) => m.longitude as number);
+										const lats = map.markers.map((m) => m.latitude as number);
+										e.target.fitBounds(
+											[
+												[Math.min(...lngs), Math.min(...lats)],
+												[Math.max(...lngs), Math.max(...lats)],
+											],
+											{ padding: 48, maxZoom: 13, duration: 0 },
+										);
+									}
+									updateViewport(e.target);
 								}}
 							>
 								<NavigationControl position="top-right" showCompass={false} />
 
-								{filteredMarkers.map((marker) => {
-									const category = categoryById.get(marker.categoryId);
-									const color = dsfrAccentHex(category?.colorVariant);
-									const isSelected = selectedMarker?.id === marker.id;
-									return (
-										<Marker
-											key={marker.id}
-											longitude={marker.longitude as number}
-											latitude={marker.latitude as number}
-											anchor="bottom"
-											style={{ zIndex: isSelected ? 10 : 1 }}
-											onClick={(e) => {
-												e.originalEvent.stopPropagation();
-												handleSelectFromMap(marker);
-											}}
-										>
-											<Button
-												className={cx(
-													classes.pin,
-													isSelected && classes.pinSelected,
-												)}
-												aria-label={`${marker.name}${category ? ` — ${category.name}` : ""}`}
-												aria-pressed={isSelected}
-												iconId="fr-icon-map-pin-2-fill"
-												style={{ color }}
-												title={marker.name}
-											/>
-										</Marker>
-									);
-								})}
+								{clusterIndex
+									? clusters.map((feature) => {
+											const [longitude, latitude] = feature.geometry
+												.coordinates as [number, number];
+											if ("cluster" in feature.properties) {
+												const clusterId = feature.properties.cluster_id;
+												const counts = feature.properties.counts;
+												const total = feature.properties.point_count;
+												return (
+													<Marker
+														key={`cluster-${clusterId}`}
+														longitude={longitude}
+														latitude={latitude}
+														anchor="center"
+													>
+														<MapClusterMarker
+															counts={counts}
+															total={total}
+															getColor={(id) =>
+																dsfrAccentHex(
+																	categoryById.get(id)?.colorVariant,
+																)
+															}
+															getLabel={(id) =>
+																categoryById.get(id)?.name ?? ""
+															}
+															onClick={() =>
+																handleClusterClick(
+																	clusterId,
+																	longitude,
+																	latitude,
+																)
+															}
+														/>
+													</Marker>
+												);
+											}
+											const marker = markerById.get(
+												feature.properties.markerId,
+											);
+											return marker ? renderSingleMarker(marker) : null;
+										})
+									: filteredMarkers.map(renderSingleMarker)}
 
 								{selectedMarker && (
 									<Popup
