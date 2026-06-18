@@ -363,6 +363,24 @@ export default function MapDisplay({ map, height }: Props) {
 		setActiveFilters((prev) => ({ ...prev, categories: ids }));
 	}, []);
 
+	const toggleCategory = useCallback(
+		(id: number) => {
+			setActiveFilters((prev) => {
+				const allIds = categoriesWithMarkers.map((c) => c.id);
+				const current = prev.categories.length === 0 ? allIds : prev.categories;
+				const next = current.includes(id)
+					? current.filter((x) => x !== id)
+					: [...current, id];
+				if (next.length === 0) return prev;
+				return {
+					...prev,
+					categories: next.length === allIds.length ? [] : next,
+				};
+			});
+		},
+		[categoriesWithMarkers],
+	);
+
 	const handleCustomFieldChange = useCallback(
 		(key: string, values: string[]) => {
 			setActiveFilters((prev) => ({
@@ -503,6 +521,38 @@ export default function MapDisplay({ map, height }: Props) {
 
 			{viewMode === "map" ? (
 				<>
+					{categoriesWithMarkers.length > 1 ? (
+						<fieldset className={classes.legend}>
+							<legend className={fr.cx("fr-sr-only")}>
+								Afficher ou masquer les catégories
+							</legend>
+							{categoriesWithMarkers.map((cat) => {
+								const isOn =
+									activeFilters.categories.length === 0 ||
+									activeFilters.categories.includes(cat.id);
+								return (
+									<button
+										key={cat.id}
+										type="button"
+										className={cx(
+											classes.legendItem,
+											!isOn && classes.legendItemOff,
+										)}
+										aria-pressed={isOn}
+										onClick={() => toggleCategory(cat.id)}
+									>
+										<i
+											aria-hidden="true"
+											className={fr.cx("fr-icon-map-pin-2-fill")}
+											style={{ color: dsfrAccentHex(cat.colorVariant) }}
+										/>
+										<span>{cat.name}</span>
+									</button>
+								);
+							})}
+						</fieldset>
+					) : null}
+
 					<div className={classes.mapWrapper}>
 						<div className={classes.mapContainer} style={{ height }}>
 							<MapGL
@@ -683,21 +733,6 @@ export default function MapDisplay({ map, height }: Props) {
 							/>
 						</div>
 					</div>
-
-					{categoriesWithMarkers.length > 1 ? (
-						<ul className={classes.legend} aria-label="Légende">
-							{categoriesWithMarkers.map((cat) => (
-								<li key={cat.id} className={classes.legendItem}>
-									<i
-										aria-hidden="true"
-										className={fr.cx("fr-icon-map-pin-2-fill")}
-										style={{ color: dsfrAccentHex(cat.colorVariant) }}
-									/>
-									<span>{cat.name}</span>
-								</li>
-							))}
-						</ul>
-					) : null}
 				</>
 			) : (
 				<div className={classes.tableContainer}>
@@ -876,18 +911,37 @@ const useStyles = tss.withName(MapDisplay.name).create(() => ({
 	},
 
 	legend: {
-		listStyle: "none",
-		padding: 0,
-		margin: `${fr.spacing("2v")} 0 0`,
 		display: "flex",
 		flexWrap: "wrap",
-		paddingLeft: "0 !important",
-		gap: `${fr.spacing("2v")} ${fr.spacing("4v")}`,
+		gap: fr.spacing("2v"),
+		margin: `0 0 ${fr.spacing("3v")}`,
+		padding: 0,
+		border: 0,
+		minInlineSize: 0,
 	},
 	legendItem: {
 		display: "inline-flex",
 		alignItems: "center",
-		gap: fr.spacing("2v"),
-		fontSize: fr.spacing("4v"),
+		gap: fr.spacing("1v"),
+		padding: `${fr.spacing("1v")} ${fr.spacing("3v")}`,
+		border: `1px solid ${fr.colors.decisions.border.default.grey.default}`,
+		borderRadius: "9999px",
+		backgroundColor: fr.colors.decisions.background.default.grey.default,
+		color: fr.colors.decisions.text.title.grey.default,
+		fontSize: fr.spacing("3v"),
+		lineHeight: 1.5,
+		cursor: "pointer",
+		transition: "background-color 0.15s ease, opacity 0.15s ease",
+		"&:hover": {
+			backgroundColor: `${fr.colors.decisions.background.contrast.grey.default} !important`,
+		},
+		"&:focus-visible": {
+			outline: `2px solid ${fr.colors.decisions.border.plain.info.default}`,
+			outlineOffset: "2px",
+		},
+	},
+	legendItemOff: {
+		opacity: 0.45,
+		textDecoration: "line-through",
 	},
 }));
