@@ -143,7 +143,7 @@ export default function MainNavigation() {
 							size="large"
 							linkProps={{ href: "/contact-particuliers" }}
 						>
-							Contacter nos experts
+							Contactez nos experts
 						</Button>,
 					]}
 					renderSearchInput={({ className, id, placeholder, type }) => (
