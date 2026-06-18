@@ -899,7 +899,7 @@ const useStyles = tss.withName(MapDisplay.name).create(() => ({
 		display: "flex",
 		flexWrap: "wrap",
 		gap: fr.spacing("2v"),
-		margin: `0 0 ${fr.spacing("3v")}`,
+		margin: `${fr.spacing("3v")} 0 ${fr.spacing("4v")} 0`,
 		padding: 0,
 		border: 0,
 		minInlineSize: 0,
