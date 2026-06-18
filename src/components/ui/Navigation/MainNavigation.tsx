@@ -137,13 +137,13 @@ export default function MainNavigation() {
 					navigation={userNavigationItems}
 					quickAccessItems={[
 						<Button
-							key={"button-question"}
-							iconId={"fr-icon-message-3-line"}
+							key={"button-contact"}
+							iconId={"fr-icon-mail-line"}
 							priority="secondary"
 							size="large"
-							onClick={() => chatbotOpenStore.set(true)}
+							linkProps={{ href: "/contact-particuliers" }}
 						>
-							Posez votre question
+							Contactez nous
 						</Button>,
 					]}
 					renderSearchInput={({ className, id, placeholder, type }) => (
