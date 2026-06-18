@@ -363,23 +363,14 @@ export default function MapDisplay({ map, height }: Props) {
 		setActiveFilters((prev) => ({ ...prev, categories: ids }));
 	}, []);
 
-	const toggleCategory = useCallback(
-		(id: number) => {
-			setActiveFilters((prev) => {
-				const allIds = categoriesWithMarkers.map((c) => c.id);
-				const current = prev.categories.length === 0 ? allIds : prev.categories;
-				const next = current.includes(id)
-					? current.filter((x) => x !== id)
-					: [...current, id];
-				if (next.length === 0) return prev;
-				return {
-					...prev,
-					categories: next.length === allIds.length ? [] : next,
-				};
-			});
-		},
-		[categoriesWithMarkers],
-	);
+	const toggleCategory = useCallback((id: number) => {
+		setActiveFilters((prev) => {
+			const next = prev.categories.includes(id)
+				? prev.categories.filter((x) => x !== id)
+				: [...prev.categories, id];
+			return { ...prev, categories: next };
+		});
+	}, []);
 
 	const handleCustomFieldChange = useCallback(
 		(key: string, values: string[]) => {
