@@ -460,6 +460,38 @@ export default function MapDisplay({ map, height }: Props) {
 				<figcaption className={classes.caption}>{map.title}</figcaption>
 			) : null}
 
+			{categoriesWithMarkers.length > 1 ? (
+				<fieldset className={classes.legend}>
+					<legend className={fr.cx("fr-sr-only")}>
+						Afficher ou masquer les catégories
+					</legend>
+					{categoriesWithMarkers.map((cat) => {
+						const isOn =
+							activeFilters.categories.length === 0 ||
+							activeFilters.categories.includes(cat.id);
+						return (
+							<button
+								key={cat.id}
+								type="button"
+								className={cx(
+									classes.legendItem,
+									!isOn && classes.legendItemOff,
+								)}
+								aria-pressed={isOn}
+								onClick={() => toggleCategory(cat.id)}
+							>
+								<i
+									aria-hidden="true"
+									className={fr.cx("fr-icon-map-pin-2-fill")}
+									style={{ color: dsfrAccentHex(cat.colorVariant) }}
+								/>
+								<span>{cat.name}</span>
+							</button>
+						);
+					})}
+				</fieldset>
+			) : null}
+
 			<div className={classes.controls}>
 				<SegmentedControl
 					hideLegend
@@ -520,220 +552,173 @@ export default function MapDisplay({ map, height }: Props) {
 			) : null}
 
 			{viewMode === "map" ? (
-				<>
-					{categoriesWithMarkers.length > 1 ? (
-						<fieldset className={classes.legend}>
-							<legend className={fr.cx("fr-sr-only")}>
-								Afficher ou masquer les catégories
-							</legend>
-							{categoriesWithMarkers.map((cat) => {
-								const isOn =
-									activeFilters.categories.length === 0 ||
-									activeFilters.categories.includes(cat.id);
-								return (
-									<button
-										key={cat.id}
-										type="button"
-										className={cx(
-											classes.legendItem,
-											!isOn && classes.legendItemOff,
-										)}
-										aria-pressed={isOn}
-										onClick={() => toggleCategory(cat.id)}
-									>
-										<i
-											aria-hidden="true"
-											className={fr.cx("fr-icon-map-pin-2-fill")}
-											style={{ color: dsfrAccentHex(cat.colorVariant) }}
-										/>
-										<span>{cat.name}</span>
-									</button>
-								);
-							})}
-						</fieldset>
-					) : null}
+				<div className={classes.mapWrapper}>
+					<div className={classes.mapContainer} style={{ height }}>
+						<MapGL
+							ref={setMapRef}
+							initialViewState={initialView}
+							mapStyle={mapStyle}
+							attributionControl={{ compact: true }}
+							onClick={() => setSelectedMarker(null)}
+							onMoveEnd={(e) => updateViewport(e.target)}
+							onLoad={(e) => {
+								if (map.fitToMarkers && map.markers.length > 0) {
+									const lngs = map.markers.map((m) => m.longitude as number);
+									const lats = map.markers.map((m) => m.latitude as number);
+									e.target.fitBounds(
+										[
+											[Math.min(...lngs), Math.min(...lats)],
+											[Math.max(...lngs), Math.max(...lats)],
+										],
+										{ padding: 48, maxZoom: 13, duration: 0 },
+									);
+								}
+								updateViewport(e.target);
+							}}
+						>
+							<NavigationControl position="top-right" showCompass={false} />
 
-					<div className={classes.mapWrapper}>
-						<div className={classes.mapContainer} style={{ height }}>
-							<MapGL
-								ref={setMapRef}
-								initialViewState={initialView}
-								mapStyle={mapStyle}
-								attributionControl={{ compact: true }}
-								onClick={() => setSelectedMarker(null)}
-								onMoveEnd={(e) => updateViewport(e.target)}
-								onLoad={(e) => {
-									if (map.fitToMarkers && map.markers.length > 0) {
-										const lngs = map.markers.map((m) => m.longitude as number);
-										const lats = map.markers.map((m) => m.latitude as number);
-										e.target.fitBounds(
-											[
-												[Math.min(...lngs), Math.min(...lats)],
-												[Math.max(...lngs), Math.max(...lats)],
-											],
-											{ padding: 48, maxZoom: 13, duration: 0 },
-										);
-									}
-									updateViewport(e.target);
-								}}
-							>
-								<NavigationControl position="top-right" showCompass={false} />
-
-								{clusterIndex
-									? clusters.map((feature) => {
-											const [longitude, latitude] = feature.geometry
-												.coordinates as [number, number];
-											if ("cluster" in feature.properties) {
-												const clusterId = feature.properties.cluster_id;
-												const counts = feature.properties.counts;
-												const total = feature.properties.point_count;
-												return (
-													<Marker
-														key={`cluster-${clusterId}`}
-														longitude={longitude}
-														latitude={latitude}
-														anchor="center"
-													>
-														<MapClusterMarker
-															counts={counts}
-															total={total}
-															getColor={(id) =>
-																dsfrAccentHex(
-																	categoryById.get(id)?.colorVariant,
-																)
-															}
-															getLabel={(id) =>
-																categoryById.get(id)?.name ?? ""
-															}
-															onClick={() =>
-																handleClusterClick(
-																	clusterId,
-																	longitude,
-																	latitude,
-																)
-															}
-														/>
-													</Marker>
-												);
-											}
-											const marker = markerById.get(
-												feature.properties.markerId,
+							{clusterIndex
+								? clusters.map((feature) => {
+										const [longitude, latitude] = feature.geometry
+											.coordinates as [number, number];
+										if ("cluster" in feature.properties) {
+											const clusterId = feature.properties.cluster_id;
+											const counts = feature.properties.counts;
+											const total = feature.properties.point_count;
+											return (
+												<Marker
+													key={`cluster-${clusterId}`}
+													longitude={longitude}
+													latitude={latitude}
+													anchor="center"
+												>
+													<MapClusterMarker
+														counts={counts}
+														total={total}
+														getColor={(id) =>
+															dsfrAccentHex(categoryById.get(id)?.colorVariant)
+														}
+														getLabel={(id) => categoryById.get(id)?.name ?? ""}
+														onClick={() =>
+															handleClusterClick(clusterId, longitude, latitude)
+														}
+													/>
+												</Marker>
 											);
-											return marker ? renderSingleMarker(marker) : null;
-										})
-									: filteredMarkers.map(renderSingleMarker)}
+										}
+										const marker = markerById.get(feature.properties.markerId);
+										return marker ? renderSingleMarker(marker) : null;
+									})
+								: filteredMarkers.map(renderSingleMarker)}
 
-								{selectedMarker && (
-									<Popup
-										longitude={selectedMarker.longitude as number}
-										latitude={selectedMarker.latitude as number}
-										anchor="bottom"
-										offset={[0, -32]}
-										closeButton={false}
-										closeOnClick={false}
-										onClose={() => setSelectedMarker(null)}
-										className={classes.popup}
-										maxWidth="20rem"
-									>
-										<div className={classes.popupInner}>
-											<div className={classes.popupHeader}>
-												<div className={classes.popupTitleGroup}>
-													<strong className={classes.popupName}>
-														{selectedMarker.name}
-													</strong>
-													{selectedMarker.city ? (
-														<span className={classes.popupCity}>
-															{[selectedMarker.postalCode, selectedMarker.city]
-																.filter(Boolean)
-																.join(" ")}
-														</span>
-													) : null}
-												</div>
-												<Button
-													priority="tertiary no outline"
-													iconId="fr-icon-close-line"
-													size="small"
-													onClick={() => setSelectedMarker(null)}
-													title="Fermer"
-												/>
+							{selectedMarker && (
+								<Popup
+									longitude={selectedMarker.longitude as number}
+									latitude={selectedMarker.latitude as number}
+									anchor="bottom"
+									offset={[0, -32]}
+									closeButton={false}
+									closeOnClick={false}
+									onClose={() => setSelectedMarker(null)}
+									className={classes.popup}
+									maxWidth="20rem"
+								>
+									<div className={classes.popupInner}>
+										<div className={classes.popupHeader}>
+											<div className={classes.popupTitleGroup}>
+												<strong className={classes.popupName}>
+													{selectedMarker.name}
+												</strong>
+												{selectedMarker.city ? (
+													<span className={classes.popupCity}>
+														{[selectedMarker.postalCode, selectedMarker.city]
+															.filter(Boolean)
+															.join(" ")}
+													</span>
+												) : null}
 											</div>
-
-											{selectedMarker.description ? (
-												<p className={classes.popupLine}>
-													{selectedMarker.description}
-												</p>
-											) : null}
-
-											{popupCategory?.customFields &&
-											popupCategory.customFields.length > 0
-												? popupCategory.customFields.map(
-														(f: CustomFieldDef) => {
-															const raw = selectedMarker.metadata?.[f.key];
-															if (raw === undefined || raw === null)
-																return null;
-															let display: string;
-															if (f.type === "checkbox") {
-																display = raw ? "Oui" : "Non";
-															} else if (f.type === "select") {
-																const opt = f.options?.find(
-																	(o) => o.value === String(raw),
-																);
-																display = opt ? opt.label : String(raw);
-															} else {
-																display = String(raw);
-															}
-															return (
-																<p key={f.key} className={classes.popupLine}>
-																	<span className={classes.popupFieldLabel}>
-																		{f.label} :
-																	</span>{" "}
-																	{display}
-																</p>
-															);
-														},
-													)
-												: null}
-
-											{selectedMarker.phone ? (
-												<p className={classes.popupLine}>
-													<Link
-														href={`tel:${selectedMarker.phone}`}
-														className={fr.cx("fr-link")}
-														title={`Appeler : ${selectedMarker.name}`}
-													>
-														{selectedMarker.phone}
-													</Link>
-												</p>
-											) : null}
-
-											{selectedMarker.website ? (
-												<p className={classes.popupLine}>
-													<Link
-														href={selectedMarker.website}
-														target="_blank"
-														rel="noopener noreferrer"
-														className={fr.cx("fr-link")}
-														title={`Accéder au site web : ${selectedMarker.name}, nouvelle fenêtre`}
-													>
-														Accéder au site web
-													</Link>
-												</p>
-											) : null}
+											<Button
+												priority="tertiary no outline"
+												iconId="fr-icon-close-line"
+												size="small"
+												onClick={() => setSelectedMarker(null)}
+												title="Fermer"
+											/>
 										</div>
-									</Popup>
-								)}
-							</MapGL>
-						</div>
-						<div className={classes.searchOverlay}>
-							<MapSearch
-								markers={filteredMarkers}
-								categoryById={categoryById}
-								onSelect={handleSearchSelect}
-								onGeoSearch={handleGeoSearch}
-							/>
-						</div>
+
+										{selectedMarker.description ? (
+											<p className={classes.popupLine}>
+												{selectedMarker.description}
+											</p>
+										) : null}
+
+										{popupCategory?.customFields &&
+										popupCategory.customFields.length > 0
+											? popupCategory.customFields.map((f: CustomFieldDef) => {
+													const raw = selectedMarker.metadata?.[f.key];
+													if (raw === undefined || raw === null) return null;
+													let display: string;
+													if (f.type === "checkbox") {
+														display = raw ? "Oui" : "Non";
+													} else if (f.type === "select") {
+														const opt = f.options?.find(
+															(o) => o.value === String(raw),
+														);
+														display = opt ? opt.label : String(raw);
+													} else {
+														display = String(raw);
+													}
+													return (
+														<p key={f.key} className={classes.popupLine}>
+															<span className={classes.popupFieldLabel}>
+																{f.label} :
+															</span>{" "}
+															{display}
+														</p>
+													);
+												})
+											: null}
+
+										{selectedMarker.phone ? (
+											<p className={classes.popupLine}>
+												<Link
+													href={`tel:${selectedMarker.phone}`}
+													className={fr.cx("fr-link")}
+													title={`Appeler : ${selectedMarker.name}`}
+												>
+													{selectedMarker.phone}
+												</Link>
+											</p>
+										) : null}
+
+										{selectedMarker.website ? (
+											<p className={classes.popupLine}>
+												<Link
+													href={selectedMarker.website}
+													target="_blank"
+													rel="noopener noreferrer"
+													className={fr.cx("fr-link")}
+													title={`Accéder au site web : ${selectedMarker.name}, nouvelle fenêtre`}
+												>
+													Accéder au site web
+												</Link>
+											</p>
+										) : null}
+									</div>
+								</Popup>
+							)}
+						</MapGL>
 					</div>
-				</>
+					<div className={classes.searchOverlay}>
+						<MapSearch
+							markers={filteredMarkers}
+							categoryById={categoryById}
+							onSelect={handleSearchSelect}
+							onGeoSearch={handleGeoSearch}
+						/>
+					</div>
+				</div>
 			) : (
 				<div className={classes.tableContainer}>
 					<Table
