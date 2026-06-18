@@ -8,8 +8,11 @@ import { chatbotOpenStore, personStore } from "~/state/store";
 import { personsAndProTiles } from "~/utils/pictograms";
 import { skipLinks } from "~/utils/tools";
 import SkipLinks from "@codegouvfr/react-dsfr/SkipLinks";
+import { fr } from "@codegouvfr/react-dsfr";
+import { tss } from "tss-react/dsfr";
 
 export default function MainNavigation() {
+	const { classes, cx } = useStyles();
 	const router = useRouter();
 	const initialHeaderSearch =
 		typeof router.query.search === "string" ? router.query.search : "";
@@ -106,6 +109,17 @@ export default function MainNavigation() {
 	return (
 		<>
 			<SkipLinks links={skipLinks} />
+			<div className={cx(classes.mainAlert, fr.cx("fr-p-2v"))}>
+				<span
+					className={cx("ri-phone-line", classes.icon)}
+					aria-hidden="true"
+				/>
+				Ligne nationale d'écoute autisme :{" "}
+				<a href="tel:+33800714040" className={classes.phoneLink}>
+					0 800 71 40 40
+				</a>{" "}
+				<span className={classes.mention}>— appel gratuit et anonyme</span>
+			</div>
 			<div id="menu">
 				<Header
 					brandTop={
@@ -156,3 +170,32 @@ export default function MainNavigation() {
 		</>
 	);
 }
+
+const useStyles = tss.withName(MainNavigation.name).create({
+	mainAlert: {
+		...fr.typography[18].style,
+		marginBottom: 0,
+		backgroundColor: fr.colors.decisions.background.alt.blueFrance.default,
+		color: fr.colors.decisions.background.flat.blueFrance.default,
+		textAlign: "center",
+		[fr.breakpoints.down("md")]: {
+			...fr.typography[17].style,
+			marginBottom: 0,
+		},
+	},
+	icon: {
+		marginRight: fr.spacing("1v"),
+		"&::before": {
+			"--icon-size": "1.125rem",
+		},
+	},
+	phoneLink: {
+		color: "inherit",
+	},
+	mention: {
+		color: fr.colors.decisions.text.mention.grey.default,
+		[fr.breakpoints.down("md")]: {
+			display: "none",
+		},
+	},
+});
