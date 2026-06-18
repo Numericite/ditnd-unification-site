@@ -29,6 +29,7 @@ import * as migration_20260603_065804_add_map_basemap from './20260603_065804_ad
 import * as migration_20260603_145206_add_description_journey from './20260603_145206_add_description_journey';
 import * as migration_20260610_064847_add_unique_slug_courses_guides from './20260610_064847_add_unique_slug_courses_guides';
 import * as migration_20260617_093516_cartographie_global from './20260617_093516_cartographie_global';
+import * as migration_20260618_133650_add_enable_clustering from './20260618_133650_add_enable_clustering';
 
 export const migrations = [
   {
@@ -179,11 +180,16 @@ export const migrations = [
   {
     up: migration_20260610_064847_add_unique_slug_courses_guides.up,
     down: migration_20260610_064847_add_unique_slug_courses_guides.down,
-    name: '20260610_064847_add_unique_slug_courses_guides'
+    name: '20260610_064847_add_unique_slug_courses_guides',
   },
   {
     up: migration_20260617_093516_cartographie_global.up,
     down: migration_20260617_093516_cartographie_global.down,
     name: '20260617_093516_cartographie_global',
+  },
+  {
+    up: migration_20260618_133650_add_enable_clustering.up,
+    down: migration_20260618_133650_add_enable_clustering.down,
+    name: '20260618_133650_add_enable_clustering'
   },
 ];
