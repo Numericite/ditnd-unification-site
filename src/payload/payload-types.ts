@@ -1402,6 +1402,32 @@ export interface About {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "cartographie".
+ */
+export interface Cartographie {
+	id: number;
+	title: string;
+	imageBanner?: (number | null) | Media;
+	content: {
+		root: {
+			type: string;
+			children: {
+				type: any;
+				version: number;
+				[k: string]: unknown;
+			}[];
+			direction: ("ltr" | "rtl") | null;
+			format: "left" | "start" | "center" | "right" | "end" | "justify" | "";
+			indent: number;
+			version: number;
+		};
+		[k: string]: unknown;
+	};
+	updatedAt?: string | null;
+	createdAt?: string | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "home_select".
  */
 export interface HomeSelect<T extends boolean = true> {
@@ -1491,32 +1517,6 @@ export interface AboutSelect<T extends boolean = true> {
 	updatedAt?: T;
 	createdAt?: T;
 	globalType?: T;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "cartographie".
- */
-export interface Cartographie {
-	id: number;
-	title: string;
-	imageBanner?: (number | null) | Media;
-	content: {
-		root: {
-			type: string;
-			children: {
-				type: any;
-				version: number;
-				[k: string]: unknown;
-			}[];
-			direction: ("ltr" | "rtl") | null;
-			format: "left" | "start" | "center" | "right" | "end" | "justify" | "";
-			indent: number;
-			version: number;
-		};
-		[k: string]: unknown;
-	};
-	updatedAt?: string | null;
-	createdAt?: string | null;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
