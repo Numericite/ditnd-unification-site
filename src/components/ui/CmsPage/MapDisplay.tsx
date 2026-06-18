@@ -45,7 +45,7 @@ export default function MapDisplay({ map, height }: Props) {
 	);
 	const [mapRef, setMapRef] = useState<MapRef | null>(null);
 	const [isDrawerOpen, setIsDrawerOpen] = useState(false);
-	const [viewMode, setViewMode] = useState<"map" | "table">("map");
+	const [viewMode, setViewMode] = useState<"map" | "table" | "list">("map");
 	const [activeFilters, setActiveFilters] = useState<ActiveFilters>({
 		regions: [],
 		departements: [],
@@ -498,6 +498,15 @@ export default function MapDisplay({ map, height }: Props) {
 							},
 						},
 						{
+							label: "Liste",
+							iconId: "fr-icon-list-unordered",
+							nativeInputProps: {
+								name: "view-mode",
+								checked: viewMode === "list",
+								onChange: () => setViewMode("list"),
+							},
+						},
+						{
 							label: "Tableau",
 							iconId: "fr-icon-table-line",
 							nativeInputProps: {
@@ -710,6 +719,115 @@ export default function MapDisplay({ map, height }: Props) {
 						/>
 					</div>
 				</div>
+			) : viewMode === "list" ? (
+				<div className={classes.listContainer}>
+					{filteredMarkers.length === 0 ? (
+						<p className={classes.listEmpty}>Aucun résultat.</p>
+					) : (
+						filteredMarkers.map((marker) => {
+							const category = categoryById.get(marker.categoryId);
+							const color = dsfrAccentHex(category?.colorVariant);
+							const cityLine =
+								[marker.postalCode, marker.city].filter(Boolean).join(" ") ||
+								null;
+							const itineraryQuery = [marker.address, cityLine]
+								.filter(Boolean)
+								.join(" ");
+							return (
+								<article key={marker.id} className={classes.card}>
+									<div className={classes.cardHeader}>
+										<i
+											aria-hidden="true"
+											className={cx(
+												fr.cx("fr-icon-map-pin-2-fill"),
+												classes.cardPin,
+											)}
+											style={{ color }}
+										/>
+										<span className={classes.cardName}>{marker.name}</span>
+									</div>
+
+									{marker.address || cityLine ? (
+										<div className={classes.cardAddress}>
+											{marker.address ? (
+												<span className={classes.cardAddressLine}>
+													{marker.address}
+												</span>
+											) : null}
+											{cityLine ? (
+												<span className={classes.cardCity}>{cityLine}</span>
+											) : null}
+										</div>
+									) : null}
+
+									{marker.description ? (
+										<p className={classes.cardLine}>{marker.description}</p>
+									) : null}
+
+									{category?.customFields && category.customFields.length > 0
+										? category.customFields.map((f: CustomFieldDef) => {
+												const raw = marker.metadata?.[f.key];
+												if (raw === undefined || raw === null) return null;
+												let display: string;
+												if (f.type === "checkbox") {
+													display = raw ? "Oui" : "Non";
+												} else if (f.type === "select") {
+													const opt = f.options?.find(
+														(o) => o.value === String(raw),
+													);
+													display = opt ? opt.label : String(raw);
+												} else {
+													display = String(raw);
+												}
+												return (
+													<p key={f.key} className={classes.cardLine}>
+														<span className={classes.cardFieldLabel}>
+															{f.label} :
+														</span>{" "}
+														{display}
+													</p>
+												);
+											})
+										: null}
+
+									<div className={classes.cardActions}>
+										{marker.phone ? (
+											<Link
+												href={`tel:${marker.phone}`}
+												className={fr.cx("fr-link", "fr-link--sm")}
+												title={`Appeler : ${marker.name}`}
+											>
+												{marker.phone}
+											</Link>
+										) : null}
+										{marker.website ? (
+											<Link
+												href={marker.website}
+												target="_blank"
+												rel="noopener noreferrer"
+												className={fr.cx("fr-link", "fr-link--sm")}
+												title={`Accéder au site web : ${marker.name}, nouvelle fenêtre`}
+											>
+												Site web
+											</Link>
+										) : null}
+										{itineraryQuery ? (
+											<Link
+												href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(itineraryQuery)}`}
+												target="_blank"
+												rel="noopener noreferrer"
+												className={fr.cx("fr-link", "fr-link--sm")}
+												title={`Itinéraire vers : ${marker.name}, nouvelle fenêtre`}
+											>
+												Itinéraire
+											</Link>
+										) : null}
+									</div>
+								</article>
+							);
+						})
+					)}
+				</div>
 			) : (
 				<div className={classes.tableContainer}>
 					<Table
@@ -775,6 +893,75 @@ const useStyles = tss.withName(MapDisplay.name).create(() => ({
 		"& .fr-table th, & .fr-table td": {
 			whiteSpace: "nowrap",
 			verticalAlign: "middle",
+		},
+	},
+
+	listContainer: {
+		display: "grid",
+		gridTemplateColumns: "repeat(auto-fill, minmax(min(100%, 20rem), 1fr))",
+		gap: fr.spacing("3v"),
+	},
+	listEmpty: {
+		margin: 0,
+		color: fr.colors.decisions.text.mention.grey.default,
+	},
+	card: {
+		display: "flex",
+		flexDirection: "column",
+		gap: fr.spacing("2v"),
+		padding: fr.spacing("4v"),
+		border: `1px solid ${fr.colors.decisions.border.default.grey.default}`,
+		borderRadius: fr.spacing("1v"),
+		backgroundColor: fr.colors.decisions.background.default.grey.default,
+	},
+	cardHeader: {
+		i: {
+			marginRight: fr.spacing("1v"),
+		},
+	},
+	cardPin: {
+		flexShrink: 0,
+		"&::before": {
+			"--icon-size": fr.spacing("4v"),
+		},
+	},
+	cardName: {
+		...fr.typography[19].style,
+		fontWeight: 600,
+		margin: 0,
+	},
+	cardAddress: {
+		display: "flex",
+		flexDirection: "column",
+		fontSize: fr.spacing("3v"),
+		lineHeight: 1.45,
+	},
+	cardAddressLine: {
+		color: fr.colors.decisions.text.mention.grey.default,
+	},
+	cardCity: {
+		fontWeight: 600,
+		color: fr.colors.decisions.text.default.grey.default,
+	},
+	cardLine: {
+		margin: 0,
+		fontSize: fr.spacing("3v"),
+		lineHeight: 1.45,
+		color: fr.colors.decisions.text.default.grey.default,
+	},
+	cardFieldLabel: {
+		fontWeight: 600,
+		color: fr.colors.decisions.text.label.grey.default,
+	},
+	cardActions: {
+		display: "flex",
+		flexWrap: "wrap",
+		gap: fr.spacing("4v"),
+		marginTop: "auto",
+		paddingTop: fr.spacing("2v"),
+		borderTop: `1px solid ${fr.colors.decisions.border.default.grey.default}`,
+		"&:empty": {
+			display: "none",
 		},
 	},
 
