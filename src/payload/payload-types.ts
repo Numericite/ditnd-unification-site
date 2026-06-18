@@ -635,6 +635,10 @@ export interface Map {
 	 * Toutes les catégories sélectionnées seront affichées sur la carte avec leurs marqueurs.
 	 */
 	categories: (number | MapCategory)[];
+	/**
+	 * Regroupe les marqueurs proches en clusters colorés selon leurs catégories. Le détail se déploie au zoom.
+	 */
+	enableClustering?: boolean | null;
 	allowFilterByCategory?: boolean | null;
 	allowFilterByRegion?: boolean | null;
 	allowFilterByDepartement?: boolean | null;
@@ -1083,6 +1087,7 @@ export interface MapsSelect<T extends boolean = true> {
 	description?: T;
 	basemap?: T;
 	categories?: T;
+	enableClustering?: T;
 	allowFilterByCategory?: T;
 	allowFilterByRegion?: T;
 	allowFilterByDepartement?: T;

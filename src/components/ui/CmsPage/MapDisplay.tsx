@@ -8,9 +8,11 @@ import {
 	type MapRef,
 } from "react-map-gl/maplibre";
 import "maplibre-gl/dist/maplibre-gl.css";
+import Supercluster from "supercluster";
 import { fr } from "@codegouvfr/react-dsfr";
 import { tss } from "tss-react/dsfr";
 import { dsfrAccentHex } from "~/utils/dsfr-color-hex";
+import MapClusterMarker from "./MapClusterMarker";
 import { getMarkerGeo } from "~/utils/map-geo";
 import { buildBasemapStyle } from "~/utils/map-basemaps";
 import MapFilterDrawer, {
@@ -67,6 +69,20 @@ export default function MapDisplay({ map, height }: Props) {
 		}),
 		[map.defaultLatitude, map.defaultLongitude, map.defaultZoom],
 	);
+
+	const [viewport, setViewport] = useState<{
+		bbox: [number, number, number, number];
+		zoom: number;
+	}>(() => ({
+		bbox: [-180, -85, 180, 85],
+		zoom: Math.round(initialView.zoom),
+	}));
+
+	const markerById = useMemo(() => {
+		const lookup = new Map<number, MapMarkerSummary>();
+		for (const m of map.markers) lookup.set(m.id, m);
+		return lookup;
+	}, [map.markers]);
 
 	const flyToMarker = useCallback(
 		(marker: MapMarkerSummary) => {
@@ -201,6 +217,108 @@ export default function MapDisplay({ map, height }: Props) {
 		});
 	}, [map.markers, activeFilters]);
 
+	const clusterIndex = useMemo(() => {
+		if (!map.enableClustering) return null;
+		const index = new Supercluster<
+			{ markerId: number; categoryId: number },
+			{ counts: Record<string, number> }
+		>({
+			radius: 60,
+			maxZoom: 16,
+			map: (props) => ({ counts: { [props.categoryId]: 1 } }),
+			reduce: (acc, props) => {
+				const merged = { ...acc.counts };
+				for (const [key, value] of Object.entries(props.counts)) {
+					merged[key] = (merged[key] ?? 0) + value;
+				}
+				acc.counts = merged;
+			},
+		});
+		index.load(
+			filteredMarkers
+				.filter((m) => m.longitude != null && m.latitude != null)
+				.map((m) => ({
+					type: "Feature" as const,
+					properties: { markerId: m.id, categoryId: m.categoryId },
+					geometry: {
+						type: "Point" as const,
+						coordinates: [m.longitude as number, m.latitude as number],
+					},
+				})),
+		);
+		return index;
+	}, [filteredMarkers, map.enableClustering]);
+
+	const clusters = useMemo(
+		() =>
+			clusterIndex
+				? clusterIndex.getClusters(viewport.bbox, viewport.zoom)
+				: [],
+		[clusterIndex, viewport],
+	);
+
+	const updateViewport = useCallback(
+		(instance: {
+			getBounds: () => {
+				getWest: () => number;
+				getSouth: () => number;
+				getEast: () => number;
+				getNorth: () => number;
+			};
+			getZoom: () => number;
+		}) => {
+			const b = instance.getBounds();
+			setViewport({
+				bbox: [b.getWest(), b.getSouth(), b.getEast(), b.getNorth()],
+				zoom: Math.round(instance.getZoom()),
+			});
+		},
+		[],
+	);
+
+	const handleClusterClick = useCallback(
+		(clusterId: number, longitude: number, latitude: number) => {
+			if (!clusterIndex || !mapRef) return;
+			const zoom = Math.min(
+				clusterIndex.getClusterExpansionZoom(clusterId),
+				16,
+			);
+			mapRef.flyTo({ center: [longitude, latitude], zoom, duration: 600 });
+		},
+		[clusterIndex, mapRef],
+	);
+
+	const renderSingleMarker = useCallback(
+		(marker: MapMarkerSummary) => {
+			const category = categoryById.get(marker.categoryId);
+			const color = dsfrAccentHex(category?.colorVariant);
+			const isSelected = selectedMarker?.id === marker.id;
+			return (
+				<Marker
+					key={marker.id}
+					longitude={marker.longitude as number}
+					latitude={marker.latitude as number}
+					anchor="bottom"
+					style={{ zIndex: isSelected ? 10 : 1 }}
+					onClick={(e) => {
+						e.originalEvent.stopPropagation();
+						handleSelectFromMap(marker);
+					}}
+				>
+					<Button
+						className={cx(classes.pin, isSelected && classes.pinSelected)}
+						aria-label={`${marker.name}${category ? ` — ${category.name}` : ""}`}
+						aria-pressed={isSelected}
+						iconId="fr-icon-map-pin-2-fill"
+						style={{ color }}
+						title={marker.name}
+					/>
+				</Marker>
+			);
+		},
+		[categoryById, selectedMarker, handleSelectFromMap, classes, cx],
+	);
+
 	const activeFilterCount =
 		activeFilters.regions.length +
 		activeFilters.departements.length +
@@ -244,6 +362,24 @@ export default function MapDisplay({ map, height }: Props) {
 	const handleCategoriesChange = useCallback((ids: number[]) => {
 		setActiveFilters((prev) => ({ ...prev, categories: ids }));
 	}, []);
+
+	const toggleCategory = useCallback(
+		(id: number) => {
+			setActiveFilters((prev) => {
+				const allIds = categoriesWithMarkers.map((c) => c.id);
+				const current = prev.categories.length === 0 ? allIds : prev.categories;
+				const next = current.includes(id)
+					? current.filter((x) => x !== id)
+					: [...current, id];
+				if (next.length === 0) return prev;
+				return {
+					...prev,
+					categories: next.length === allIds.length ? [] : next,
+				};
+			});
+		},
+		[categoriesWithMarkers],
+	);
 
 	const handleCustomFieldChange = useCallback(
 		(key: string, values: string[]) => {
@@ -324,6 +460,38 @@ export default function MapDisplay({ map, height }: Props) {
 				<figcaption className={classes.caption}>{map.title}</figcaption>
 			) : null}
 
+			{categoriesWithMarkers.length > 1 ? (
+				<fieldset className={classes.legend}>
+					<legend className={fr.cx("fr-sr-only")}>
+						Afficher ou masquer les catégories
+					</legend>
+					{categoriesWithMarkers.map((cat) => {
+						const isOn =
+							activeFilters.categories.length === 0 ||
+							activeFilters.categories.includes(cat.id);
+						return (
+							<button
+								key={cat.id}
+								type="button"
+								className={cx(
+									classes.legendItem,
+									!isOn && classes.legendItemOff,
+								)}
+								aria-pressed={isOn}
+								onClick={() => toggleCategory(cat.id)}
+							>
+								<i
+									aria-hidden="true"
+									className={fr.cx("fr-icon-map-pin-2-fill")}
+									style={{ color: dsfrAccentHex(cat.colorVariant) }}
+								/>
+								<span>{cat.name}</span>
+							</button>
+						);
+					})}
+				</fieldset>
+			) : null}
+
 			<div className={classes.controls}>
 				<SegmentedControl
 					hideLegend
@@ -384,17 +552,17 @@ export default function MapDisplay({ map, height }: Props) {
 			) : null}
 
 			{viewMode === "map" ? (
-				<>
-					<div className={classes.mapWrapper}>
-						<div className={classes.mapContainer} style={{ height }}>
-							<MapGL
-								ref={setMapRef}
-								initialViewState={initialView}
-								mapStyle={mapStyle}
-								attributionControl={{ compact: true }}
-								onClick={() => setSelectedMarker(null)}
-								onLoad={(e) => {
-									if (!map.fitToMarkers || map.markers.length === 0) return;
+				<div className={classes.mapWrapper}>
+					<div className={classes.mapContainer} style={{ height }}>
+						<MapGL
+							ref={setMapRef}
+							initialViewState={initialView}
+							mapStyle={mapStyle}
+							attributionControl={{ compact: true }}
+							onClick={() => setSelectedMarker(null)}
+							onMoveEnd={(e) => updateViewport(e.target)}
+							onLoad={(e) => {
+								if (map.fitToMarkers && map.markers.length > 0) {
 									const lngs = map.markers.map((m) => m.longitude as number);
 									const lats = map.markers.map((m) => m.latitude as number);
 									e.target.fitBounds(
@@ -404,167 +572,153 @@ export default function MapDisplay({ map, height }: Props) {
 										],
 										{ padding: 48, maxZoom: 13, duration: 0 },
 									);
-								}}
-							>
-								<NavigationControl position="top-right" showCompass={false} />
+								}
+								updateViewport(e.target);
+							}}
+						>
+							<NavigationControl position="top-right" showCompass={false} />
 
-								{filteredMarkers.map((marker) => {
-									const category = categoryById.get(marker.categoryId);
-									const color = dsfrAccentHex(category?.colorVariant);
-									const isSelected = selectedMarker?.id === marker.id;
-									return (
-										<Marker
-											key={marker.id}
-											longitude={marker.longitude as number}
-											latitude={marker.latitude as number}
-											anchor="bottom"
-											style={{ zIndex: isSelected ? 10 : 1 }}
-											onClick={(e) => {
-												e.originalEvent.stopPropagation();
-												handleSelectFromMap(marker);
-											}}
-										>
-											<Button
-												className={cx(
-													classes.pin,
-													isSelected && classes.pinSelected,
-												)}
-												aria-label={`${marker.name}${category ? ` — ${category.name}` : ""}`}
-												aria-pressed={isSelected}
-												iconId="fr-icon-map-pin-2-fill"
-												style={{ color }}
-												title={marker.name}
-											/>
-										</Marker>
-									);
-								})}
+							{clusterIndex
+								? clusters.map((feature) => {
+										const [longitude, latitude] = feature.geometry
+											.coordinates as [number, number];
+										if ("cluster" in feature.properties) {
+											const clusterId = feature.properties.cluster_id;
+											const counts = feature.properties.counts;
+											const total = feature.properties.point_count;
+											return (
+												<Marker
+													key={`cluster-${clusterId}`}
+													longitude={longitude}
+													latitude={latitude}
+													anchor="center"
+												>
+													<MapClusterMarker
+														counts={counts}
+														total={total}
+														getColor={(id) =>
+															dsfrAccentHex(categoryById.get(id)?.colorVariant)
+														}
+														getLabel={(id) => categoryById.get(id)?.name ?? ""}
+														onClick={() =>
+															handleClusterClick(clusterId, longitude, latitude)
+														}
+													/>
+												</Marker>
+											);
+										}
+										const marker = markerById.get(feature.properties.markerId);
+										return marker ? renderSingleMarker(marker) : null;
+									})
+								: filteredMarkers.map(renderSingleMarker)}
 
-								{selectedMarker && (
-									<Popup
-										longitude={selectedMarker.longitude as number}
-										latitude={selectedMarker.latitude as number}
-										anchor="bottom"
-										offset={[0, -32]}
-										closeButton={false}
-										closeOnClick={false}
-										onClose={() => setSelectedMarker(null)}
-										className={classes.popup}
-										maxWidth="20rem"
-									>
-										<div className={classes.popupInner}>
-											<div className={classes.popupHeader}>
-												<div className={classes.popupTitleGroup}>
-													<strong className={classes.popupName}>
-														{selectedMarker.name}
-													</strong>
-													{selectedMarker.city ? (
-														<span className={classes.popupCity}>
-															{[selectedMarker.postalCode, selectedMarker.city]
-																.filter(Boolean)
-																.join(" ")}
-														</span>
-													) : null}
-												</div>
-												<Button
-													priority="tertiary no outline"
-													iconId="fr-icon-close-line"
-													size="small"
-													onClick={() => setSelectedMarker(null)}
-													title="Fermer"
-												/>
+							{selectedMarker && (
+								<Popup
+									longitude={selectedMarker.longitude as number}
+									latitude={selectedMarker.latitude as number}
+									anchor="bottom"
+									offset={[0, -32]}
+									closeButton={false}
+									closeOnClick={false}
+									onClose={() => setSelectedMarker(null)}
+									className={classes.popup}
+									maxWidth="20rem"
+								>
+									<div className={classes.popupInner}>
+										<div className={classes.popupHeader}>
+											<div className={classes.popupTitleGroup}>
+												<strong className={classes.popupName}>
+													{selectedMarker.name}
+												</strong>
+												{selectedMarker.city ? (
+													<span className={classes.popupCity}>
+														{[selectedMarker.postalCode, selectedMarker.city]
+															.filter(Boolean)
+															.join(" ")}
+													</span>
+												) : null}
 											</div>
-
-											{selectedMarker.description ? (
-												<p className={classes.popupLine}>
-													{selectedMarker.description}
-												</p>
-											) : null}
-
-											{popupCategory?.customFields &&
-											popupCategory.customFields.length > 0
-												? popupCategory.customFields.map(
-														(f: CustomFieldDef) => {
-															const raw = selectedMarker.metadata?.[f.key];
-															if (raw === undefined || raw === null)
-																return null;
-															let display: string;
-															if (f.type === "checkbox") {
-																display = raw ? "Oui" : "Non";
-															} else if (f.type === "select") {
-																const opt = f.options?.find(
-																	(o) => o.value === String(raw),
-																);
-																display = opt ? opt.label : String(raw);
-															} else {
-																display = String(raw);
-															}
-															return (
-																<p key={f.key} className={classes.popupLine}>
-																	<span className={classes.popupFieldLabel}>
-																		{f.label} :
-																	</span>{" "}
-																	{display}
-																</p>
-															);
-														},
-													)
-												: null}
-
-											{selectedMarker.phone ? (
-												<p className={classes.popupLine}>
-													<Link
-														href={`tel:${selectedMarker.phone}`}
-														className={fr.cx("fr-link")}
-														title={`Appeler : ${selectedMarker.name}`}
-													>
-														{selectedMarker.phone}
-													</Link>
-												</p>
-											) : null}
-
-											{selectedMarker.website ? (
-												<p className={classes.popupLine}>
-													<Link
-														href={selectedMarker.website}
-														target="_blank"
-														rel="noopener noreferrer"
-														className={fr.cx("fr-link")}
-														title={`Accéder au site web : ${selectedMarker.name}, nouvelle fenêtre`}
-													>
-														Accéder au site web
-													</Link>
-												</p>
-											) : null}
+											<Button
+												priority="tertiary no outline"
+												iconId="fr-icon-close-line"
+												size="small"
+												onClick={() => setSelectedMarker(null)}
+												title="Fermer"
+											/>
 										</div>
-									</Popup>
-								)}
-							</MapGL>
-						</div>
-						<div className={classes.searchOverlay}>
-							<MapSearch
-								markers={filteredMarkers}
-								categoryById={categoryById}
-								onSelect={handleSearchSelect}
-								onGeoSearch={handleGeoSearch}
-							/>
-						</div>
-					</div>
 
-					{categoriesWithMarkers.length > 1 ? (
-						<ul className={classes.legend} aria-label="Légende">
-							{categoriesWithMarkers.map((cat) => (
-								<li key={cat.id} className={classes.legendItem}>
-									<i
-										aria-hidden="true"
-										className={fr.cx("fr-icon-map-pin-2-fill")}
-										style={{ color: dsfrAccentHex(cat.colorVariant) }}
-									/>
-									<span>{cat.name}</span>
-								</li>
-							))}
-						</ul>
-					) : null}
-				</>
+										{selectedMarker.description ? (
+											<p className={classes.popupLine}>
+												{selectedMarker.description}
+											</p>
+										) : null}
+
+										{popupCategory?.customFields &&
+										popupCategory.customFields.length > 0
+											? popupCategory.customFields.map((f: CustomFieldDef) => {
+													const raw = selectedMarker.metadata?.[f.key];
+													if (raw === undefined || raw === null) return null;
+													let display: string;
+													if (f.type === "checkbox") {
+														display = raw ? "Oui" : "Non";
+													} else if (f.type === "select") {
+														const opt = f.options?.find(
+															(o) => o.value === String(raw),
+														);
+														display = opt ? opt.label : String(raw);
+													} else {
+														display = String(raw);
+													}
+													return (
+														<p key={f.key} className={classes.popupLine}>
+															<span className={classes.popupFieldLabel}>
+																{f.label} :
+															</span>{" "}
+															{display}
+														</p>
+													);
+												})
+											: null}
+
+										{selectedMarker.phone ? (
+											<p className={classes.popupLine}>
+												<Link
+													href={`tel:${selectedMarker.phone}`}
+													className={fr.cx("fr-link")}
+													title={`Appeler : ${selectedMarker.name}`}
+												>
+													{selectedMarker.phone}
+												</Link>
+											</p>
+										) : null}
+
+										{selectedMarker.website ? (
+											<p className={classes.popupLine}>
+												<Link
+													href={selectedMarker.website}
+													target="_blank"
+													rel="noopener noreferrer"
+													className={fr.cx("fr-link")}
+													title={`Accéder au site web : ${selectedMarker.name}, nouvelle fenêtre`}
+												>
+													Accéder au site web
+												</Link>
+											</p>
+										) : null}
+									</div>
+								</Popup>
+							)}
+						</MapGL>
+					</div>
+					<div className={classes.searchOverlay}>
+						<MapSearch
+							markers={filteredMarkers}
+							categoryById={categoryById}
+							onSelect={handleSearchSelect}
+							onGeoSearch={handleGeoSearch}
+						/>
+					</div>
+				</div>
 			) : (
 				<div className={classes.tableContainer}>
 					<Table
@@ -742,18 +896,37 @@ const useStyles = tss.withName(MapDisplay.name).create(() => ({
 	},
 
 	legend: {
-		listStyle: "none",
-		padding: 0,
-		margin: `${fr.spacing("2v")} 0 0`,
 		display: "flex",
 		flexWrap: "wrap",
-		paddingLeft: "0 !important",
-		gap: `${fr.spacing("2v")} ${fr.spacing("4v")}`,
+		gap: fr.spacing("2v"),
+		margin: `${fr.spacing("3v")} 0 ${fr.spacing("4v")} 0`,
+		padding: 0,
+		border: 0,
+		minInlineSize: 0,
 	},
 	legendItem: {
 		display: "inline-flex",
 		alignItems: "center",
-		gap: fr.spacing("2v"),
-		fontSize: fr.spacing("4v"),
+		gap: fr.spacing("1v"),
+		padding: `${fr.spacing("1v")} ${fr.spacing("3v")}`,
+		border: `1px solid ${fr.colors.decisions.border.default.grey.default}`,
+		borderRadius: "9999px",
+		backgroundColor: fr.colors.decisions.background.default.grey.default,
+		color: fr.colors.decisions.text.title.grey.default,
+		fontSize: fr.spacing("3v"),
+		lineHeight: 1.5,
+		cursor: "pointer",
+		transition: "background-color 0.15s ease, opacity 0.15s ease",
+		"&:hover": {
+			backgroundColor: `${fr.colors.decisions.background.contrast.grey.default} !important`,
+		},
+		"&:focus-visible": {
+			outline: `2px solid ${fr.colors.decisions.border.plain.info.default}`,
+			outlineOffset: "2px",
+		},
+	},
+	legendItemOff: {
+		opacity: 0.45,
+		textDecoration: "line-through",
 	},
 }));
