@@ -227,9 +227,11 @@ export default function MapDisplay({ map, height }: Props) {
 			maxZoom: 16,
 			map: (props) => ({ counts: { [props.categoryId]: 1 } }),
 			reduce: (acc, props) => {
+				const merged = { ...acc.counts };
 				for (const [key, value] of Object.entries(props.counts)) {
-					acc.counts[key] = (acc.counts[key] ?? 0) + value;
+					merged[key] = (merged[key] ?? 0) + value;
 				}
+				acc.counts = merged;
 			},
 		});
 		index.load(
