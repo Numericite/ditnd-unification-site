@@ -588,10 +588,10 @@
   resolved "https://registry.yarnpkg.com/@borewit/text-codec/-/text-codec-0.2.2.tgz#75025f735c0983b3a871668804a57387e3649375"
   integrity sha512-DDaRehssg1aNrH4+2hnj1B7vnUGEjU6OIlyRdkMd0aUdIUvKXrJfXsy8LVtXAy7DRvYVluWbMspsRhz2lcW0mQ==
 
-"@codegouvfr/react-dsfr@1.29.0":
-  version "1.29.0"
-  resolved "https://registry.yarnpkg.com/@codegouvfr/react-dsfr/-/react-dsfr-1.29.0.tgz#08489aedc82f7bfeccc607bd84a35afa6807fbca"
-  integrity sha512-3kK6W8tOxkUN+2yufEgikg6HNXQkF1YSJNB2imBCyDo8Z/N7zK38XAygXXmeY3+0d8x3JZ/Q+wzv73pG1k3cbA==
+"@codegouvfr/react-dsfr@1.32.4":
+  version "1.32.4"
+  resolved "https://registry.yarnpkg.com/@codegouvfr/react-dsfr/-/react-dsfr-1.32.4.tgz#bb641143cd9d12270c29c0c9edad6b70c6445755"
+  integrity sha512-yhjPqPObB3BsehZTRhJZ9qXwBRT2RZl0cn6hG838MlkPntTE5H5w0vU05KmKcdDBnQ0wDV59G7nnZrpKZQlNuA==
   dependencies:
     tsafe "^1.8.5"
     yargs-parser "^21.1.1"
