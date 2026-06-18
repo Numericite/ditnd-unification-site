@@ -133,11 +133,13 @@ const useStyles = tss.withName(MapClusterMarker.name).create(() => ({
 		display: "block",
 		padding: 0,
 		border: "none",
-		background: "transparent",
+		backgroundColor: "transparent",
+		backgroundImage: "none",
 		cursor: "pointer",
 		filter: "drop-shadow(0 1px 2px rgba(0,0,0,0.35))",
 		transition: "transform 0.15s ease",
-		"&:hover": {
+		"&:hover, &:active": {
+			backgroundColor: "transparent",
 			transform: "scale(1.08)",
 		},
 		"&:focus-visible": {
