@@ -30,8 +30,11 @@ import type {
 import Button from "@codegouvfr/react-dsfr/Button";
 import { SegmentedControl } from "@codegouvfr/react-dsfr/SegmentedControl";
 import { Table } from "@codegouvfr/react-dsfr/Table";
+import Pagination from "@codegouvfr/react-dsfr/Pagination";
 
 const FRANCE_CENTER = { latitude: 46.6, longitude: 2.3, zoom: 5 };
+const LIST_PAGE_SIZE = 12;
+const TABLE_PAGE_SIZE = 20;
 
 type Props = {
 	map: MapPayload;
@@ -46,6 +49,8 @@ export default function MapDisplay({ map, height }: Props) {
 	const [mapRef, setMapRef] = useState<MapRef | null>(null);
 	const [isDrawerOpen, setIsDrawerOpen] = useState(false);
 	const [viewMode, setViewMode] = useState<"map" | "table" | "list">("map");
+	const [listPage, setListPage] = useState(1);
+	const [tablePage, setTablePage] = useState(1);
 	const [activeFilters, setActiveFilters] = useState<ActiveFilters>({
 		regions: [],
 		departements: [],
@@ -217,6 +222,28 @@ export default function MapDisplay({ map, height }: Props) {
 		});
 	}, [map.markers, activeFilters]);
 
+	const listPageCount = Math.ceil(filteredMarkers.length / LIST_PAGE_SIZE);
+	const safeListPage = Math.min(listPage, Math.max(1, listPageCount));
+	const pagedListMarkers = useMemo(
+		() =>
+			filteredMarkers.slice(
+				(safeListPage - 1) * LIST_PAGE_SIZE,
+				safeListPage * LIST_PAGE_SIZE,
+			),
+		[filteredMarkers, safeListPage],
+	);
+
+	const tablePageCount = Math.ceil(filteredMarkers.length / TABLE_PAGE_SIZE);
+	const safeTablePage = Math.min(tablePage, Math.max(1, tablePageCount));
+	const pagedTableMarkers = useMemo(
+		() =>
+			filteredMarkers.slice(
+				(safeTablePage - 1) * TABLE_PAGE_SIZE,
+				safeTablePage * TABLE_PAGE_SIZE,
+			),
+		[filteredMarkers, safeTablePage],
+	);
+
 	const clusterIndex = useMemo(() => {
 		if (!map.enableClustering) return null;
 		const index = new Supercluster<
@@ -351,6 +378,11 @@ export default function MapDisplay({ map, height }: Props) {
 		}
 	}, [filteredMarkers, selectedMarker]);
 
+	useEffect(() => {
+		setListPage(1);
+		setTablePage(1);
+	}, [filteredMarkers]);
+
 	const handleRegionsChange = useCallback((codes: string[]) => {
 		setActiveFilters((prev) => ({ ...prev, regions: codes }));
 	}, []);
@@ -393,7 +425,7 @@ export default function MapDisplay({ map, height }: Props) {
 
 	const tableData = useMemo(
 		() =>
-			filteredMarkers.map((marker) => {
+			pagedTableMarkers.map((marker) => {
 				const category = categoryById.get(marker.categoryId);
 				const { hasPhone, hasWebsite, showCategory } = tableConfig;
 				return [
@@ -438,7 +470,7 @@ export default function MapDisplay({ map, height }: Props) {
 						: []),
 				];
 			}),
-		[filteredMarkers, tableConfig, categoryById],
+		[pagedTableMarkers, tableConfig, categoryById],
 	);
 
 	const popupCategory = selectedMarker
@@ -720,123 +752,157 @@ export default function MapDisplay({ map, height }: Props) {
 					</div>
 				</div>
 			) : viewMode === "list" ? (
-				<div className={classes.listContainer}>
-					{filteredMarkers.length === 0 ? (
-						<p className={classes.listEmpty}>Aucun résultat.</p>
-					) : (
-						filteredMarkers.map((marker) => {
-							const category = categoryById.get(marker.categoryId);
-							const color = dsfrAccentHex(category?.colorVariant);
-							const cityLine =
-								[marker.postalCode, marker.city].filter(Boolean).join(" ") ||
-								null;
-							const itineraryQuery = [marker.address, cityLine]
-								.filter(Boolean)
-								.join(" ");
-							return (
-								<article key={marker.id} className={classes.card}>
-									<div className={classes.cardHeader}>
-										<i
-											aria-hidden="true"
-											className={cx(
-												fr.cx("fr-icon-map-pin-2-fill"),
-												classes.cardPin,
-											)}
-											style={{ color }}
-										/>
-										<span className={classes.cardName}>{marker.name}</span>
-									</div>
+				<>
+					<div className={classes.listContainer}>
+						{filteredMarkers.length === 0 ? (
+							<p className={classes.listEmpty}>Aucun résultat.</p>
+						) : (
+							pagedListMarkers.map((marker) => {
+								const category = categoryById.get(marker.categoryId);
+								const color = dsfrAccentHex(category?.colorVariant);
+								const cityLine =
+									[marker.postalCode, marker.city].filter(Boolean).join(" ") ||
+									null;
+								const itineraryQuery = [marker.address, cityLine]
+									.filter(Boolean)
+									.join(" ");
+								return (
+									<article key={marker.id} className={classes.card}>
+										<div className={classes.cardHeader}>
+											<i
+												aria-hidden="true"
+												className={cx(
+													fr.cx("fr-icon-map-pin-2-fill"),
+													classes.cardPin,
+												)}
+												style={{ color }}
+											/>
+											<span className={classes.cardName}>{marker.name}</span>
+										</div>
 
-									{marker.address || cityLine ? (
-										<div className={classes.cardAddress}>
-											{marker.address ? (
-												<span className={classes.cardAddressLine}>
-													{marker.address}
-												</span>
+										{marker.address || cityLine ? (
+											<div className={classes.cardAddress}>
+												{marker.address ? (
+													<span className={classes.cardAddressLine}>
+														{marker.address}
+													</span>
+												) : null}
+												{cityLine ? (
+													<span className={classes.cardCity}>{cityLine}</span>
+												) : null}
+											</div>
+										) : null}
+
+										{marker.description ? (
+											<p className={classes.cardLine}>{marker.description}</p>
+										) : null}
+
+										{category?.customFields && category.customFields.length > 0
+											? category.customFields.map((f: CustomFieldDef) => {
+													const raw = marker.metadata?.[f.key];
+													if (raw === undefined || raw === null) return null;
+													let display: string;
+													if (f.type === "checkbox") {
+														display = raw ? "Oui" : "Non";
+													} else if (f.type === "select") {
+														const opt = f.options?.find(
+															(o) => o.value === String(raw),
+														);
+														display = opt ? opt.label : String(raw);
+													} else {
+														display = String(raw);
+													}
+													return (
+														<p key={f.key} className={classes.cardLine}>
+															<span className={classes.cardFieldLabel}>
+																{f.label} :
+															</span>{" "}
+															{display}
+														</p>
+													);
+												})
+											: null}
+
+										<div className={classes.cardActions}>
+											{marker.phone ? (
+												<Link
+													href={`tel:${marker.phone}`}
+													className={fr.cx("fr-link", "fr-link--sm")}
+													title={`Appeler : ${marker.name}`}
+												>
+													{marker.phone}
+												</Link>
 											) : null}
-											{cityLine ? (
-												<span className={classes.cardCity}>{cityLine}</span>
+											{marker.website ? (
+												<Link
+													href={marker.website}
+													target="_blank"
+													rel="noopener noreferrer"
+													className={fr.cx("fr-link", "fr-link--sm")}
+													title={`Accéder au site web : ${marker.name}, nouvelle fenêtre`}
+												>
+													Site web
+												</Link>
+											) : null}
+											{itineraryQuery ? (
+												<Link
+													href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(itineraryQuery)}`}
+													target="_blank"
+													rel="noopener noreferrer"
+													className={fr.cx("fr-link", "fr-link--sm")}
+													title={`Itinéraire vers : ${marker.name}, nouvelle fenêtre`}
+												>
+													Itinéraire
+												</Link>
 											) : null}
 										</div>
-									) : null}
-
-									{marker.description ? (
-										<p className={classes.cardLine}>{marker.description}</p>
-									) : null}
-
-									{category?.customFields && category.customFields.length > 0
-										? category.customFields.map((f: CustomFieldDef) => {
-												const raw = marker.metadata?.[f.key];
-												if (raw === undefined || raw === null) return null;
-												let display: string;
-												if (f.type === "checkbox") {
-													display = raw ? "Oui" : "Non";
-												} else if (f.type === "select") {
-													const opt = f.options?.find(
-														(o) => o.value === String(raw),
-													);
-													display = opt ? opt.label : String(raw);
-												} else {
-													display = String(raw);
-												}
-												return (
-													<p key={f.key} className={classes.cardLine}>
-														<span className={classes.cardFieldLabel}>
-															{f.label} :
-														</span>{" "}
-														{display}
-													</p>
-												);
-											})
-										: null}
-
-									<div className={classes.cardActions}>
-										{marker.phone ? (
-											<Link
-												href={`tel:${marker.phone}`}
-												className={fr.cx("fr-link", "fr-link--sm")}
-												title={`Appeler : ${marker.name}`}
-											>
-												{marker.phone}
-											</Link>
-										) : null}
-										{marker.website ? (
-											<Link
-												href={marker.website}
-												target="_blank"
-												rel="noopener noreferrer"
-												className={fr.cx("fr-link", "fr-link--sm")}
-												title={`Accéder au site web : ${marker.name}, nouvelle fenêtre`}
-											>
-												Site web
-											</Link>
-										) : null}
-										{itineraryQuery ? (
-											<Link
-												href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(itineraryQuery)}`}
-												target="_blank"
-												rel="noopener noreferrer"
-												className={fr.cx("fr-link", "fr-link--sm")}
-												title={`Itinéraire vers : ${marker.name}, nouvelle fenêtre`}
-											>
-												Itinéraire
-											</Link>
-										) : null}
-									</div>
-								</article>
-							);
-						})
+									</article>
+								);
+							})
+						)}
+					</div>
+					{listPageCount > 1 && (
+						<div className={classes.paginationWrapper}>
+							<Pagination
+								count={listPageCount}
+								defaultPage={safeListPage}
+								getPageLinkProps={(pageNumber) => ({
+									onClick: (e) => {
+										e.preventDefault();
+										setListPage(pageNumber);
+									},
+									href: "#",
+								})}
+							/>
+						</div>
 					)}
-				</div>
+				</>
 			) : (
-				<div className={classes.tableContainer}>
-					<Table
-						caption={map.title ?? "Marqueurs de la carte"}
-						headers={tableHeaders}
-						data={tableData}
-						noCaption={!!map.title}
-					/>
-				</div>
+				<>
+					<div className={classes.tableContainer}>
+						<Table
+							caption={map.title ?? "Marqueurs de la carte"}
+							headers={tableHeaders}
+							data={tableData}
+							noCaption={!!map.title}
+						/>
+					</div>
+					{tablePageCount > 1 && (
+						<div className={classes.paginationWrapper}>
+							<Pagination
+								count={tablePageCount}
+								defaultPage={safeTablePage}
+								getPageLinkProps={(pageNumber) => ({
+									onClick: (e) => {
+										e.preventDefault();
+										setTablePage(pageNumber);
+									},
+									href: "#",
+								})}
+							/>
+						</div>
+					)}
+				</>
 			)}
 
 			{hasFilters ? (
@@ -896,6 +962,11 @@ const useStyles = tss.withName(MapDisplay.name).create(() => ({
 		},
 	},
 
+	paginationWrapper: {
+		display: "flex",
+		justifyContent: "center",
+		marginTop: fr.spacing("4v"),
+	},
 	listContainer: {
 		display: "grid",
 		gridTemplateColumns: "repeat(auto-fill, minmax(min(100%, 20rem), 1fr))",
