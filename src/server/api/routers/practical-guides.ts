@@ -235,7 +235,9 @@ export const practicalGuidesRouter = createTRPCRouter({
 							content: false,
 							courses: false,
 						},
-						where: { and: whereConditions },
+						where: {
+							and: [...whereConditions, { _status: { equals: "published" } }],
+						},
 					});
 
 					const orderMap = new Map(matchingIds.map((id, index) => [id, index]));
@@ -275,7 +277,9 @@ export const practicalGuidesRouter = createTRPCRouter({
 						content: false,
 						courses: false,
 					},
-					where: whereConditions.length ? { and: whereConditions } : {},
+					where: {
+						and: [...whereConditions, { _status: { equals: "published" } }],
+					},
 				});
 
 				return {

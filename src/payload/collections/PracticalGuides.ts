@@ -44,7 +44,7 @@ async function runSimplification(
 		await payload.update({
 			collection: "practical-guides",
 			id: docId,
-			data: { simplifiedGenerationStatus: "pending" },
+			data: { simplifiedGenerationStatus: "pending", _status: "published" },
 			context: { [SIMPLIFICATION_INTERNAL_FLAG]: true },
 		});
 
@@ -58,6 +58,7 @@ async function runSimplification(
 					contentSimplified: result.lexical,
 					simplifiedGenerationStatus: "ready",
 					simplifiedGeneratedAt: new Date().toISOString(),
+					_status: "published",
 				},
 				context: { [SIMPLIFICATION_INTERNAL_FLAG]: true },
 			});
@@ -66,7 +67,7 @@ async function runSimplification(
 			await payload.update({
 				collection: "practical-guides",
 				id: docId,
-				data: { simplifiedGenerationStatus: "failed" },
+				data: { simplifiedGenerationStatus: "failed", _status: "published" },
 				context: { [SIMPLIFICATION_INTERNAL_FLAG]: true },
 			});
 		}
