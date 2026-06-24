@@ -88,6 +88,9 @@ export const practicalGuidesRouter = createTRPCRouter({
 			depth: 2,
 			sort: "-viewCount",
 			draft: false,
+			where: {
+				"guide._status": { equals: "published" },
+			},
 		});
 
 		const sanitizedResult = await Promise.all(
@@ -298,13 +301,27 @@ export const practicalGuidesRouter = createTRPCRouter({
 			});
 
 			if (!guide.docs.length || !guide.docs[0]) {
-				await ctx.payload.create({
-					collection: "practical-guide-views",
-					data: {
-						guide: input.guideId,
-						viewCount: 1,
-					},
-				});
+				try {
+					await ctx.payload.create({
+						collection: "practical-guide-views",
+						data: {
+							guide: input.guideId,
+							viewCount: 1,
+						},
+					});
+				} catch (err) {
+					const existing = await ctx.payload.find({
+						collection: "practical-guide-views",
+						where: { guide: { equals: input.guideId } },
+						limit: 1,
+					});
+					if (!existing.docs[0]) throw err;
+					await ctx.payload.update({
+						collection: "practical-guide-views",
+						id: existing.docs[0].id,
+						data: { viewCount: existing.docs[0].viewCount + 1 },
+					});
+				}
 			} else {
 				await ctx.payload.update({
 					collection: "practical-guide-views",
