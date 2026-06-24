@@ -222,11 +222,6 @@ export default function MapDisplay({ map, height }: Props) {
 		});
 	}, [map.markers, activeFilters]);
 
-	const filterSignature = useMemo(
-		() => JSON.stringify(activeFilters),
-		[activeFilters],
-	);
-
 	const listPageCount = Math.ceil(filteredMarkers.length / LIST_PAGE_SIZE);
 	const safeListPage = Math.min(listPage, Math.max(1, listPageCount));
 	const pagedListMarkers = useMemo(
@@ -869,7 +864,6 @@ export default function MapDisplay({ map, height }: Props) {
 					{listPageCount > 1 && (
 						<div className={classes.paginationWrapper}>
 							<Pagination
-								key={`list-${filterSignature}`}
 								count={listPageCount}
 								defaultPage={safeListPage}
 								getPageLinkProps={(pageNumber) => ({
@@ -896,7 +890,6 @@ export default function MapDisplay({ map, height }: Props) {
 					{tablePageCount > 1 && (
 						<div className={classes.paginationWrapper}>
 							<Pagination
-								key={`table-${filterSignature}`}
 								count={tablePageCount}
 								defaultPage={safeTablePage}
 								getPageLinkProps={(pageNumber) => ({
