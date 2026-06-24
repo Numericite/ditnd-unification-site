@@ -10,6 +10,7 @@ import { s3Storage } from "@payloadcms/storage-s3";
 import { searchPlugin } from "@payloadcms/plugin-search";
 import { seoPlugin } from "@payloadcms/plugin-seo";
 import { beforeSyncPracticalGuide } from "./search";
+import { mdaRedirectsPlugin } from "./plugins/redirects";
 
 import { Users } from "./collections/Users";
 import { Personas } from "./collections/Personas";
@@ -167,6 +168,7 @@ export default buildConfig({
 	sharp: (inputFile, options) =>
 		sharp(inputFile, { ...options, failOn: "none" }),
 	plugins: [
+		mdaRedirectsPlugin,
 		searchPlugin({
 			collections: ["practical-guides"],
 			defaultPriorities: {

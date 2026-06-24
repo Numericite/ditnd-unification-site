@@ -81,6 +81,7 @@ export interface Config {
 		conditions: Condition;
 		themes: Theme;
 		users: User;
+		redirects: Redirect;
 		"search-results": SearchResult;
 		"payload-kv": PayloadKv;
 		"payload-folders": FolderInterface;
@@ -114,6 +115,7 @@ export interface Config {
 		conditions: ConditionsSelect<false> | ConditionsSelect<true>;
 		themes: ThemesSelect<false> | ThemesSelect<true>;
 		users: UsersSelect<false> | UsersSelect<true>;
+		redirects: RedirectsSelect<false> | RedirectsSelect<true>;
 		"search-results": SearchResultsSelect<false> | SearchResultsSelect<true>;
 		"payload-kv": PayloadKvSelect<false> | PayloadKvSelect<true>;
 		"payload-folders": PayloadFoldersSelect<false> | PayloadFoldersSelect<true>;
@@ -693,6 +695,35 @@ export interface User {
 	collection: "users";
 }
 /**
+ * 301 redirects for legacy URLs. An empty target = still to be filled in. Never delete a filled redirect.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "redirects".
+ */
+export interface Redirect {
+	id: number;
+	from: string;
+	to?: {
+		type?: ("reference" | "custom") | null;
+		reference?:
+			| ({
+					relationTo: "practical-guides";
+					value: number | PracticalGuide;
+			  } | null)
+			| ({
+					relationTo: "courses";
+					value: number | Course;
+			  } | null);
+		url?: string | null;
+	};
+	/**
+	 * Filled by the seed script.
+	 */
+	legacyTitle?: string | null;
+	updatedAt: string;
+	createdAt: string;
+}
+/**
  * This is a collection of automatically created search results. These results are used by the global site search and will be updated automatically as documents in the CMS are created or updated.
  *
  * This interface was referenced by `Config`'s JSON-Schema
@@ -794,6 +825,10 @@ export interface PayloadLockedDocument {
 		| ({
 				relationTo: "users";
 				value: number | User;
+		  } | null)
+		| ({
+				relationTo: "redirects";
+				value: number | Redirect;
 		  } | null)
 		| ({
 				relationTo: "search-results";
@@ -1165,6 +1200,23 @@ export interface UsersSelect<T extends boolean = true> {
 				createdAt?: T;
 				expiresAt?: T;
 		  };
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "redirects_select".
+ */
+export interface RedirectsSelect<T extends boolean = true> {
+	from?: T;
+	to?:
+		| T
+		| {
+				type?: T;
+				reference?: T;
+				url?: T;
+		  };
+	legacyTitle?: T;
+	updatedAt?: T;
+	createdAt?: T;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
