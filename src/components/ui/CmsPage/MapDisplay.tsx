@@ -228,23 +228,25 @@ export default function MapDisplay({ map, height }: Props) {
 	);
 
 	const listPageCount = Math.ceil(filteredMarkers.length / LIST_PAGE_SIZE);
+	const safeListPage = Math.min(listPage, Math.max(1, listPageCount));
 	const pagedListMarkers = useMemo(
 		() =>
 			filteredMarkers.slice(
-				(listPage - 1) * LIST_PAGE_SIZE,
-				listPage * LIST_PAGE_SIZE,
+				(safeListPage - 1) * LIST_PAGE_SIZE,
+				safeListPage * LIST_PAGE_SIZE,
 			),
-		[filteredMarkers, listPage],
+		[filteredMarkers, safeListPage],
 	);
 
 	const tablePageCount = Math.ceil(filteredMarkers.length / TABLE_PAGE_SIZE);
+	const safeTablePage = Math.min(tablePage, Math.max(1, tablePageCount));
 	const pagedTableMarkers = useMemo(
 		() =>
 			filteredMarkers.slice(
-				(tablePage - 1) * TABLE_PAGE_SIZE,
-				tablePage * TABLE_PAGE_SIZE,
+				(safeTablePage - 1) * TABLE_PAGE_SIZE,
+				safeTablePage * TABLE_PAGE_SIZE,
 			),
-		[filteredMarkers, tablePage],
+		[filteredMarkers, safeTablePage],
 	);
 
 	const clusterIndex = useMemo(() => {
@@ -869,7 +871,7 @@ export default function MapDisplay({ map, height }: Props) {
 							<Pagination
 								key={`list-${filterSignature}`}
 								count={listPageCount}
-								defaultPage={listPage}
+								defaultPage={safeListPage}
 								getPageLinkProps={(pageNumber) => ({
 									onClick: (e) => {
 										e.preventDefault();
@@ -896,7 +898,7 @@ export default function MapDisplay({ map, height }: Props) {
 							<Pagination
 								key={`table-${filterSignature}`}
 								count={tablePageCount}
-								defaultPage={tablePage}
+								defaultPage={safeTablePage}
 								getPageLinkProps={(pageNumber) => ({
 									onClick: (e) => {
 										e.preventDefault();
