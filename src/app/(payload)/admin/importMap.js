@@ -38,8 +38,10 @@ import { default as default_22a653d96dc1a6313610d55237ed703e } from "../../../pa
 import { LinkToDoc as LinkToDoc_aead06e4cbf6b2620c5c51c9ab283634 } from "@payloadcms/plugin-search/client";
 import { ReindexButton as ReindexButton_aead06e4cbf6b2620c5c51c9ab283634 } from "@payloadcms/plugin-search/client";
 import { FolderTypeField as FolderTypeField_2b8867833a34864a02ddf429b0728a40 } from "@payloadcms/next/client";
+import { default as default_a8430564fd2c4f0a506836a5de510638 } from "../../../payload/components/SimplifiedContentGeneratorHeaderButton";
 import { S3ClientUploadHandler as S3ClientUploadHandler_f97aa6c64367fa259c5bc0567239ef24 } from "@payloadcms/storage-s3/client";
 import { default as default_4bf3fd4f8b9e4bf53a867035a745e24a } from "../../../payload/views/MapImportView";
+import { default as default_9c11b756bbfd4fdef7b9a95d9b38e373 } from "../../../payload/views/SimplifiedContentGeneratorView";
 import { CollectionCards as CollectionCards_f9c02e79a4aed9a3924487c0cd4cafb1 } from "@payloadcms/next/rsc";
 
 /** @type import('payload').ImportMap */
@@ -124,9 +126,13 @@ export const importMap = {
 		ReindexButton_aead06e4cbf6b2620c5c51c9ab283634,
 	"@payloadcms/next/client#FolderTypeField":
 		FolderTypeField_2b8867833a34864a02ddf429b0728a40,
+	"./components/SimplifiedContentGeneratorHeaderButton#default":
+		default_a8430564fd2c4f0a506836a5de510638,
 	"@payloadcms/storage-s3/client#S3ClientUploadHandler":
 		S3ClientUploadHandler_f97aa6c64367fa259c5bc0567239ef24,
 	"./views/MapImportView#default": default_4bf3fd4f8b9e4bf53a867035a745e24a,
+	"./views/SimplifiedContentGeneratorView#default":
+		default_9c11b756bbfd4fdef7b9a95d9b38e373,
 	"@payloadcms/next/rsc#CollectionCards":
 		CollectionCards_f9c02e79a4aed9a3924487c0cd4cafb1,
 };

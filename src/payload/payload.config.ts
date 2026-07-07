@@ -47,6 +47,7 @@ import { CMSFooter } from "./globals/cms/Footer";
 import { CMSAbout } from "./globals/cms/About";
 import { CMSCartographie } from "./globals/cms/Cartographie";
 import { PracticalGuideViews } from "./collections/PracticalGuidesViews";
+import { SimplifiedContentGenerator } from "./globals/SimplifiedContentGenerator";
 
 const filename = fileURLToPath(import.meta.url);
 const dirname = path.dirname(filename);
@@ -78,10 +79,16 @@ export default buildConfig({
 			baseDir: path.resolve(dirname),
 		},
 		components: {
+			actions: ["./components/SimplifiedContentGeneratorHeaderButton"],
 			views: {
 				MapImport: {
 					Component: "./views/MapImportView",
 					path: "/map-import",
+					exact: true,
+				},
+				SimplifiedContentGenerator: {
+					Component: "./views/SimplifiedContentGeneratorView",
+					path: "/simplified-content-generator",
 					exact: true,
 				},
 			},
@@ -136,7 +143,13 @@ export default buildConfig({
 		Themes,
 		Users,
 	],
-	globals: [CMSHome, CMSFooter, CMSAbout, CMSCartographie],
+	globals: [
+		CMSHome,
+		CMSFooter,
+		CMSAbout,
+		CMSCartographie,
+		SimplifiedContentGenerator,
+	],
 	editor: lexicalEditor(),
 	i18n: {
 		supportedLanguages: { en, fr },
