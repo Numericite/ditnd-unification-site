@@ -6,8 +6,8 @@ import type {
 	Payload,
 } from "payload";
 import { sql } from "@payloadcms/db-postgres";
-import { HeadingFeature, lexicalEditor } from "@payloadcms/richtext-lexical";
 import { slugify } from "~/utils/tools";
+import { simplifiedLexicalEditor } from "../fields/simplifiedWysiwyg";
 import { standardFields } from "../fields/standards";
 import { generateEmbedding } from "../services/embedding";
 import { generateSimplifiedContent } from "../services/contentSimplification";
@@ -295,28 +295,7 @@ export const PracticalGuides: CollectionConfig = {
 				description:
 					"Version simplifiée du contenu, régénérée automatiquement à chaque publication.",
 			},
-			editor: lexicalEditor({
-				features: ({ defaultFeatures }) => [
-					...defaultFeatures.filter(
-						(feature) =>
-							![
-								"align",
-								"blockquote",
-								"checklist",
-								"heading",
-								"horizontalRule",
-								"indent",
-								"inlineCode",
-								"italic",
-								"strikethrough",
-								"subscript",
-								"superscript",
-								"underline",
-							].includes(feature.key),
-					),
-					HeadingFeature({ enabledHeadingSizes: ["h2", "h3"] }),
-				],
-			}),
+			editor: simplifiedLexicalEditor(),
 		},
 		{
 			name: "simplifiedGenerationStatus",

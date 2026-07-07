@@ -136,12 +136,16 @@ export interface Config {
 		footer: Footer;
 		about: About;
 		cartographie: Cartographie;
+		"simplified-content-generator": SimplifiedContentGenerator;
 	};
 	globalsSelect: {
 		home: HomeSelect<false> | HomeSelect<true>;
 		footer: FooterSelect<false> | FooterSelect<true>;
 		about: AboutSelect<false> | AboutSelect<true>;
 		cartographie: CartographieSelect<false> | CartographieSelect<true>;
+		"simplified-content-generator":
+			| SimplifiedContentGeneratorSelect<false>
+			| SimplifiedContentGeneratorSelect<true>;
 	};
 	locale: null;
 	widgets: {
@@ -1433,6 +1437,45 @@ export interface Cartographie {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "simplified-content-generator".
+ */
+export interface SimplifiedContentGenerator {
+	id: number;
+	source?: {
+		root: {
+			type: string;
+			children: {
+				type: any;
+				version: number;
+				[k: string]: unknown;
+			}[];
+			direction: ("ltr" | "rtl") | null;
+			format: "left" | "start" | "center" | "right" | "end" | "justify" | "";
+			indent: number;
+			version: number;
+		};
+		[k: string]: unknown;
+	} | null;
+	result?: {
+		root: {
+			type: string;
+			children: {
+				type: any;
+				version: number;
+				[k: string]: unknown;
+			}[];
+			direction: ("ltr" | "rtl") | null;
+			format: "left" | "start" | "center" | "right" | "end" | "justify" | "";
+			indent: number;
+			version: number;
+		};
+		[k: string]: unknown;
+	} | null;
+	updatedAt?: string | null;
+	createdAt?: string | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "home_select".
  */
 export interface HomeSelect<T extends boolean = true> {
@@ -1531,6 +1574,17 @@ export interface CartographieSelect<T extends boolean = true> {
 	title?: T;
 	imageBanner?: T;
 	content?: T;
+	updatedAt?: T;
+	createdAt?: T;
+	globalType?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "simplified-content-generator_select".
+ */
+export interface SimplifiedContentGeneratorSelect<T extends boolean = true> {
+	source?: T;
+	result?: T;
 	updatedAt?: T;
 	createdAt?: T;
 	globalType?: T;

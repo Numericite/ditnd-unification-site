@@ -29,6 +29,10 @@ export type SimplificationResult =
 	| { ok: true; lexical: SerializedLexicalRoot }
 	| { ok: false; error: string };
 
+export type MarkdownSimplificationResult =
+	| { ok: true; markdown: string }
+	| { ok: false; error: string };
+
 let cachedSystemPrompt: string | null = null;
 
 function loadSystemPrompt(): string {
@@ -88,6 +92,52 @@ async function callAlbert(
 	} finally {
 		clearTimeout(timeout);
 	}
+}
+
+export async function simplifyMarkdown(
+	sourceMarkdown: string,
+): Promise<MarkdownSimplificationResult> {
+	const apiKey = process.env.ALBERT_API_KEY;
+	const apiUrl = process.env.ALBERT_API_URL;
+
+	if (!apiKey || !apiUrl) {
+		return {
+			ok: false,
+			error: "ALBERT_API_KEY or ALBERT_API_URL not configured",
+		};
+	}
+
+	if (!sourceMarkdown.trim()) {
+		return { ok: false, error: "Source content is empty" };
+	}
+
+	let systemPrompt: string;
+	try {
+		systemPrompt = loadSystemPrompt();
+	} catch (err) {
+		return {
+			ok: false,
+			error: `Failed to load system prompt: ${err instanceof Error ? err.message : String(err)}`,
+		};
+	}
+
+	let lastError = "unknown";
+	for (let attempt = 0; attempt <= RETRY_COUNT; attempt++) {
+		if (attempt > 0) await sleep(RETRY_DELAY_MS);
+		try {
+			const responseMarkdown = await callAlbert(
+				apiUrl,
+				apiKey,
+				systemPrompt,
+				sourceMarkdown,
+			);
+			return { ok: true, markdown: responseMarkdown };
+		} catch (err) {
+			lastError = err instanceof Error ? err.message : String(err);
+		}
+	}
+
+	return { ok: false, error: lastError };
 }
 
 export async function generateSimplifiedContent(

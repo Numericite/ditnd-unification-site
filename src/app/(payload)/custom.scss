@@ -4,3 +4,26 @@
   overflow-x: auto;
   overflow-y: hidden;
 }
+
+.simplified-content-generator {
+  .editor-scroller {
+    min-height: 340px;
+  }
+
+  // no sticky doc-controls bar on this view: stick the editor toolbar
+  // to the viewport top instead of leaving a doc-controls-sized gap
+  // (-1px compensates the toolbar's translateY(1px))
+  .fixed-toolbar {
+    top: -1px;
+  }
+
+  // the step panel's flex gap already spaces the success banner
+  .banner {
+    margin-bottom: 0;
+  }
+
+  // compact action bar: drop the buttons' default block margins
+  .btn {
+    margin-block: 0;
+  }
+}
