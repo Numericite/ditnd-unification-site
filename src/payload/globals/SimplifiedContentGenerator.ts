@@ -11,6 +11,12 @@ export const SimplifiedContentGenerator: GlobalConfig = {
 	admin: {
 		hidden: true,
 	},
+	// The generator view builds its form state with its own permissions and
+	// never persists this global: close the REST/GraphQL surface entirely.
+	access: {
+		read: () => false,
+		update: () => false,
+	},
 	fields: [
 		{
 			name: "source",

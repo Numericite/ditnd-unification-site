@@ -36,17 +36,33 @@ import {
 type ExportFormat = "pdf" | "docx" | "md";
 type Step = 1 | 2;
 
-// Mirrors the source editor value into a ref so the generate/regenerate
-// actions can read it from outside the Form provider.
-function SourceValueBridge({
+// Payload's lexical field flushes edits into the form state through a
+// deprioritized (idle-time) callback, so the form state can lag the editor by
+// up to ~500ms. Read the live editor state straight from the Lexical instance
+// attached to the contenteditable root instead, and only fall back to the
+// (possibly stale) mirrored form-state value if that internal ever disappears.
+function readLiveLexicalState(container: HTMLElement | null): unknown {
+	const root = container?.querySelector("[data-lexical-editor]") as
+		| (HTMLElement & {
+				__lexicalEditor?: { getEditorState: () => { toJSON: () => unknown } };
+		  })
+		| null;
+	return root?.__lexicalEditor?.getEditorState().toJSON();
+}
+
+// Mirrors a field's form-state value into a ref, as a fallback for
+// readLiveLexicalState readable from outside the Form provider.
+function FieldValueBridge({
+	name,
 	valueRef,
 }: {
+	name: "source" | "result";
 	valueRef: MutableRefObject<unknown>;
 }) {
-	const sourceValue = useFormFields(([fields]) => fields.source?.value);
+	const value = useFormFields(([fields]) => fields[name]?.value);
 	useEffect(() => {
-		valueRef.current = sourceValue;
-	}, [sourceValue, valueRef]);
+		valueRef.current = value;
+	}, [value, valueRef]);
 	return null;
 }
 
@@ -65,20 +81,12 @@ function GenerationLoader() {
 }
 
 function ExportActions({
-	title,
 	exporting,
 	onExport,
 }: {
-	title: string;
 	exporting: ExportFormat | null;
-	onExport: (
-		format: ExportFormat,
-		title: string,
-		resultLexical: unknown,
-	) => void;
+	onExport: (format: ExportFormat) => void;
 }) {
-	const resultValue = useFormFields(([fields]) => fields.result?.value);
-
 	const buttons: { format: ExportFormat; label: string }[] = [
 		{ format: "pdf", label: "Télécharger en PDF" },
 		{ format: "docx", label: "Télécharger en DOCX" },
@@ -90,7 +98,7 @@ function ExportActions({
 			{buttons.map(({ format, label }) => (
 				<Button
 					key={format}
-					onClick={() => onExport(format, title, resultValue)}
+					onClick={() => onExport(format)}
 					disabled={exporting !== null}
 				>
 					{exporting === format ? "Export…" : label}
@@ -118,7 +126,10 @@ export default function SimplifiedContentGeneratorClient({
 		[globalConfig],
 	);
 
+	const sourceContainerRef = useRef<HTMLDivElement>(null);
+	const resultContainerRef = useRef<HTMLDivElement>(null);
 	const sourceValueRef = useRef<unknown>(null);
+	const resultValueRef = useRef<unknown>(null);
 
 	const [step, setStep] = useState<Step>(1);
 	const [title, setTitle] = useState("");
@@ -136,7 +147,10 @@ export default function SimplifiedContentGeneratorClient({
 	}, []);
 
 	const handleGenerate = useCallback(async () => {
-		const sourceMarkdown = lexicalToMarkdown(sourceValueRef.current);
+		const sourceLexical =
+			readLiveLexicalState(sourceContainerRef.current) ??
+			sourceValueRef.current;
+		const sourceMarkdown = lexicalToMarkdown(sourceLexical);
 		if (!sourceMarkdown.trim()) {
 			setError("Rédigez d'abord le contenu à simplifier.");
 			return;
@@ -198,7 +212,10 @@ export default function SimplifiedContentGeneratorClient({
 	}, [getFormState]);
 
 	const handleExport = useCallback(
-		async (format: ExportFormat, docTitle: string, resultLexical: unknown) => {
+		async (format: ExportFormat) => {
+			const resultLexical =
+				readLiveLexicalState(resultContainerRef.current) ??
+				resultValueRef.current;
 			const markdown = lexicalToMarkdown(resultLexical);
 			if (!markdown.trim()) return;
 
@@ -206,11 +223,11 @@ export default function SimplifiedContentGeneratorClient({
 			setError("");
 			try {
 				if (format === "md") {
-					exportAsMarkdown(docTitle, markdown);
+					exportAsMarkdown(title, markdown);
 				} else if (format === "docx") {
-					await exportAsDocx(docTitle, markdown);
+					await exportAsDocx(title, markdown);
 				} else {
-					await exportAsPdf(docTitle, markdown);
+					await exportAsPdf(title, markdown);
 				}
 			} catch {
 				setError("L'export a échoué. Veuillez réessayer.");
@@ -218,7 +235,7 @@ export default function SimplifiedContentGeneratorClient({
 				setExporting(null);
 			}
 		},
-		[],
+		[title],
 	);
 
 	const steps: { index: Step; label: string; description: string }[] = [
@@ -301,8 +318,11 @@ export default function SimplifiedContentGeneratorClient({
 					</p>
 				</div>
 				<Form initialState={initialState}>
-					<SourceValueBridge valueRef={sourceValueRef} />
-					<div className={generating ? styles.hidden : ""}>
+					<FieldValueBridge name="source" valueRef={sourceValueRef} />
+					<div
+						ref={sourceContainerRef}
+						className={generating ? styles.hidden : ""}
+					>
 						<RenderFields
 							fields={sourceFields}
 							forceRender
@@ -339,21 +359,20 @@ export default function SimplifiedContentGeneratorClient({
 				</div>
 				{title.trim() && <h2 className={styles.resultTitle}>{title}</h2>}
 				<Form key={resultVersion} initialState={resultState ?? initialState}>
-					<RenderFields
-						fields={resultFields}
-						forceRender
-						parentIndexPath=""
-						parentPath=""
-						parentSchemaPath={GENERATOR_GLOBAL_SLUG}
-						permissions={true}
-						readOnly={false}
-					/>
-					<div className={styles.actionBar}>
-						<ExportActions
-							title={title}
-							exporting={exporting}
-							onExport={handleExport}
+					<FieldValueBridge name="result" valueRef={resultValueRef} />
+					<div ref={resultContainerRef}>
+						<RenderFields
+							fields={resultFields}
+							forceRender
+							parentIndexPath=""
+							parentPath=""
+							parentSchemaPath={GENERATOR_GLOBAL_SLUG}
+							permissions={true}
+							readOnly={false}
 						/>
+					</div>
+					<div className={styles.actionBar}>
+						<ExportActions exporting={exporting} onExport={handleExport} />
 						<div className={styles.secondaryActions}>
 							<Button
 								buttonStyle="secondary"

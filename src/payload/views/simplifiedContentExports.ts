@@ -4,6 +4,8 @@
 // paragraphs, - and 1. lists, **bold**, [text](url) links), so a small
 // dedicated parser is enough to feed the DOCX and PDF builders.
 
+import { slugify } from "~/utils/tools";
+
 export type Inline = {
 	text: string;
 	bold: boolean;
@@ -127,13 +129,7 @@ export function parseSimplifiedMarkdown(markdown: string): Block[] {
 }
 
 export function buildFilename(title: string, extension: string): string {
-	const slug = title
-		.normalize("NFD")
-		.replace(/[\u0300-\u036f]/g, "")
-		.toLowerCase()
-		.replace(/[^a-z0-9]+/g, "-")
-		.replace(/^-+|-+$/g, "")
-		.slice(0, 80);
+	const slug = slugify(title).slice(0, 80).replace(/-+$/, "");
 	return `${slug || "contenu-simplifie"}.${extension}`;
 }
 
