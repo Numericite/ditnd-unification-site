@@ -1,4 +1,4 @@
-const EXPANSION_MODEL = "albert-large";
+const EXPANSION_MODEL = "mistralai/Mistral-Small-3.2-24B-Instruct-2506";
 
 export type RagSource = "guides" | "courses";
 

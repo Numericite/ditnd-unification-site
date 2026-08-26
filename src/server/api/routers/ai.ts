@@ -310,7 +310,7 @@ export const aiRouter = createTRPCRouter({
 
 			// 7. Generate the answer with Albert.
 			const albertPayload = {
-				model: "albert-large",
+				model: "mistralai/Mistral-Small-3.2-24B-Instruct-2506",
 				messages: [
 					{ role: "system", content: systemPrompt },
 					{

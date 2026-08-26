@@ -2,7 +2,7 @@
 //
 // Flow:
 //   1. Lexical (with custom blocks) → markdown subset
-//   2. Albert (albert-large) ← system prompt + that markdown
+//   2. Albert (mistralai/Mistral-Small-3.2-24B-Instruct-2506) ← system prompt + that markdown
 //   3. Markdown response → restricted Lexical
 //   4. One retry on transient failure
 //
@@ -18,7 +18,7 @@ import {
 	type SerializedLexicalRoot,
 } from "./markdownToLexical";
 
-const ALBERT_MODEL = "albert-large";
+const ALBERT_MODEL = "mistralai/Mistral-Small-3.2-24B-Instruct-2506";
 const ALBERT_TEMPERATURE = 0.2;
 const ALBERT_MAX_TOKENS = 2000;
 const ALBERT_TIMEOUT_MS = 90_000;
