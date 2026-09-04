@@ -24,6 +24,17 @@ const config = {
 			bodySizeLimit: "50mb",
 		},
 	},
+	async rewrites() {
+		// Médias hérités de l'ancien site WordPress : les URLs /app/uploads/*
+		// (backlinkées depuis l'extérieur, notamment ~200 PDF) sont servies depuis
+		// le préfixe legacy/ du bucket S3 — voir docs/plan-redirections-seo.md
+		return [
+			{
+				source: "/app/uploads/:path*",
+				destination: `https://${process.env.S3_BUCKET || "ditnd-unification"}.s3.${process.env.S3_REGION || "eu-west-3"}.amazonaws.com/legacy/app/uploads/:path*`,
+			},
+		];
+	},
 	async headers() {
 		if (process.env.NEXT_PUBLIC_NOINDEX !== "true") return [];
 		return [
