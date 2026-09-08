@@ -13,9 +13,16 @@ export default function RecommendedContent({
 }) {
 	const { classes, cx } = useStyles();
 
+	const publishedGuides = guides.filter(
+		(guide) => guide._status === "published",
+	);
+	const publishedCourses = courses.filter(
+		(course) => course._status === "published",
+	);
+
 	return (
 		<div>
-			{guides.length !== 0 && (
+			{publishedGuides.length !== 0 && (
 				<div className={cx(classes.footerContent, classes.marginContent)}>
 					<h3 id="fiches-pratiques">
 						Ces fiches pratiques qui pourraient vous intéresser
@@ -23,13 +30,13 @@ export default function RecommendedContent({
 					<div className={fr.cx("fr-grid-row", "fr-grid-row--gutters")}>
 						<CardsDisplayGroup
 							className={fr.cx("fr-col-lg-6")}
-							guides={guides}
+							guides={publishedGuides}
 							kind="guides"
 						/>
 					</div>
 				</div>
 			)}
-			{courses.length !== 0 && (
+			{publishedCourses.length !== 0 && (
 				<div className={cx(classes.footerContent, classes.marginContent)}>
 					<h3 id="formations">
 						Ces formations qui pourraient vous intéresser{" "}
@@ -42,7 +49,7 @@ export default function RecommendedContent({
 								"fr-col-md-12",
 								"fr-col-lg-6",
 							)}
-							courses={courses}
+							courses={publishedCourses}
 							kind="courses"
 						/>
 					</div>
