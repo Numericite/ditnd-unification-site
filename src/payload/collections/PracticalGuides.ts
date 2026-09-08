@@ -247,10 +247,35 @@ export const PracticalGuides: CollectionConfig = {
 	},
 	fields: [
 		{
-			name: "title",
-			type: "text",
-			required: true,
-			label: { fr: "Titre" },
+			type: "tabs",
+			tabs: [
+				{
+					label: { fr: "Contenu" },
+					fields: [
+						{
+							name: "title",
+							type: "text",
+							required: true,
+							label: { fr: "Titre" },
+						},
+						standardFields.description,
+						standardFields.wysiwyg,
+						{
+							name: "contentSimplified",
+							type: "richText",
+							required: false,
+							label: { fr: "Contenu simplifié (généré automatiquement)" },
+							admin: {
+								hidden: true,
+								readOnly: true,
+								description:
+									"Version simplifiée du contenu, régénérée automatiquement à chaque publication.",
+							},
+							editor: simplifiedLexicalEditor(),
+						},
+					],
+				},
+			],
 		},
 		{
 			name: "slug",
@@ -272,7 +297,6 @@ export const PracticalGuides: CollectionConfig = {
 				],
 			},
 		},
-		standardFields.description,
 		{
 			name: "conditions",
 			type: "relationship",
@@ -283,19 +307,6 @@ export const PracticalGuides: CollectionConfig = {
 			admin: {
 				position: "sidebar",
 			},
-		},
-		standardFields.wysiwyg,
-		{
-			name: "contentSimplified",
-			type: "richText",
-			required: false,
-			label: { fr: "Contenu simplifié (généré automatiquement)" },
-			admin: {
-				readOnly: true,
-				description:
-					"Version simplifiée du contenu, régénérée automatiquement à chaque publication.",
-			},
-			editor: simplifiedLexicalEditor(),
 		},
 		{
 			name: "simplifiedGenerationStatus",
@@ -348,12 +359,24 @@ export const PracticalGuides: CollectionConfig = {
 			},
 		},
 		{
+			name: "relatedPracticalGuides",
+			type: "join",
+			collection: "practical-guides",
+			on: "practical-guides",
+			label: "Fiches pratiques associées",
+			admin: {
+				position: "sidebar",
+				allowCreate: false,
+				defaultColumns: ["title", "_status"],
+			},
+		},
+		{
 			name: "practical-guides",
 			type: "relationship",
 			required: false,
 			relationTo: "practical-guides",
 			hasMany: true,
-			label: { fr: "Fiches pratiques" },
+			label: { fr: "Fiches pratiques en bas de page" },
 			admin: {
 				position: "sidebar",
 			},
@@ -364,7 +387,7 @@ export const PracticalGuides: CollectionConfig = {
 			required: false,
 			relationTo: "courses",
 			hasMany: true,
-			label: { fr: "Formations" },
+			label: { fr: "Formations en bas de page" },
 			admin: {
 				position: "sidebar",
 			},
@@ -374,7 +397,7 @@ export const PracticalGuides: CollectionConfig = {
 			type: "upload",
 			relationTo: "medias",
 			required: false,
-			label: { fr: "Image de la fiche pratique" },
+			label: { fr: "Image à la une" },
 			admin: {
 				position: "sidebar",
 			},
@@ -384,7 +407,7 @@ export const PracticalGuides: CollectionConfig = {
 			type: "upload",
 			relationTo: "medias",
 			required: false,
-			label: { fr: "Image de la bannière" },
+			label: { fr: "Bannière" },
 			admin: {
 				position: "sidebar",
 			},
