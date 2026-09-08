@@ -132,11 +132,7 @@ export const Courses: CollectionConfig = {
 			name: "link",
 			type: "text",
 			required: true,
-			label: { fr: "Lien externe" },
-		},
-		{
-			...standardFields.wysiwyg,
-			required: false,
+			label: { fr: "Lien de la formation" },
 		},
 		{
 			name: "type",
@@ -146,11 +142,18 @@ export const Courses: CollectionConfig = {
 			options: ["MOOC", "Webinaire", "Présentiel"],
 		},
 		{
+			...standardFields.wysiwyg,
+			required: false,
+		},
+		{
 			name: "theme",
 			type: "relationship",
 			required: true,
 			relationTo: "themes",
 			label: { fr: "Thèmes" },
+			admin: {
+				position: "sidebar",
+			},
 		},
 		{
 			name: "persona",
@@ -158,6 +161,9 @@ export const Courses: CollectionConfig = {
 			required: true,
 			relationTo: "personas",
 			label: { fr: "Persona" },
+			admin: {
+				position: "sidebar",
+			},
 		},
 		{
 			name: "condition",
@@ -165,13 +171,19 @@ export const Courses: CollectionConfig = {
 			required: true,
 			relationTo: "conditions",
 			label: { fr: "Trouble du neurodéveloppement" },
+			admin: {
+				position: "sidebar",
+			},
 		},
 		{
 			name: "image",
 			type: "upload",
 			relationTo: "medias",
 			required: false,
-			label: { fr: "Image de la formation" },
+			label: { fr: "Bannière" },
+			admin: {
+				position: "sidebar",
+			},
 		},
 	],
 };
