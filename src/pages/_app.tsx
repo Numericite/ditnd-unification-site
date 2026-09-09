@@ -16,12 +16,18 @@ import {
 } from "~/state/store";
 import { tss } from "tss-react/dsfr";
 import ChatBot from "~/components/Chatbot/Chatbot";
+import Matomo from "~/components/Matomo/Matomo";
 import "~/utils/styles/keyframes.css";
 import "~/utils/styles/contrast.css";
 import MainNavigation from "~/components/ui/Navigation/MainNavigation";
 import SeoMeta from "~/components/ui/SeoMeta";
 import { fr } from "@codegouvfr/react-dsfr";
 import type { GlobalData } from "~/server/global-data";
+import {
+	ConsentBannerAndConsentManagement,
+	FooterConsentManagementItem,
+	FooterPersonalDataPolicyItem,
+} from "~/utils/consentManagement";
 
 declare module "@codegouvfr/react-dsfr/next-pagesdir" {
 	interface RegisterLink {
@@ -96,6 +102,8 @@ function App({ Component, pageProps }: AppPropsWithGlobal) {
 				description="Site national d'informations pour toutes les personnes concernées par l'autisme et les troubles du neurodéveloppement. Retrouvez des ressources, diagnostics et formations."
 				pathname={router.asPath}
 			/>
+			<ConsentBannerAndConsentManagement />
+			<Matomo />
 			<div className={cx(classes.headerContainer)}>
 				<MainNavigation />
 
@@ -122,6 +130,8 @@ function App({ Component, pageProps }: AppPropsWithGlobal) {
 						href: "/mentions-legales",
 					}}
 					bottomItems={[
+						<FooterConsentManagementItem key="consent-management" />,
+						<FooterPersonalDataPolicyItem key="personal-data-policy" />,
 						{
 							text: "Code source",
 							linkProps: {
