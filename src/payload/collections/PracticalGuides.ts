@@ -278,6 +278,26 @@ export const PracticalGuides: CollectionConfig = {
 			],
 		},
 		{
+			name: "image",
+			type: "upload",
+			relationTo: "medias",
+			required: false,
+			label: { fr: "Image à la une" },
+			admin: {
+				position: "sidebar",
+			},
+		},
+		{
+			name: "imageBanner",
+			type: "upload",
+			relationTo: "medias",
+			required: false,
+			label: { fr: "Bannière" },
+			admin: {
+				position: "sidebar",
+			},
+		},
+		{
 			name: "slug",
 			type: "text",
 			required: true,
@@ -309,34 +329,6 @@ export const PracticalGuides: CollectionConfig = {
 			},
 		},
 		{
-			name: "simplifiedGenerationStatus",
-			type: "select",
-			required: false,
-			label: { fr: "Statut génération simplifiée" },
-			options: [
-				{ value: "pending", label: { fr: "En cours" } },
-				{ value: "ready", label: { fr: "Prêt" } },
-				{ value: "failed", label: { fr: "Échec" } },
-			],
-			admin: {
-				position: "sidebar",
-				readOnly: true,
-			},
-		},
-		{
-			name: "simplifiedGeneratedAt",
-			type: "date",
-			required: false,
-			label: { fr: "Dernière génération simplifiée" },
-			admin: {
-				position: "sidebar",
-				readOnly: true,
-				date: {
-					displayFormat: "dd/MM/yyyy HH:mm",
-				},
-			},
-		},
-		{
 			name: "persona",
 			type: "relationship",
 			required: true,
@@ -356,18 +348,6 @@ export const PracticalGuides: CollectionConfig = {
 			label: { fr: "Thèmes" },
 			admin: {
 				position: "sidebar",
-			},
-		},
-		{
-			name: "relatedPracticalGuides",
-			type: "join",
-			collection: "practical-guides",
-			on: "practical-guides",
-			label: "Fiches pratiques associées",
-			admin: {
-				position: "sidebar",
-				allowCreate: false,
-				defaultColumns: ["title", "_status"],
 			},
 		},
 		{
@@ -393,23 +373,43 @@ export const PracticalGuides: CollectionConfig = {
 			},
 		},
 		{
-			name: "image",
-			type: "upload",
-			relationTo: "medias",
-			required: false,
-			label: { fr: "Image à la une" },
+			name: "relatedPracticalGuides",
+			type: "join",
+			collection: "practical-guides",
+			on: "practical-guides",
+			label: "Autres fiches pratiques qui référencent celle-ci en bas de page",
 			admin: {
 				position: "sidebar",
+				allowCreate: false,
+				defaultColumns: ["title", "_status"],
 			},
 		},
 		{
-			name: "imageBanner",
-			type: "upload",
-			relationTo: "medias",
+			name: "simplifiedGenerationStatus",
+			type: "select",
 			required: false,
-			label: { fr: "Bannière" },
+			label: { fr: "Statut génération simplifiée" },
+			options: [
+				{ value: "pending", label: { fr: "En cours" } },
+				{ value: "ready", label: { fr: "Prêt" } },
+				{ value: "failed", label: { fr: "Échec" } },
+			],
 			admin: {
 				position: "sidebar",
+				readOnly: true,
+			},
+		},
+		{
+			name: "simplifiedGeneratedAt",
+			type: "date",
+			required: false,
+			label: { fr: "Dernière génération simplifiée" },
+			admin: {
+				position: "sidebar",
+				readOnly: true,
+				date: {
+					displayFormat: "dd/MM/yyyy HH:mm",
+				},
 			},
 		},
 	],
