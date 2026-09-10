@@ -122,7 +122,7 @@ export const uploadConverter: JSXConverters<DefaultNodeTypes>["upload"] = ({
 					style={imageStyle}
 					fetchPriority="high"
 					priority
-					src={`${process.env.S3_BUCKET ?? ""}${value.url}`}
+					src={value.url}
 					alt={value.alt ?? ""}
 					width={value.width}
 					height={value.height}
@@ -303,11 +303,7 @@ export const citationConverter: JSXConverter<SerializedBlockNode> = ({
 			author={value.author}
 			source={source}
 			sourceUrl={value.sourceUrl}
-			imageUrl={
-				value.image?.url
-					? `${process.env.S3_BUCKET ?? ""}${value.image.url}`
-					: undefined
-			}
+			imageUrl={value.image?.url ?? undefined}
 			size={value.size}
 		/>
 	);
@@ -387,7 +383,7 @@ export const customImageSizeConverter: JSXConverter<SerializedBlockNode> = ({
 					style={{ ...imageStyle, width: "100%" }}
 					fetchPriority="high"
 					priority
-					src={`${process.env.S3_BUCKET ?? ""}${image.url}`}
+					src={image.url}
 					alt={`${image.alt || ""}`}
 					width={image.width}
 					height={image.height}
@@ -414,7 +410,7 @@ export const customImageSizeConverter: JSXConverter<SerializedBlockNode> = ({
 					style={imageStyle}
 					fetchPriority="high"
 					priority
-					src={`${process.env.S3_BUCKET ?? ""}${image.url}`}
+					src={image.url}
 					alt={`${image.alt || ""}`}
 					width={customWidth}
 					height={height}
@@ -444,7 +440,7 @@ export const customImageSizeConverter: JSXConverter<SerializedBlockNode> = ({
 				style={imageStyle}
 				fetchPriority="high"
 				priority
-				src={`${process.env.S3_BUCKET ?? ""}${image.url}`}
+				src={image.url}
 				alt={`${image.alt || ""}`}
 				width={width}
 				height={height}
