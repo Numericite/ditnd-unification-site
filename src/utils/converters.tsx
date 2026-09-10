@@ -255,11 +255,15 @@ export const accordionConverter: JSXConverter<SerializedBlockNode> = ({
 	const items = node.fields?.items as
 		| { title: string; content: any }[]
 		| undefined;
+	const openMode = node.fields?.openMode as string | undefined;
 
 	if (!items?.length) return null;
 
 	return (
-		<div className={fr.cx("fr-accordions-group", "fr-my-3v")}>
+		<div
+			className={fr.cx("fr-accordions-group", "fr-my-3v")}
+			data-fr-group={openMode === "multiple" ? "false" : undefined}
+		>
 			{items.map((item, index) => (
 				<WysiwygAccordion
 					key={`${item.title}-${index}`}

@@ -13,6 +13,20 @@ export const AccordionBlock: Block = {
 	},
 	fields: [
 		{
+			name: "openMode",
+			type: "radio",
+			required: true,
+			defaultValue: "single",
+			label: { fr: "Comportement d'ouverture" },
+			options: [
+				{ label: "Un seul accordéon ouvert à la fois", value: "single" },
+				{
+					label: "Plusieurs accordéons peuvent être ouverts",
+					value: "multiple",
+				},
+			],
+		},
+		{
 			name: "items",
 			label: "Accordéons",
 			type: "array",
