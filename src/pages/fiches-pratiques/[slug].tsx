@@ -72,7 +72,9 @@ export default function PracticalGuidePage({
 	const [mode, setMode] = useState<ContentMode>(initialMode);
 
 	const isSimplifiedReady =
-		guide.simplifiedGenerationStatus === "ready" && !!guide.contentSimplified;
+		guide.simplifiedGenerationStatus === "ready" &&
+		!!guide.contentSimplified &&
+		!guide.hideSimplifiedVersion;
 
 	const displayedGuide = useMemo(() => {
 		if (mode === "simplified" && isSimplifiedReady && guide.contentSimplified) {
@@ -145,8 +147,6 @@ export const getServerSideProps: GetServerSideProps<Props> = async (ctx) => {
 	const fromParam = ctx.query.from;
 	const from = typeof fromParam === "string" ? fromParam : null;
 	const cookieMode = ctx.req.cookies?.[CONTENT_MODE_COOKIE];
-	const initialMode: ContentMode =
-		cookieMode === "simplified" ? "simplified" : "standard";
 
 	if (!slug) {
 		return { notFound: true };
@@ -160,6 +160,11 @@ export const getServerSideProps: GetServerSideProps<Props> = async (ctx) => {
 		if (!guide) {
 			return { notFound: true };
 		}
+
+		const initialMode: ContentMode =
+			cookieMode === "simplified" && !guide.hideSimplifiedVersion
+				? "simplified"
+				: "standard";
 
 		return {
 			props: {
