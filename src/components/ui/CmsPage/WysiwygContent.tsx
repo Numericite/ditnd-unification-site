@@ -19,6 +19,13 @@ export default function WysiwygContent({ content }: Props) {
 
 const useStyles = tss.withName(WysiwygContent.name).create(() => ({
 	wysiwig: {
+		"h2, h3, h4, h5, h6": {
+			marginTop: "3rem",
+			marginBottom: "1.5rem",
+		},
+		"> .payload-richtext > :is(h2, h3, h4, h5, h6):first-child": {
+			marginTop: 0,
+		},
 		h2: {
 			fontSize: "1.75rem",
 			lineHeight: "2.25rem",
@@ -31,11 +38,7 @@ const useStyles = tss.withName(WysiwygContent.name).create(() => ({
 			fontSize: "1.25rem",
 			lineHeight: "1.75rem",
 		},
-		h5: {
-			fontSize: "1rem",
-			lineHeight: "1.5rem",
-		},
-		h6: {
+		"h5, h6": {
 			fontSize: "1rem",
 			lineHeight: "1.5rem",
 		},
