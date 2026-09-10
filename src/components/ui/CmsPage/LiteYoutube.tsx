@@ -14,12 +14,16 @@ export default function LiteYouTube({ videoId }: { videoId: string }) {
 				className={classes.liteButton}
 			>
 				<span className={fr.cx("fr-sr-only")}>Voir la vidéo YouTube</span>
-				<div
-					className={classes.ytThumbnail}
-					style={{
-						backgroundImage: `url(https://i.ytimg.com/vi/${videoId}/hqdefault.jpg)`,
-					}}
-				>
+				<div className={classes.ytThumbnail}>
+					<img
+						src={`https://i.ytimg.com/vi/${videoId}/maxresdefault.jpg`}
+						alt=""
+						className={classes.ytThumbnailImg}
+						onError={(e) => {
+							e.currentTarget.onerror = null;
+							e.currentTarget.src = `https://i.ytimg.com/vi/${videoId}/hqdefault.jpg`;
+						}}
+					/>
 					<i className="fr-icon-play-fill" />
 				</div>
 			</button>
@@ -50,17 +54,28 @@ const useStyles = tss.withName(LiteYouTube.name).create(() => ({
 		},
 	},
 	ytThumbnail: {
+		position: "relative",
 		width: "100%",
 		aspectRatio: "16 / 9",
 		display: "flex",
 		justifyContent: "center",
 		alignItems: "center",
-		backgroundSize: "cover",
-		backgroundPosition: "center",
+		overflow: "hidden",
 		color: "white",
+		"& i": {
+			position: "relative",
+			zIndex: 1,
+		},
 		"& i:before": {
 			"--icon-size": "clamp(24px, 10vw, 64px)",
 		},
+	},
+	ytThumbnailImg: {
+		position: "absolute",
+		inset: 0,
+		width: "100%",
+		height: "100%",
+		objectFit: "cover",
 	},
 	iframeWrapper: {
 		width: "100%",
