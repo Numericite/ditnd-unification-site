@@ -19,7 +19,7 @@ export default function WysiwygContent({ content }: Props) {
 
 const useStyles = tss.withName(WysiwygContent.name).create(() => ({
 	wysiwig: {
-		"h2, h3, h4, h5, h6": {
+		".payload-richtext > :is(h2, h3, h4, h5, h6)": {
 			marginTop: "3rem",
 			marginBottom: "1.5rem",
 		},
