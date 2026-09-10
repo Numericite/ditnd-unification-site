@@ -7,5 +7,11 @@ export function RichTextRenderer({
 }: {
 	content: DefaultTypedEditorState;
 }) {
-	return <RichText data={content} converters={getConverters()} />;
+	return (
+		<RichText
+			className="payload-richtext"
+			data={content}
+			converters={getConverters()}
+		/>
+	);
 }
