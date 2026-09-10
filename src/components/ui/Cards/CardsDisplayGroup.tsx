@@ -29,53 +29,49 @@ export default function CardsDisplayGroup({
 			case "courses":
 				return (
 					<>
-						{courses?.map((course) =>
-							course._status !== "draft" ? (
-								<div
-									key={course.id}
-									className={className}
-									style={{ display: "flex" }}
-								>
-									<CardDisplay
-										{...course}
-										imageUrl={course.image?.url ?? undefined}
-										imageAlt=""
-										conditions={[course.condition]}
-										themes={[course.theme]}
-										redirect={
-											course.slug ? `/formations/${course.slug}` : course.link
-										}
-										titleAs={titleAs}
-										kind={kind}
-									/>
-								</div>
-							) : null,
-						)}
+						{courses?.map((course) => (
+							<div
+								key={course.id}
+								className={className}
+								style={{ display: "flex" }}
+							>
+								<CardDisplay
+									{...course}
+									imageUrl={course.image?.url ?? undefined}
+									imageAlt=""
+									conditions={[course.condition]}
+									themes={[course.theme]}
+									redirect={
+										course.slug ? `/formations/${course.slug}` : course.link
+									}
+									titleAs={titleAs}
+									kind={kind}
+								/>
+							</div>
+						))}
 					</>
 				);
 			case "guides":
 				return (
 					<>
-						{guides?.map((guide) =>
-							guide._status !== "draft" ? (
-								<div
-									key={guide.id}
-									className={className}
-									style={{ display: "flex" }}
-								>
-									<CardDisplay
-										{...guide}
-										imageUrl={guide.image?.url ?? undefined}
-										imageAlt=""
-										conditions={guide.conditions ?? []}
-										themes={guide.themes}
-										redirect={buildGuideRedirect(guide.slug)}
-										titleAs={titleAs}
-										kind={kind}
-									/>
-								</div>
-							) : null,
-						)}
+						{guides?.map((guide) => (
+							<div
+								key={guide.id}
+								className={className}
+								style={{ display: "flex" }}
+							>
+								<CardDisplay
+									{...guide}
+									imageUrl={guide.image?.url ?? undefined}
+									imageAlt=""
+									conditions={guide.conditions ?? []}
+									themes={guide.themes}
+									redirect={buildGuideRedirect(guide.slug)}
+									titleAs={titleAs}
+									kind={kind}
+								/>
+							</div>
+						))}
 					</>
 				);
 		}
