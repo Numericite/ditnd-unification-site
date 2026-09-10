@@ -31,6 +31,8 @@ import Button from "@codegouvfr/react-dsfr/Button";
 import { SegmentedControl } from "@codegouvfr/react-dsfr/SegmentedControl";
 import { Table } from "@codegouvfr/react-dsfr/Table";
 import Pagination from "@codegouvfr/react-dsfr/Pagination";
+import { Placeholder } from "@codegouvfr/react-dsfr/consentManagement/Placeholder";
+import { useConsent } from "~/utils/consentManagement";
 
 const FRANCE_CENTER = { latitude: 46.6, longitude: 2.3, zoom: 5 };
 const LIST_PAGE_SIZE = 12;
@@ -43,6 +45,8 @@ type Props = {
 
 export default function MapDisplay({ map, height }: Props) {
 	const { classes, cx } = useStyles();
+	const { finalityConsent, assumeConsent } = useConsent();
+	const hasMapConsent = finalityConsent?.cartographie === true;
 	const [selectedMarker, setSelectedMarker] = useState<MapMarkerSummary | null>(
 		null,
 	);
@@ -585,171 +589,201 @@ export default function MapDisplay({ map, height }: Props) {
 
 			{viewMode === "map" ? (
 				<div className={classes.mapWrapper}>
-					<div className={classes.mapContainer} style={{ height }}>
-						<MapGL
-							ref={setMapRef}
-							initialViewState={initialView}
-							mapStyle={mapStyle}
-							attributionControl={{ compact: true }}
-							onClick={() => setSelectedMarker(null)}
-							onMoveEnd={(e) => updateViewport(e.target)}
-							onLoad={(e) => {
-								if (map.fitToMarkers && map.markers.length > 0) {
-									const lngs = map.markers.map((m) => m.longitude as number);
-									const lats = map.markers.map((m) => m.latitude as number);
-									e.target.fitBounds(
-										[
-											[Math.min(...lngs), Math.min(...lats)],
-											[Math.max(...lngs), Math.max(...lats)],
-										],
-										{ padding: 48, maxZoom: 13, duration: 0 },
-									);
-								}
-								updateViewport(e.target);
-							}}
-						>
-							<NavigationControl position="top-right" showCompass={false} />
-
-							{clusterIndex
-								? clusters.map((feature) => {
-										const [longitude, latitude] = feature.geometry
-											.coordinates as [number, number];
-										if ("cluster" in feature.properties) {
-											const clusterId = feature.properties.cluster_id;
-											const counts = feature.properties.counts;
-											const total = feature.properties.point_count;
-											return (
-												<Marker
-													key={`cluster-${clusterId}`}
-													longitude={longitude}
-													latitude={latitude}
-													anchor="center"
-												>
-													<MapClusterMarker
-														counts={counts}
-														total={total}
-														getColor={(id) =>
-															dsfrAccentHex(categoryById.get(id)?.colorVariant)
-														}
-														getLabel={(id) => categoryById.get(id)?.name ?? ""}
-														onClick={() =>
-															handleClusterClick(clusterId, longitude, latitude)
-														}
-													/>
-												</Marker>
+					{!hasMapConsent ? (
+						<Placeholder
+							className={classes.mapContainer}
+							style={{ height }}
+							title="Cartographie"
+							description="Ce contenu est bloqué car vous n'avez pas autorisé les cookies liés à la cartographie."
+							onGranted={() => assumeConsent("cartographie")}
+						/>
+					) : (
+						<>
+							<div className={classes.mapContainer} style={{ height }}>
+								<MapGL
+									ref={setMapRef}
+									initialViewState={initialView}
+									mapStyle={mapStyle}
+									attributionControl={{ compact: true }}
+									onClick={() => setSelectedMarker(null)}
+									onMoveEnd={(e) => updateViewport(e.target)}
+									onLoad={(e) => {
+										if (map.fitToMarkers && map.markers.length > 0) {
+											const lngs = map.markers.map(
+												(m) => m.longitude as number,
+											);
+											const lats = map.markers.map((m) => m.latitude as number);
+											e.target.fitBounds(
+												[
+													[Math.min(...lngs), Math.min(...lats)],
+													[Math.max(...lngs), Math.max(...lats)],
+												],
+												{ padding: 48, maxZoom: 13, duration: 0 },
 											);
 										}
-										const marker = markerById.get(feature.properties.markerId);
-										return marker ? renderSingleMarker(marker) : null;
-									})
-								: filteredMarkers.map(renderSingleMarker)}
-
-							{selectedMarker && (
-								<Popup
-									longitude={selectedMarker.longitude as number}
-									latitude={selectedMarker.latitude as number}
-									anchor="bottom"
-									offset={[0, -32]}
-									closeButton={false}
-									closeOnClick={false}
-									onClose={() => setSelectedMarker(null)}
-									className={classes.popup}
-									maxWidth="20rem"
+										updateViewport(e.target);
+									}}
 								>
-									<div className={classes.popupInner}>
-										<div className={classes.popupHeader}>
-											<div className={classes.popupTitleGroup}>
-												<strong className={classes.popupName}>
-													{selectedMarker.name}
-												</strong>
-												{selectedMarker.city ? (
-													<span className={classes.popupCity}>
-														{[selectedMarker.postalCode, selectedMarker.city]
-															.filter(Boolean)
-															.join(" ")}
-													</span>
+									<NavigationControl position="top-right" showCompass={false} />
+
+									{clusterIndex
+										? clusters.map((feature) => {
+												const [longitude, latitude] = feature.geometry
+													.coordinates as [number, number];
+												if ("cluster" in feature.properties) {
+													const clusterId = feature.properties.cluster_id;
+													const counts = feature.properties.counts;
+													const total = feature.properties.point_count;
+													return (
+														<Marker
+															key={`cluster-${clusterId}`}
+															longitude={longitude}
+															latitude={latitude}
+															anchor="center"
+														>
+															<MapClusterMarker
+																counts={counts}
+																total={total}
+																getColor={(id) =>
+																	dsfrAccentHex(
+																		categoryById.get(id)?.colorVariant,
+																	)
+																}
+																getLabel={(id) =>
+																	categoryById.get(id)?.name ?? ""
+																}
+																onClick={() =>
+																	handleClusterClick(
+																		clusterId,
+																		longitude,
+																		latitude,
+																	)
+																}
+															/>
+														</Marker>
+													);
+												}
+												const marker = markerById.get(
+													feature.properties.markerId,
+												);
+												return marker ? renderSingleMarker(marker) : null;
+											})
+										: filteredMarkers.map(renderSingleMarker)}
+
+									{selectedMarker && (
+										<Popup
+											longitude={selectedMarker.longitude as number}
+											latitude={selectedMarker.latitude as number}
+											anchor="bottom"
+											offset={[0, -32]}
+											closeButton={false}
+											closeOnClick={false}
+											onClose={() => setSelectedMarker(null)}
+											className={classes.popup}
+											maxWidth="20rem"
+										>
+											<div className={classes.popupInner}>
+												<div className={classes.popupHeader}>
+													<div className={classes.popupTitleGroup}>
+														<strong className={classes.popupName}>
+															{selectedMarker.name}
+														</strong>
+														{selectedMarker.city ? (
+															<span className={classes.popupCity}>
+																{[
+																	selectedMarker.postalCode,
+																	selectedMarker.city,
+																]
+																	.filter(Boolean)
+																	.join(" ")}
+															</span>
+														) : null}
+													</div>
+													<Button
+														priority="tertiary no outline"
+														iconId="fr-icon-close-line"
+														size="small"
+														onClick={() => setSelectedMarker(null)}
+														title="Fermer"
+													/>
+												</div>
+
+												{selectedMarker.description ? (
+													<p className={classes.popupLine}>
+														{selectedMarker.description}
+													</p>
+												) : null}
+
+												{popupCategory?.customFields &&
+												popupCategory.customFields.length > 0
+													? popupCategory.customFields.map(
+															(f: CustomFieldDef) => {
+																const raw = selectedMarker.metadata?.[f.key];
+																if (raw === undefined || raw === null)
+																	return null;
+																let display: string;
+																if (f.type === "checkbox") {
+																	display = raw ? "Oui" : "Non";
+																} else if (f.type === "select") {
+																	const opt = f.options?.find(
+																		(o) => o.value === String(raw),
+																	);
+																	display = opt ? opt.label : String(raw);
+																} else {
+																	display = String(raw);
+																}
+																return (
+																	<p key={f.key} className={classes.popupLine}>
+																		<span className={classes.popupFieldLabel}>
+																			{f.label} :
+																		</span>{" "}
+																		{display}
+																	</p>
+																);
+															},
+														)
+													: null}
+
+												{selectedMarker.phone ? (
+													<p className={classes.popupLine}>
+														<Link
+															href={`tel:${selectedMarker.phone}`}
+															className={fr.cx("fr-link")}
+															title={`Appeler : ${selectedMarker.name}`}
+														>
+															{selectedMarker.phone}
+														</Link>
+													</p>
+												) : null}
+
+												{selectedMarker.website ? (
+													<p className={classes.popupLine}>
+														<Link
+															href={selectedMarker.website}
+															target="_blank"
+															rel="noopener noreferrer"
+															className={fr.cx("fr-link")}
+															title={`Accéder au site web : ${selectedMarker.name}, nouvelle fenêtre`}
+														>
+															Accéder au site web
+														</Link>
+													</p>
 												) : null}
 											</div>
-											<Button
-												priority="tertiary no outline"
-												iconId="fr-icon-close-line"
-												size="small"
-												onClick={() => setSelectedMarker(null)}
-												title="Fermer"
-											/>
-										</div>
-
-										{selectedMarker.description ? (
-											<p className={classes.popupLine}>
-												{selectedMarker.description}
-											</p>
-										) : null}
-
-										{popupCategory?.customFields &&
-										popupCategory.customFields.length > 0
-											? popupCategory.customFields.map((f: CustomFieldDef) => {
-													const raw = selectedMarker.metadata?.[f.key];
-													if (raw === undefined || raw === null) return null;
-													let display: string;
-													if (f.type === "checkbox") {
-														display = raw ? "Oui" : "Non";
-													} else if (f.type === "select") {
-														const opt = f.options?.find(
-															(o) => o.value === String(raw),
-														);
-														display = opt ? opt.label : String(raw);
-													} else {
-														display = String(raw);
-													}
-													return (
-														<p key={f.key} className={classes.popupLine}>
-															<span className={classes.popupFieldLabel}>
-																{f.label} :
-															</span>{" "}
-															{display}
-														</p>
-													);
-												})
-											: null}
-
-										{selectedMarker.phone ? (
-											<p className={classes.popupLine}>
-												<Link
-													href={`tel:${selectedMarker.phone}`}
-													className={fr.cx("fr-link")}
-													title={`Appeler : ${selectedMarker.name}`}
-												>
-													{selectedMarker.phone}
-												</Link>
-											</p>
-										) : null}
-
-										{selectedMarker.website ? (
-											<p className={classes.popupLine}>
-												<Link
-													href={selectedMarker.website}
-													target="_blank"
-													rel="noopener noreferrer"
-													className={fr.cx("fr-link")}
-													title={`Accéder au site web : ${selectedMarker.name}, nouvelle fenêtre`}
-												>
-													Accéder au site web
-												</Link>
-											</p>
-										) : null}
-									</div>
-								</Popup>
-							)}
-						</MapGL>
-					</div>
-					<div className={classes.searchOverlay}>
-						<MapSearch
-							markers={filteredMarkers}
-							categoryById={categoryById}
-							onSelect={handleSearchSelect}
-							onGeoSearch={handleGeoSearch}
-						/>
-					</div>
+										</Popup>
+									)}
+								</MapGL>
+							</div>
+							<div className={classes.searchOverlay}>
+								<MapSearch
+									markers={filteredMarkers}
+									categoryById={categoryById}
+									onSelect={handleSearchSelect}
+									onGeoSearch={handleGeoSearch}
+								/>
+							</div>
+						</>
+					)}
 				</div>
 			) : viewMode === "list" ? (
 				<>
