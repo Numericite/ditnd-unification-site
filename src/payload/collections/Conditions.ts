@@ -73,5 +73,29 @@ export const Conditions: CollectionConfig = {
 			},
 			validate: (value: unknown) => validateHexColor(value),
 		},
+		{
+			name: "relatedPracticalGuides",
+			type: "join",
+			collection: "practical-guides",
+			on: "conditions",
+			label: "Fiches pratiques associées",
+			admin: {
+				position: "sidebar",
+				allowCreate: false,
+				defaultColumns: ["title", "_status"],
+			},
+		},
+		{
+			name: "relatedCourses",
+			type: "join",
+			collection: "courses",
+			on: "condition",
+			label: "Formations associées",
+			admin: {
+				position: "sidebar",
+				allowCreate: false,
+				defaultColumns: ["title"],
+			},
+		},
 	],
 };

@@ -70,5 +70,41 @@ export const Personas: CollectionConfig = {
 			],
 			label: { fr: "Pictogramme du Persona" },
 		},
+		{
+			name: "relatedPracticalGuides",
+			type: "join",
+			collection: "practical-guides",
+			on: "persona",
+			label: "Fiches pratiques associées",
+			admin: {
+				position: "sidebar",
+				allowCreate: false,
+				defaultColumns: ["title", "_status"],
+			},
+		},
+		{
+			name: "relatedCourses",
+			type: "join",
+			collection: "courses",
+			on: "persona",
+			label: "Formations associées",
+			admin: {
+				position: "sidebar",
+				allowCreate: false,
+				defaultColumns: ["title"],
+			},
+		},
+		{
+			name: "relatedJourneys",
+			type: "join",
+			collection: "journeys",
+			on: "persona",
+			label: "Parcours associés",
+			admin: {
+				position: "sidebar",
+				allowCreate: false,
+				defaultColumns: ["journey_name"],
+			},
+		},
 	],
 };

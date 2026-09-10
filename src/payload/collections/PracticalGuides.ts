@@ -247,10 +247,55 @@ export const PracticalGuides: CollectionConfig = {
 	},
 	fields: [
 		{
-			name: "title",
-			type: "text",
-			required: true,
-			label: { fr: "Titre" },
+			type: "tabs",
+			tabs: [
+				{
+					label: { fr: "Contenu" },
+					fields: [
+						{
+							name: "title",
+							type: "text",
+							required: true,
+							label: { fr: "Titre" },
+						},
+						standardFields.description,
+						standardFields.wysiwyg,
+						{
+							name: "contentSimplified",
+							type: "richText",
+							required: false,
+							label: { fr: "Contenu simplifié (généré automatiquement)" },
+							admin: {
+								hidden: true,
+								readOnly: true,
+								description:
+									"Version simplifiée du contenu, régénérée automatiquement à chaque publication.",
+							},
+							editor: simplifiedLexicalEditor(),
+						},
+					],
+				},
+			],
+		},
+		{
+			name: "image",
+			type: "upload",
+			relationTo: "medias",
+			required: false,
+			label: { fr: "Image à la une" },
+			admin: {
+				position: "sidebar",
+			},
+		},
+		{
+			name: "imageBanner",
+			type: "upload",
+			relationTo: "medias",
+			required: false,
+			label: { fr: "Bannière" },
+			admin: {
+				position: "sidebar",
+			},
 		},
 		{
 			name: "slug",
@@ -272,7 +317,6 @@ export const PracticalGuides: CollectionConfig = {
 				],
 			},
 		},
-		standardFields.description,
 		{
 			name: "conditions",
 			type: "relationship",
@@ -282,47 +326,6 @@ export const PracticalGuides: CollectionConfig = {
 			label: { fr: "Troubles du neurodéveloppement" },
 			admin: {
 				position: "sidebar",
-			},
-		},
-		standardFields.wysiwyg,
-		{
-			name: "contentSimplified",
-			type: "richText",
-			required: false,
-			label: { fr: "Contenu simplifié (généré automatiquement)" },
-			admin: {
-				readOnly: true,
-				description:
-					"Version simplifiée du contenu, régénérée automatiquement à chaque publication.",
-			},
-			editor: simplifiedLexicalEditor(),
-		},
-		{
-			name: "simplifiedGenerationStatus",
-			type: "select",
-			required: false,
-			label: { fr: "Statut génération simplifiée" },
-			options: [
-				{ value: "pending", label: { fr: "En cours" } },
-				{ value: "ready", label: { fr: "Prêt" } },
-				{ value: "failed", label: { fr: "Échec" } },
-			],
-			admin: {
-				position: "sidebar",
-				readOnly: true,
-			},
-		},
-		{
-			name: "simplifiedGeneratedAt",
-			type: "date",
-			required: false,
-			label: { fr: "Dernière génération simplifiée" },
-			admin: {
-				position: "sidebar",
-				readOnly: true,
-				date: {
-					displayFormat: "dd/MM/yyyy HH:mm",
-				},
 			},
 		},
 		{
@@ -353,7 +356,7 @@ export const PracticalGuides: CollectionConfig = {
 			required: false,
 			relationTo: "practical-guides",
 			hasMany: true,
-			label: { fr: "Fiches pratiques" },
+			label: { fr: "Fiches pratiques en bas de page" },
 			admin: {
 				position: "sidebar",
 			},
@@ -364,29 +367,49 @@ export const PracticalGuides: CollectionConfig = {
 			required: false,
 			relationTo: "courses",
 			hasMany: true,
-			label: { fr: "Formations" },
+			label: { fr: "Formations en bas de page" },
 			admin: {
 				position: "sidebar",
 			},
 		},
 		{
-			name: "image",
-			type: "upload",
-			relationTo: "medias",
-			required: false,
-			label: { fr: "Image de la fiche pratique" },
+			name: "relatedPracticalGuides",
+			type: "join",
+			collection: "practical-guides",
+			on: "practical-guides",
+			label: "Autres fiches pratiques qui référencent celle-ci en bas de page",
 			admin: {
 				position: "sidebar",
+				allowCreate: false,
+				defaultColumns: ["title", "_status"],
 			},
 		},
 		{
-			name: "imageBanner",
-			type: "upload",
-			relationTo: "medias",
+			name: "simplifiedGenerationStatus",
+			type: "select",
 			required: false,
-			label: { fr: "Image de la bannière" },
+			label: { fr: "Statut génération simplifiée" },
+			options: [
+				{ value: "pending", label: { fr: "En cours" } },
+				{ value: "ready", label: { fr: "Prêt" } },
+				{ value: "failed", label: { fr: "Échec" } },
+			],
 			admin: {
 				position: "sidebar",
+				readOnly: true,
+			},
+		},
+		{
+			name: "simplifiedGeneratedAt",
+			type: "date",
+			required: false,
+			label: { fr: "Dernière génération simplifiée" },
+			admin: {
+				position: "sidebar",
+				readOnly: true,
+				date: {
+					displayFormat: "dd/MM/yyyy HH:mm",
+				},
 			},
 		},
 	],

@@ -33,5 +33,29 @@ export const Themes: CollectionConfig = {
 			unique: true,
 			label: { fr: "Identifiant texte" },
 		},
+		{
+			name: "relatedPracticalGuides",
+			type: "join",
+			collection: "practical-guides",
+			on: "themes",
+			label: "Fiches pratiques associées",
+			admin: {
+				position: "sidebar",
+				allowCreate: false,
+				defaultColumns: ["title", "_status"],
+			},
+		},
+		{
+			name: "relatedCourses",
+			type: "join",
+			collection: "courses",
+			on: "theme",
+			label: "Formations associées",
+			admin: {
+				position: "sidebar",
+				allowCreate: false,
+				defaultColumns: ["title"],
+			},
+		},
 	],
 };
