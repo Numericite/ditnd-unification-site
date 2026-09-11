@@ -377,6 +377,11 @@ export const customImageSizeConverter: JSXConverter<SerializedBlockNode> = ({
 	const image = value.image;
 	const size = value.size;
 
+	const a11yProps =
+		value.altType === "nonDecorative"
+			? { alt: `${value.alt || image.alt || ""}` }
+			: ({ alt: "", role: "presentation" } as const);
+
 	if (size === "full") {
 		return (
 			<div
@@ -388,7 +393,7 @@ export const customImageSizeConverter: JSXConverter<SerializedBlockNode> = ({
 					fetchPriority="high"
 					priority
 					src={image.url}
-					alt={`${image.alt || ""}`}
+					{...a11yProps}
 					width={image.width}
 					height={image.height}
 				/>
@@ -415,7 +420,7 @@ export const customImageSizeConverter: JSXConverter<SerializedBlockNode> = ({
 					fetchPriority="high"
 					priority
 					src={image.url}
-					alt={`${image.alt || ""}`}
+					{...a11yProps}
 					width={customWidth}
 					height={height}
 				/>
@@ -445,7 +450,7 @@ export const customImageSizeConverter: JSXConverter<SerializedBlockNode> = ({
 				fetchPriority="high"
 				priority
 				src={image.url}
-				alt={`${image.alt || ""}`}
+				{...a11yProps}
 				width={width}
 				height={height}
 			/>
