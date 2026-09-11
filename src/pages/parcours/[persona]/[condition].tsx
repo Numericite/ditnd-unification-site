@@ -9,6 +9,7 @@ import PageContent from "~/components/ui/PageContent";
 import { createCaller } from "~/server/api/root";
 import type { AugmentedJourney } from "~/server/api/routers/journeys";
 import { createTRPCContext } from "~/server/api/trpc";
+import ErrorPage from "~/components/ui/ErrorPage/ErrorPage";
 
 function isProfessionalPersona(_slug: string) {
 	// TODO: Réactiver le sous-niveau spécifique aux professionnels
@@ -16,20 +17,32 @@ function isProfessionalPersona(_slug: string) {
 	return false;
 }
 
-type Props = {
-	journey: AugmentedJourney;
-	persona: string;
-	condition: string;
-	conditionDescription: string;
-};
+type Props =
+	| { isNotFound: true }
+	| {
+			isNotFound?: false;
+			journey: AugmentedJourney;
+			persona: string;
+			condition: string;
+			conditionDescription: string;
+	  };
 
-export default function JourneyPage({
-	journey,
-	persona,
-	condition,
-	conditionDescription,
-}: Props) {
+export default function JourneyPage(props: Props) {
 	const { classes, cx } = useStyles();
+
+	if (props.isNotFound) {
+		return (
+			<>
+				<Head>
+					<title>Page non trouvée - Maison de l'autisme</title>
+					<meta name="robots" content="noindex" />
+				</Head>
+				<ErrorPage />
+			</>
+		);
+	}
+
+	const { journey, persona, condition, conditionDescription } = props;
 
 	const isProPersona = isProfessionalPersona(persona);
 
@@ -121,7 +134,8 @@ export const getServerSideProps: GetServerSideProps<Props> = async (ctx) => {
 	const condition = ctx.params?.condition;
 
 	if (typeof persona !== "string" || typeof condition !== "string") {
-		return { notFound: true };
+		ctx.res.statusCode = 404;
+		return { props: { isNotFound: true } };
 	}
 
 	const caller = createCaller(await createTRPCContext());
@@ -134,7 +148,8 @@ export const getServerSideProps: GetServerSideProps<Props> = async (ctx) => {
 		const journey = journeys[0];
 
 		if (!journey) {
-			return { notFound: true };
+			ctx.res.statusCode = 404;
+			return { props: { isNotFound: true } };
 		}
 
 		return {
@@ -146,7 +161,8 @@ export const getServerSideProps: GetServerSideProps<Props> = async (ctx) => {
 			},
 		};
 	} catch {
-		return { notFound: true };
+		ctx.res.statusCode = 404;
+		return { props: { isNotFound: true } };
 	}
 };
 

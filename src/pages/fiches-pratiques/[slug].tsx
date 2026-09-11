@@ -6,6 +6,7 @@ import ContentModeToggle, {
 	type ContentMode,
 } from "~/components/PracticalGuides/ContentModeToggle";
 import { fr } from "@codegouvfr/react-dsfr";
+import Head from "next/head";
 import PageContent from "~/components/ui/PageContent";
 import SeoMeta from "~/components/ui/SeoMeta";
 import { useEffect, useMemo, useState } from "react";
@@ -15,6 +16,7 @@ import type { GetServerSideProps } from "next";
 import { createCaller } from "~/server/api/root";
 import { createTRPCContext } from "~/server/api/trpc";
 import type { AugmentedPracticalGuide } from "~/server/api/routers/practical-guides";
+import ErrorPage from "~/components/ui/ErrorPage/ErrorPage";
 
 type BreadcrumbSegment = {
 	label: string;
@@ -49,17 +51,20 @@ function getParcoursBreadcrumbSegments(
 	];
 }
 
-type Props = {
-	guide: AugmentedPracticalGuide;
-	from: string | null;
-	initialMode: ContentMode;
-};
+type Props =
+	| { isNotFound: true }
+	| {
+			isNotFound?: false;
+			guide: AugmentedPracticalGuide;
+			from: string | null;
+			initialMode: ContentMode;
+	  };
 
-export default function PracticalGuidePage({
-	guide,
-	from,
-	initialMode,
-}: Props) {
+export default function PracticalGuidePage(props: Props) {
+	const guide = props.isNotFound ? undefined : props.guide;
+	const from = props.isNotFound ? null : props.from;
+	const initialMode = props.isNotFound ? "standard" : props.initialMode;
+
 	const { mutate: incremenView } =
 		api.practicalGuide.incrementView.useMutation();
 
@@ -72,16 +77,30 @@ export default function PracticalGuidePage({
 	const [mode, setMode] = useState<ContentMode>(initialMode);
 
 	const isSimplifiedReady =
+		!!guide &&
 		guide.simplifiedGenerationStatus === "ready" &&
 		!!guide.contentSimplified &&
 		!guide.hideSimplifiedVersion;
 
 	const displayedGuide = useMemo(() => {
+		if (!guide) return undefined;
 		if (mode === "simplified" && isSimplifiedReady && guide.contentSimplified) {
 			return { ...guide, content: guide.contentSimplified };
 		}
 		return guide;
 	}, [guide, mode, isSimplifiedReady]);
+
+	if (!guide || !displayedGuide) {
+		return (
+			<>
+				<Head>
+					<title>Page non trouvée - Maison de l'autisme</title>
+					<meta name="robots" content="noindex" />
+				</Head>
+				<ErrorPage />
+			</>
+		);
+	}
 
 	const parcoursSegments = getParcoursBreadcrumbSegments(from ?? undefined);
 	const breadcrumbSegments: BreadcrumbSegment[] = parcoursSegments ?? [
@@ -149,7 +168,8 @@ export const getServerSideProps: GetServerSideProps<Props> = async (ctx) => {
 	const cookieMode = ctx.req.cookies?.[CONTENT_MODE_COOKIE];
 
 	if (!slug) {
-		return { notFound: true };
+		ctx.res.statusCode = 404;
+		return { props: { isNotFound: true } };
 	}
 
 	const caller = createCaller(await createTRPCContext());
@@ -158,7 +178,8 @@ export const getServerSideProps: GetServerSideProps<Props> = async (ctx) => {
 		const guide = await caller.practicalGuide.getBySlug({ slug });
 
 		if (!guide) {
-			return { notFound: true };
+			ctx.res.statusCode = 404;
+			return { props: { isNotFound: true } };
 		}
 
 		const initialMode: ContentMode =
@@ -174,6 +195,7 @@ export const getServerSideProps: GetServerSideProps<Props> = async (ctx) => {
 			},
 		};
 	} catch {
-		return { notFound: true };
+		ctx.res.statusCode = 404;
+		return { props: { isNotFound: true } };
 	}
 };
