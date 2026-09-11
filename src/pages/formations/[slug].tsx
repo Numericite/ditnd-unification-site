@@ -8,12 +8,30 @@ import { createTRPCContext } from "~/server/api/trpc";
 import type { AugmentedCourse } from "~/server/api/routers/courses";
 import PageContent from "~/components/ui/PageContent";
 import CourseDisplay from "~/components/Courses/CourseDisplay";
+import ErrorPage from "~/components/ui/ErrorPage/ErrorPage";
 
-type Props = {
-	course: AugmentedCourse;
-};
+type Props =
+	| { isNotFound: true }
+	| {
+			isNotFound?: false;
+			course: AugmentedCourse;
+	  };
 
-export default function CoursePage({ course }: Props) {
+export default function CoursePage(props: Props) {
+	if (props.isNotFound) {
+		return (
+			<>
+				<Head>
+					<title>Page non trouvée - Maison de l'autisme</title>
+					<meta name="robots" content="noindex" />
+				</Head>
+				<ErrorPage />
+			</>
+		);
+	}
+
+	const { course } = props;
+
 	return (
 		<>
 			<Head>
@@ -43,7 +61,8 @@ export const getServerSideProps: GetServerSideProps<Props> = async (ctx) => {
 	const slug = ctx.params?.slug as string | undefined;
 
 	if (!slug) {
-		return { notFound: true };
+		ctx.res.statusCode = 404;
+		return { props: { isNotFound: true } };
 	}
 
 	const caller = createCaller(await createTRPCContext());
@@ -54,7 +73,8 @@ export const getServerSideProps: GetServerSideProps<Props> = async (ctx) => {
 		return { props: { course } };
 	} catch (error) {
 		if (error instanceof TRPCError && error.code === "NOT_FOUND") {
-			return { notFound: true };
+			ctx.res.statusCode = 404;
+			return { props: { isNotFound: true } };
 		}
 
 		throw error;
