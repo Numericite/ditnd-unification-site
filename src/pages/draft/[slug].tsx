@@ -8,12 +8,30 @@ import { getPayload } from "payload";
 import payloadConfig from "~/payload/payload.config";
 import { resolveRelations } from "~/server/api/trpc";
 import type { AugmentedPracticalGuide } from "~/server/api/routers/practical-guides";
+import ErrorPage from "~/components/ui/ErrorPage/ErrorPage";
 
-type Props = {
-	guide: AugmentedPracticalGuide;
-};
+type Props =
+	| { isNotFound: true }
+	| {
+			isNotFound?: false;
+			guide: AugmentedPracticalGuide;
+	  };
 
-export default function PracticalGuideDraftPage({ guide }: Props) {
+export default function PracticalGuideDraftPage(props: Props) {
+	if (props.isNotFound) {
+		return (
+			<>
+				<Head>
+					<title>Page non trouvée - Maison de l'autisme</title>
+					<meta name="robots" content="noindex" />
+				</Head>
+				<ErrorPage />
+			</>
+		);
+	}
+
+	const { guide } = props;
+
 	return (
 		<>
 			<Head>
@@ -50,7 +68,8 @@ export const getServerSideProps: GetServerSideProps<Props> = async (ctx) => {
 	const slug = ctx.params?.slug;
 
 	if (typeof slug !== "string") {
-		return { notFound: true };
+		ctx.res.statusCode = 404;
+		return { props: { isNotFound: true } };
 	}
 
 	const payload = await getPayload({ config: payloadConfig });
@@ -69,7 +88,8 @@ export const getServerSideProps: GetServerSideProps<Props> = async (ctx) => {
 	if (!user || (user as { role?: string }).role !== "admin") {
 		// Return 404 (not a redirect) so we don't leak the existence of
 		// unpublished slugs to anonymous visitors.
-		return { notFound: true };
+		ctx.res.statusCode = 404;
+		return { props: { isNotFound: true } };
 	}
 
 	try {
@@ -83,7 +103,8 @@ export const getServerSideProps: GetServerSideProps<Props> = async (ctx) => {
 
 		const guide = result.docs[0];
 		if (!guide || !guide["practical-guides"] || !guide.courses) {
-			return { notFound: true };
+			ctx.res.statusCode = 404;
+			return { props: { isNotFound: true } };
 		}
 
 		const augmented = {
@@ -98,6 +119,7 @@ export const getServerSideProps: GetServerSideProps<Props> = async (ctx) => {
 
 		return { props: { guide: augmented } };
 	} catch {
-		return { notFound: true };
+		ctx.res.statusCode = 404;
+		return { props: { isNotFound: true } };
 	}
 };
