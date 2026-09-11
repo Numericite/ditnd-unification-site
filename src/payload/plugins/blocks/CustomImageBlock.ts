@@ -48,5 +48,33 @@ export const CustomImageBlock: Block = {
 				width: "50%",
 			},
 		},
+		{
+			name: "altType",
+			type: "radio",
+			defaultValue: "decorative",
+			label: { fr: "Type d'image" },
+			options: [
+				{ label: "Image décorative", value: "decorative" },
+				{ label: "Image non décorative", value: "nonDecorative" },
+			],
+		},
+		{
+			name: "alt",
+			type: "text",
+			label: { fr: "Texte alternatif" },
+			validate: (
+				value: string | null | undefined,
+				{ siblingData }: { siblingData?: { altType?: string } },
+			) =>
+				siblingData?.altType === "nonDecorative" && !value?.trim()
+					? "Le texte alternatif est obligatoire pour une image non décorative."
+					: true,
+			admin: {
+				condition: (_, siblingData) => siblingData?.altType === "nonDecorative",
+				components: {
+					Field: "../payload/components/ImageAltField",
+				},
+			},
+		},
 	],
 };

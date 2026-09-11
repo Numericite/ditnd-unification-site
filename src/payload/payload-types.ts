@@ -89,6 +89,22 @@ export interface Config {
 		"payload-migrations": PayloadMigration;
 	};
 	collectionsJoins: {
+		"practical-guides": {
+			relatedPracticalGuides: "practical-guides";
+		};
+		personas: {
+			relatedPracticalGuides: "practical-guides";
+			relatedCourses: "courses";
+			relatedJourneys: "journeys";
+		};
+		conditions: {
+			relatedPracticalGuides: "practical-guides";
+			relatedCourses: "courses";
+		};
+		themes: {
+			relatedPracticalGuides: "practical-guides";
+			relatedCourses: "courses";
+		};
 		"payload-folders": {
 			documentsAndFolders: "payload-folders" | "medias";
 		};
@@ -278,12 +294,10 @@ export interface FolderInterface {
 export interface PracticalGuide {
 	id: number;
 	title: string;
-	slug: string;
 	/**
 	 * Description courte affichée sur les cartes (120 caractères max)
 	 */
 	description: string;
-	conditions?: (number | Condition)[] | null;
 	content: {
 		root: {
 			type: string;
@@ -317,14 +331,6 @@ export interface PracticalGuide {
 		};
 		[k: string]: unknown;
 	} | null;
-	simplifiedGenerationStatus?: ("pending" | "ready" | "failed") | null;
-	simplifiedGeneratedAt?: string | null;
-	persona: (number | Persona)[];
-	themes: (number | Theme)[];
-	"practical-guides"?: (number | PracticalGuide)[] | null;
-	courses?: (number | Course)[] | null;
-	image?: (number | null) | Media;
-	imageBanner?: (number | null) | Media;
 	meta?: {
 		title?: string | null;
 		description?: string | null;
@@ -333,6 +339,22 @@ export interface PracticalGuide {
 		 */
 		image?: (number | null) | Media;
 	};
+	image?: (number | null) | Media;
+	imageBanner?: (number | null) | Media;
+	slug: string;
+	conditions?: (number | Condition)[] | null;
+	persona: (number | Persona)[];
+	themes: (number | Theme)[];
+	"practical-guides"?: (number | PracticalGuide)[] | null;
+	courses?: (number | Course)[] | null;
+	relatedPracticalGuides?: {
+		docs?: (number | PracticalGuide)[];
+		hasNextPage?: boolean;
+		totalDocs?: number;
+	};
+	hideSimplifiedVersion?: boolean | null;
+	simplifiedGenerationStatus?: ("pending" | "ready" | "failed") | null;
+	simplifiedGeneratedAt?: string | null;
 	updatedAt: string;
 	createdAt: string;
 	_status?: ("draft" | "published") | null;
@@ -354,6 +376,74 @@ export interface Condition {
 	slug: string;
 	textColor: string;
 	backgroundColor: string;
+	relatedPracticalGuides?: {
+		docs?: (number | PracticalGuide)[];
+		hasNextPage?: boolean;
+		totalDocs?: number;
+	};
+	relatedCourses?: {
+		docs?: (number | Course)[];
+		hasNextPage?: boolean;
+		totalDocs?: number;
+	};
+	updatedAt: string;
+	createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "courses".
+ */
+export interface Course {
+	id: number;
+	title: string;
+	slug: string;
+	description: string;
+	link: string;
+	type: "MOOC" | "Webinaire" | "Présentiel";
+	content?: {
+		root: {
+			type: string;
+			children: {
+				type: any;
+				version: number;
+				[k: string]: unknown;
+			}[];
+			direction: ("ltr" | "rtl") | null;
+			format: "left" | "start" | "center" | "right" | "end" | "justify" | "";
+			indent: number;
+			version: number;
+		};
+		[k: string]: unknown;
+	} | null;
+	theme: number | Theme;
+	persona: number | Persona;
+	condition: number | Condition;
+	image?: (number | null) | Media;
+	updatedAt: string;
+	createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "themes".
+ */
+export interface Theme {
+	id: number;
+	name: string;
+	/**
+	 * Description courte affichée sur les cartes (120 caractères max)
+	 */
+	description: string;
+	slug: string;
+	relatedPracticalGuides?: {
+		docs?: (number | PracticalGuide)[];
+		hasNextPage?: boolean;
+		totalDocs?: number;
+	};
+	relatedCourses?: {
+		docs?: (number | Course)[];
+		hasNextPage?: boolean;
+		totalDocs?: number;
+	};
 	updatedAt: string;
 	createdAt: string;
 }
@@ -390,54 +480,21 @@ export interface Persona {
 				| "Ecosystem"
 		  )
 		| null;
-	updatedAt: string;
-	createdAt: string;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "themes".
- */
-export interface Theme {
-	id: number;
-	name: string;
-	/**
-	 * Description courte affichée sur les cartes (120 caractères max)
-	 */
-	description: string;
-	slug: string;
-	updatedAt: string;
-	createdAt: string;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "courses".
- */
-export interface Course {
-	id: number;
-	title: string;
-	slug: string;
-	description: string;
-	link: string;
-	content?: {
-		root: {
-			type: string;
-			children: {
-				type: any;
-				version: number;
-				[k: string]: unknown;
-			}[];
-			direction: ("ltr" | "rtl") | null;
-			format: "left" | "start" | "center" | "right" | "end" | "justify" | "";
-			indent: number;
-			version: number;
-		};
-		[k: string]: unknown;
-	} | null;
-	type: "MOOC" | "Webinaire" | "Présentiel";
-	theme: number | Theme;
-	persona: number | Persona;
-	condition: number | Condition;
-	image?: (number | null) | Media;
+	relatedPracticalGuides?: {
+		docs?: (number | PracticalGuide)[];
+		hasNextPage?: boolean;
+		totalDocs?: number;
+	};
+	relatedCourses?: {
+		docs?: (number | Course)[];
+		hasNextPage?: boolean;
+		totalDocs?: number;
+	};
+	relatedJourneys?: {
+		docs?: (number | Journey)[];
+		hasNextPage?: boolean;
+		totalDocs?: number;
+	};
 	updatedAt: string;
 	createdAt: string;
 }
@@ -938,19 +995,9 @@ export interface MediasSelect<T extends boolean = true> {
  */
 export interface PracticalGuidesSelect<T extends boolean = true> {
 	title?: T;
-	slug?: T;
 	description?: T;
-	conditions?: T;
 	content?: T;
 	contentSimplified?: T;
-	simplifiedGenerationStatus?: T;
-	simplifiedGeneratedAt?: T;
-	persona?: T;
-	themes?: T;
-	"practical-guides"?: T;
-	courses?: T;
-	image?: T;
-	imageBanner?: T;
 	meta?:
 		| T
 		| {
@@ -958,6 +1005,18 @@ export interface PracticalGuidesSelect<T extends boolean = true> {
 				description?: T;
 				image?: T;
 		  };
+	image?: T;
+	imageBanner?: T;
+	slug?: T;
+	conditions?: T;
+	persona?: T;
+	themes?: T;
+	"practical-guides"?: T;
+	courses?: T;
+	relatedPracticalGuides?: T;
+	hideSimplifiedVersion?: T;
+	simplifiedGenerationStatus?: T;
+	simplifiedGeneratedAt?: T;
 	updatedAt?: T;
 	createdAt?: T;
 	_status?: T;
@@ -971,8 +1030,8 @@ export interface CoursesSelect<T extends boolean = true> {
 	slug?: T;
 	description?: T;
 	link?: T;
-	content?: T;
 	type?: T;
+	content?: T;
 	theme?: T;
 	persona?: T;
 	condition?: T;
@@ -1115,6 +1174,9 @@ export interface PersonasSelect<T extends boolean = true> {
 	journeyIntro?: T;
 	slug?: T;
 	pictogram?: T;
+	relatedPracticalGuides?: T;
+	relatedCourses?: T;
+	relatedJourneys?: T;
 	updatedAt?: T;
 	createdAt?: T;
 }
@@ -1131,6 +1193,8 @@ export interface ConditionsSelect<T extends boolean = true> {
 	slug?: T;
 	textColor?: T;
 	backgroundColor?: T;
+	relatedPracticalGuides?: T;
+	relatedCourses?: T;
 	updatedAt?: T;
 	createdAt?: T;
 }
@@ -1142,6 +1206,8 @@ export interface ThemesSelect<T extends boolean = true> {
 	name?: T;
 	description?: T;
 	slug?: T;
+	relatedPracticalGuides?: T;
+	relatedCourses?: T;
 	updatedAt?: T;
 	createdAt?: T;
 }

@@ -385,6 +385,15 @@ export const PracticalGuides: CollectionConfig = {
 			},
 		},
 		{
+			name: "hideSimplifiedVersion",
+			type: "checkbox",
+			defaultValue: false,
+			label: { fr: "Masquer la version simplifiée sur le site" },
+			admin: {
+				position: "sidebar",
+			},
+		},
+		{
 			name: "simplifiedGenerationStatus",
 			type: "select",
 			required: false,
