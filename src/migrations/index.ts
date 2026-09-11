@@ -31,6 +31,7 @@ import * as migration_20260610_064847_add_unique_slug_courses_guides from './202
 import * as migration_20260617_093516_cartographie_global from './20260617_093516_cartographie_global';
 import * as migration_20260618_133650_add_enable_clustering from './20260618_133650_add_enable_clustering';
 import * as migration_20260707_083957_add_simplified_content_generator_global from './20260707_083957_add_simplified_content_generator_global';
+import * as migration_20260911_093427_add_hide_simplified_version from './20260911_093427_add_hide_simplified_version';
 
 export const migrations = [
   {
@@ -196,6 +197,11 @@ export const migrations = [
   {
     up: migration_20260707_083957_add_simplified_content_generator_global.up,
     down: migration_20260707_083957_add_simplified_content_generator_global.down,
-    name: '20260707_083957_add_simplified_content_generator_global'
+    name: '20260707_083957_add_simplified_content_generator_global',
+  },
+  {
+    up: migration_20260911_093427_add_hide_simplified_version.up,
+    down: migration_20260911_093427_add_hide_simplified_version.down,
+    name: '20260911_093427_add_hide_simplified_version'
   },
 ];
