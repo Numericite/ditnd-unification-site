@@ -6,9 +6,9 @@ import type {
 	Payload,
 } from "payload";
 import { sql } from "@payloadcms/db-postgres";
-import { slugify } from "~/utils/tools";
 import { simplifiedLexicalEditor } from "../fields/simplifiedWysiwyg";
 import { standardFields } from "../fields/standards";
+import { slugField } from "../fields/slug";
 import { generateEmbedding } from "../services/embedding";
 import { generateSimplifiedContent } from "../services/contentSimplification";
 
@@ -297,26 +297,7 @@ export const PracticalGuides: CollectionConfig = {
 				position: "sidebar",
 			},
 		},
-		{
-			name: "slug",
-			type: "text",
-			required: true,
-			unique: true,
-			label: { fr: "Identifiant texte" },
-			admin: {
-				position: "sidebar",
-				readOnly: true,
-				hidden: true,
-			},
-			hooks: {
-				beforeChange: [
-					async ({ siblingData }) => {
-						if (!siblingData?.title) return "";
-						return slugify(siblingData.title);
-					},
-				],
-			},
-		},
+		slugField("practical-guides"),
 		{
 			name: "conditions",
 			type: "relationship",

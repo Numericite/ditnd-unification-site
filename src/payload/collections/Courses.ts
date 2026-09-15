@@ -4,8 +4,8 @@ import type {
 	CollectionConfig,
 } from "payload";
 import { sql } from "@payloadcms/db-postgres";
-import { slugify } from "~/utils/tools";
 import { standardFields } from "../fields/standards";
+import { slugField } from "../fields/slug";
 import { generateEmbedding } from "../services/embedding";
 
 const afterChangeCourse: CollectionAfterChangeHook = async ({ doc, req }) => {
@@ -107,26 +107,7 @@ export const Courses: CollectionConfig = {
 			required: true,
 			label: { fr: "Titre" },
 		},
-		{
-			name: "slug",
-			type: "text",
-			required: true,
-			unique: true,
-			label: { fr: "Identifiant texte" },
-			admin: {
-				position: "sidebar",
-				readOnly: true,
-				hidden: true,
-			},
-			hooks: {
-				beforeChange: [
-					async ({ siblingData }) => {
-						if (!siblingData?.title) return "";
-						return slugify(siblingData.title);
-					},
-				],
-			},
-		},
+		slugField("courses"),
 		standardFields.longDescription,
 		{
 			name: "link",
