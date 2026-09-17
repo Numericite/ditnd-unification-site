@@ -10,6 +10,7 @@ import { api } from "~/utils/api";
 import {
 	footerTitleStore,
 	homeCMSStore,
+	newsletterCMSStore,
 	personStore,
 	proStore,
 	tdhStore,
@@ -67,6 +68,7 @@ function seedStoresFromGlobalData(globalData: GlobalData) {
 	proStore.set(globalData.professionals);
 	tdhStore.set(globalData.conditions);
 	footerTitleStore.set(globalData.footerTitle);
+	newsletterCMSStore.set(globalData.newsletterCMS);
 }
 
 function App({ Component, pageProps }: AppPropsWithGlobal) {

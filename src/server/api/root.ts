@@ -10,6 +10,7 @@ import { aiRouter } from "./routers/ai";
 import { cmsRouter } from "./routers/cms";
 import { contactRouter } from "./routers/contact";
 import { mapsRouter } from "./routers/maps";
+import { newsletterRouter } from "./routers/newsletter";
 
 /**
  * This is the primary router for your server.
@@ -28,6 +29,7 @@ export const appRouter = createTRPCRouter({
 	cms: cmsRouter,
 	contact: contactRouter,
 	maps: mapsRouter,
+	newsletter: newsletterRouter,
 });
 
 // export type definition of API

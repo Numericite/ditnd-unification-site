@@ -152,6 +152,7 @@ export interface Config {
 		footer: Footer;
 		about: About;
 		cartographie: Cartographie;
+		newsletter: Newsletter;
 		"simplified-content-generator": SimplifiedContentGenerator;
 	};
 	globalsSelect: {
@@ -159,6 +160,7 @@ export interface Config {
 		footer: FooterSelect<false> | FooterSelect<true>;
 		about: AboutSelect<false> | AboutSelect<true>;
 		cartographie: CartographieSelect<false> | CartographieSelect<true>;
+		newsletter: NewsletterSelect<false> | NewsletterSelect<true>;
 		"simplified-content-generator":
 			| SimplifiedContentGeneratorSelect<false>
 			| SimplifiedContentGeneratorSelect<true>;
@@ -1502,6 +1504,55 @@ export interface Cartographie {
 	createdAt?: string | null;
 }
 /**
+ * Bloc affiché en bas de la page d'accueil. Décochez « Afficher le bloc » pour le retirer du site.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "newsletter".
+ */
+export interface Newsletter {
+	id: number;
+	enabled?: boolean | null;
+	/**
+	 * Laissez vide pour utiliser le libellé DSFR par défaut : « Abonnez-vous à notre lettre d'information ».
+	 */
+	title?: string | null;
+	description?: string | null;
+	/**
+	 * Affichée sous le champ email. Laissez vide pour utiliser la mention DSFR par défaut.
+	 */
+	consentHint?: string | null;
+	/**
+	 * Laissez vide pour utiliser le libellé DSFR par défaut : « Suivez-nous sur les réseaux sociaux ».
+	 */
+	socialTitle?: string | null;
+	/**
+	 * Si aucun réseau n'est renseigné, la colonne réseaux sociaux n'est pas affichée.
+	 */
+	socials?:
+		| {
+				type:
+					| "facebook"
+					| "github"
+					| "instagram"
+					| "linkedin"
+					| "mastodon"
+					| "tiktok"
+					| "twitch"
+					| "twitter-x"
+					| "vimeo"
+					| "youtube"
+					| "dailymotion"
+					| "telegram"
+					| "threads"
+					| "mail";
+				url: string;
+				id?: string | null;
+		  }[]
+		| null;
+	updatedAt?: string | null;
+	createdAt?: string | null;
+}
+/**
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "simplified-content-generator".
  */
@@ -1640,6 +1691,27 @@ export interface CartographieSelect<T extends boolean = true> {
 	title?: T;
 	imageBanner?: T;
 	content?: T;
+	updatedAt?: T;
+	createdAt?: T;
+	globalType?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "newsletter_select".
+ */
+export interface NewsletterSelect<T extends boolean = true> {
+	enabled?: T;
+	title?: T;
+	description?: T;
+	consentHint?: T;
+	socialTitle?: T;
+	socials?:
+		| T
+		| {
+				type?: T;
+				url?: T;
+				id?: T;
+		  };
 	updatedAt?: T;
 	createdAt?: T;
 	globalType?: T;
