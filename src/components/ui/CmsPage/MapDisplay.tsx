@@ -7,6 +7,7 @@ import {
 	Popup,
 	type MapRef,
 } from "react-map-gl/maplibre";
+import { setWorkerUrl } from "maplibre-gl";
 import "maplibre-gl/dist/maplibre-gl.css";
 import Supercluster from "supercluster";
 import { fr } from "@codegouvfr/react-dsfr";
@@ -33,6 +34,12 @@ import { Table } from "@codegouvfr/react-dsfr/Table";
 import Pagination from "@codegouvfr/react-dsfr/Pagination";
 import { Placeholder } from "@codegouvfr/react-dsfr/consentManagement/Placeholder";
 import { useConsent } from "~/utils/consentManagement";
+
+// Depuis MapLibre v6 le worker est un module ESM séparé que la lib résout via
+// `import.meta.url` ; une fois bundlée cette URL n'est plus en http(s) et la lib
+// renvoie une URL vide, donc aucune tuile ne se charge. Le worker est copié dans
+// /public par `scripts/copy-maplibre-worker.mjs` (prebuild/predev).
+setWorkerUrl("/maplibre/maplibre-gl-worker.mjs");
 
 const FRANCE_CENTER = { latitude: 46.6, longitude: 2.3, zoom: 5 };
 const LIST_PAGE_SIZE = 12;
