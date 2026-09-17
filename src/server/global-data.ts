@@ -2,7 +2,7 @@ import { getPayload } from "payload";
 import payloadConfig from "~/payload/payload.config";
 import type { PersonaTile } from "~/components/HomePage/PersonaTiles";
 import type { TDH } from "~/state/store";
-import type { Home } from "~/payload/payload-types";
+import type { Home, Newsletter } from "~/payload/payload-types";
 
 export type GlobalData = {
 	persons: PersonaTile[];
@@ -10,6 +10,7 @@ export type GlobalData = {
 	conditions: TDH[];
 	footerTitle: string;
 	homeCMS: Home;
+	newsletterCMS: Newsletter;
 };
 
 const TTL_MS = 60_000;
@@ -19,8 +20,8 @@ let inflight: Promise<GlobalData> | null = null;
 async function fetchGlobalData(): Promise<GlobalData> {
 	const payload = await getPayload({ config: payloadConfig });
 
-	const [personasResult, conditionsResult, footer, homeCMS] = await Promise.all(
-		[
+	const [personasResult, conditionsResult, footer, homeCMS, newsletterCMS] =
+		await Promise.all([
 			payload.find({
 				collection: "personas",
 				limit: 0,
@@ -33,8 +34,8 @@ async function fetchGlobalData(): Promise<GlobalData> {
 			}),
 			payload.findGlobal({ slug: "footer" }),
 			payload.findGlobal({ slug: "home" }),
-		],
-	);
+			payload.findGlobal({ slug: "newsletter" }),
+		]);
 
 	const persons: PersonaTile[] = personasResult.docs.map((persona) => ({
 		...persona,
@@ -56,6 +57,7 @@ async function fetchGlobalData(): Promise<GlobalData> {
 		conditions,
 		footerTitle: footer.title,
 		homeCMS: homeCMS as Home,
+		newsletterCMS: newsletterCMS as Newsletter,
 	};
 }
 

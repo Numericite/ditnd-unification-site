@@ -4,7 +4,7 @@ import type {
 	PersonaTile,
 	PersonaTypes,
 } from "~/components/HomePage/PersonaTiles";
-import type { Home } from "~/payload/payload-types";
+import type { Home, Newsletter } from "~/payload/payload-types";
 
 export type TDH = {
 	id?: number;
@@ -18,6 +18,8 @@ export type TDH = {
 export const tdhStore = observable<TDH[]>([]);
 
 export const homeCMSStore = observable<Home>();
+
+export const newsletterCMSStore = observable<Newsletter>();
 
 export const personStore = observable<PersonaTile[]>([]);
 
