@@ -1,4 +1,4 @@
-const LONG_PAGE = "/accessibilite";
+const PAGE = "/accessibilite";
 
 const stickyHeaderHeight = (doc: Document) =>
 	Number.parseFloat(
@@ -7,17 +7,30 @@ const stickyHeaderHeight = (doc: Document) =>
 		),
 	);
 
+/**
+ * The seeded CMS content is short enough that the page may not scroll at all,
+ * so give it room instead of relying on a particular page being tall.
+ */
+const givePageRoomToScroll = () =>
+	cy.document().then((doc) => {
+		const spacer = doc.createElement("div");
+		spacer.dataset.testSpacer = "true";
+		spacer.style.height = "3000px";
+		(doc.querySelector("main") ?? doc.body).appendChild(spacer);
+	});
+
 describe("Sticky header", () => {
 	it("pins only the navigation bar on desktop", () => {
 		cy.viewport(1440, 900);
-		cy.visit(LONG_PAGE);
+		cy.visit(PAGE);
 		cy.get("#menu .fr-nav").should("be.visible");
 
 		cy.document().its("documentElement").should("have.attr", "style");
-		cy.document().then((doc) => {
+		cy.document().should((doc) => {
 			expect(stickyHeaderHeight(doc)).to.be.greaterThan(0);
 		});
 
+		givePageRoomToScroll();
 		cy.scrollTo(0, 800);
 
 		cy.get("#menu .fr-header__menu").should(($nav) => {
@@ -30,7 +43,7 @@ describe("Sticky header", () => {
 
 	it("keeps sticky page elements clear of the pinned navigation bar", () => {
 		cy.viewport(1440, 900);
-		cy.visit(LONG_PAGE);
+		cy.visit(PAGE);
 		cy.get("#menu .fr-nav").should("be.visible");
 
 		cy.document().should((doc) => {
@@ -45,7 +58,7 @@ describe("Sticky header", () => {
 
 	it("leaves the header in the flow on mobile", () => {
 		cy.viewport(375, 812);
-		cy.visit(LONG_PAGE);
+		cy.visit(PAGE);
 		cy.get("#menu").should("exist");
 
 		cy.document().should((doc) => {
