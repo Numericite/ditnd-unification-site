@@ -10,6 +10,7 @@ import { skipLinks } from "~/utils/tools";
 import SkipLinks from "@codegouvfr/react-dsfr/SkipLinks";
 import { fr } from "@codegouvfr/react-dsfr";
 import { tss } from "tss-react/dsfr";
+import useStickyHeaderOffset from "./useStickyHeaderOffset";
 
 export default function MainNavigation() {
 	const { classes, cx } = useStyles();
@@ -18,6 +19,9 @@ export default function MainNavigation() {
 		typeof router.query.search === "string" ? router.query.search : "";
 	const [headerSearch, setHeaderSearch] = useState(initialHeaderSearch);
 	const searchInputRef = useRef<HTMLInputElement>(null);
+	const headerRef = useRef<HTMLDivElement>(null);
+
+	useStickyHeaderOffset(headerRef);
 
 	useEffect(() => {
 		const search =
@@ -120,7 +124,7 @@ export default function MainNavigation() {
 				</a>{" "}
 				<span className={classes.mention}>— appel gratuit et anonyme</span>
 			</div>
-			<div id="menu">
+			<div id="menu" ref={headerRef} className={cx(classes.stickyHeader)}>
 				<Header
 					brandTop={
 						<>
@@ -172,6 +176,15 @@ export default function MainNavigation() {
 }
 
 const useStyles = tss.withName(MainNavigation.name).create({
+	stickyHeader: {
+		// Pinned with a negative top so only the navigation bar stays visible,
+		// the DSFR header body scrolls away above the viewport.
+		[fr.breakpoints.up("lg")]: {
+			position: "sticky",
+			top: "calc(-1 * var(--sticky-header-hidden-height, 0px))",
+			zIndex: 750,
+		},
+	},
 	mainAlert: {
 		...fr.typography[18].style,
 		marginBottom: 0,

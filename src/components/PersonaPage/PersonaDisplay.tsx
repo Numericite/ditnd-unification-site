@@ -132,7 +132,7 @@ const useStyles = tss.withName(PersonaDisplay.name).create(() => ({
 	},
 	whiteSummarySticky: {
 		position: "sticky",
-		top: "20px",
+		top: "var(--sticky-top)",
 		".fr-summary__link:before": {
 			visibility: "hidden",
 		},

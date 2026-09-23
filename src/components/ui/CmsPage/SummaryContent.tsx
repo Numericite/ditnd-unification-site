@@ -7,6 +7,15 @@ import type { Link } from "~/utils/tools";
 const DESKTOP_QUERY = "(min-width: 62em)";
 const ACTIVE_OFFSET = 120;
 
+function activeOffset() {
+	const pinnedHeader = Number.parseFloat(
+		getComputedStyle(document.documentElement).getPropertyValue(
+			"--sticky-header-height",
+		),
+	);
+	return (Number.isNaN(pinnedHeader) ? 0 : pinnedHeader) + ACTIVE_OFFSET;
+}
+
 function useActiveLinkHref(menuLinks: Link[]): string | null {
 	const [activeHref, setActiveHref] = useState<string | null>(null);
 
@@ -27,13 +36,12 @@ function useActiveLinkHref(menuLinks: Link[]): string | null {
 
 		const update = () => {
 			frame = 0;
+			const offset = activeOffset();
 			setActiveHref(
 				hrefs.reduce<string | null>((found, href) => {
 					const target = document.getElementById(href.slice(1));
 					if (!target) return found;
-					return target.getBoundingClientRect().top <= ACTIVE_OFFSET
-						? href
-						: found;
+					return target.getBoundingClientRect().top <= offset ? href : found;
 				}, null),
 			);
 		};
