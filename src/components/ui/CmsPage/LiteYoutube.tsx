@@ -2,14 +2,15 @@ import { fr } from "@codegouvfr/react-dsfr";
 import { Placeholder } from "@codegouvfr/react-dsfr/consentManagement/Placeholder";
 import { useState } from "react";
 import { tss } from "tss-react/dsfr";
-import { useConsent } from "~/utils/consentManagement";
+import { useConsent, useFinalityConsent } from "~/utils/consentManagement";
 
 export default function LiteYouTube({ videoId }: { videoId: string }) {
 	const [isLoaded, setIsLoaded] = useState(false);
 	const { classes } = useStyles();
-	const { finalityConsent, assumeConsent } = useConsent();
+	const { assumeConsent } = useConsent();
+	const hasYoutubeConsent = useFinalityConsent("youtube");
 
-	if (finalityConsent?.youtube !== true) {
+	if (!hasYoutubeConsent) {
 		return (
 			<Placeholder
 				title="Vidéo YouTube"
