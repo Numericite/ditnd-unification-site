@@ -145,6 +145,11 @@ export const validateHexColor = (value: unknown) => {
 
 export const ImageSizes = [
 	{
+		name: "icon",
+		width: 80,
+		withoutEnlargement: true,
+	},
+	{
 		name: "thumbnail",
 		width: 300,
 		withoutEnlargement: true,

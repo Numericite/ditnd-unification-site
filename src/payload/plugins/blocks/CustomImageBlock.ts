@@ -21,6 +21,7 @@ export const CustomImageBlock: Block = {
 			defaultValue: "medium",
 			label: { fr: "Taille" },
 			options: [
+				{ label: "Icône", value: "icon" },
 				{ label: "Miniature", value: "thumbnail" },
 				{ label: "Carré", value: "square" },
 				{ label: "Petite", value: "small" },
