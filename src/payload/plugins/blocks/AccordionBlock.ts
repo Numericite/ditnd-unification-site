@@ -1,6 +1,11 @@
 import { lexicalEditor } from "@payloadcms/richtext-lexical";
 import type { Block } from "payload";
 import { defaultWysiwygFeatures } from "../../fields/defaultWysiwygFeatures";
+import { CalloutBlock } from "./CalloutBlock";
+import { CitationBlock } from "./CitationBlock";
+import { CustomImageBlock } from "./CustomImageBlock";
+import { HighlightBlock } from "./HighlightBlock";
+import { YouTubeBlock } from "./YouTubeBlock";
 
 export const AccordionBlock: Block = {
 	slug: "accordion",
@@ -48,7 +53,16 @@ export const AccordionBlock: Block = {
 					type: "richText",
 					editor: lexicalEditor({
 						features: ({ defaultFeatures }) => [
-							...defaultWysiwygFeatures({ defaultFeatures }),
+							...defaultWysiwygFeatures({
+								defaultFeatures,
+								blocks: [
+									CustomImageBlock,
+									YouTubeBlock,
+									CitationBlock,
+									HighlightBlock,
+									CalloutBlock,
+								],
+							}),
 						],
 					}),
 				},
