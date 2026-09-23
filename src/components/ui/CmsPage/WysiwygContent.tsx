@@ -26,6 +26,14 @@ const useStyles = tss.withName(WysiwygContent.name).create(() => ({
 		"> .payload-richtext > :is(h2, h3, h4, h5, h6):first-child": {
 			marginTop: 0,
 		},
+		".payload-richtext hr": {
+			padding: 0,
+			margin: "2.5rem 0",
+			height: "1px",
+		},
+		".payload-richtext hr + :is(h2, h3, h4, h5, h6)": {
+			marginTop: 0,
+		},
 		h2: {
 			fontSize: "1.75rem",
 			lineHeight: "2.25rem",

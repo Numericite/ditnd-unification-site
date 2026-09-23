@@ -11,7 +11,15 @@
   h5,
   h6 {
     color: #161616;
-    margin: 0 0 1.5rem;
+    margin: 3rem 0 1.5rem;
+
+    &:first-child {
+      margin-top: 0;
+    }
+  }
+
+  .LexicalEditorTheme__hr + :is(h2, h3, h4, h5, h6) {
+    margin-top: 0;
   }
 
   h2 {
@@ -113,9 +121,14 @@
    padding: 2rem 3rem 2.25rem 2.25rem;
 }
 
-.LexicalEditorTheme__hr:after {
-  background-color: #ddd;
-  height: 1px;
+.LexicalEditorTheme__hr {
+  padding: 0;
+  margin: 2.5rem 0;
+
+  &:after {
+    background-color: #ddd;
+    height: 1px;
+  }
 }
 
 .LexicalEditorTheme__upload__media {
