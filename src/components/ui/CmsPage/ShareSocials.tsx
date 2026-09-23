@@ -76,6 +76,13 @@ const socials: SocialProps[] = [
 		},
 		title: "Copier le lien",
 	},
+	{
+		icon: "fr-icon-printer-line",
+		onClick: () => {
+			window.print();
+		},
+		title: "Imprimer la page",
+	},
 ];
 
 export default function ShareSocials() {
