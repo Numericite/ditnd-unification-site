@@ -32,7 +32,7 @@ import { SegmentedControl } from "@codegouvfr/react-dsfr/SegmentedControl";
 import { Table } from "@codegouvfr/react-dsfr/Table";
 import Pagination from "@codegouvfr/react-dsfr/Pagination";
 import { Placeholder } from "@codegouvfr/react-dsfr/consentManagement/Placeholder";
-import { useConsent } from "~/utils/consentManagement";
+import { useConsent, useFinalityConsent } from "~/utils/consentManagement";
 
 const FRANCE_CENTER = { latitude: 46.6, longitude: 2.3, zoom: 5 };
 const LIST_PAGE_SIZE = 12;
@@ -45,8 +45,8 @@ type Props = {
 
 export default function MapDisplay({ map, height }: Props) {
 	const { classes, cx } = useStyles();
-	const { finalityConsent, assumeConsent } = useConsent();
-	const hasMapConsent = finalityConsent?.cartographie === true;
+	const { assumeConsent } = useConsent();
+	const hasMapConsent = useFinalityConsent("cartographie");
 	const [selectedMarker, setSelectedMarker] = useState<MapMarkerSummary | null>(
 		null,
 	);

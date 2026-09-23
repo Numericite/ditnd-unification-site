@@ -1,4 +1,5 @@
 import { createConsentManagement } from "@codegouvfr/react-dsfr/consentManagement";
+import { useEffect, useState } from "react";
 
 export const {
 	useConsent,
@@ -24,3 +25,16 @@ export const {
 	},
 	personalDataPolicyLinkProps: { href: "/gestion-des-cookies" },
 });
+
+type Finality = "youtube" | "cartographie" | "matomo";
+
+export function useFinalityConsent(finality: Finality) {
+	const { finalityConsent } = useConsent();
+	const [isHydrated, setIsHydrated] = useState(false);
+
+	useEffect(() => {
+		setIsHydrated(true);
+	}, []);
+
+	return isHydrated && finalityConsent?.[finality] === true;
+}
