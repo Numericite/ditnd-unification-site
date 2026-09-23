@@ -53,6 +53,3 @@ yarn-error.log*
 .claude
 # npm lockfile — this project uses yarn (see packageManager + CI)
 package-lock.json
-
-# worker maplibre copié depuis node_modules au prebuild/predev
-/public/maplibre/
