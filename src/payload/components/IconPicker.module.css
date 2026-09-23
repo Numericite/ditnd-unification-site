@@ -1,0 +1,111 @@
+.wrapper {
+	position: relative;
+}
+
+.control {
+	display: flex;
+	align-items: center;
+	gap: 8px;
+	border: 1px solid var(--theme-elevation-150);
+	border-radius: var(--style-radius-s);
+	background: var(--theme-input-bg);
+	padding: 0 8px;
+}
+
+.control:focus-within {
+	border-color: var(--theme-elevation-400);
+}
+
+.input {
+	flex: 1;
+	border: none;
+	outline: none;
+	background: transparent;
+	color: var(--theme-elevation-800);
+	font-family: inherit;
+	font-size: 1rem;
+	padding: 10px 0;
+	min-width: 0;
+}
+
+.clear {
+	flex: 0 0 auto;
+	border: none;
+	background: transparent;
+	color: var(--theme-elevation-600);
+	cursor: pointer;
+	font-size: 1.25rem;
+	line-height: 1;
+	padding: 4px 6px;
+}
+
+.clear:hover {
+	color: var(--theme-elevation-800);
+}
+
+.preview {
+	flex: 0 0 auto;
+	display: inline-block;
+	width: 20px;
+	height: 20px;
+	background-color: currentColor;
+	mask-repeat: no-repeat;
+	mask-position: center;
+	mask-size: 100% 100%;
+	-webkit-mask-repeat: no-repeat;
+	-webkit-mask-position: center;
+	-webkit-mask-size: 100% 100%;
+}
+
+.placeholderPreview {
+	background-color: var(--theme-elevation-200);
+	mask-image: none;
+	-webkit-mask-image: none;
+	border-radius: 2px;
+}
+
+.listbox {
+	position: absolute;
+	z-index: 10;
+	top: calc(100% + 4px);
+	left: 0;
+	right: 0;
+	max-height: 320px;
+	overflow-y: auto;
+	margin: 0;
+	padding: 4px;
+	border: 1px solid var(--theme-elevation-150);
+	border-radius: var(--style-radius-s);
+	background: var(--theme-elevation-0);
+	box-shadow: 0 4px 12px rgb(0 0 0 / 15%);
+}
+
+.option {
+	display: flex;
+	align-items: center;
+	gap: 10px;
+	padding: 6px 8px;
+	border-radius: var(--style-radius-s);
+	cursor: pointer;
+	color: var(--theme-elevation-800);
+	font-size: 0.875rem;
+}
+
+.option[aria-selected="true"],
+.option.active {
+	background: var(--theme-elevation-100);
+}
+
+.optionLabel {
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+}
+
+.empty,
+.more {
+	margin: 0;
+	padding: 8px;
+	color: var(--theme-elevation-600);
+	font-size: 0.8125rem;
+}

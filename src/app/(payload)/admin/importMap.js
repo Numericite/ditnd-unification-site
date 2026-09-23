@@ -25,7 +25,7 @@ import { HorizontalRuleFeatureClient as HorizontalRuleFeatureClient_e70f5e05f09f
 import { InlineToolbarFeatureClient as InlineToolbarFeatureClient_e70f5e05f09f93e00b997edb1ef0c864 } from "@payloadcms/richtext-lexical/client";
 import { default as default_ab41af9dce3f51cc5048db850825e550 } from "../../../payload/components/ImageAltField";
 import { default as default_e7e802604829a14677cb1378a9c1f3c9 } from "../../../payload/components/YouTubeEmbed";
-import { default as default_a6dd4b45112e4a8550fc08fb03fac1f9 } from "../../../payload/components/IconIdDescription";
+import { default as default_187155058cd076fad6f2d0ad50e5e3ad } from "../../../payload/components/IconPicker";
 import { OverviewComponent as OverviewComponent_a8a977ebc872c5d5ea7ee689724c0860 } from "@payloadcms/plugin-seo/client";
 import { MetaTitleComponent as MetaTitleComponent_a8a977ebc872c5d5ea7ee689724c0860 } from "@payloadcms/plugin-seo/client";
 import { MetaDescriptionComponent as MetaDescriptionComponent_a8a977ebc872c5d5ea7ee689724c0860 } from "@payloadcms/plugin-seo/client";
@@ -101,8 +101,8 @@ export const importMap = {
 		default_ab41af9dce3f51cc5048db850825e550,
 	"../payload/components/YouTubeEmbed#default":
 		default_e7e802604829a14677cb1378a9c1f3c9,
-	"../payload/components/IconIdDescription#default":
-		default_a6dd4b45112e4a8550fc08fb03fac1f9,
+	"../payload/components/IconPicker#default":
+		default_187155058cd076fad6f2d0ad50e5e3ad,
 	"@payloadcms/plugin-seo/client#OverviewComponent":
 		OverviewComponent_a8a977ebc872c5d5ea7ee689724c0860,
 	"@payloadcms/plugin-seo/client#MetaTitleComponent":
