@@ -51,7 +51,7 @@ Les URLs d'origine sont **préservées à l'identique** — aucune redirection �
 - [x] Hook `beforeValidate` de normalisation du champ `from` (strip domaine / slash final / query) + anti-boucle
 - [x] Middleware (`src/middleware.ts`) : lookup exact (carte servie par `/api/redirects-map`, cache 60 s) → fallbacks sections → pass-through — testé en dev le 10/06/2026 (301 exact, query transférée, fallbacks, 404 événements)
 - [x] Script de seed (`yarn seed:redirects`, source : `src/payload/seed/data/legacy-urls.csv`, 69 entrées — exclut la racine et les 4 chemins identiques sur le nouveau site). Idempotent : à rejouer en prod au moment de la migration.
-- [ ] **Migration de schéma pour la table `redirects`** (`src/migrations/`) — le projet applique des migrations explicites en prod, la collection n'existe pas encore côté base. À générer avec `payload migrate:create` sur une base à jour avant la mise en production.
+- [x] Migration de schéma `20260923_141759_add_redirects_and_newsletter` (`src/migrations/`) — le projet applique des migrations explicites, lancées à la main (`payload migrate`) : ni la CI ni Clever Cloud ne les déclenchent, et `push` est désactivé hors développement. Chaîne complète rejouée sur une base vide pour validation.
 - [ ] Atelier de définition des cibles avec la webmaster de l'ancien site (69 entrées seedées, `to` à remplir)
 - [ ] L'équipe contenu a rempli les `to` pour toutes les pages ayant un équivalent
 - [x] Page 404 (`src/pages/[...slug].tsx` + `ErrorPage`) : statut 404 réel, lien accueil, renvoi vers le moteur de recherche de l'en-tête. Enrichissement possible plus tard (liens directs vers les sections).
@@ -65,6 +65,7 @@ Les URLs d'origine sont **préservées à l'identique** — aucune redirection �
 
 ### Jour J
 
+- [ ] `payload migrate` en prod (crée la table `redirects`), puis `yarn seed:redirects`
 - [ ] Bascule DNS / domaine vers la nouvelle app Clever Cloud
 - [ ] Smoke-test des 74 anciennes URLs en prod (301, une seule redirection applicative, cible 200)
 - [ ] Tester : slash final (`/fiches-pratiques-autisme/etudier-autisme/`), query string transférée, un PDF `/app/uploads/...`
