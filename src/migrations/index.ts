@@ -33,6 +33,7 @@ import * as migration_20260618_133650_add_enable_clustering from './20260618_133
 import * as migration_20260707_083957_add_simplified_content_generator_global from './20260707_083957_add_simplified_content_generator_global';
 import * as migration_20260911_093427_add_hide_simplified_version from './20260911_093427_add_hide_simplified_version';
 import * as migration_20260923_100000_add_practical_guide_published_at from './20260923_100000_add_practical_guide_published_at';
+import * as migration_20260923_120000_add_medias_icon_size from './20260923_120000_add_medias_icon_size';
 
 export const migrations = [
   {
@@ -209,5 +210,10 @@ export const migrations = [
     up: migration_20260923_100000_add_practical_guide_published_at.up,
     down: migration_20260923_100000_add_practical_guide_published_at.down,
     name: '20260923_100000_add_practical_guide_published_at'
+  },
+  {
+    up: migration_20260923_120000_add_medias_icon_size.up,
+    down: migration_20260923_120000_add_medias_icon_size.down,
+    name: '20260923_120000_add_medias_icon_size'
   },
 ];
