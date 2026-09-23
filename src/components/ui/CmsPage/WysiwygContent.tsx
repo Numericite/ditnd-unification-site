@@ -56,6 +56,12 @@ const useStyles = tss.withName(WysiwygContent.name).create(() => ({
 		},
 		".fr-callout": {
 			marginBottom: "1.5rem",
+			".payload-richtext": {
+				"--text-spacing": "0 0 1rem",
+				"> :last-child": {
+					marginBottom: 0,
+				},
+			},
 		},
 		a: {
 			color: fr.colors.decisions.background.actionHigh.blueFrance.default,
