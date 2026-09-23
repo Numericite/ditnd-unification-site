@@ -115,8 +115,8 @@ export default function PlanDuSite() {
 									</a>
 								</li>
 								<li>
-									<a className={fr.cx("fr-link")} href="/a-propos/cras">
-										CRAs
+									<a className={fr.cx("fr-link")} href="/a-propos/cra">
+										CRA
 									</a>
 								</li>
 								<li>

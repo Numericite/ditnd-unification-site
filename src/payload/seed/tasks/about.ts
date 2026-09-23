@@ -130,7 +130,7 @@ export default async function aboutTask(payload: BasePayload) {
 				content: gncraContent,
 			},
 			cras: {
-				title: "CRAs - Centres Ressources Autisme",
+				title: "CRA - Centres Ressources Autisme",
 				imageBanner: 4,
 				content: crasContent,
 			},

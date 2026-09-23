@@ -44,7 +44,7 @@ export const CMSAbout: GlobalConfig = {
 					],
 				},
 				{
-					label: "CRAs",
+					label: "CRA",
 					name: "cras",
 					fields: [
 						standardFields.title,
