@@ -52,8 +52,7 @@ const useStyles = tss.withName(BackToTop.name).create({
 		alignSelf: "flex-end",
 		backgroundColor: fr.colors.decisions.background.default.grey.default,
 		[fr.breakpoints.down("md")]: {
-			marginBottom: fr.spacing("12v"),
-			marginLeft: fr.spacing("2w"),
+			display: "none",
 		},
 	},
 });
