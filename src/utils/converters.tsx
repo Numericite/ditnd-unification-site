@@ -342,7 +342,7 @@ export const calloutConverter: JSXConverter<SerializedBlockNode> = ({
 		<CallOut
 			className={fr.cx("fr-my-3v")}
 			title={value.title}
-			iconId={value.iconId}
+			iconId={value.iconId?.startsWith("fr-icon-") ? value.iconId : undefined}
 			colorVariant={value.colorVariant}
 			bodyAs="div"
 		>

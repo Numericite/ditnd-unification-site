@@ -1,6 +1,7 @@
 import type { CollectionBeforeDeleteHook, CollectionConfig } from "payload";
 import { APIError } from "payload";
 import { dsfrAccentColors } from "~/utils/dsfr-colors";
+import { validateDsfrIconId } from "../fields/validateDsfrIconId";
 
 const beforeDeleteMapCategory: CollectionBeforeDeleteHook = async ({
 	id,
@@ -70,11 +71,10 @@ export const MapCategories: CollectionConfig = {
 			type: "text",
 			required: false,
 			label: { fr: "Icône" },
+			validate: validateDsfrIconId,
 			admin: {
-				description:
-					"Identifiant d'icône DSFR (ex : fr-icon-map-pin-2-fill). Facultatif.",
 				components: {
-					Description: "../payload/components/IconIdDescription",
+					Field: "../payload/components/IconPicker",
 				},
 			},
 		},

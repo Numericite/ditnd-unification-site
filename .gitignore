@@ -53,3 +53,6 @@ yarn-error.log*
 .claude
 # npm lockfile — this project uses yarn (see packageManager + CI)
 package-lock.json
+
+# generated DSFR icon catalog (scripts/generate-dsfr-icons.mjs)
+/public/dsfr-icons
