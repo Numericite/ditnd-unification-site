@@ -165,6 +165,12 @@ export default buildConfig({
 		extensions: ["vector"],
 		beforeSchemaInit: [addPracticalGuidesTable, addCoursesTable],
 		afterSchemaInit: [addPracticalGuidesTableVector, addCoursesTableVector],
+		// Par défaut l'adaptateur pousse le schéma dès que NODE_ENV n'est pas
+		// "production" — ce qui inclut les `payload run` des scripts seed, qui ne
+		// positionnent aucun NODE_ENV et synchronisaient donc silencieusement toute
+		// la config dans la base visée, sans trace dans payload_migrations.
+		// Le push est désormais réservé au développement explicite.
+		push: process.env.NODE_ENV === "development",
 		pool: {
 			connectionString: process.env.POSTGRESQL_ADDON_URI || "",
 		},

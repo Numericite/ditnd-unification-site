@@ -13,7 +13,7 @@ export async function up({ db, payload, req }: MigrateUpArgs): Promise<void> {
   	"updated_at" timestamp(3) with time zone DEFAULT now() NOT NULL,
   	"created_at" timestamp(3) with time zone DEFAULT now() NOT NULL
   );
-  
+
   CREATE TABLE "redirects_rels" (
   	"id" serial PRIMARY KEY NOT NULL,
   	"order" integer,
@@ -22,7 +22,7 @@ export async function up({ db, payload, req }: MigrateUpArgs): Promise<void> {
   	"practical_guides_id" integer,
   	"courses_id" integer
   );
-  
+
   CREATE TABLE "newsletter_socials" (
   	"_order" integer NOT NULL,
   	"_parent_id" integer NOT NULL,
@@ -30,7 +30,7 @@ export async function up({ db, payload, req }: MigrateUpArgs): Promise<void> {
   	"type" "enum_newsletter_socials_type" NOT NULL,
   	"url" varchar NOT NULL
   );
-  
+
   CREATE TABLE "newsletter" (
   	"id" serial PRIMARY KEY NOT NULL,
   	"enabled" boolean DEFAULT true,
@@ -41,7 +41,7 @@ export async function up({ db, payload, req }: MigrateUpArgs): Promise<void> {
   	"updated_at" timestamp(3) with time zone,
   	"created_at" timestamp(3) with time zone
   );
-  
+
   ALTER TABLE "payload_locked_documents_rels" ADD COLUMN "redirects_id" integer;
   ALTER TABLE "redirects_rels" ADD CONSTRAINT "redirects_rels_parent_fk" FOREIGN KEY ("parent_id") REFERENCES "public"."redirects"("id") ON DELETE cascade ON UPDATE no action;
   ALTER TABLE "redirects_rels" ADD CONSTRAINT "redirects_rels_practical_guides_fk" FOREIGN KEY ("practical_guides_id") REFERENCES "public"."practical_guides"("id") ON DELETE cascade ON UPDATE no action;
@@ -71,9 +71,9 @@ export async function down({ db, payload, req }: MigrateDownArgs): Promise<void>
   DROP TABLE "redirects_rels" CASCADE;
   DROP TABLE "newsletter_socials" CASCADE;
   DROP TABLE "newsletter" CASCADE;
-  ALTER TABLE "payload_locked_documents_rels" DROP CONSTRAINT "payload_locked_documents_rels_redirects_fk";
-  
-  DROP INDEX "payload_locked_documents_rels_redirects_id_idx";
+  -- Déjà supprimés en cascade par le DROP TABLE "redirects" ci-dessus.
+  ALTER TABLE "payload_locked_documents_rels" DROP CONSTRAINT IF EXISTS "payload_locked_documents_rels_redirects_fk";
+  DROP INDEX IF EXISTS "payload_locked_documents_rels_redirects_id_idx";
   ALTER TABLE "payload_locked_documents_rels" DROP COLUMN "redirects_id";
   DROP TYPE "public"."enum_redirects_to_type";
   DROP TYPE "public"."enum_newsletter_socials_type";`)
