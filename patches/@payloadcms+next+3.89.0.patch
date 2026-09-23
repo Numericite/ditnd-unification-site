@@ -1,0 +1,64 @@
+diff --git a/node_modules/@payloadcms/next/dist/views/List/enrichDocsWithVersionStatus.js b/node_modules/@payloadcms/next/dist/views/List/enrichDocsWithVersionStatus.js
+--- a/node_modules/@payloadcms/next/dist/views/List/enrichDocsWithVersionStatus.js
++++ b/node_modules/@payloadcms/next/dist/views/List/enrichDocsWithVersionStatus.js
+@@ -24,48 +24,35 @@
+   if (draftDocIds.length === 0) {
+     return data;
+   }
+-  // OPTIMIZATION: Single query to find all document IDs that have BOTH:
+-  // 1. A draft version (latest=true, _status='draft')
+-  // 2. A published version (_status='published')
+-  // These are the documents with "changed" status
++  // PATCH (Numericite): upstream queried the versions table for any version with
++  // _status='published'. Those rows survive an unpublish, so an unpublished document
++  // kept the "changed" status forever. The live published state lives in the main
++  // collection table instead: a document is currently published only if its
++  // draft:false row still has _status='published'.
+   try {
+-    // TODO: This could be more efficient with a findDistinctVersions() API:
+-    // const { values } = await req.payload.findDistinctVersions({
+-    //   collection: collectionConfig.slug,
+-    //   field: 'parent',
+-    //   where: {
+-    //     and: [
+-    //       { parent: { in: draftDocIds } },
+-    //       { 'version._status': { equals: 'published' } },
+-    //     ],
+-    //   },
+-    // })
+-    // const hasPublishedVersionSet = new Set(values)
+-    //
+-    // For now, we query all published versions but only select the 'parent' field
+-    // to minimize data transfer, then deduplicate with a Set
+-    const publishedVersions = await req.payload.findVersions({
++    const publishedDocs = await req.payload.find({
+       collection: collectionConfig.slug,
+       depth: 0,
++      draft: false,
+       limit: 0,
+       pagination: false,
+       select: {
+-        parent: true
++        id: true
+       },
+       where: {
+         and: [{
+-          parent: {
++          id: {
+             in: draftDocIds
+           }
+         }, {
+-          'version._status': {
++          _status: {
+             equals: 'published'
+           }
+         }]
+       }
+     });
+-    // Create a Set of document IDs that have published versions
+-    const hasPublishedVersionSet = new Set(publishedVersions.docs.map(version => version.parent).filter(Boolean));
++    // Create a Set of document IDs that are currently published
++    const hasPublishedVersionSet = new Set(publishedDocs.docs.map(doc => doc.id).filter(Boolean));
+     // Enrich documents with display status
+     const enrichedDocs = data.docs.map(doc => {
+       // If it's a draft and has a published version, show "changed"

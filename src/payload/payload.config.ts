@@ -156,6 +156,16 @@ export default buildConfig({
 	editor: lexicalEditor(),
 	i18n: {
 		supportedLanguages: { en, fr },
+		translations: {
+			fr: {
+				version: {
+					changed: "Publié · modifications non publiées",
+					draft: "Non publié",
+					draftHasPublishedVersion: "Publié · modifications non publiées",
+					published: "Publié",
+				},
+			},
+		},
 	},
 	secret: process.env.PAYLOAD_SECRET || "",
 	typescript: {
