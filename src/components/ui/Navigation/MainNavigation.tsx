@@ -76,9 +76,9 @@ export default function MainNavigation() {
 					linkProps: { href: "/a-propos/gncra" },
 				},
 				{
-					text: "CRAs",
-					isActive: router.pathname === "/a-propos/cras",
-					linkProps: { href: "/a-propos/cras" },
+					text: "CRA",
+					isActive: router.pathname === "/a-propos/cra",
+					linkProps: { href: "/a-propos/cra" },
 				},
 				{
 					text: "Glossaire",

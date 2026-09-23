@@ -24,6 +24,15 @@ const config = {
 			bodySizeLimit: "50mb",
 		},
 	},
+	async redirects() {
+		return [
+			{
+				source: "/a-propos/cras",
+				destination: "/a-propos/cra",
+				permanent: true,
+			},
+		];
+	},
 	async headers() {
 		if (process.env.NEXT_PUBLIC_NOINDEX !== "true") return [];
 		return [
