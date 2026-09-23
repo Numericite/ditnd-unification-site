@@ -135,7 +135,7 @@ const useStyles = tss.withName(CourseDisplay.name).create(() => ({
 	},
 	sidebarSticky: {
 		position: "sticky",
-		top: "20px",
+		top: "var(--sticky-top)",
 	},
 	fullWidth: {
 		width: "100%",

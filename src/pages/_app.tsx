@@ -20,6 +20,7 @@ import ChatBot from "~/components/Chatbot/Chatbot";
 import Matomo from "~/components/Matomo/Matomo";
 import "~/utils/styles/keyframes.css";
 import "~/utils/styles/contrast.css";
+import "~/utils/styles/sticky-header.css";
 import BackToTop from "~/components/ui/BackToTop";
 import MainNavigation from "~/components/ui/Navigation/MainNavigation";
 import SeoMeta from "~/components/ui/SeoMeta";

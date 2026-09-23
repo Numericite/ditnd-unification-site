@@ -139,7 +139,7 @@ const useStyles = tss.withName(CmsPageLayout.name).create(() => ({
 	},
 	summarySticky: {
 		position: "sticky",
-		top: "20px",
+		top: "var(--sticky-top)",
 		".fr-summary__link:before": {
 			visibility: "hidden",
 		},

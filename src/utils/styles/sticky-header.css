@@ -1,0 +1,13 @@
+:root {
+	/* Height of the header part that scrolls away (DSFR header body). */
+	--sticky-header-hidden-height: 0px;
+	/* Height of the header part that stays pinned (DSFR navigation bar). */
+	--sticky-header-height: 0px;
+	/* Offset every other sticky element must keep from the pinned header. */
+	--sticky-top: calc(var(--sticky-header-height) + 1.25rem);
+}
+
+:where(h1, h2, h3, h4, h5, h6)[id],
+#contenu {
+	scroll-margin-top: var(--sticky-top);
+}
