@@ -1,6 +1,6 @@
 import { fr } from "@codegouvfr/react-dsfr";
 import Button from "@codegouvfr/react-dsfr/Button";
-import { useEffect, useState } from "react";
+import { type MouseEvent, useEffect, useState } from "react";
 import { tss } from "tss-react/dsfr";
 
 export default function BackToTop() {
@@ -31,6 +31,19 @@ export default function BackToTop() {
 		};
 	}, []);
 
+	const handleClick = (event: MouseEvent<HTMLAnchorElement>) => {
+		const target = document.getElementById("top");
+		if (!target) return;
+
+		event.preventDefault();
+		target.scrollIntoView({
+			behavior: window.matchMedia("(prefers-reduced-motion: reduce)").matches
+				? "auto"
+				: "smooth",
+		});
+		target.focus({ preventScroll: true });
+	};
+
 	if (!isVisible) return null;
 
 	return (
@@ -39,7 +52,7 @@ export default function BackToTop() {
 			priority="secondary"
 			iconId="fr-icon-arrow-up-fill"
 			title="Haut de page"
-			linkProps={{ href: "#top" }}
+			linkProps={{ href: "#top", onClick: handleClick }}
 		>
 			Haut de page
 		</Button>
