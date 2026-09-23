@@ -10,6 +10,7 @@ import { s3Storage } from "@payloadcms/storage-s3";
 import { searchPlugin } from "@payloadcms/plugin-search";
 import { seoPlugin } from "@payloadcms/plugin-seo";
 import { beforeSyncPracticalGuide } from "./search";
+import { mdaRedirectsPlugin } from "./plugins/redirects";
 
 import { Users } from "./collections/Users";
 import { Personas } from "./collections/Personas";
@@ -164,6 +165,12 @@ export default buildConfig({
 		extensions: ["vector"],
 		beforeSchemaInit: [addPracticalGuidesTable, addCoursesTable],
 		afterSchemaInit: [addPracticalGuidesTableVector, addCoursesTableVector],
+		// Par défaut l'adaptateur pousse le schéma dès que NODE_ENV n'est pas
+		// "production" — ce qui inclut les `payload run` des scripts seed, qui ne
+		// positionnent aucun NODE_ENV et synchronisaient donc silencieusement toute
+		// la config dans la base visée, sans trace dans payload_migrations.
+		// Le push est désormais réservé au développement explicite.
+		push: process.env.NODE_ENV === "development",
 		pool: {
 			connectionString: process.env.POSTGRESQL_ADDON_URI || "",
 		},
@@ -182,6 +189,7 @@ export default buildConfig({
 	sharp: (inputFile, options) =>
 		sharp(inputFile, { ...options, failOn: "none" }),
 	plugins: [
+		mdaRedirectsPlugin,
 		searchPlugin({
 			collections: ["practical-guides"],
 			defaultPriorities: {

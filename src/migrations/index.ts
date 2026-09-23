@@ -33,6 +33,7 @@ import * as migration_20260618_133650_add_enable_clustering from './20260618_133
 import * as migration_20260707_083957_add_simplified_content_generator_global from './20260707_083957_add_simplified_content_generator_global';
 import * as migration_20260911_093427_add_hide_simplified_version from './20260911_093427_add_hide_simplified_version';
 import * as migration_20260923_100000_add_practical_guide_published_at from './20260923_100000_add_practical_guide_published_at';
+import * as migration_20260923_141759_add_redirects_and_newsletter from './20260923_141759_add_redirects_and_newsletter';
 
 export const migrations = [
   {
@@ -203,11 +204,16 @@ export const migrations = [
   {
     up: migration_20260911_093427_add_hide_simplified_version.up,
     down: migration_20260911_093427_add_hide_simplified_version.down,
-    name: '20260911_093427_add_hide_simplified_version'
+    name: '20260911_093427_add_hide_simplified_version',
   },
   {
     up: migration_20260923_100000_add_practical_guide_published_at.up,
     down: migration_20260923_100000_add_practical_guide_published_at.down,
-    name: '20260923_100000_add_practical_guide_published_at'
+    name: '20260923_100000_add_practical_guide_published_at',
+  },
+  {
+    up: migration_20260923_141759_add_redirects_and_newsletter.up,
+    down: migration_20260923_141759_add_redirects_and_newsletter.down,
+    name: '20260923_141759_add_redirects_and_newsletter',
   },
 ];
