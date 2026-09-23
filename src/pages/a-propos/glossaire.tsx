@@ -3,16 +3,22 @@ import Breadcrumb from "@codegouvfr/react-dsfr/Breadcrumb";
 import SearchBar from "@codegouvfr/react-dsfr/SearchBar";
 import type { GetServerSideProps } from "next";
 import Head from "next/head";
+import { useRouter } from "next/router";
 import { useMemo, useState } from "react";
 import { getPayload } from "payload";
 import { tss } from "tss-react/dsfr";
 import payloadConfig from "~/payload/payload.config";
 import type { Glossary } from "~/payload/payload-types";
+import AlphabetNav from "~/components/ui/Glossary/AlphabetNav";
 import PageContent from "~/components/ui/PageContent";
 
+type Term = Pick<Glossary, "id" | "name" | "description" | "link">;
+
 type Props = {
-	terms: Pick<Glossary, "id" | "name" | "description" | "link">[];
+	terms: Term[];
 };
+
+const OTHER_LETTER = "#";
 
 function normalize(text: string): string {
 	return text
@@ -22,18 +28,85 @@ function normalize(text: string): string {
 		.trim();
 }
 
+function getInitial(name: string): string {
+	const letter = normalize(name).charAt(0).toUpperCase();
+	return /[A-Z]/.test(letter) ? letter : OTHER_LETTER;
+}
+
 export default function GlossairePage({ terms }: Props) {
 	const { classes, cx } = useStyles();
+	const router = useRouter();
 	const [search, setSearch] = useState("");
 
+	const activeLetter = useMemo(() => {
+		const raw = router.query.lettre;
+		const value = Array.isArray(raw) ? raw[0] : raw;
+		if (!value) return null;
+		const letter = value.toUpperCase();
+		return /^[A-Z]$/.test(letter) || letter === OTHER_LETTER ? letter : null;
+	}, [router.query.lettre]);
+
+	const availableLetters = useMemo(
+		() => new Set(terms.map((term) => getInitial(term.name))),
+		[terms],
+	);
+
 	const filteredTerms = useMemo(() => {
-		const query = normalize(search);
-		if (!query) return terms;
-		return terms.filter((term) => {
-			const haystack = `${normalize(term.name)} ${normalize(term.description)}`;
-			return haystack.includes(query);
-		});
-	}, [search, terms]);
+		if (search) {
+			const query = normalize(search);
+			return terms.filter((term) =>
+				`${normalize(term.name)} ${normalize(term.description)}`.includes(
+					query,
+				),
+			);
+		}
+		if (activeLetter) {
+			return terms.filter((term) => getInitial(term.name) === activeLetter);
+		}
+		return terms;
+	}, [search, activeLetter, terms]);
+
+	const groups = useMemo(() => {
+		const map = new Map<string, Term[]>();
+		for (const term of filteredTerms) {
+			const initial = getInitial(term.name);
+			const group = map.get(initial);
+			if (group) group.push(term);
+			else map.set(initial, [term]);
+		}
+		return [...map.entries()].sort(([a], [b]) => a.localeCompare(b, "fr"));
+	}, [filteredTerms]);
+
+	const buildHref = (letter: string | null) =>
+		letter
+			? `/a-propos/glossaire?lettre=${letter.toLowerCase()}`
+			: "/a-propos/glossaire";
+
+	const setLetter = (letter: string | null, replace = false) => {
+		const href = buildHref(letter);
+		const options = { shallow: true, scroll: false };
+		if (replace) router.replace(href, undefined, options);
+		else router.push(href, undefined, options);
+	};
+
+	const handleSelectLetter = (letter: string | null) => {
+		setSearch("");
+		setLetter(letter);
+	};
+
+	const handleSearchChange = (value: string) => {
+		setSearch(value);
+		if (value && activeLetter) setLetter(null, true);
+	};
+
+	const countLabel = `${filteredTerms.length} ${filteredTerms.length > 1 ? "termes" : "terme"}`;
+	const filterLabel = search
+		? ` correspondant à « ${search} »`
+		: activeLetter
+			? activeLetter === OTHER_LETTER
+				? " ne commençant pas par une lettre"
+				: ` commençant par la lettre ${activeLetter}`
+			: "";
 
 	return (
 		<>
@@ -63,12 +136,12 @@ export default function GlossairePage({ terms }: Props) {
 						l'autisme et des troubles du neurodéveloppement.
 					</p>
 
-					<div className={fr.cx("fr-grid-row", "fr-mb-4w")}>
+					<div className={fr.cx("fr-grid-row", "fr-mb-3w")}>
 						<div className={fr.cx("fr-col-12", "fr-col-md-8")}>
 							<SearchBar
 								label="Rechercher un terme..."
 								big
-								onButtonClick={(value) => setSearch(value)}
+								onButtonClick={(value) => handleSearchChange(value)}
 								renderInput={({ className, id, placeholder, type }) => (
 									<input
 										className={className}
@@ -76,58 +149,74 @@ export default function GlossairePage({ terms }: Props) {
 										placeholder={placeholder}
 										type={type}
 										value={search}
-										onChange={(e) => setSearch(e.currentTarget.value)}
+										onChange={(e) => handleSearchChange(e.currentTarget.value)}
 									/>
 								)}
 							/>
 						</div>
 					</div>
 
+					<AlphabetNav
+						availableLetters={availableLetters}
+						activeLetter={search ? null : activeLetter}
+						buildHref={buildHref}
+						onSelect={handleSelectLetter}
+					/>
+
 					<output
 						className={cx(fr.cx("fr-text--sm", "fr-mb-2w"), classes.count)}
 						aria-live="polite"
 					>
-						{filteredTerms.length}{" "}
-						{filteredTerms.length > 1 ? "termes" : "terme"}
-						{search ? ` correspondant à « ${search} »` : ""}
+						{countLabel}
+						{filterLabel}
 					</output>
 
-					{filteredTerms.length === 0 ? (
+					{groups.length === 0 ? (
 						<div className={fr.cx("fr-callout")}>
 							<p className={fr.cx("fr-callout__text")}>
 								Aucun terme ne correspond à votre recherche.
 							</p>
 						</div>
 					) : (
-						<ul className={cx(classes.list)}>
-							{filteredTerms.map((term) => (
-								<li key={term.id} className={cx(classes.item)}>
-									<div className={cx(classes.term)}>
-										{term.link ? (
-											<a
-												href={term.link}
-												target="_blank"
-												rel="noopener noreferrer"
-												className={fr.cx(
-													"fr-link",
-													"fr-link--icon-right",
-													"fr-icon-external-link-line",
+						groups.map(([letter, groupTerms]) => (
+							<section key={letter} className={cx(classes.group)}>
+								<h2
+									id={`lettre-${letter.toLowerCase()}`}
+									className={cx(classes.groupTitle)}
+								>
+									{letter === OTHER_LETTER ? "Autres" : letter}
+								</h2>
+								<ul className={cx(classes.list)}>
+									{groupTerms.map((term) => (
+										<li key={term.id} className={cx(classes.item)}>
+											<div className={cx(classes.term)}>
+												{term.link ? (
+													<a
+														href={term.link}
+														target="_blank"
+														rel="noopener noreferrer"
+														className={fr.cx(
+															"fr-link",
+															"fr-link--icon-right",
+															"fr-icon-external-link-line",
+														)}
+														aria-label={`${term.name} (nouvelle fenêtre)`}
+														title={`${term.name} (nouvelle fenêtre)`}
+													>
+														<strong>{term.name}</strong>
+													</a>
+												) : (
+													<strong>{term.name}</strong>
 												)}
-												aria-label={`${term.name} (nouvelle fenêtre)`}
-												title={`${term.name} (nouvelle fenêtre)`}
-											>
-												<strong>{term.name}</strong>
-											</a>
-										) : (
-											<strong>{term.name}</strong>
-										)}
-									</div>
-									<div className={cx(classes.description)}>
-										{term.description}
-									</div>
-								</li>
-							))}
-						</ul>
+											</div>
+											<div className={cx(classes.description)}>
+												{term.description}
+											</div>
+										</li>
+									))}
+								</ul>
+							</section>
+						))
 					)}
 				</PageContent>
 			</div>
@@ -157,6 +246,15 @@ const useStyles = tss.withName(GlossairePage.name).create({
 	count: {
 		display: "block",
 		color: fr.colors.decisions.text.mention.grey.default,
+	},
+	group: {
+		marginBottom: fr.spacing("4w"),
+	},
+	groupTitle: {
+		marginBottom: fr.spacing("2w"),
+		paddingBottom: fr.spacing("1w"),
+		borderBottom: `2px solid ${fr.colors.decisions.border.actionHigh.blueFrance.default}`,
+		color: fr.colors.decisions.text.actionHigh.blueFrance.default,
 	},
 	list: {
 		listStyle: "none",
