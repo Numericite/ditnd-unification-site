@@ -40,8 +40,7 @@ export default function PracticalGuidesDisplay({
 			title={guide.title}
 			content={guide.content}
 			imageBanner={guide.imageBanner}
-			createdAt={guide.createdAt}
-			updatedAt={guide.updatedAt}
+			createdAt={guide.publishedAt ?? guide.createdAt}
 			showShareSocials
 			extraLinks={extraLinks}
 			headerToolbar={headerToolbar}
