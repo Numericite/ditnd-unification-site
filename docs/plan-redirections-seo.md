@@ -38,8 +38,8 @@ Les URLs d'origine sont **préservées à l'identique** — aucune redirection �
 - ✅ Uploadés sur S3 sous le préfixe `legacy/` (séparé des médias Payload, à la racine du bucket),
   via `scripts-migration/upload_legacy_to_s3.sh` (variables `S3_*` de l'app)
 - ✅ Bucket policy : lecture publique anonyme limitée à `legacy/*` (le reste du bucket reste privé) — vérifié
-- Reste à faire : rewrite `/app/uploads/:path*` → `https://ditnd-unification.s3.eu-west-3.amazonaws.com/legacy/app/uploads/:path*`
-  (next.config ou middleware) — le préfixe `legacy/` reste invisible dans les URLs publiques.
+- ✅ Rewrite `/app/uploads/:path*` → `https://ditnd-unification.s3.eu-west-3.amazonaws.com/legacy/app/uploads/:path*`
+  (`next.config.js`) — le préfixe `legacy/` reste invisible dans les URLs publiques.
 
 ---
 
@@ -51,11 +51,13 @@ Les URLs d'origine sont **préservées à l'identique** — aucune redirection �
 - [x] Hook `beforeValidate` de normalisation du champ `from` (strip domaine / slash final / query) + anti-boucle
 - [x] Middleware (`src/middleware.ts`) : lookup exact (carte servie par `/api/redirects-map`, cache 60 s) → fallbacks sections → pass-through — testé en dev le 10/06/2026 (301 exact, query transférée, fallbacks, 404 événements)
 - [x] Script de seed (`yarn seed:redirects`, source : `src/payload/seed/data/legacy-urls.csv`, 69 entrées — exclut la racine et les 4 chemins identiques sur le nouveau site). Idempotent : à rejouer en prod au moment de la migration.
+- [ ] **Migration de schéma pour la table `redirects`** (`src/migrations/`) — le projet applique des migrations explicites en prod, la collection n'existe pas encore côté base. À générer avec `payload migrate:create` sur une base à jour avant la mise en production.
+- [ ] Atelier de définition des cibles avec la webmaster de l'ancien site (69 entrées seedées, `to` à remplir)
 - [ ] L'équipe contenu a rempli les `to` pour toutes les pages ayant un équivalent
-- [ ] Page 404 enrichie (recherche + liens sections)
+- [x] Page 404 (`src/pages/[...slug].tsx` + `ErrorPage`) : statut 404 réel, lien accueil, renvoi vers le moteur de recherche de l'en-tête. Enrichissement possible plus tard (liens directs vers les sections).
 - [x] Upload `legacy-uploads/` vers S3 (préfixe `legacy/`) + bucket policy publique sur `legacy/*` (fait le 10/06/2026)
 - [x] Rewrite `/app/uploads/:path*` vers le bucket (next.config.js) — testé en dev
-- [x] `sitemap.xml` dynamique généré depuis Payload (`src/pages/sitemap.xml.ts` : fiches publiées, formations, parcours persona×condition, pages statiques)
+- [x] `sitemap.xml` dynamique généré depuis Payload (`src/pages/sitemap.xml.ts` : fiches publiées, formations, parcours persona×condition, pages statiques). Liste statique à maintenir à chaque ajout ou renommage de page.
 - [x] `robots.txt` dynamique (`src/pages/robots.txt.ts`) : sitemap référencé, `Disallow: /admin /api /draft` ; `Disallow: /` intégral si `NEXT_PUBLIC_NOINDEX=true`
 - [ ] **`NEXT_PUBLIC_NOINDEX` absent ou ≠ `true` en production** (variable critique : à `true`, la migration entière est désindexée — à vérifier dans la config Clever Cloud de prod)
 - [ ] Accès Google Search Console vérifié pour le domaine (validation DNS de préférence — survit au changement de plateforme). *(en cours : vérification côté webmaster)*
@@ -68,7 +70,7 @@ Les URLs d'origine sont **préservées à l'identique** — aucune redirection �
 - [ ] Tester : slash final (`/fiches-pratiques-autisme/etudier-autisme/`), query string transférée, un PDF `/app/uploads/...`
 - [ ] Vérifier l'absence de l'en-tête `X-Robots-Tag: noindex` en prod
 - [ ] Soumettre `sitemap.xml` dans Search Console (déclenche le re-crawl massif)
-- [ ] Vérifier la 404 enrichie sur une URL inconnue
+- [ ] Vérifier la page 404 sur une URL inconnue
 
 ### Après le lancement (4 à 12 semaines)
 
