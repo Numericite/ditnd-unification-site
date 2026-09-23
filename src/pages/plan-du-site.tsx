@@ -1,12 +1,22 @@
 import { fr } from "@codegouvfr/react-dsfr";
 import Breadcrumb from "@codegouvfr/react-dsfr/Breadcrumb";
+import type { GetServerSideProps } from "next";
 import Head from "next/head";
+import config from "@payload-config";
+import { getPayload } from "payload";
 import { tss } from "tss-react/dsfr";
 import PageContent from "~/components/ui/PageContent";
 import { personStore, tdhStore } from "~/state/store";
 import { personsAndProTiles } from "~/utils/pictograms";
 
-export default function PlanDuSite() {
+type SitemapEntry = { slug: string; title: string };
+
+type Props = {
+	practicalGuides: SitemapEntry[];
+	courses: SitemapEntry[];
+};
+
+export default function PlanDuSite({ practicalGuides, courses }: Props) {
 	const { classes, cx } = useStyles();
 
 	const personas = personsAndProTiles(personStore.get());
@@ -89,10 +99,43 @@ export default function PlanDuSite() {
 									<a className={fr.cx("fr-link")} href="/fiches-pratiques">
 										Fiches pratiques
 									</a>
+									{practicalGuides.length > 0 && (
+										<ul className={cx(classes.sitemapList)}>
+											{practicalGuides.map((guide) => (
+												<li key={guide.slug}>
+													<a
+														className={fr.cx("fr-link")}
+														href={`/fiches-pratiques/${guide.slug}`}
+													>
+														{guide.title}
+													</a>
+												</li>
+											))}
+										</ul>
+									)}
 								</li>
 								<li>
 									<a className={fr.cx("fr-link")} href="/formations">
 										Formations
+									</a>
+									{courses.length > 0 && (
+										<ul className={cx(classes.sitemapList)}>
+											{courses.map((course) => (
+												<li key={course.slug}>
+													<a
+														className={fr.cx("fr-link")}
+														href={`/formations/${course.slug}`}
+													>
+														{course.title}
+													</a>
+												</li>
+											))}
+										</ul>
+									)}
+								</li>
+								<li>
+									<a className={fr.cx("fr-link")} href="/cartographie">
+										Cartographie
 									</a>
 								</li>
 							</ul>
@@ -150,6 +193,11 @@ export default function PlanDuSite() {
 										Contact professionnels
 									</a>
 								</li>
+								<li>
+									<a className={fr.cx("fr-link")} href="/gestion-des-cookies">
+										Gestion des cookies
+									</a>
+								</li>
 							</ul>
 						</section>
 					</nav>
@@ -158,6 +206,42 @@ export default function PlanDuSite() {
 		</>
 	);
 }
+
+export const getServerSideProps: GetServerSideProps<Props> = async () => {
+	const payload = await getPayload({ config });
+
+	const [guides, courses] = await Promise.all([
+		payload.find({
+			collection: "practical-guides",
+			where: { _status: { equals: "published" } },
+			limit: 1000,
+			pagination: false,
+			select: { slug: true, title: true },
+		}),
+		payload.find({
+			collection: "courses",
+			limit: 1000,
+			pagination: false,
+			select: { slug: true, title: true },
+		}),
+	]);
+
+	const toEntries = (
+		docs: Array<{ slug?: string | null; title?: string | null }>,
+	) =>
+		docs
+			.flatMap((doc) =>
+				doc.slug && doc.title ? [{ slug: doc.slug, title: doc.title }] : [],
+			)
+			.sort((a, b) => a.title.localeCompare(b.title, "fr"));
+
+	return {
+		props: {
+			practicalGuides: toEntries(guides.docs),
+			courses: toEntries(courses.docs),
+		},
+	};
+};
 
 const useStyles = tss.withName(PlanDuSite.name).create({
 	section: {
