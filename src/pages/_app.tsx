@@ -107,16 +107,15 @@ function App({ Component, pageProps }: AppPropsWithGlobal) {
 			/>
 			<ConsentBannerAndConsentManagement />
 			<Matomo />
-			<div id="top" className={cx(classes.headerContainer)}>
+			<div id="top" tabIndex={-1} className={cx(classes.headerContainer)}>
 				<MainNavigation />
 
 				<main>
 					<Component {...pageProps} />
 				</main>
 
-				<BackToTop />
-
 				<div className={cx(classes.chatBotsWrapper)}>
+					<BackToTop />
 					<ChatBot />
 				</div>
 
@@ -168,6 +167,9 @@ const useStyles = tss.withName(App.name).create({
 		minHeight: "100vh",
 		display: "flex",
 		flexDirection: "column",
+		"&:focus": {
+			outline: "none",
+		},
 	},
 	megaMenuCustom: {
 		".fr-menu__list": {

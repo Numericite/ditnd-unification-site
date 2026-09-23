@@ -1,30 +1,59 @@
 import { fr } from "@codegouvfr/react-dsfr";
+import Button from "@codegouvfr/react-dsfr/Button";
+import { useEffect, useState } from "react";
 import { tss } from "tss-react/dsfr";
 
 export default function BackToTop() {
 	const { classes, cx } = useStyles();
+	const [isVisible, setIsVisible] = useState(false);
+
+	useEffect(() => {
+		let frame: number | null = null;
+
+		const update = () => {
+			frame = null;
+			setIsVisible(window.scrollY > window.innerHeight);
+		};
+
+		const handleScroll = () => {
+			if (frame !== null) return;
+			frame = window.requestAnimationFrame(update);
+		};
+
+		update();
+		window.addEventListener("scroll", handleScroll, { passive: true });
+		window.addEventListener("resize", handleScroll, { passive: true });
+
+		return () => {
+			if (frame !== null) window.cancelAnimationFrame(frame);
+			window.removeEventListener("scroll", handleScroll);
+			window.removeEventListener("resize", handleScroll);
+		};
+	}, []);
+
+	if (!isVisible) return null;
 
 	return (
-		<div className={cx(fr.cx("fr-container"), classes.root)}>
-			<a
-				className={fr.cx(
-					"fr-link",
-					"fr-icon-arrow-up-fill",
-					"fr-link--icon-left",
-				)}
-				href="#top"
-			>
-				Haut de page
-			</a>
-		</div>
+		<Button
+			className={cx(classes.button)}
+			priority="secondary"
+			iconId="fr-icon-arrow-up-fill"
+			title="Haut de page"
+			linkProps={{ href: "#top" }}
+		>
+			Haut de page
+		</Button>
 	);
 }
 
 const useStyles = tss.withName(BackToTop.name).create({
-	root: {
-		display: "flex",
-		justifyContent: "flex-end",
-		marginTop: fr.spacing("4w"),
-		marginBottom: fr.spacing("2w"),
+	button: {
+		zIndex: 1100,
+		alignSelf: "flex-end",
+		backgroundColor: fr.colors.decisions.background.default.grey.default,
+		[fr.breakpoints.down("md")]: {
+			marginBottom: fr.spacing("12v"),
+			marginLeft: fr.spacing("2w"),
+		},
 	},
 });
