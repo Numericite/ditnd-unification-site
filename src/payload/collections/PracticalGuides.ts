@@ -278,6 +278,21 @@ export const PracticalGuides: CollectionConfig = {
 			],
 		},
 		{
+			name: "publishedAt",
+			type: "date",
+			required: false,
+			label: { fr: "Date de publication" },
+			defaultValue: () => new Date().toISOString(),
+			admin: {
+				position: "sidebar",
+				description:
+					"Affichée sur le site à côté de « Publié le ». Par défaut, la date de création de la fiche.",
+				date: {
+					displayFormat: "dd/MM/yyyy",
+				},
+			},
+		},
+		{
 			name: "image",
 			type: "upload",
 			relationTo: "medias",

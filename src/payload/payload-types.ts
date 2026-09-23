@@ -341,6 +341,10 @@ export interface PracticalGuide {
 		 */
 		image?: (number | null) | Media;
 	};
+	/**
+	 * Affichée sur le site à côté de « Publié le ». Par défaut, la date de création de la fiche.
+	 */
+	publishedAt?: string | null;
 	image?: (number | null) | Media;
 	imageBanner?: (number | null) | Media;
 	slug: string;
@@ -1004,6 +1008,7 @@ export interface PracticalGuidesSelect<T extends boolean = true> {
 				description?: T;
 				image?: T;
 		  };
+	publishedAt?: T;
 	image?: T;
 	imageBanner?: T;
 	slug?: T;

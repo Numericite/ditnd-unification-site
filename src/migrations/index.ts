@@ -32,6 +32,7 @@ import * as migration_20260617_093516_cartographie_global from './20260617_09351
 import * as migration_20260618_133650_add_enable_clustering from './20260618_133650_add_enable_clustering';
 import * as migration_20260707_083957_add_simplified_content_generator_global from './20260707_083957_add_simplified_content_generator_global';
 import * as migration_20260911_093427_add_hide_simplified_version from './20260911_093427_add_hide_simplified_version';
+import * as migration_20260923_100000_add_practical_guide_published_at from './20260923_100000_add_practical_guide_published_at';
 
 export const migrations = [
   {
@@ -203,5 +204,10 @@ export const migrations = [
     up: migration_20260911_093427_add_hide_simplified_version.up,
     down: migration_20260911_093427_add_hide_simplified_version.down,
     name: '20260911_093427_add_hide_simplified_version'
+  },
+  {
+    up: migration_20260923_100000_add_practical_guide_published_at.up,
+    down: migration_20260923_100000_add_practical_guide_published_at.down,
+    name: '20260923_100000_add_practical_guide_published_at'
   },
 ];

@@ -14,7 +14,6 @@ type Props = {
 	content: DefaultTypedEditorState;
 	imageBanner?: Media | null;
 	createdAt?: string;
-	updatedAt?: string;
 	showShareSocials?: boolean;
 	extraLinks?: Link[];
 	children?: ReactNode;
@@ -27,7 +26,6 @@ export default function CmsPageLayout({
 	content,
 	imageBanner,
 	createdAt,
-	updatedAt,
 	showShareSocials = false,
 	extraLinks,
 	children,
@@ -56,12 +54,11 @@ export default function CmsPageLayout({
 		/>
 	) : null;
 
-	const dateLine =
-		createdAt && updatedAt ? (
-			<p
-				className={fr.cx("fr-text--sm")}
-			>{`Publié le ${new Date(createdAt).toLocaleDateString("fr-FR")} - Modifié le ${new Date(updatedAt).toLocaleDateString("fr-FR")}`}</p>
-		) : null;
+	const dateLine = createdAt ? (
+		<p
+			className={fr.cx("fr-text--sm")}
+		>{`Publié le ${new Date(createdAt).toLocaleDateString("fr-FR")}`}</p>
+	) : null;
 
 	const heading = (
 		<>
