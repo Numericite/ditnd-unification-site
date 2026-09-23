@@ -21,7 +21,7 @@ import type { AugmentedCourse } from "~/server/api/routers/courses";
 import CardDisplay from "~/components/ui/Cards/CardDisplay";
 import { fr } from "@codegouvfr/react-dsfr";
 import type { AugmentedPracticalGuide } from "~/server/api/routers/practical-guides";
-import WysiwygAccordion from "~/components/ui/CmsPage/WysiwygAccordion";
+import WysiwygAccordionGroup from "~/components/ui/CmsPage/WysiwygAccordionGroup";
 import Image from "next/image";
 import LiteYouTube from "~/components/ui/CmsPage/LiteYoutube";
 import { Table } from "@codegouvfr/react-dsfr/Table";
@@ -259,20 +259,7 @@ export const accordionConverter: JSXConverter<SerializedBlockNode> = ({
 
 	if (!items?.length) return null;
 
-	return (
-		<div
-			className={fr.cx("fr-accordions-group", "fr-my-3v")}
-			data-fr-group={openMode === "multiple" ? "false" : undefined}
-		>
-			{items.map((item, index) => (
-				<WysiwygAccordion
-					key={`${item.title}-${index}`}
-					title={item.title}
-					content={item.content}
-				/>
-			))}
-		</div>
-	);
+	return <WysiwygAccordionGroup items={items} openMode={openMode} />;
 };
 
 export const citationConverter: JSXConverter<SerializedBlockNode> = ({
