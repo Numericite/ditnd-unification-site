@@ -54,8 +54,5 @@ yarn-error.log*
 # npm lockfile — this project uses yarn (see packageManager + CI)
 package-lock.json
 
-# worker maplibre copié depuis node_modules au prebuild/predev
-/public/maplibre/
-
 # generated DSFR icon catalog (scripts/generate-dsfr-icons.mjs)
 /public/dsfr-icons

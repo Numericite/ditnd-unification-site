@@ -597,9 +597,6 @@ export interface MapCategory {
 				| "beige-gris-galet"
 		  )
 		| null;
-	/**
-	 * Identifiant d'icône DSFR (ex : fr-icon-map-pin-2-fill). Facultatif.
-	 */
 	iconId?: string | null;
 	description?: string | null;
 	/**
