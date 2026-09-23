@@ -20,6 +20,7 @@ import ChatBot from "~/components/Chatbot/Chatbot";
 import Matomo from "~/components/Matomo/Matomo";
 import "~/utils/styles/keyframes.css";
 import "~/utils/styles/contrast.css";
+import BackToTop from "~/components/ui/BackToTop";
 import MainNavigation from "~/components/ui/Navigation/MainNavigation";
 import SeoMeta from "~/components/ui/SeoMeta";
 import { fr } from "@codegouvfr/react-dsfr";
@@ -106,7 +107,7 @@ function App({ Component, pageProps }: AppPropsWithGlobal) {
 			/>
 			<ConsentBannerAndConsentManagement />
 			<Matomo />
-			<div className={cx(classes.headerContainer)}>
+			<div id="top" tabIndex={-1} className={cx(classes.headerContainer)}>
 				<MainNavigation />
 
 				<main>
@@ -114,6 +115,7 @@ function App({ Component, pageProps }: AppPropsWithGlobal) {
 				</main>
 
 				<div className={cx(classes.chatBotsWrapper)}>
+					<BackToTop />
 					<ChatBot />
 				</div>
 
@@ -165,6 +167,9 @@ const useStyles = tss.withName(App.name).create({
 		minHeight: "100vh",
 		display: "flex",
 		flexDirection: "column",
+		"&:focus": {
+			outline: "none",
+		},
 	},
 	megaMenuCustom: {
 		".fr-menu__list": {
