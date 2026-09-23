@@ -24,7 +24,8 @@
 		"test-chatbot:prompt": "payload run tests/chabot/eval.ts -- --prompt=",
 		"cypress:open": "cypress open",
 		"cypress:run": "cypress run",
-		"prepare": "husky"
+		"prepare": "husky",
+		"postinstall": "patch-package"
 	},
 	"lint-staged": {
 		"*": "biome check --write --unsafe"
@@ -82,6 +83,8 @@
 		"cypress": "^15.21.1",
 		"husky": "^9.1.7",
 		"lint-staged": "^16.4.0",
+		"patch-package": "^8.0.1",
+		"postinstall-postinstall": "^2.1.0",
 		"typescript": "5.8.2"
 	},
 	"ct3aMetadata": {
