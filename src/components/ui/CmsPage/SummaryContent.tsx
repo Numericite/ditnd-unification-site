@@ -1,6 +1,6 @@
 import { fr } from "@codegouvfr/react-dsfr";
 import Summary, { type SummaryProps } from "@codegouvfr/react-dsfr/Summary";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { tss } from "tss-react/dsfr";
 import type { Link } from "~/utils/tools";
 
@@ -93,6 +93,25 @@ export default function SummaryContent({
 }: Props) {
 	const { classes, cx } = useStyles();
 	const activeHref = useActiveLinkHref(menuLinks);
+	const containerRef = useRef<HTMLDivElement>(null);
+
+	useEffect(() => {
+		if (!activeHref) return;
+		const list =
+			containerRef.current?.querySelector<HTMLElement>(".fr-summary > ol");
+		const active = list?.querySelector<HTMLElement>(
+			".fr-summary__link[aria-current]",
+		);
+		if (!list || !active) return;
+
+		const listBox = list.getBoundingClientRect();
+		const activeBox = active.getBoundingClientRect();
+		if (activeBox.top < listBox.top) {
+			list.scrollTop += activeBox.top - listBox.top;
+		} else if (activeBox.bottom > listBox.bottom) {
+			list.scrollTop += activeBox.bottom - listBox.bottom;
+		}
+	}, [activeHref]);
 
 	const links = useMemo(
 		() =>
@@ -112,6 +131,7 @@ export default function SummaryContent({
 
 	return (
 		<div
+			ref={containerRef}
 			className={cx(
 				fr.cx(
 					"fr-col-12",
@@ -136,6 +156,20 @@ export default function SummaryContent({
 
 const useStyles = tss.withName({ SummaryContent }).create(() => ({
 	summary: {
+		".fr-summary": {
+			display: "flex",
+			flexDirection: "column",
+			maxHeight: "calc(100vh - var(--sticky-top) - 1.25rem)",
+			"@supports (height: 100dvh)": {
+				maxHeight: "calc(100dvh - var(--sticky-top) - 1.25rem)",
+			},
+			"> ol": {
+				minHeight: 0,
+				overflowY: "auto",
+				overscrollBehavior: "contain",
+				scrollbarGutter: "stable",
+			},
+		},
 		".fr-summary__link[aria-current]": {
 			fontWeight: 700,
 		},
