@@ -59,16 +59,18 @@ export default function CourseDisplay({ course }: Props) {
 			</div>
 
 			<ul className={cx(fr.cx("fr-tags-group"), classes.tagsList)}>
-				<li>
-					<Tag
-						style={{
-							color: course.condition.textColor,
-							backgroundColor: course.condition.backgroundColor,
-						}}
-					>
-						<strong>{course.condition.slug.toUpperCase()}</strong>
-					</Tag>
-				</li>
+				{course.conditions.map((condition) => (
+					<li key={condition.id}>
+						<Tag
+							style={{
+								color: condition.textColor,
+								backgroundColor: condition.backgroundColor,
+							}}
+						>
+							<strong>{condition.slug.toUpperCase()}</strong>
+						</Tag>
+					</li>
+				))}
 				<li>
 					<Tag>
 						<strong>{course.theme.name}</strong>

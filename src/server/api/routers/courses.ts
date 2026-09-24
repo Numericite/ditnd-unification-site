@@ -18,11 +18,16 @@ import {
 	emptyPage,
 	type PaginatedResult,
 } from "~/utils/pagination";
+import {
+	isAllConditionsSelected,
+	withoutAllConditions,
+} from "~/utils/conditions-filter";
+import { findDocsWithAllConditions } from "~/server/api/all-conditions";
 
 export interface AugmentedCourse extends Course {
 	theme: Theme;
 	persona: Persona;
-	condition: Condition;
+	conditions: Condition[];
 	image: Media;
 	_status?: "draft" | "published";
 }
@@ -75,9 +80,18 @@ export const courseRouter = createTRPCRouter({
 				const { conditions, themes, personas, type, text, page, limit } = input;
 
 				if (conditions?.length) {
-					whereConditions.push({
-						"condition.slug": { in: conditions },
-					});
+					if (isAllConditionsSelected(conditions)) {
+						const ids = await findDocsWithAllConditions(ctx.payload, "courses");
+						if (!ids.length) return emptyPage<AugmentedCourse>(page, limit);
+						whereConditions.push({ id: { in: ids.map(String) } });
+					}
+
+					const selectedConditions = withoutAllConditions(conditions);
+					if (selectedConditions.length) {
+						whereConditions.push({
+							"conditions.slug": { in: selectedConditions },
+						});
+					}
 				}
 
 				if (themes?.length) {
@@ -133,7 +147,7 @@ export const courseRouter = createTRPCRouter({
 								or: [
 									{ title: { contains: trimmedText } },
 									{ description: { contains: trimmedText } },
-									{ "condition.acronym": { contains: trimmedText } },
+									{ "conditions.acronym": { contains: trimmedText } },
 									{ "persona.name": { contains: trimmedText } },
 								],
 							},

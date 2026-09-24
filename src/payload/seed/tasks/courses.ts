@@ -10,7 +10,7 @@ const courses = [
 		link: "https://lien-vers-site.com",
 		theme: 1,
 		persona: 1,
-		condition: 4,
+		conditions: [4],
 		type: "Webinaire" as "Webinaire" | "MOOC" | "Présentiel",
 	},
 	{
@@ -20,7 +20,7 @@ const courses = [
 		link: "https://lien-vers-site.com",
 		theme: 1,
 		persona: 1,
-		condition: 4,
+		conditions: [4],
 		type: "Présentiel" as "Webinaire" | "MOOC" | "Présentiel",
 	},
 	{
@@ -30,7 +30,7 @@ const courses = [
 		link: "https://lien-vers-site.com",
 		theme: 2,
 		persona: 1,
-		condition: 1,
+		conditions: [1],
 		type: "MOOC" as "Webinaire" | "MOOC" | "Présentiel",
 	},
 ];
@@ -43,7 +43,7 @@ async function createCourse(
 		link: string;
 		theme: number;
 		persona: number;
-		condition: number;
+		conditions: number[];
 		type: "Webinaire" | "MOOC" | "Présentiel";
 		content: DefaultTypedEditorState;
 	},

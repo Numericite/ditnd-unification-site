@@ -504,7 +504,7 @@ export const relationshipConverter: JSXConverters<DefaultNodeTypes>["relationshi
 						title={value.title}
 						imageUrl={value.image?.url ?? undefined}
 						imageAlt=""
-						conditions={[value.condition]}
+						conditions={value.conditions}
 						themes={[value.theme]}
 						redirect={value.link}
 						titleAs="h3"

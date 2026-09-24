@@ -24,6 +24,11 @@ import {
 	emptyPage,
 	type PaginatedResult,
 } from "~/utils/pagination";
+import {
+	isAllConditionsSelected,
+	withoutAllConditions,
+} from "~/utils/conditions-filter";
+import { findDocsWithAllConditions } from "~/server/api/all-conditions";
 
 export interface AugmentedPracticalGuide extends PracticalGuide {
 	themes: Theme[];
@@ -141,9 +146,22 @@ export const practicalGuidesRouter = createTRPCRouter({
 				const { conditions, themes, personas, text, page, limit } = input;
 
 				if (conditions?.length) {
-					whereConditions.push({
-						"conditions.slug": { in: conditions },
-					});
+					if (isAllConditionsSelected(conditions)) {
+						const ids = await findDocsWithAllConditions(
+							ctx.payload,
+							"practical-guides",
+						);
+						if (!ids.length)
+							return emptyPage<AugmentedPracticalGuide>(page, limit);
+						whereConditions.push({ id: { in: ids.map(String) } });
+					}
+
+					const selectedConditions = withoutAllConditions(conditions);
+					if (selectedConditions.length) {
+						whereConditions.push({
+							"conditions.slug": { in: selectedConditions },
+						});
+					}
 				}
 
 				if (themes?.length) {
