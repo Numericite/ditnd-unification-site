@@ -73,6 +73,16 @@ function applyRelevanceGate(reranked: RerankedChunk[]): RerankedChunk[] {
 	return kept;
 }
 
+function safeJsonParse(raw: unknown): unknown {
+	if (typeof raw !== "string") return null;
+	try {
+		return JSON.parse(raw);
+	} catch {
+		console.error("[RAG] Albert returned invalid JSON:", raw.slice(0, 500));
+		return null;
+	}
+}
+
 export const aiRouter = createTRPCRouter({
 	chatbotDirectSend: publicProcedure
 		.input(
@@ -320,7 +330,7 @@ export const aiRouter = createTRPCRouter({
 				],
 				temperature: 0.1,
 				response_format: { type: "json_object" },
-				max_completion_tokens: 800,
+				max_completion_tokens: 1000,
 			};
 
 			const response = await fetch(`${apiUrl}/v1/chat/completions`, {
@@ -342,9 +352,11 @@ export const aiRouter = createTRPCRouter({
 
 			const data = (await response.json()) as { id: string; choices: any[] };
 
+			// A formatted answer costs more tokens than a flat one: if the model hits
+			// max_completion_tokens mid-string the JSON is truncated, so parsing is guarded.
 			const parsed = z
 				.object({ content: z.string() })
-				.safeParse(JSON.parse(data.choices[0].message.content));
+				.safeParse(safeJsonParse(data.choices[0].message.content));
 
 			if (!parsed.data) {
 				throw new TRPCError({
