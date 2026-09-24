@@ -35,15 +35,27 @@ const afterChangeCourse: CollectionAfterChangeHook = async ({ doc, req }) => {
 			}
 		};
 
-		const [personaName, conditionName, themeName] = await Promise.all([
+		const resolveNames = async (
+			ids: unknown,
+			collection: "personas" | "conditions" | "themes",
+		): Promise<string[]> => {
+			if (!Array.isArray(ids)) return [];
+			const names = await Promise.all(
+				ids.map((id) => resolveName(id, collection)),
+			);
+			return names.filter(Boolean);
+		};
+
+		const [personaName, conditionNames, themeName] = await Promise.all([
 			resolveName(doc.persona, "personas"),
-			resolveName(doc.condition, "conditions"),
+			resolveNames(doc.conditions, "conditions"),
 			resolveName(doc.theme, "themes"),
 		]);
 
 		const metadata: string[] = [];
 		if (personaName) metadata.push(`Public concerné : ${personaName}`);
-		if (conditionName) metadata.push(`Trouble : ${conditionName}`);
+		if (conditionNames.length)
+			metadata.push(`Troubles : ${conditionNames.join(", ")}`);
 		if (themeName) metadata.push(`Thème : ${themeName}`);
 		if (type) metadata.push(`Type de ressource : ${type}`);
 
@@ -147,11 +159,12 @@ export const Courses: CollectionConfig = {
 			},
 		},
 		{
-			name: "condition",
+			name: "conditions",
 			type: "relationship",
 			required: true,
 			relationTo: "conditions",
-			label: { fr: "Trouble du neurodéveloppement" },
+			hasMany: true,
+			label: { fr: "Troubles du neurodéveloppement" },
 			admin: {
 				position: "sidebar",
 			},

@@ -6,10 +6,32 @@ import { Filter } from "./Filter";
 import type { Dispatch, SetStateAction } from "react";
 import { useRouter } from "next/router";
 import { deserialize, serialize } from "~/utils/tools";
+import {
+	ALL_CONDITIONS_SLUG,
+	withoutAllConditions,
+} from "~/utils/conditions-filter";
 
 type Props = {
 	filters: FiltersType[];
 	setFilters: Dispatch<SetStateAction<FiltersQuery>>;
+};
+
+// « Tous TND » et les troubles pris un à un s'excluent mutuellement : cocher
+// l'un décoche les autres.
+const computeNextValues = (
+	current: string[],
+	slug: string,
+	checked: boolean,
+	collection: keyof FiltersQuery,
+) => {
+	if (!checked) return current.filter((value) => value !== slug);
+
+	const next = [...new Set([...current, slug])];
+	if (collection !== "conditions") return next;
+
+	return slug === ALL_CONDITIONS_SLUG
+		? [ALL_CONDITIONS_SLUG]
+		: withoutAllConditions(next);
 };
 
 export default function FiltersGroup({ filters, setFilters }: Props) {
@@ -27,17 +49,18 @@ export default function FiltersGroup({ filters, setFilters }: Props) {
 			if (!current) return { ...prev };
 			return {
 				...prev,
-				[collection]: checked
-					? [...current, slug]
-					: current.filter((value) => value !== slug),
+				[collection]: computeNextValues(current, slug, checked, collection),
 			};
 		});
 
 		const currentValues = deserialize(router.query[collection]);
 
-		const nextValues = checked
-			? [...new Set([...currentValues, slug])]
-			: currentValues.filter((v) => v !== slug);
+		const nextValues = computeNextValues(
+			currentValues,
+			slug,
+			checked,
+			collection,
+		);
 
 		const nextQuery = { ...router.query };
 

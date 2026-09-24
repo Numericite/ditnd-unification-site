@@ -2,6 +2,10 @@ import type { Dispatch, SetStateAction } from "react";
 import { tdhStore } from "~/state/store";
 import { api } from "~/utils/api";
 import FiltersGroup from "../ui/SearchPage/FiltersGroup";
+import {
+	ALL_CONDITIONS_LABEL,
+	ALL_CONDITIONS_SLUG,
+} from "~/utils/conditions-filter";
 
 export type FilterItem = {
 	slug: string;
@@ -28,10 +32,13 @@ export const GuidesFiltersValues = () => {
 
 	const { data: themesData } = api.theme.all.useQuery();
 
-	const tdhItems: FilterItem[] = tdh.map((condition) => ({
-		slug: condition.slug,
-		label: condition.name,
-	}));
+	const tdhItems: FilterItem[] = [
+		{ slug: ALL_CONDITIONS_SLUG, label: ALL_CONDITIONS_LABEL },
+		...tdh.map((condition) => ({
+			slug: condition.slug,
+			label: condition.name,
+		})),
+	];
 
 	const personaItems: FilterItem[] =
 		personasData?.map((persona) => ({

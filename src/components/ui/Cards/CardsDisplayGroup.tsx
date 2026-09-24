@@ -39,7 +39,7 @@ export default function CardsDisplayGroup({
 									{...course}
 									imageUrl={course.image?.url ?? undefined}
 									imageAlt=""
-									conditions={[course.condition]}
+									conditions={course.conditions}
 									themes={[course.theme]}
 									redirect={
 										course.slug ? `/formations/${course.slug}` : course.link

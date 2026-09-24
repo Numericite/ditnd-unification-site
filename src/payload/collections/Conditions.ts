@@ -89,7 +89,7 @@ export const Conditions: CollectionConfig = {
 			name: "relatedCourses",
 			type: "join",
 			collection: "courses",
-			on: "condition",
+			on: "conditions",
 			label: "Formations associées",
 			admin: {
 				position: "sidebar",

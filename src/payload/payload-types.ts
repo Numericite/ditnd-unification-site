@@ -425,7 +425,7 @@ export interface Course {
 	} | null;
 	theme: number | Theme;
 	persona: number | Persona;
-	condition: number | Condition;
+	conditions: (number | Condition)[];
 	image?: (number | null) | Media;
 	updatedAt: string;
 	createdAt: string;
@@ -1073,7 +1073,7 @@ export interface CoursesSelect<T extends boolean = true> {
 	content?: T;
 	theme?: T;
 	persona?: T;
-	condition?: T;
+	conditions?: T;
 	image?: T;
 	updatedAt?: T;
 	createdAt?: T;

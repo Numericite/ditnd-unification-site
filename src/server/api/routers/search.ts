@@ -144,7 +144,7 @@ export const searchRouter = createTRPCRouter({
 						or: [
 							{ title: { contains: trimmedText } },
 							{ description: { contains: trimmedText } },
-							{ "condition.acronym": { contains: trimmedText } },
+							{ "conditions.acronym": { contains: trimmedText } },
 							{ "persona.name": { contains: trimmedText } },
 						],
 					},
