@@ -12,7 +12,7 @@ export const EmptyScreenZone = (props: Props) => {
 	return <div className={cx(classes.container)}>{children}</div>;
 };
 
-const useStyles = tss.withName(EmptyScreenZone.name).create(() => ({
+const useStyles = tss.withName({ EmptyScreenZone }).create(() => ({
 	container: {
 		minHeight: "85vh",
 		display: "flex",

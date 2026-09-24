@@ -121,7 +121,7 @@ export default function CardDisplay({
 	);
 }
 
-const useStyles = tss.withName(CardDisplay.name).create(() => ({
+const useStyles = tss.withName({ CardDisplay }).create(() => ({
 	tags: {
 		ul: {
 			paddingInlineStart: "0rem!important",

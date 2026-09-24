@@ -961,7 +961,7 @@ export default function MapDisplay({ map, height }: Props) {
 	);
 }
 
-const useStyles = tss.withName(MapDisplay.name).create(() => ({
+const useStyles = tss.withName({ MapDisplay }).create(() => ({
 	figure: {
 		margin: 0,
 	},

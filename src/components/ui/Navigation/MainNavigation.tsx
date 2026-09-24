@@ -175,7 +175,7 @@ export default function MainNavigation() {
 	);
 }
 
-const useStyles = tss.withName(MainNavigation.name).create({
+const useStyles = tss.withName({ MainNavigation }).create({
 	stickyHeader: {
 		// Pinned with a negative top so only the navigation bar stays visible,
 		// the DSFR header body scrolls away above the viewport.

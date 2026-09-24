@@ -58,7 +58,7 @@ export const Filter = ({ label, value, handleOnChange }: Props) => {
 	);
 };
 
-const useStyles = tss.withName(Filter.name).create(() => ({
+const useStyles = tss.withName({ Filter }).create(() => ({
 	fieldset: {
 		border: 0,
 		padding: 0,

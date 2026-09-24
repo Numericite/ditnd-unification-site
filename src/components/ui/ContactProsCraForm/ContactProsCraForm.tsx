@@ -364,7 +364,7 @@ export default function ContactProsCraForm() {
 	);
 }
 
-const useStyles = tss.withName(ContactProsCraForm.name).create(() => ({
+const useStyles = tss.withName({ ContactProsCraForm }).create(() => ({
 	form: {
 		display: "flex",
 		flexDirection: "column",

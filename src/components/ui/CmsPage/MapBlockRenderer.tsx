@@ -42,7 +42,7 @@ export default function MapBlockRenderer({ mapId, height }: Props) {
 	return <MapDisplay map={data} height={height} />;
 }
 
-const useStyles = tss.withName(MapBlockRenderer.name).create(() => ({
+const useStyles = tss.withName({ MapBlockRenderer }).create(() => ({
 	placeholder: {
 		width: "100%",
 		marginTop: "0.75rem",

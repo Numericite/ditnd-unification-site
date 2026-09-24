@@ -59,7 +59,7 @@ export default function RecommendedContent({
 	);
 }
 
-const useStyles = tss.withName(RecommendedContent.name).create(() => ({
+const useStyles = tss.withName({ RecommendedContent }).create(() => ({
 	footerContent: {
 		borderTop: "2px solid var(--border-default-grey)",
 		marginBottom: fr.spacing("3w"),

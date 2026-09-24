@@ -128,7 +128,7 @@ export default function MapClusterMarker({
 	);
 }
 
-const useStyles = tss.withName(MapClusterMarker.name).create(() => ({
+const useStyles = tss.withName({ MapClusterMarker }).create(() => ({
 	cluster: {
 		display: "block",
 		padding: 0,

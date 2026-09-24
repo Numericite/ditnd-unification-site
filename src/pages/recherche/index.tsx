@@ -343,7 +343,7 @@ export const getServerSideProps: GetServerSideProps<Props> = async (ctx) => {
 	}
 };
 
-const useStyles = tss.withName(Recherche.name).create({
+const useStyles = tss.withName({ Recherche }).create({
 	sectionSpacing: {
 		marginTop: fr.spacing("6w"),
 	},

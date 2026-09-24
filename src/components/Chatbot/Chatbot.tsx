@@ -435,7 +435,7 @@ const ChatBot = () => {
 	);
 };
 
-const useStyles = tss.withName(ChatBot.name).create({
+const useStyles = tss.withName({ ChatBot }).create({
 	root: {
 		display: "flex",
 		flexDirection: "column",

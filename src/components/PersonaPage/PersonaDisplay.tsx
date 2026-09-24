@@ -126,7 +126,7 @@ export default function PersonaDisplay({
 	);
 }
 
-const useStyles = tss.withName(PersonaDisplay.name).create(() => ({
+const useStyles = tss.withName({ PersonaDisplay }).create(() => ({
 	tabDescription: {
 		whiteSpace: "pre-line",
 	},

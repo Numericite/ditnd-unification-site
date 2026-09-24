@@ -166,7 +166,7 @@ export const getServerSideProps: GetServerSideProps<Props> = async (ctx) => {
 	}
 };
 
-const useStyles = tss.withName(JourneyPage.name).create({
+const useStyles = tss.withName("JourneyConditionPage").create({
 	coloredContainer: {
 		backgroundColor: fr.colors.decisions.background.alt.blueFrance.default,
 	},

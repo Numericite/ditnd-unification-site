@@ -159,7 +159,7 @@ export default function PlanDuSite() {
 	);
 }
 
-const useStyles = tss.withName(PlanDuSite.name).create({
+const useStyles = tss.withName({ PlanDuSite }).create({
 	section: {
 		marginBottom: fr.spacing("4w"),
 		paddingBottom: fr.spacing("4w"),

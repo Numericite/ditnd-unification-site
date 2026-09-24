@@ -301,7 +301,7 @@ export const PersonaTiles = ({
 	);
 };
 
-const useStyles = tss.withName(PersonaTiles.name).create(() => ({
+const useStyles = tss.withName({ PersonaTiles }).create(() => ({
 	tagStyles: {
 		marginLeft: fr.spacing("3v"),
 		marginBottom: fr.spacing("1v"),

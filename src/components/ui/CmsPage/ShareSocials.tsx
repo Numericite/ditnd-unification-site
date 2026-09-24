@@ -104,7 +104,7 @@ export default function ShareSocials() {
 	);
 }
 
-const useStyles = tss.withName(ShareSocials.name).create(() => ({
+const useStyles = tss.withName({ ShareSocials }).create(() => ({
 	buttonContainer: {
 		gap: fr.spacing("3v"),
 		display: "flex",

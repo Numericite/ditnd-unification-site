@@ -242,7 +242,7 @@ export const getServerSideProps: GetServerSideProps<Props> = async () => {
 	return { props: { terms } };
 };
 
-const useStyles = tss.withName(GlossairePage.name).create({
+const useStyles = tss.withName({ GlossairePage }).create({
 	count: {
 		display: "block",
 		color: fr.colors.decisions.text.mention.grey.default,

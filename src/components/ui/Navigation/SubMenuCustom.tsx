@@ -21,7 +21,7 @@ const SubMenuCustom = ({ persona }: { persona: PersonaTile }) => {
 	);
 };
 
-const useStyles = tss.withName(SubMenuCustom.name).create(() => ({
+const useStyles = tss.withName({ SubMenuCustom }).create(() => ({
 	personaContainer: {
 		display: "flex",
 		alignItems: "center",
