@@ -100,7 +100,7 @@ export default function JourneyPage() {
 	);
 }
 
-const useStyles = tss.withName(JourneyPage.name).create({
+const useStyles = tss.withName("JourneyPersonaPage").create({
 	coloredContainer: {
 		height: "auto",
 		backgroundColor: fr.colors.decisions.background.alt.blueFrance.default,

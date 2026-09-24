@@ -46,7 +46,7 @@ export default function BackToTop() {
 	);
 }
 
-const useStyles = tss.withName(BackToTop.name).create({
+const useStyles = tss.withName({ BackToTop }).create({
 	button: {
 		zIndex: 1100,
 		alignSelf: "flex-end",

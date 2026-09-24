@@ -124,7 +124,7 @@ export default function CourseDisplay({ course }: Props) {
 	);
 }
 
-const useStyles = tss.withName(CourseDisplay.name).create(() => ({
+const useStyles = tss.withName({ CourseDisplay }).create(() => ({
 	title: {
 		color: fr.colors.decisions.text.active.blueFrance.default,
 	},

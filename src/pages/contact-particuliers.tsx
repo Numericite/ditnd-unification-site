@@ -58,7 +58,7 @@ export default function ContactParticuliersPage({
 	);
 }
 
-const useStyles = tss.withName(ContactParticuliersPage.name).create(() => ({
+const useStyles = tss.withName({ ContactParticuliersPage }).create(() => ({
 	formWrapper: {
 		marginTop: fr.spacing("6w"),
 	},

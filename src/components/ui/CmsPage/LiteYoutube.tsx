@@ -56,7 +56,7 @@ export default function LiteYouTube({ videoId }: { videoId: string }) {
 	);
 }
 
-const useStyles = tss.withName(LiteYouTube.name).create(() => ({
+const useStyles = tss.withName({ LiteYouTube }).create(() => ({
 	liteButton: {
 		all: "unset",
 		display: "block",

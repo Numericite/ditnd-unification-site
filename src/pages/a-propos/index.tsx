@@ -49,7 +49,7 @@ export default function AProposIndex() {
 	);
 }
 
-const useStyles = tss.withName(AProposIndex.name).create({
+const useStyles = tss.withName({ AProposIndex }).create({
 	sitemapList: {
 		listStyle: "none",
 		paddingLeft: fr.spacing("3w"),

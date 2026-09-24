@@ -32,7 +32,7 @@ export default function InfoOrCoursesButtons({
 	);
 }
 
-const useStyles = tss.withName(InfoOrCoursesButtons.name).create({
+const useStyles = tss.withName({ InfoOrCoursesButtons }).create({
 	centeredContainer: {
 		textAlign: "center",
 		paddingTop: fr.spacing("4w"),

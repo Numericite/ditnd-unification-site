@@ -121,7 +121,7 @@ export default function CmsPageLayout({
 	);
 }
 
-const useStyles = tss.withName(CmsPageLayout.name).create(() => ({
+const useStyles = tss.withName({ CmsPageLayout }).create(() => ({
 	title: {
 		color: fr.colors.decisions.text.active.blueFrance.default,
 	},

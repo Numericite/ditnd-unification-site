@@ -163,7 +163,7 @@ function App({ Component, pageProps }: AppPropsWithGlobal) {
 	);
 }
 
-const useStyles = tss.withName(App.name).create({
+const useStyles = tss.withName({ App }).create({
 	headerContainer: {
 		minHeight: "100vh",
 		display: "flex",

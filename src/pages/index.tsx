@@ -171,7 +171,7 @@ export const getServerSideProps: GetServerSideProps<Props> = async () => {
 	};
 };
 
-const useStyles = tss.withName(Home.name).create({
+const useStyles = tss.withName({ Home }).create({
 	headerRow: {
 		alignContent: "center",
 		alignItems: "center",

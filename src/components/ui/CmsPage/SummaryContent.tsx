@@ -134,7 +134,7 @@ export default function SummaryContent({
 	);
 }
 
-const useStyles = tss.withName(SummaryContent.name).create(() => ({
+const useStyles = tss.withName({ SummaryContent }).create(() => ({
 	summary: {
 		".fr-summary__link[aria-current]": {
 			fontWeight: 700,

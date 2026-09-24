@@ -471,7 +471,7 @@ export default function ContactParticuliersForm() {
 	);
 }
 
-const useStyles = tss.withName(ContactParticuliersForm.name).create(() => ({
+const useStyles = tss.withName({ ContactParticuliersForm }).create(() => ({
 	form: {
 		display: "flex",
 		flexDirection: "column",

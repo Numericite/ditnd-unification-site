@@ -25,7 +25,7 @@ export const PersonaMenuLink = ({
 	);
 };
 
-const useStyles = tss.withName(PersonaMenuLink.name).create({
+const useStyles = tss.withName({ PersonaMenuLink }).create({
 	menuLinks: {
 		display: "flex",
 		alignItems: "center",

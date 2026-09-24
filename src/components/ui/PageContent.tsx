@@ -15,7 +15,7 @@ export default function PageContent({ children, className }: Props) {
 	);
 }
 
-const useStyles = tss.withName(PageContent.name).create({
+const useStyles = tss.withName({ PageContent }).create({
 	root: {
 		"&:focus": {
 			outline: "none",

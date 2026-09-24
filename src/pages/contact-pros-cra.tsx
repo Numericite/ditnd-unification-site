@@ -58,7 +58,7 @@ export default function ContactProsCraPage({
 	);
 }
 
-const useStyles = tss.withName(ContactProsCraPage.name).create(() => ({
+const useStyles = tss.withName({ ContactProsCraPage }).create(() => ({
 	formWrapper: {
 		marginTop: fr.spacing("6w"),
 	},

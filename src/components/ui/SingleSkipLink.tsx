@@ -18,7 +18,7 @@ export default function SingleSkipLink({ label, anchor }: Props) {
 	);
 }
 
-const useStyles = tss.withName(SingleSkipLink.name).create({
+const useStyles = tss.withName({ SingleSkipLink }).create({
 	link: {
 		fontSize: "1rem",
 		lineHeight: "1.5rem",

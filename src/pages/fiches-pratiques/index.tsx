@@ -139,7 +139,7 @@ export const getServerSideProps: GetServerSideProps<Props> = async (ctx) => {
 	};
 };
 
-const useStyles = tss.withName(PracticalGuides.name).create({
+const useStyles = tss.withName({ PracticalGuides }).create({
 	borderRight: {
 		borderRight: "2px solid var(--border-default-grey)",
 	},

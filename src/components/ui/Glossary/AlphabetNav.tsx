@@ -96,7 +96,7 @@ export default function AlphabetNav({
 	);
 }
 
-const useStyles = tss.withName(AlphabetNav.name).create({
+const useStyles = tss.withName({ AlphabetNav }).create({
 	root: {
 		marginBottom: fr.spacing("4w"),
 	},
