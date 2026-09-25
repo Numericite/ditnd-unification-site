@@ -157,17 +157,41 @@ export default function SummaryContent({
 const useStyles = tss.withName({ SummaryContent }).create(() => ({
 	summary: {
 		".fr-summary": {
+			"--summary-padding": "1.5rem",
+			[fr.breakpoints.up("md")]: {
+				"--summary-padding": "2rem",
+			},
 			display: "flex",
 			flexDirection: "column",
 			maxHeight: "calc(100vh - var(--sticky-top) - 1.25rem)",
 			"@supports (height: 100dvh)": {
 				maxHeight: "calc(100dvh - var(--sticky-top) - 1.25rem)",
 			},
+			paddingRight: 0,
+			"> .fr-summary__title": {
+				paddingRight: "var(--summary-padding)",
+			},
 			"> ol": {
 				minHeight: 0,
 				overflowY: "auto",
 				overscrollBehavior: "contain",
+				paddingRight: "var(--summary-padding)",
 				scrollbarGutter: "stable",
+				"&::-webkit-scrollbar": {
+					width: "0.375rem",
+				},
+				"&::-webkit-scrollbar-track": {
+					backgroundColor: "transparent",
+				},
+				"&::-webkit-scrollbar-thumb": {
+					backgroundColor: fr.colors.decisions.border.plain.grey.default,
+					borderRadius: "0.1875rem",
+				},
+				"@supports (scrollbar-width: thin) and (not selector(::-webkit-scrollbar))":
+					{
+						scrollbarWidth: "thin",
+						scrollbarColor: `${fr.colors.decisions.border.plain.grey.default} transparent`,
+					},
 			},
 		},
 		".fr-summary__link[aria-current]": {
