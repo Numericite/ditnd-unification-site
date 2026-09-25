@@ -184,13 +184,13 @@ const useStyles = tss.withName({ SummaryContent }).create(() => ({
 					backgroundColor: "transparent",
 				},
 				"&::-webkit-scrollbar-thumb": {
-					backgroundColor: fr.colors.decisions.border.plain.grey.default,
+					backgroundColor: fr.colors.decisions.background.contrast.grey.active,
 					borderRadius: "0.1875rem",
 				},
 				"@supports (scrollbar-width: thin) and (not selector(::-webkit-scrollbar))":
 					{
 						scrollbarWidth: "thin",
-						scrollbarColor: `${fr.colors.decisions.border.plain.grey.default} transparent`,
+						scrollbarColor: `${fr.colors.decisions.background.contrast.grey.active} transparent`,
 					},
 			},
 		},
