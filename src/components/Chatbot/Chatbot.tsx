@@ -8,6 +8,7 @@ import { chatbotOpenStore } from "~/state/store";
 import { useSelector } from "@legendapp/state/react";
 import type { AugmentedPracticalGuide } from "~/server/api/routers/practical-guides";
 import type { AugmentedCourse } from "~/server/api/routers/courses";
+import Markdown from "./Markdown";
 
 type ChatResponse = {
 	content: string;
@@ -311,9 +312,9 @@ const ChatBot = () => {
 										<i className="fr-icon-chat-3-line" aria-hidden="true" />
 										En résumé
 									</p>
-									<p className={cx(classes.resourcesIntro)}>
-										{response.content}
-									</p>
+									<div className={cx(classes.answer)}>
+										<Markdown content={response.content} />
+									</div>
 									{(() => {
 										const guidesSection = response.guides.length > 0 && (
 											<div className={cx(classes.sourcesSection)}>
@@ -565,8 +566,38 @@ const useStyles = tss.withName({ ChatBot }).create({
 	backAction: {
 		paddingTop: fr.spacing("2v"),
 	},
-	resourcesIntro: {
-		margin: 0,
+	answer: {
+		lineHeight: 1.6,
+		"& > *": {
+			margin: 0,
+		},
+		"& > * + *": {
+			marginTop: fr.spacing("2v"),
+		},
+		"& h3": {
+			fontSize: "1rem",
+			fontWeight: 700,
+			color: fr.colors.decisions.text.title.grey.default,
+		},
+		"& ul, & ol": {
+			paddingLeft: fr.spacing("7v"),
+			display: "flex",
+			flexDirection: "column",
+			gap: fr.spacing("2v"),
+		},
+		"& li": {
+			paddingLeft: fr.spacing("2v"),
+		},
+		"& li > ul, & li > ol": {
+			paddingLeft: fr.spacing("5v"),
+			marginTop: fr.spacing("2v"),
+		},
+		"& code": {
+			fontSize: "0.875em",
+			padding: `0 ${fr.spacing("1v")}`,
+			borderRadius: fr.spacing("1v"),
+			backgroundColor: fr.colors.decisions.background.alt.grey.default,
+		},
 	},
 	sourcesSection: {
 		marginTop: fr.spacing("4v"),
