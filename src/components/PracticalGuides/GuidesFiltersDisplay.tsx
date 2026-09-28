@@ -47,10 +47,12 @@ export const GuidesFiltersValues = () => {
 		})) ?? [];
 
 	const themeItems: FilterItem[] =
-		themesData?.map((theme) => ({
-			slug: theme.slug,
-			label: theme.name,
-		})) ?? [];
+		themesData
+			?.map((theme) => ({
+				slug: theme.slug,
+				label: theme.name,
+			}))
+			.sort((a, b) => a.label.localeCompare(b.label, "fr")) ?? [];
 
 	const filters: FiltersType[] = [
 		{ label: "Troubles", collection: "conditions", value: tdhItems },
