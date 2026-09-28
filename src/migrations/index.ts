@@ -36,6 +36,7 @@ import * as migration_20260923_100000_add_practical_guide_published_at from './2
 import * as migration_20260923_141759_add_redirects_and_newsletter from './20260923_141759_add_redirects_and_newsletter';
 import * as migration_20260923_153432_courses_conditions_has_many from './20260923_153432_courses_conditions_has_many';
 import * as migration_20260928_081234_courses_seo from './20260928_081234_courses_seo';
+import * as migration_20260928_150000_themes_is_hidden from './20260928_150000_themes_is_hidden';
 
 export const migrations = [
   {
@@ -226,6 +227,11 @@ export const migrations = [
   {
     up: migration_20260928_081234_courses_seo.up,
     down: migration_20260928_081234_courses_seo.down,
-    name: '20260928_081234_courses_seo'
+    name: '20260928_081234_courses_seo',
+  },
+  {
+    up: migration_20260928_150000_themes_is_hidden.up,
+    down: migration_20260928_150000_themes_is_hidden.down,
+    name: '20260928_150000_themes_is_hidden'
   },
 ];
