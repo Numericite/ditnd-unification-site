@@ -251,7 +251,7 @@ export default buildConfig({
 			},
 		}),
 		seoPlugin({
-			collections: ["practical-guides"],
+			collections: ["practical-guides", "courses"],
 			uploadsCollection: "medias",
 			tabbedUI: true,
 			generateTitle: ({ doc }) => {
@@ -264,10 +264,14 @@ export default buildConfig({
 				const description = (doc as Record<string, unknown>)?.description;
 				return typeof description === "string" ? description : "";
 			},
-			generateURL: ({ doc }) => {
+			generateURL: ({ doc, collectionConfig }) => {
 				const slug = (doc as Record<string, unknown>)?.slug;
+				const basePath =
+					collectionConfig?.slug === "courses"
+						? "formations"
+						: "fiches-pratiques";
 				return typeof slug === "string"
-					? `${process.env.NEXT_PUBLIC_SITE_URL || ""}/fiches-pratiques/${slug}`
+					? `${process.env.NEXT_PUBLIC_SITE_URL || ""}/${basePath}/${slug}`
 					: "";
 			},
 		}),

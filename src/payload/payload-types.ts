@@ -427,6 +427,14 @@ export interface Course {
 	persona: number | Persona;
 	conditions: (number | Condition)[];
 	image?: (number | null) | Media;
+	meta?: {
+		title?: string | null;
+		description?: string | null;
+		/**
+		 * Maximum upload file size: 12MB. Recommended file size for images is <500KB.
+		 */
+		image?: (number | null) | Media;
+	};
 	updatedAt: string;
 	createdAt: string;
 }
@@ -1075,6 +1083,13 @@ export interface CoursesSelect<T extends boolean = true> {
 	persona?: T;
 	conditions?: T;
 	image?: T;
+	meta?:
+		| T
+		| {
+				title?: T;
+				description?: T;
+				image?: T;
+		  };
 	updatedAt?: T;
 	createdAt?: T;
 }

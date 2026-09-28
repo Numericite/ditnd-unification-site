@@ -35,6 +35,7 @@ import * as migration_20260911_093427_add_hide_simplified_version from './202609
 import * as migration_20260923_100000_add_practical_guide_published_at from './20260923_100000_add_practical_guide_published_at';
 import * as migration_20260923_141759_add_redirects_and_newsletter from './20260923_141759_add_redirects_and_newsletter';
 import * as migration_20260923_153432_courses_conditions_has_many from './20260923_153432_courses_conditions_has_many';
+import * as migration_20260928_081234_courses_seo from './20260928_081234_courses_seo';
 
 export const migrations = [
   {
@@ -220,6 +221,11 @@ export const migrations = [
   {
     up: migration_20260923_153432_courses_conditions_has_many.up,
     down: migration_20260923_153432_courses_conditions_has_many.down,
-    name: '20260923_153432_courses_conditions_has_many'
+    name: '20260923_153432_courses_conditions_has_many',
+  },
+  {
+    up: migration_20260928_081234_courses_seo.up,
+    down: migration_20260928_081234_courses_seo.down,
+    name: '20260928_081234_courses_seo'
   },
 ];
