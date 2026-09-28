@@ -6,6 +6,8 @@ import type { GetServerSideProps } from "next";
 import { createCaller } from "~/server/api/root";
 import { createTRPCContext } from "~/server/api/trpc";
 import type { AugmentedCourse } from "~/server/api/routers/courses";
+import type { Media } from "~/payload/payload-types";
+import SeoMeta from "~/components/ui/SeoMeta";
 import PageContent from "~/components/ui/PageContent";
 import CourseDisplay from "~/components/Courses/CourseDisplay";
 import ErrorPage from "~/components/ui/ErrorPage/ErrorPage";
@@ -32,12 +34,26 @@ export default function CoursePage(props: Props) {
 
 	const { course } = props;
 
+	const metaImageRef = course.meta?.image;
+	const metaImageObj =
+		metaImageRef && typeof metaImageRef === "object"
+			? (metaImageRef as Media)
+			: undefined;
+
+	const metaTitle = course.meta?.title?.trim() || course.title;
+	const metaDescription =
+		course.meta?.description?.trim() || course.description?.trim();
+	const metaImage = metaImageObj?.url || course.image?.url || undefined;
+
 	return (
 		<>
-			<Head>
-				<title>{`${course.title} - Maison de l'autisme`}</title>
-				<meta name="description" content={course.description} />
-			</Head>
+			<SeoMeta
+				title={metaTitle}
+				description={metaDescription}
+				image={metaImage}
+				type="article"
+				pathname={`/formations/${course.slug}`}
+			/>
 			<div className={fr.cx("fr-container", "fr-pb-8w")}>
 				<Breadcrumb
 					currentPageLabel={course.title}
