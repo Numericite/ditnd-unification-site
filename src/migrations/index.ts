@@ -41,6 +41,7 @@ import * as migration_20261002_123739_practical_guide_simplified_title from './2
 import * as migration_20261002_134008_remove_cartographie_page from './20261002_134008_remove_cartographie_page';
 import * as migration_20261012_083005_home_persona_condition_texts from './20261012_083005_home_persona_condition_texts';
 import * as migration_20261012_090000_add_practical_guide_last_updated_at from './20261012_090000_add_practical_guide_last_updated_at';
+import * as migration_20261014_120000_courses_drafts from './20261014_120000_courses_drafts';
 
 export const migrations = [
   {
@@ -256,6 +257,11 @@ export const migrations = [
   {
     up: migration_20261012_090000_add_practical_guide_last_updated_at.up,
     down: migration_20261012_090000_add_practical_guide_last_updated_at.down,
-    name: '20261012_090000_add_practical_guide_last_updated_at'
+    name: '20261012_090000_add_practical_guide_last_updated_at',
+  },
+  {
+    up: migration_20261014_120000_courses_drafts.up,
+    down: migration_20261014_120000_courses_drafts.down,
+    name: '20261014_120000_courses_drafts'
   },
 ];

@@ -14,6 +14,37 @@ const afterChangeCourse: CollectionAfterChangeHook = async ({ doc, req }) => {
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	const db = req.payload.db as any;
 
+	// Skip indexing for non-published versions.
+	// Only delete vectors if no published version exists anymore (true unpublish).
+	if (doc._status !== "published") {
+		try {
+			const publishedDoc = await req.payload.findByID({
+				collection: "courses",
+				id: doc.id,
+				draft: false,
+			});
+			// A published version still exists — keep its vectors intact
+			if (publishedDoc?._status === "published") {
+				return doc;
+			}
+		} catch {
+			// No published version found — fall through to delete vectors
+		}
+
+		try {
+			await db.drizzle.execute(
+				sql`DELETE FROM courses_search_vectors WHERE doc_id = ${String(doc.id)}`,
+			);
+		} catch (err) {
+			console.error(
+				"[VectorSearch] Failed to remove course vectors on unpublish:",
+				doc.id,
+				err,
+			);
+		}
+		return doc;
+	}
+
 	try {
 		const title = typeof doc.title === "string" ? doc.title : "";
 		const description =
@@ -115,6 +146,7 @@ export const Courses: CollectionConfig = {
 	admin: {
 		useAsTitle: "title",
 		group: { fr: "Contenus" },
+		defaultColumns: ["title", "type", "_status", "updatedAt"],
 	},
 	defaultPopulate: courseCardSelect,
 	hooks: {
@@ -124,6 +156,9 @@ export const Courses: CollectionConfig = {
 	labels: {
 		singular: "Formation",
 		plural: "Formations",
+	},
+	versions: {
+		drafts: true,
 	},
 	fields: [
 		{
