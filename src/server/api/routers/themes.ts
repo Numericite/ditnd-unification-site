@@ -5,6 +5,7 @@ export const themeRouter = createTRPCRouter({
 		const result = await ctx.payload.find({
 			collection: "themes",
 			limit: 0,
+			where: { isHidden: { not_equals: true } },
 			select: {
 				updatedAt: false,
 				createdAt: false,

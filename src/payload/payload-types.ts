@@ -450,6 +450,10 @@ export interface Theme {
 	 */
 	description: string;
 	slug: string;
+	/**
+	 * Le thème n'apparaît plus dans les filtres du site, par exemple tant qu'il contient trop peu de fiches.
+	 */
+	isHidden?: boolean | null;
 	relatedPracticalGuides?: {
 		docs?: (number | PracticalGuide)[];
 		hasNextPage?: boolean;
@@ -1260,6 +1264,7 @@ export interface ThemesSelect<T extends boolean = true> {
 	name?: T;
 	description?: T;
 	slug?: T;
+	isHidden?: T;
 	relatedPracticalGuides?: T;
 	relatedCourses?: T;
 	updatedAt?: T;

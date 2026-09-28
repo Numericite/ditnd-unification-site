@@ -34,6 +34,17 @@ export const Themes: CollectionConfig = {
 			label: { fr: "Identifiant texte" },
 		},
 		{
+			name: "isHidden",
+			type: "checkbox",
+			defaultValue: false,
+			label: { fr: "Masquer sur le site" },
+			admin: {
+				position: "sidebar",
+				description:
+					"Le thème n'apparaît plus dans les filtres du site, par exemple tant qu'il contient trop peu de fiches.",
+			},
+		},
+		{
 			name: "relatedPracticalGuides",
 			type: "join",
 			collection: "practical-guides",
