@@ -4,6 +4,7 @@ import {
 	createTRPCRouter,
 	fetchOrReturnRealValue,
 	publicProcedure,
+	onlyPublished,
 	resolveRelations,
 } from "~/server/api/trpc";
 import {
@@ -57,7 +58,9 @@ export const journeyRouter = createTRPCRouter({
 									)
 								).filter(isPublishedGuide),
 								courses: chap.courses
-									? await resolveRelations(chap.courses, "courses")
+									? onlyPublished(
+											await resolveRelations(chap.courses, "courses"),
+										)
 									: [],
 							})),
 						),

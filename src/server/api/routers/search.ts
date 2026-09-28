@@ -142,6 +142,7 @@ export const searchRouter = createTRPCRouter({
 					collection: "courses",
 					limit: 0,
 					where: {
+						_status: { equals: "published" },
 						or: [
 							{ title: { contains: trimmedText } },
 							{ description: { contains: trimmedText } },
@@ -183,7 +184,10 @@ export const searchRouter = createTRPCRouter({
 								updatedAt: false,
 								createdAt: false,
 							},
-							where: { id: { in: courseIds.map(String) } },
+							where: {
+								id: { in: courseIds.map(String) },
+								_status: { equals: "published" },
+							},
 						})
 					: Promise.resolve({ docs: [] }),
 			]);

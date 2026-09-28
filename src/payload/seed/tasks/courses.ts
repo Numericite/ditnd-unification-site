@@ -51,7 +51,7 @@ async function createCourse(
 	try {
 		await payload.create({
 			collection: "courses",
-			data: { ...data, slug: "" },
+			data: { ...data, slug: "", _status: "published" },
 			draft: false,
 		});
 	} catch (error) {

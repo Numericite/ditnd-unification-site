@@ -260,7 +260,10 @@ export const aiRouter = createTRPCRouter({
 				surfacedCourseIds.length > 0
 					? ctx.payload.find({
 							collection: "courses",
-							where: { id: { in: surfacedCourseIds } },
+							where: {
+								id: { in: surfacedCourseIds },
+								_status: { equals: "published" },
+							},
 							depth: 1,
 						})
 					: Promise.resolve({ docs: [] }),
