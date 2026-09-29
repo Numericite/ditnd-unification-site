@@ -34,6 +34,7 @@ describe("Simplified version of a practical guide", () => {
 				expect(simplifiedText, "simplified text").to.be.a("string");
 
 				cy.visit(`/fiches-pratiques/${guide.slug}`);
+				cy.waitForHydration();
 				cy.contains("label", "Version simplifiée").click();
 				cy.get("main")
 					.should("contain.text", simplifiedText)

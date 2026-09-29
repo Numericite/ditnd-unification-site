@@ -119,6 +119,7 @@ describe("Rich text rendering on the public site", () => {
 
 	beforeEach(function () {
 		cy.visit(`/fiches-pratiques/${this.slug}`);
+		cy.waitForHydration();
 	});
 
 	it("expands and collapses a multiple accordion group at once", () => {

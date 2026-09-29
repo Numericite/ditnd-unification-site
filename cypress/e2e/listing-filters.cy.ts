@@ -47,6 +47,7 @@ describe("Practical guides listing filters", () => {
 		});
 
 		cy.visit(`/fiches-pratiques?search=${encodeURIComponent(keyword)}`);
+		cy.waitForHydration();
 		cy.get("#results")
 			.should("contain", `${keyword} tous troubles`)
 			.and("contain", `${keyword} autisme seul`);

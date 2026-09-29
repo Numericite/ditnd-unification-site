@@ -117,7 +117,13 @@ export const watchAdminFormState = () => {
 	};
 };
 
+// Document views flag their form once it is mounted client side; clicking
+// earlier hits a page that is not interactive yet.
 Cypress.Commands.add("visitAdmin", (path) => {
 	cy.viewport(1440, 900);
 	cy.visit(`/admin${path}`);
+	const isListView = /^\/collections\/[^/?]+(\?|$)/.test(path);
+	cy.get(
+		isListView ? ".collection-list" : 'form[data-form-ready="true"]',
+	).should("exist");
 });
