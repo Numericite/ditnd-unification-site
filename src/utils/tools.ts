@@ -57,6 +57,20 @@ export function generateSummaryFromRichText(
 				});
 			}
 
+			if (
+				node.type === "block" &&
+				node.fields?.blockType === "callout" &&
+				node.fields.titleAs === "h2" &&
+				node.fields.title
+			) {
+				const text = node.fields.title;
+
+				links.push({
+					linkProps: { href: `#${slugify(text)}` },
+					text,
+				});
+			}
+
 			if (node.children) {
 				h2FromNodes(node.children);
 			}
