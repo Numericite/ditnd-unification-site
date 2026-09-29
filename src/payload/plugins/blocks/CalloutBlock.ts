@@ -21,6 +21,20 @@ export const CalloutBlock: Block = {
 			},
 		},
 		{
+			name: "titleAs",
+			label: { fr: "Niveau de titre" },
+			type: "select",
+			required: false,
+			defaultValue: "h3",
+			options: [
+				{ label: "Titre 2 (h2)", value: "h2" },
+				{ label: "Titre 3 (h3)", value: "h3" },
+				{ label: "Titre 4 (h4)", value: "h4" },
+				{ label: "Titre 5 (h5)", value: "h5" },
+				{ label: "Titre 6 (h6)", value: "h6" },
+			],
+		},
+		{
 			name: "content",
 			label: { fr: "Contenu" },
 			type: "richText",

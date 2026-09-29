@@ -46,6 +46,7 @@ interface HighlightFields {
 
 interface CalloutFields {
 	title?: string;
+	titleAs?: CallOutProps["titleAs"];
 	content?: DefaultTypedEditorState;
 	iconId?: CallOutProps["iconId"];
 	colorVariant?: CallOutProps["colorVariant"];
@@ -329,6 +330,7 @@ export const calloutConverter: JSXConverter<SerializedBlockNode> = ({
 		<CallOut
 			className={fr.cx("fr-my-3v")}
 			title={value.title}
+			titleAs={value.titleAs ?? "h3"}
 			iconId={value.iconId?.startsWith("fr-icon-") ? value.iconId : undefined}
 			colorVariant={value.colorVariant}
 			bodyAs="div"
