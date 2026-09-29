@@ -82,31 +82,57 @@ jobs:
       CONTACT_PROS_CRA_RECIPIENT: contact@maisondelautisme.test
       CONTACT_PARTICULIERS_RECIPIENT: contact@maisondelautisme.test
       NEXT_PUBLIC_NOINDEX: "true"
-      # Available on internal PRs; empty on forks. The chatbot E2E suite
-      # gates the real LLM test on these being present.
-      ALBERT_API_KEY: ${{ secrets.ALBERT_API_KEY }}
-      ALBERT_API_URL: ${{ secrets.ALBERT_API_URL }}
+      # Albert is served by cypress/mocks/albert.mjs: publishing a practical
+      # guide (embeddings, simplification) stays deterministic and offline.
+      ALBERT_API_URL: http://127.0.0.1:4010
+      ALBERT_API_KEY: e2e-mock
     steps:
       - uses: actions/checkout@v4
 
       - uses: actions/setup-node@v4
         with:
           node-version: ${{ env.NODE_VERSION }}
-          cache: yarn
+
+      - name: Restore dependencies
+        id: dependencies
+        uses: actions/cache@v4
+        with:
+          path: |
+            node_modules
+            ~/.cache/Cypress
+          key: e2e-dependencies-${{ runner.os }}-node${{ env.NODE_VERSION }}-${{ hashFiles('yarn.lock', 'patches/**') }}
 
       - name: Install dependencies
+        if: steps.dependencies.outputs.cache-hit != 'true'
         run: yarn install --frozen-lockfile
+
+      - name: Start Albert mock
+        run: nohup node cypress/mocks/albert.mjs > albert-mock.log 2>&1 &
 
       - name: Seed database
         run: yarn seed:dev
 
+      # Turbopack keeps its build cache in .next/cache: pull requests reuse
+      # the one saved by the last build of main.
+      - name: Restore Next.js build cache
+        uses: actions/cache/restore@v4
+        with:
+          path: .next/cache
+          key: e2e-next-${{ runner.os }}-${{ hashFiles('yarn.lock') }}-${{ github.sha }}
+          restore-keys: e2e-next-${{ runner.os }}-${{ hashFiles('yarn.lock') }}-
+
       - name: Build app
         run: yarn build
 
+      - name: Save Next.js build cache
+        if: github.ref == 'refs/heads/main'
+        uses: actions/cache/save@v4
+        with:
+          path: .next/cache
+          key: e2e-next-${{ runner.os }}-${{ hashFiles('yarn.lock') }}-${{ github.sha }}
+
       - name: Run Cypress
         uses: cypress-io/github-action@v6
-        env:
-          CYPRESS_LLM_TESTS_ENABLED: ${{ secrets.ALBERT_API_KEY != '' }}
         with:
           install: false
           start: yarn start

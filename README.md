@@ -74,3 +74,21 @@ Stack : [Next.js](https://nextjs.org), [Payload CMS](https://payloadcms.com), [t
 ## Code quality
 
 A pre-commit hook (husky + lint-staged) runs `biome check --write` on staged files. It is installed automatically via the `prepare` script on `yarn install`.
+
+## End-to-end tests
+
+The Cypress suite (`cypress/e2e`) drives the back office, the rich text editor and the public site against a production build, like the CI. It seeds and rewrites content, so point it at a dedicated database, never at your development data:
+
+```bash
+PGPASSWORD=password createdb -h localhost -p 5434 -U user e2e
+export POSTGRESQL_ADDON_URI=postgres://user:password@localhost:5434/e2e
+export ALBERT_API_URL=http://127.0.0.1:4010 ALBERT_API_KEY=e2e-mock
+node cypress/mocks/albert.mjs &
+yarn seed:dev
+yarn build && yarn start   # then, from a second terminal:
+yarn cypress:run
+```
+
+`cypress/mocks/albert.mjs` answers the Albert calls (embeddings, rerank, chat) with deterministic results, so publishing a practical guide generates its simplified version without the real API. The specs log in as the seeded admin and create their own documents through the Payload REST API, so they can be replayed on the same database.
+
+`cypress/e2e/chatbot-llm.cy.ts` is the only spec that needs the real Albert API: it is skipped unless `CYPRESS_LLM_TESTS_ENABLED=true` and the server runs with real credentials.
