@@ -1,7 +1,7 @@
 // Opt-in test that calls the real Albert API through the chatbot.
-// Gated by Cypress.env("LLM_TESTS_ENABLED") so the suite stays green in
-// PRs that don't have access to ALBERT_API_KEY/URL secrets (e.g. forks).
-// Enable locally with `CYPRESS_LLM_TESTS_ENABLED=true yarn cypress:run`.
+// The CI serves Albert from cypress/mocks/albert.mjs, so this test only runs
+// locally, against a server started with real ALBERT_API_KEY/URL credentials:
+// `CYPRESS_LLM_TESTS_ENABLED=true yarn cypress:run`.
 
 describe("Chatbot — real Albert LLM (opt-in)", () => {
 	before(function () {
