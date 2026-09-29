@@ -141,6 +141,8 @@ jobs:
           start: yarn start
           wait-on: "http://localhost:3000"
           wait-on-timeout: 180
+          # Needs the real Albert API, see the spec header.
+          config: excludeSpecPattern=cypress/e2e/chatbot-llm.cy.ts
 
       - name: Upload Cypress screenshots on failure
         if: failure()
