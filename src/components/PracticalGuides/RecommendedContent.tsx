@@ -38,9 +38,7 @@ export default function RecommendedContent({
 			)}
 			{publishedCourses.length !== 0 && (
 				<div className={cx(classes.footerContent, classes.marginContent)}>
-					<h3 id="formations">
-						Ces formations pourraient vous intéresser{" "}
-					</h3>
+					<h3 id="formations">Ces formations pourraient vous intéresser </h3>
 					<div className={fr.cx("fr-grid-row", "fr-grid-row--gutters")}>
 						<CardsDisplayGroup
 							className={fr.cx(
