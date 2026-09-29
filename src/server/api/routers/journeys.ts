@@ -6,7 +6,10 @@ import {
 	publicProcedure,
 	resolveRelations,
 } from "~/server/api/trpc";
-import type { AugmentedPracticalGuide } from "./practical-guides";
+import {
+	type AugmentedPracticalGuide,
+	isPublishedGuide,
+} from "./practical-guides";
 import type { AugmentedCourse } from "./courses";
 
 export interface AugmentedJourney extends Journey {
@@ -47,10 +50,12 @@ export const journeyRouter = createTRPCRouter({
 							journey.chapter.map(async (chap) => ({
 								...chap,
 
-								"practical-guides": await resolveRelations(
-									chap["practical-guides"],
-									"practical-guides",
-								),
+								"practical-guides": (
+									await resolveRelations(
+										chap["practical-guides"],
+										"practical-guides",
+									)
+								).filter(isPublishedGuide),
 								courses: chap.courses
 									? await resolveRelations(chap.courses, "courses")
 									: [],

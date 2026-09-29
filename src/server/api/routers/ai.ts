@@ -132,6 +132,7 @@ export const aiRouter = createTRPCRouter({
 					ctx.payload.db.drizzle.execute(sql`
 						SELECT doc_id, text, embedding <=> ${embeddingJson}::vector as similarity_score
 						FROM practical_guide_search_vectors
+						WHERE doc_id IN (SELECT id::text FROM practical_guides WHERE _status = 'published')
 						ORDER BY embedding <=> ${embeddingJson}::vector
 						LIMIT ${ANN_CANDIDATES_PER_SOURCE}
 					`),
@@ -248,7 +249,11 @@ export const aiRouter = createTRPCRouter({
 				surfacedGuideIds.length > 0
 					? ctx.payload.find({
 							collection: "practical-guides",
-							where: { id: { in: surfacedGuideIds } },
+							draft: false,
+							where: {
+								id: { in: surfacedGuideIds },
+								_status: { equals: "published" },
+							},
 							depth: 1,
 						})
 					: Promise.resolve({ docs: [] }),
