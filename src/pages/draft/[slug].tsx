@@ -6,7 +6,7 @@ import PageContent from "~/components/ui/PageContent";
 import type { GetServerSideProps } from "next";
 import { getPayload } from "payload";
 import payloadConfig from "~/payload/payload.config";
-import { resolveRelations } from "~/server/api/trpc";
+import { onlyPublished, resolveRelations } from "~/server/api/trpc";
 import type { AugmentedPracticalGuide } from "~/server/api/routers/practical-guides";
 import ErrorPage from "~/components/ui/ErrorPage/ErrorPage";
 
@@ -110,7 +110,7 @@ export const getServerSideProps: GetServerSideProps<Props> = async (ctx) => {
 		const augmented = {
 			...guide,
 			themes: await resolveRelations(guide.themes, "themes"),
-			courses: await resolveRelations(guide.courses, "courses"),
+			courses: onlyPublished(await resolveRelations(guide.courses, "courses")),
 			"practical-guides": await resolveRelations(
 				guide["practical-guides"],
 				"practical-guides",

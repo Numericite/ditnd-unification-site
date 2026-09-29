@@ -94,7 +94,7 @@ export const Conditions: CollectionConfig = {
 			admin: {
 				position: "sidebar",
 				allowCreate: false,
-				defaultColumns: ["title"],
+				defaultColumns: ["title", "_status"],
 			},
 		},
 	],

@@ -5,6 +5,7 @@ import {
 	createTRPCRouter,
 	fetchOrReturnRealValue,
 	publicProcedure,
+	onlyPublished,
 	resolveRelations,
 } from "~/server/api/trpc";
 import type { Where } from "payload";
@@ -78,7 +79,9 @@ export const practicalGuidesRouter = createTRPCRouter({
 					return {
 						...guide,
 						themes: await resolveRelations(guide.themes, "themes"),
-						courses: await resolveRelations(guide.courses, "courses"),
+						courses: onlyPublished(
+							await resolveRelations(guide.courses, "courses"),
+						),
 						"practical-guides": (
 							await resolveRelations(
 								guide["practical-guides"],
@@ -114,7 +117,9 @@ export const practicalGuidesRouter = createTRPCRouter({
 					...guide,
 					viewCount: view.viewCount,
 					themes: await resolveRelations(guide.themes ?? [], "themes"),
-					courses: await resolveRelations(guide.courses ?? [], "courses"),
+					courses: onlyPublished(
+						await resolveRelations(guide.courses ?? [], "courses"),
+					),
 					"practical-guides": (
 						await resolveRelations(
 							guide["practical-guides"] ?? [],

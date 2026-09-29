@@ -135,3 +135,13 @@ export async function resolveRelations<T extends keyof Config["collections"]>(
 		items.map((item) => fetchOrReturnRealValue(item, collection)),
 	);
 }
+
+/**
+ * Les relations peuplées par Payload renvoient aussi les documents en
+ * brouillon : on ne garde que ceux publiés pour l'affichage public.
+ */
+export function onlyPublished<T extends { _status?: string | null }>(
+	docs: T[],
+): T[] {
+	return docs.filter((doc) => doc._status === "published");
+}
