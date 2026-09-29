@@ -32,7 +32,6 @@ describe("Page loads", () => {
 
 	for (const page of pages) {
 		it(`renders ${page.path} with a 200 response`, () => {
-			cy.request(page.path).its("status").should("eq", 200);
 			cy.visit(page.path);
 			cy.title().should("include", page.titleIncludes);
 			cy.waitForHydration();

@@ -60,9 +60,9 @@ jobs:
           - 5432:5432
         options: >-
           --health-cmd "pg_isready -U user -d maisondelautisme-site"
-          --health-interval 5s
+          --health-interval 1s
           --health-timeout 5s
-          --health-retries 10
+          --health-retries 30
       maildev:
         image: maildev/maildev:2.1.0
         ports:
@@ -71,7 +71,7 @@ jobs:
         # The image's baked-in HEALTHCHECK reports "unhealthy" reliably
         # (also reproducible locally). The container itself is up in <1s
         # per its own logs, so override with a no-op check.
-        options: --health-cmd="exit 0" --health-interval=5s --health-retries=1
+        options: --health-cmd="exit 0" --health-interval=1s --health-retries=1
     env:
       PAYLOAD_SECRET: ci-e2e-secret-please-rotate
       POSTGRESQL_ADDON_URI: postgres://user:password@localhost:5432/maisondelautisme-site
@@ -104,7 +104,9 @@ jobs:
 
       - name: Install dependencies
         if: steps.dependencies.outputs.cache-hit != 'true'
-        run: yarn install --frozen-lockfile
+        run: |
+          yarn install --frozen-lockfile
+          npx cypress verify
 
       - name: Start Albert mock
         run: nohup node cypress/mocks/albert.mjs > albert-mock.log 2>&1 &
@@ -138,7 +140,6 @@ jobs:
       # (admin-*.cy.ts) on one side, every other spec on the other.
       - name: Run Cypress
         run: |
-          npx cypress verify
           timeout 180 bash -c 'until curl -sf -m 10 -o /dev/null http://localhost:3000; do sleep 1; done'
           npx cypress run --spec "cypress/e2e/admin-*.cy.ts" > cypress-admin.log 2>&1 &
           admin=$!
