@@ -44,6 +44,9 @@ export interface AugmentedPracticalGuideViews extends PracticalGuideView {
 	guide: AugmentedPracticalGuide;
 }
 
+export const isPublishedGuide = (guide: PracticalGuide) =>
+	guide._status === "published";
+
 export const practicalGuidesRouter = createTRPCRouter({
 	getBySlug: publicProcedure
 		.input(z.object({ slug: z.string() }))
@@ -57,6 +60,7 @@ export const practicalGuidesRouter = createTRPCRouter({
 					slug: {
 						equals: input.slug,
 					},
+					_status: { equals: "published" },
 				},
 			});
 
@@ -75,10 +79,12 @@ export const practicalGuidesRouter = createTRPCRouter({
 						...guide,
 						themes: await resolveRelations(guide.themes, "themes"),
 						courses: await resolveRelations(guide.courses, "courses"),
-						"practical-guides": await resolveRelations(
-							guide["practical-guides"],
-							"practical-guides",
-						),
+						"practical-guides": (
+							await resolveRelations(
+								guide["practical-guides"],
+								"practical-guides",
+							)
+						).filter(isPublishedGuide),
 					};
 				}),
 			)) as AugmentedPracticalGuide[];
@@ -109,10 +115,12 @@ export const practicalGuidesRouter = createTRPCRouter({
 					viewCount: view.viewCount,
 					themes: await resolveRelations(guide.themes ?? [], "themes"),
 					courses: await resolveRelations(guide.courses ?? [], "courses"),
-					"practical-guides": await resolveRelations(
-						guide["practical-guides"] ?? [],
-						"practical-guides",
-					),
+					"practical-guides": (
+						await resolveRelations(
+							guide["practical-guides"] ?? [],
+							"practical-guides",
+						)
+					).filter(isPublishedGuide),
 				} as AugmentedPracticalGuide;
 			}),
 		);
@@ -189,6 +197,7 @@ export const practicalGuidesRouter = createTRPCRouter({
 						).drizzle.execute(sql`
             SELECT doc_id
             FROM practical_guide_search_vectors
+            WHERE doc_id IN (SELECT id::text FROM practical_guides WHERE _status = 'published')
             ORDER BY embedding <=> ${JSON.stringify(queryEmbedding)}::vector
             LIMIT ${VECTOR_SEARCH_CAP}
           `);
