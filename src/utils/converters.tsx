@@ -328,6 +328,9 @@ export const calloutConverter: JSXConverter<SerializedBlockNode> = ({
 
 	return (
 		<CallOut
+			id={
+				value.titleAs === "h2" && value.title ? slugify(value.title) : undefined
+			}
 			className={fr.cx("fr-my-3v")}
 			title={value.title}
 			titleAs={value.titleAs ?? "h3"}
