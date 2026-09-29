@@ -131,13 +131,27 @@ jobs:
           path: .next/cache
           key: e2e-next-${{ runner.os }}-${{ hashFiles('yarn.lock') }}-${{ github.sha }}
 
+      - name: Start app
+        run: nohup yarn start > next.log 2>&1 &
+
+      # Two Cypress processes share the server: the back-office specs
+      # (admin-*.cy.ts) on one side, every other spec on the other.
       - name: Run Cypress
-        uses: cypress-io/github-action@v6
-        with:
-          install: false
-          start: yarn start
-          wait-on: "http://localhost:3000"
-          wait-on-timeout: 180
+        run: |
+          npx cypress verify
+          timeout 180 bash -c 'until curl -sf -m 10 -o /dev/null http://localhost:3000; do sleep 1; done'
+          npx cypress run --spec "cypress/e2e/admin-*.cy.ts" > cypress-admin.log 2>&1 &
+          admin=$!
+          npx cypress run --config "excludeSpecPattern=cypress/e2e/admin-*.cy.ts" || failed=1
+          wait "$admin" || failed=1
+          echo "::group::Back-office specs"
+          cat cypress-admin.log
+          echo "::endgroup::"
+          test -z "$failed"
+
+      - name: Show server logs on failure
+        if: failure()
+        run: cat next.log albert-mock.log
 
       - name: Upload Cypress screenshots on failure
         if: failure()
