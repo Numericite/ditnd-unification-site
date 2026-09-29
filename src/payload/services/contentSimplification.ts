@@ -2,7 +2,7 @@
 //
 // Flow:
 //   1. Lexical (with custom blocks) → markdown subset
-//   2. Albert (mistralai/Mistral-Small-3.2-24B-Instruct-2506) ← system prompt + that markdown
+//   2. Albert (ALBERT_SIMPLIFICATION_MODEL, default openai/gpt-oss-120b) ← system prompt + that markdown
 //   3. Markdown response → restricted Lexical
 //   4. One retry on transient failure
 //
@@ -18,9 +18,12 @@ import {
 	type SerializedLexicalRoot,
 } from "./markdownToLexical";
 
-const ALBERT_MODEL = "mistralai/Mistral-Small-3.2-24B-Instruct-2506";
+// Simplification runs a few times a day (on guide edits), so it can afford
+// a larger model than the chatbot.
+const DEFAULT_ALBERT_MODEL = "openai/gpt-oss-120b";
 const ALBERT_TEMPERATURE = 0.2;
-const ALBERT_MAX_TOKENS = 2000;
+// gpt-oss is a reasoning model: reasoning tokens count against this budget.
+const ALBERT_MAX_TOKENS = 8000;
 const ALBERT_TIMEOUT_MS = 90_000;
 const RETRY_COUNT = 1;
 const RETRY_DELAY_MS = 2_000;
@@ -66,7 +69,7 @@ async function callAlbert(
 			},
 			signal: controller.signal,
 			body: JSON.stringify({
-				model: ALBERT_MODEL,
+				model: process.env.ALBERT_SIMPLIFICATION_MODEL || DEFAULT_ALBERT_MODEL,
 				temperature: ALBERT_TEMPERATURE,
 				max_completion_tokens: ALBERT_MAX_TOKENS,
 				messages: [
