@@ -164,24 +164,18 @@ export const quoteConverter: JSXConverters<DefaultNodeTypes>["quote"] = (
 	);
 };
 
-export const tableConverter: JSXConverter<any> = ({ node }) => {
+export const tableConverter: JSXConverter<any> = ({
+	node,
+	nodesToJSX,
+	converters,
+}) => {
 	if (!node?.children) return null;
 
-	const rows = node.children.map((row: any) => {
-		return row.children.map((cell: any) => {
-			const paragraphs = cell.children ?? [];
-
-			const text = paragraphs
-				.map((paragraph: any) =>
-					(paragraph.children ?? [])
-						.map((textNode: any) => textNode.text ?? "")
-						.join(""),
-				)
-				.join("\n");
-
-			return text;
-		});
-	});
+	const rows = node.children.map((row: any) =>
+		(row.children ?? []).map((cell: any) =>
+			nodesToJSX({ nodes: cell.children ?? [], converters }),
+		),
+	);
 
 	const headers = rows[0];
 	const data = rows.slice(1);
