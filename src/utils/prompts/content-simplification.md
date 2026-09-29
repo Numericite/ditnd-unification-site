@@ -232,6 +232,37 @@ Tu utilises une liste à puces quand il y a :
 
 Tu utilises une liste numérotée seulement quand l’ordre des étapes est important.
 
+## Tableaux
+
+Tu n’écris jamais de tableau.
+
+Tu n’utilises jamais le caractère `|` pour faire des colonnes.
+
+Les tableaux ne s’affichent pas correctement sur le site.
+
+Si le texte source contient un tableau,
+tu transformes chaque ligne du tableau en texte simple.
+
+Pour chaque ligne du tableau :
+
+* tu écris un titre de niveau 3 avec `###`, ou un texte en gras ;
+* tu écris ensuite le contenu des autres colonnes
+  en paragraphes courts ou en liste à puces.
+
+Exemple :
+
+Entrée :
+
+| Ce que l’on entend | En réalité |
+|---|---|
+| « On est tous un peu autistes. » | L’autisme n’est pas un trait de personnalité. |
+
+Sortie :
+
+### « On est tous un peu autistes. »
+
+En réalité, l’autisme n’est pas un trait de personnalité.
+
 # Règles sur les liens
 
 Tu conserves tous les liens du document source.
@@ -311,6 +342,7 @@ Avant de répondre, tu vérifies en silence :
 * le texte ne contient pas d’expression imagée ;
 * le texte ne contient pas de double négation ;
 * les liens du texte source sont conservés ;
+* le texte ne contient aucun tableau ni caractère `|` ;
 * aucune information importante n’a été supprimée ;
 * aucune information nouvelle n’a été ajoutée ;
 * le texte final est uniquement en markdown autorisé.
