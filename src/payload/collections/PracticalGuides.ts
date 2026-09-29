@@ -4,6 +4,7 @@ import type {
 	CollectionBeforeDeleteHook,
 	CollectionConfig,
 	Payload,
+	PayloadRequest,
 } from "payload";
 import { sql } from "@payloadcms/db-postgres";
 import { simplifiedLexicalEditor } from "../fields/simplifiedWysiwyg";
@@ -35,12 +36,31 @@ function shouldTriggerSimplification(
 	return JSON.stringify(doc.content) !== JSON.stringify(previousDoc.content);
 }
 
+const TRANSACTION_WAIT_TIMEOUT_MS = 30_000;
+
+// afterChange runs before the publish is committed: writing earlier would
+// read the previous version and overwrite the one being published.
+async function waitForTransactionEnd(
+	payload: Payload,
+	transactionID: PayloadRequest["transactionID"],
+): Promise<void> {
+	const id = await transactionID;
+	if (id === undefined) return;
+	const deadline = Date.now() + TRANSACTION_WAIT_TIMEOUT_MS;
+	while (payload.db.sessions?.[id] && Date.now() < deadline) {
+		await new Promise((resolve) => setTimeout(resolve, 100));
+	}
+}
+
 async function runSimplification(
 	payload: Payload,
 	docId: number | string,
 	content: unknown,
+	transactionID: PayloadRequest["transactionID"],
 ): Promise<void> {
 	try {
+		await waitForTransactionEnd(payload, transactionID);
+
 		await payload.update({
 			collection: "practical-guides",
 			id: docId,
@@ -188,7 +208,7 @@ const afterChangePracticalGuide: CollectionAfterChangeHook = async ({
 		shouldTriggerSimplification(doc, previousDoc) &&
 		!context?.[SIMPLIFICATION_SKIP_FLAG]
 	) {
-		void runSimplification(req.payload, doc.id, doc.content);
+		void runSimplification(req.payload, doc.id, doc.content, req.transactionID);
 	}
 
 	return doc;
