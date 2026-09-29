@@ -17,14 +17,14 @@ export default function PracticalGuidesDisplay({
 		if (guide["practical-guides"].length > 0) {
 			links.push({
 				linkProps: { href: "#fiches-pratiques" },
-				text: "Ces fiches pratiques qui pourraient vous intéresser",
+				text: "Ces fiches pratiques pourraient vous intéresser",
 			});
 		}
 
 		if (guide.courses.length > 0) {
 			links.push({
 				linkProps: { href: "#formations" },
-				text: "Ces formations qui pourraient vous intéresser",
+				text: "Ces formations pourraient vous intéresser",
 			});
 		}
 
