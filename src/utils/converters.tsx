@@ -219,13 +219,6 @@ export const linkConverter: JSXConverters<DefaultNodeTypes>["link"] = (
 			? internalDocToHref(node.fields.doc)
 			: node.fields.url;
 
-	if (href?.includes("youtube.com") || href?.includes("youtu.be")) {
-		const videoId = extractYouTubeId(href);
-		if (!videoId) return null;
-
-		return <LiteYouTube videoId={videoId} />;
-	}
-
 	const childrenJSX = nodesToJSX({
 		nodes: node.children ?? [],
 		converters,
