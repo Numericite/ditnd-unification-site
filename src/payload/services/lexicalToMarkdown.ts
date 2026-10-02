@@ -1,11 +1,12 @@
 // Lexical (Payload-flavour) → markdown serializer.
 //
 // Used as INPUT for the simplification LLM: we strip the rich blocks
-// (Accordion, CustomImage, Callout, YouTube, Citation, Highlight) but
-// recurse into their inner text so the model sees the full meaning of
-// the source fiche. The output uses only the markdown constructs the
-// simplification prompt allows (h2/h3, paragraphs, lists, bold, links),
-// so the LLM is in-domain on both sides.
+// (CustomImage, Callout, YouTube, Citation, Highlight) but recurse into
+// their inner text so the model sees the full meaning of the source
+// fiche. Accordions are kept as <accordeon>/<titre> tags. The output uses
+// only the markdown constructs the simplification prompt allows (h2/h3,
+// paragraphs, lists, bold, links, accordion tags), so the LLM is
+// in-domain on both sides.
 
 const FORMAT_BOLD = 1;
 
@@ -95,12 +96,13 @@ function blockNodeToMarkdown(node: unknown): string {
 	}
 
 	if (node.type === "block") {
-		// Custom Payload block (Accordion, Callout, Citation, CustomImage,
-		// YouTube, Highlight…). We don't preserve the block container, but
-		// we recurse into its fields to recover the inner text and rich
-		// content the editor wrote.
 		const fields = isObject(node.fields) ? node.fields : undefined;
 		if (!fields) return "";
+		if (fields.blockType === "accordion") return accordionToMarkdown(fields);
+		// Other custom Payload blocks (Callout, Citation, CustomImage,
+		// YouTube, Highlight…): we don't preserve the block container, but
+		// we recurse into its fields to recover the inner text and rich
+		// content the editor wrote.
 		const parts: string[] = [];
 		for (const [key, value] of Object.entries(fields)) {
 			if (key === "blockType" || key === "id" || key === "blockName") continue;
@@ -131,6 +133,24 @@ function blockNodeToMarkdown(node: unknown): string {
 	}
 
 	return "";
+}
+
+// Accordions are the only block kept as a container: the prompt asks Albert
+// to keep these tags untouched and simplify only the text between them, and
+// markdownToLexical rebuilds the accordion block from them.
+function accordionToMarkdown(fields: LexicalNode): string {
+	const mode = fields.openMode === "multiple" ? "multiple" : "single";
+	const items = Array.isArray(fields.items) ? fields.items : [];
+	const parts = items.filter(isObject).flatMap((item) => {
+		const title = typeof item.title === "string" ? item.title.trim() : "";
+		const content = isObject(item.content)
+			? lexicalToMarkdown(item.content)
+			: "";
+		if (!title && !content) return [];
+		return [`<titre>${title}</titre>`, content].filter(Boolean);
+	});
+	if (parts.length === 0) return "";
+	return [`<accordeon mode="${mode}">`, ...parts, "</accordeon>"].join("\n\n");
 }
 
 export function lexicalToMarkdown(content: unknown): string {
