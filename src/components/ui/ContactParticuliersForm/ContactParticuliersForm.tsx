@@ -409,7 +409,7 @@ export default function ContactParticuliersForm() {
 				)}
 			</form.Field>
 
-			<form.Field name="newsletter">
+			{/* <form.Field name="newsletter">
 				{(field) => (
 					<Checkbox
 						options={[
@@ -425,7 +425,7 @@ export default function ContactParticuliersForm() {
 						]}
 					/>
 				)}
-			</form.Field>
+			</form.Field> */}
 
 			<form.Field name="website">
 				{(field) => (

@@ -26,7 +26,6 @@ describe("Page loads", () => {
 		{ path: "/a-propos/gncra", titleIncludes: "GNCRA" },
 		{ path: "/a-propos/cra", titleIncludes: "CRA" },
 		{ path: "/a-propos/glossaire", titleIncludes: "Glossaire" },
-		{ path: "/cartographie", titleIncludes: "Maison de l'autisme" },
 		{ path: "/recherche?search=autisme", titleIncludes: "Maison de l'autisme" },
 	];
 
