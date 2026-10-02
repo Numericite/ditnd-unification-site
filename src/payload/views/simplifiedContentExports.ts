@@ -1,8 +1,8 @@
 // Client-side exporters for the simplified content generator.
 //
 // The generated markdown is restricted to the FALC whitelist (##/### headings,
-// paragraphs, - and 1. lists, **bold**, [text](url) links), so a small
-// dedicated parser is enough to feed the DOCX and PDF builders.
+// paragraphs, - and 1. lists, **bold**, [text](url) links, accordion tags),
+// so a small dedicated parser is enough to feed the DOCX and PDF builders.
 
 import { slugify } from "~/utils/tools";
 
@@ -89,6 +89,24 @@ export function parseSimplifiedMarkdown(markdown: string): Block[] {
 			continue;
 		}
 
+		// Accordions are exported flat: each item title becomes an h3.
+		if (/^<\/?accord[eé]on\b[^>]*>$/i.test(line)) {
+			flushParagraph();
+			flushList();
+			continue;
+		}
+		const accordionTitle = /^<titre>(.*)<\/titre>$/i.exec(line);
+		if (accordionTitle) {
+			flushParagraph();
+			flushList();
+			blocks.push({
+				type: "heading",
+				level: 3,
+				inlines: parseInlines(accordionTitle[1] ?? ""),
+			});
+			continue;
+		}
+
 		const heading = /^(#{1,6})\s+(.*)$/.exec(line);
 		if (heading) {
 			flushParagraph();
@@ -145,9 +163,12 @@ function downloadBlob(blob: Blob, filename: string): void {
 }
 
 export function exportAsMarkdown(title: string, markdown: string): void {
-	const content = title.trim()
-		? `# ${title.trim()}\n\n${markdown.trim()}\n`
-		: `${markdown.trim()}\n`;
+	const body = markdown
+		.replace(/^[ \t]*<\/?accord[eé]on\b[^>\n]*>[ \t]*$/gim, "")
+		.replace(/^[ \t]*<titre>(.*)<\/titre>[ \t]*$/gim, "### $1")
+		.replace(/\n{3,}/g, "\n\n")
+		.trim();
+	const content = title.trim() ? `# ${title.trim()}\n\n${body}\n` : `${body}\n`;
 	downloadBlob(
 		new Blob([content], { type: "text/markdown;charset=utf-8" }),
 		buildFilename(title, "md"),
