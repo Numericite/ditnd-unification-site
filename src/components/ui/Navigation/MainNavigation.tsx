@@ -54,11 +54,6 @@ export default function MainNavigation() {
 			isActive: router.pathname.startsWith("/formations"),
 		},
 		{
-			text: "Cartographie",
-			linkProps: { href: "/cartographie" },
-			isActive: router.pathname.startsWith("/cartographie"),
-		},
-		{
 			text: "Annuaire",
 			linkProps: {
 				href: "https://annuaire.autismeinfoservice.fr/",
