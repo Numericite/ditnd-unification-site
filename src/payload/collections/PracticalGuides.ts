@@ -332,7 +332,7 @@ export const PracticalGuides: CollectionConfig = {
 				position: "sidebar",
 			},
 		},
-		slugField("practical-guides"),
+		slugField("practical-guides", { editable: true }),
 		{
 			name: "conditions",
 			type: "relationship",
