@@ -277,6 +277,31 @@ export const PracticalGuides: CollectionConfig = {
 							type: "text",
 							required: true,
 							label: { fr: "Titre" },
+							admin: {
+								description:
+									"Titre complet affiché en haut de la page de la fiche pratique et dans le fil d'Ariane. Sert aussi de titre SEO si aucun n'est renseigné.",
+							},
+						},
+						{
+							name: "simplifiedTitle",
+							type: "text",
+							required: false,
+							label: { fr: "Titre court" },
+							admin: {
+								description:
+									"Titre affiché sur les cartes des fiches pratiques (page « Fiches pratiques », recherche, recommandations…). Par défaut identique au titre : laissez vide ou inchangé pour qu'il suive le titre.",
+							},
+							hooks: {
+								beforeChange: [
+									// Follows `title` until the editor sets a different value.
+									({ value, siblingData, originalDoc }) => {
+										const input = typeof value === "string" ? value.trim() : "";
+										if (!input || input === originalDoc?.title)
+											return siblingData?.title ?? (input || null);
+										return input;
+									},
+								],
+							},
 						},
 						standardFields.description,
 						standardFields.wysiwyg,

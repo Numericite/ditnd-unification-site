@@ -297,7 +297,14 @@ export interface FolderInterface {
  */
 export interface PracticalGuide {
 	id: number;
+	/**
+	 * Titre complet affiché en haut de la page de la fiche pratique et dans le fil d'Ariane. Sert aussi de titre SEO si aucun n'est renseigné.
+	 */
 	title: string;
+	/**
+	 * Titre affiché sur les cartes des fiches pratiques (page « Fiches pratiques », recherche, recommandations…). Par défaut identique au titre : laissez vide ou inchangé pour qu'il suive le titre.
+	 */
+	simplifiedTitle?: string | null;
 	/**
 	 * Description courte affichée sur les cartes (120 caractères max)
 	 */
@@ -349,6 +356,9 @@ export interface PracticalGuide {
 	publishedAt?: string | null;
 	image?: (number | null) | Media;
 	imageBanner?: (number | null) | Media;
+	/**
+	 * Utilisé dans l'URL de la page. Laissez vide pour le générer à partir du titre. Le modifier change l'URL publique : pensez à ajouter une redirection.
+	 */
 	slug: string;
 	conditions?: (number | Condition)[] | null;
 	persona: (number | Persona)[];
@@ -1045,6 +1055,7 @@ export interface MediasSelect<T extends boolean = true> {
  */
 export interface PracticalGuidesSelect<T extends boolean = true> {
 	title?: T;
+	simplifiedTitle?: T;
 	description?: T;
 	content?: T;
 	contentSimplified?: T;
