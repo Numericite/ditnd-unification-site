@@ -1,14 +1,28 @@
 import { fr } from "@codegouvfr/react-dsfr";
 import { Placeholder } from "@codegouvfr/react-dsfr/consentManagement/Placeholder";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { tss } from "tss-react/dsfr";
 import { useConsent, useFinalityConsent } from "~/utils/consentManagement";
 
-export default function LiteYouTube({ videoId }: { videoId: string }) {
+const YOUTUBE_THUMBNAILS = ["maxresdefault", "sddefault", "hqdefault"];
+
+export default function LiteYouTube({
+	videoId,
+	thumbnailUrl,
+}: {
+	videoId: string;
+	thumbnailUrl?: string;
+}) {
 	const [isLoaded, setIsLoaded] = useState(false);
+	const [thumbnailIndex, setThumbnailIndex] = useState(0);
+	const iframeRef = useRef<HTMLIFrameElement>(null);
 	const { classes } = useStyles();
 	const { assumeConsent } = useConsent();
 	const hasYoutubeConsent = useFinalityConsent("youtube");
+
+	useEffect(() => {
+		if (isLoaded) iframeRef.current?.focus();
+	}, [isLoaded]);
 
 	if (!hasYoutubeConsent) {
 		return (
@@ -21,6 +35,13 @@ export default function LiteYouTube({ videoId }: { videoId: string }) {
 	}
 
 	if (!isLoaded) {
+		const tryNextYoutubeThumbnail = () => {
+			if (thumbnailUrl) return;
+			setThumbnailIndex((index) =>
+				Math.min(index + 1, YOUTUBE_THUMBNAILS.length - 1),
+			);
+		};
+
 		return (
 			<button
 				type="button"
@@ -30,13 +51,17 @@ export default function LiteYouTube({ videoId }: { videoId: string }) {
 				<span className={fr.cx("fr-sr-only")}>Voir la vidéo YouTube</span>
 				<div className={classes.ytThumbnail}>
 					<img
-						src={`https://i.ytimg.com/vi/${videoId}/maxresdefault.jpg`}
+						src={
+							thumbnailUrl ??
+							`https://i.ytimg.com/vi/${videoId}/${YOUTUBE_THUMBNAILS[thumbnailIndex]}.jpg`
+						}
 						alt=""
 						className={classes.ytThumbnailImg}
-						onError={(e) => {
-							e.currentTarget.onerror = null;
-							e.currentTarget.src = `https://i.ytimg.com/vi/${videoId}/hqdefault.jpg`;
+						onLoad={(e) => {
+							if (e.currentTarget.naturalWidth <= 120)
+								tryNextYoutubeThumbnail();
 						}}
+						onError={tryNextYoutubeThumbnail}
 					/>
 					<i className="fr-icon-play-fill" />
 				</div>
@@ -47,8 +72,9 @@ export default function LiteYouTube({ videoId }: { videoId: string }) {
 	return (
 		<div className={classes.iframeWrapper}>
 			<iframe
+				ref={iframeRef}
 				title="Lecteur vidéo YouTube"
-				src={`https://www.youtube-nocookie.com/embed/${videoId}`}
+				src={`https://www.youtube-nocookie.com/embed/${videoId}?autoplay=1`}
 				allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture"
 				allowFullScreen
 			/>
