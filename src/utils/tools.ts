@@ -59,7 +59,7 @@ export function generateSummaryFromRichText(
 
 			if (
 				node.type === "block" &&
-				node.fields?.blockType === "callout" &&
+				["callout", "carousel"].includes(node.fields?.blockType) &&
 				node.fields.titleAs === "h2" &&
 				node.fields.title
 			) {

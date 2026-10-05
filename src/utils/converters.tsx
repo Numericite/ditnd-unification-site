@@ -16,9 +16,10 @@ import {
 	ImageSizes,
 	slugify,
 } from "./tools";
-import type { Media } from "~/payload/payload-types";
+import type { Condition, Media, Theme } from "~/payload/payload-types";
 import type { AugmentedCourse } from "~/server/api/routers/courses";
 import CardDisplay from "~/components/ui/Cards/CardDisplay";
+import CardsCarousel from "~/components/ui/Cards/CardsCarousel";
 import { fr } from "@codegouvfr/react-dsfr";
 import type { AugmentedPracticalGuide } from "~/server/api/routers/practical-guides";
 import WysiwygAccordionGroup from "~/components/ui/CmsPage/WysiwygAccordionGroup";
@@ -42,6 +43,14 @@ interface CitationFields {
 interface HighlightFields {
 	content?: DefaultTypedEditorState;
 	size?: "sm" | "default" | "lg";
+}
+
+type HeadingLevel = "h2" | "h3" | "h4" | "h5" | "h6";
+
+interface CarouselFields {
+	title?: string;
+	titleAs?: HeadingLevel;
+	items?: { relationTo: string; value: unknown }[];
 }
 
 interface CalloutFields {
@@ -472,50 +481,116 @@ export const youtubeConverter: JSXConverter<SerializedBlockNode> = ({
 	);
 };
 
+const populated = <T,>(docs: (T | number)[] | null | undefined): T[] =>
+	(docs ?? []).filter(
+		(doc): doc is T => doc !== null && typeof doc === "object",
+	);
+
+const relationCard = (
+	relationTo: string,
+	value: unknown,
+	titleAs: HeadingLevel,
+) => {
+	if (!value || typeof value !== "object") return null;
+
+	if (relationTo === "practical-guides") {
+		const guide = value as AugmentedPracticalGuide;
+
+		return (
+			<CardDisplay
+				title={guide.title}
+				imageUrl={guide.image?.url ?? undefined}
+				imageAlt=""
+				conditions={populated<Condition>(guide.conditions)}
+				themes={populated<Theme>(guide.themes)}
+				redirect={`/fiches-pratiques/${guide.slug}`}
+				titleAs={titleAs}
+			/>
+		);
+	}
+
+	if (relationTo === "courses") {
+		const course = value as AugmentedCourse;
+
+		return (
+			<CardDisplay
+				title={course.title}
+				imageUrl={course.image?.url ?? undefined}
+				imageAlt=""
+				conditions={populated<Condition>(course.conditions)}
+				themes={populated<Theme>([course.theme])}
+				redirect={course.link}
+				titleAs={titleAs}
+				noImg
+				kind="courses"
+			/>
+		);
+	}
+
+	return null;
+};
+
 export const relationshipConverter: JSXConverters<DefaultNodeTypes>["relationship"] =
 	({ node }) => {
-		if (!node.value || typeof node.value !== "object") return null;
+		const card = relationCard(node.relationTo, node.value, "h3");
+		if (!card) return null;
 
-		if (node.relationTo === "practical-guides") {
-			const value = node.value as AugmentedPracticalGuide;
-
-			return (
-				<div className={fr.cx("fr-mb-4v")} style={cardWrapperStyle}>
-					<CardDisplay
-						title={value.title}
-						imageUrl={value.image?.url ?? undefined}
-						imageAlt=""
-						conditions={value.conditions ?? []}
-						themes={value.themes}
-						redirect={`/fiches-pratiques/${value.slug}`}
-						titleAs="h3"
-					/>
-				</div>
-			);
-		}
-
-		if (node.relationTo === "courses") {
-			const value = node.value as AugmentedCourse;
-
-			return (
-				<div className={fr.cx("fr-mb-4v")} style={cardWrapperStyle}>
-					<CardDisplay
-						title={value.title}
-						imageUrl={value.image?.url ?? undefined}
-						imageAlt=""
-						conditions={value.conditions}
-						themes={[value.theme]}
-						redirect={value.link}
-						titleAs="h3"
-						noImg
-						kind="courses"
-					/>
-				</div>
-			);
-		}
-
-		return null;
+		return (
+			<div className={fr.cx("fr-mb-4v")} style={cardWrapperStyle}>
+				{card}
+			</div>
+		);
 	};
+
+const nextHeadingLevel: Record<HeadingLevel, HeadingLevel> = {
+	h2: "h3",
+	h3: "h4",
+	h4: "h5",
+	h5: "h6",
+	h6: "h6",
+};
+
+const carouselLabel = (relations: string[]) => {
+	if (relations.every((relationTo) => relationTo === "practical-guides"))
+		return "Fiches pratiques";
+	if (relations.every((relationTo) => relationTo === "courses"))
+		return "Formations";
+	return "Fiches pratiques et formations";
+};
+
+export const carouselConverter: JSXConverter<SerializedBlockNode> = ({
+	node,
+}) => {
+	const value = node.fields as CarouselFields | undefined;
+	const title = value?.title?.trim() || undefined;
+	const titleAs = value?.titleAs ?? "h3";
+	const cardTitleAs = title ? nextHeadingLevel[titleAs] : "h3";
+
+	const entries = (value?.items ?? []).flatMap((item, index) => {
+		const card = relationCard(item.relationTo, item.value, cardTitleAs);
+		return card
+			? [
+					{
+						key: `${item.relationTo}-${index}`,
+						relationTo: item.relationTo,
+						card,
+					},
+				]
+			: [];
+	});
+
+	if (!entries.length) return null;
+
+	return (
+		<CardsCarousel
+			items={entries}
+			label={carouselLabel(entries.map((entry) => entry.relationTo))}
+			title={title}
+			titleAs={titleAs}
+			titleId={title && titleAs === "h2" ? slugify(title) : undefined}
+		/>
+	);
+};
 
 export const getConverters = () => ({
 	...defaultJSXConverters,
@@ -531,6 +606,7 @@ export const getConverters = () => ({
 		highlight: highlightConverter,
 		callout: calloutConverter,
 		map: mapConverter,
+		carousel: carouselConverter,
 	},
 	inlineBlocks: {
 		lang: langConverter,

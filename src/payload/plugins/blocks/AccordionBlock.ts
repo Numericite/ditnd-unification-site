@@ -2,6 +2,7 @@ import { lexicalEditor } from "@payloadcms/richtext-lexical";
 import type { Block } from "payload";
 import { defaultWysiwygFeatures } from "../../fields/defaultWysiwygFeatures";
 import { CalloutBlock } from "./CalloutBlock";
+import { CarouselBlock } from "./CarouselBlock";
 import { CitationBlock } from "./CitationBlock";
 import { CustomImageBlock } from "./CustomImageBlock";
 import { HighlightBlock } from "./HighlightBlock";
@@ -61,6 +62,7 @@ export const AccordionBlock: Block = {
 									CitationBlock,
 									HighlightBlock,
 									CalloutBlock,
+									CarouselBlock,
 								],
 							}),
 						],
