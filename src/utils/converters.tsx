@@ -459,10 +459,16 @@ export const youtubeConverter: JSXConverter<SerializedBlockNode> = ({
 	const sizeUnit = (node.fields?.sizeUnit as string) || "percent";
 	const sizeValue = (node.fields?.sizeValue as number) ?? 100;
 	const width = sizeUnit === "percent" ? `${sizeValue}%` : `${sizeValue}px`;
+	const thumbnail = node.fields?.thumbnail as Media | undefined;
 
 	return (
 		<div className={fr.cx("fr-my-3v")} style={{ width, maxWidth: "100%" }}>
-			<LiteYouTube videoId={videoId} />
+			<LiteYouTube
+				videoId={videoId}
+				thumbnailUrl={
+					thumbnail?.sizes?.large?.url ?? thumbnail?.url ?? undefined
+				}
+			/>
 		</div>
 	);
 };

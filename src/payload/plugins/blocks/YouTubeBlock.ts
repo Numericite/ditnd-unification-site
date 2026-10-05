@@ -33,6 +33,17 @@ export const YouTubeBlock: Block = {
 			},
 		},
 		{
+			name: "thumbnail",
+			type: "upload",
+			relationTo: "medias",
+			required: false,
+			label: { fr: "Vignette personnalisée" },
+			admin: {
+				description:
+					"Par défaut, la vignette est récupérée automatiquement depuis YouTube. Ajoutez une image ici uniquement pour la remplacer, par exemple si celle de YouTube est floue (format 16:9 recommandé).",
+			},
+		},
+		{
 			name: "sizeUnit",
 			type: "select",
 			required: true,
