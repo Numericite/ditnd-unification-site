@@ -287,6 +287,25 @@ const useStyles = tss.withName({ CardsCarousel }).create(() => ({
 		overscrollBehaviorX: "contain",
 		scrollSnapType: "x mandatory",
 		scrollPaddingInline: fr.spacing("1v"),
+		"&::-webkit-scrollbar": {
+			height: "0.5rem",
+		},
+		"&::-webkit-scrollbar-track": {
+			backgroundColor: fr.colors.decisions.background.contrast.grey.default,
+			borderRadius: "0.25rem",
+		},
+		"&::-webkit-scrollbar-thumb": {
+			backgroundColor: fr.colors.options.grey._625_425.default,
+			borderRadius: "0.25rem",
+		},
+		"&::-webkit-scrollbar-thumb:hover": {
+			backgroundColor: fr.colors.options.grey._425_625.default,
+		},
+		"@supports (scrollbar-width: thin) and (not selector(::-webkit-scrollbar))":
+			{
+				scrollbarWidth: "thin",
+				scrollbarColor: `${fr.colors.options.grey._625_425.default} ${fr.colors.decisions.background.contrast.grey.default}`,
+			},
 	},
 	item: {
 		display: "flex",
