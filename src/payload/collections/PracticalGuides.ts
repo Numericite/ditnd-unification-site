@@ -12,6 +12,18 @@ import { standardFields } from "../fields/standards";
 import { slugField } from "../fields/slug";
 import { generateEmbedding } from "../services/embedding";
 import { generateSimplifiedContent } from "../services/contentSimplification";
+import type { PracticalGuidesSelect } from "../payload-types";
+
+export const practicalGuideCardSelect = {
+	title: true,
+	simplifiedTitle: true,
+	description: true,
+	slug: true,
+	image: true,
+	conditions: true,
+	themes: true,
+	_status: true,
+} satisfies PracticalGuidesSelect<true>;
 
 function extractTextFromLexical(node: unknown): string {
 	if (!node || typeof node !== "object") return "";
@@ -119,6 +131,8 @@ const afterChangePracticalGuide: CollectionAfterChangeHook = async ({
 				collection: "practical-guides",
 				id: doc.id,
 				draft: false,
+				depth: 0,
+				select: { _status: true },
 			});
 			// A published version still exists — keep its vectors intact
 			if (publishedDoc?._status === "published") {
@@ -248,6 +262,7 @@ export const PracticalGuides: CollectionConfig = {
 		useAsTitle: "title",
 		group: { fr: "Contenus" },
 	},
+	defaultPopulate: practicalGuideCardSelect,
 	hooks: {
 		beforeDelete: [beforeDeletePracticalGuide],
 		afterChange: [afterChangePracticalGuide],

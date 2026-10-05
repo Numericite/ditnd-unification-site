@@ -98,6 +98,7 @@ export const getServerSideProps: GetServerSideProps<Props> = async (ctx) => {
 			limit: 1,
 			depth: 2,
 			draft: true,
+			joins: false,
 			where: { slug: { equals: slug } },
 		});
 

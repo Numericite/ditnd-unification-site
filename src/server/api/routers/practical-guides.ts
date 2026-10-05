@@ -29,6 +29,7 @@ import {
 	withoutAllConditions,
 } from "~/utils/conditions-filter";
 import { findDocsWithAllConditions } from "~/server/api/all-conditions";
+import { practicalGuideCardSelect } from "~/payload/collections/PracticalGuides";
 
 export interface AugmentedPracticalGuide extends PracticalGuide {
 	themes: Theme[];
@@ -56,6 +57,7 @@ export const practicalGuidesRouter = createTRPCRouter({
 				limit: 0,
 				depth: 2,
 				draft: false,
+				joins: false,
 				where: {
 					slug: {
 						equals: input.slug,
@@ -255,13 +257,7 @@ export const practicalGuidesRouter = createTRPCRouter({
 						depth: 1,
 						limit: VECTOR_SEARCH_CAP,
 						draft: false,
-						select: {
-							updatedAt: false,
-							createdAt: false,
-							html: false,
-							content: false,
-							courses: false,
-						},
+						select: practicalGuideCardSelect,
 						where: {
 							and: [...whereConditions, { _status: { equals: "published" } }],
 						},
@@ -297,13 +293,7 @@ export const practicalGuidesRouter = createTRPCRouter({
 					page,
 					limit,
 					draft: false,
-					select: {
-						updatedAt: false,
-						createdAt: false,
-						html: false,
-						content: false,
-						courses: false,
-					},
+					select: practicalGuideCardSelect,
 					where: {
 						and: [...whereConditions, { _status: { equals: "published" } }],
 					},
