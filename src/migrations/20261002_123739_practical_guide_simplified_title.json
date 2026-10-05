@@ -6443,6 +6443,85 @@
       "checkConstraints": {},
       "isRLSEnabled": false
     },
+    "public.cartographie": {
+      "name": "cartographie",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "serial",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "title": {
+          "name": "title",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "image_banner_id": {
+          "name": "image_banner_id",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "content": {
+          "name": "content",
+          "type": "jsonb",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "updated_at": {
+          "name": "updated_at",
+          "type": "timestamp(3) with time zone",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp(3) with time zone",
+          "primaryKey": false,
+          "notNull": false
+        }
+      },
+      "indexes": {
+        "cartographie_image_banner_idx": {
+          "name": "cartographie_image_banner_idx",
+          "columns": [
+            {
+              "expression": "image_banner_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        }
+      },
+      "foreignKeys": {
+        "cartographie_image_banner_id_medias_id_fk": {
+          "name": "cartographie_image_banner_id_medias_id_fk",
+          "tableFrom": "cartographie",
+          "tableTo": "medias",
+          "columnsFrom": [
+            "image_banner_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "set null",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
     "public.newsletter_socials": {
       "name": "newsletter_socials",
       "schema": "",
@@ -6790,6 +6869,6 @@
     "tables": {},
     "columns": {}
   },
-  "id": "a4dfe712-0455-4a85-8dfe-b957e4f2f5e5",
+  "id": "bedf8617-db25-4afe-ac88-ff497b0c31b3",
   "prevId": "00000000-0000-0000-0000-000000000000"
 }
