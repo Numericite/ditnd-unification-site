@@ -46,7 +46,6 @@ const hasAwsCreds = Boolean(
 import { CMSHome } from "./globals/cms/Home";
 import { CMSFooter } from "./globals/cms/Footer";
 import { CMSAbout } from "./globals/cms/About";
-import { CMSCartographie } from "./globals/cms/Cartographie";
 import { CMSNewsletter } from "./globals/cms/Newsletter";
 import { PracticalGuideViews } from "./collections/PracticalGuidesViews";
 import { SimplifiedContentGenerator } from "./globals/SimplifiedContentGenerator";
@@ -149,7 +148,6 @@ export default buildConfig({
 		CMSHome,
 		CMSFooter,
 		CMSAbout,
-		CMSCartographie,
 		CMSNewsletter,
 		SimplifiedContentGenerator,
 	],

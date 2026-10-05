@@ -38,6 +38,7 @@ import * as migration_20260923_153432_courses_conditions_has_many from './202609
 import * as migration_20260928_081234_courses_seo from './20260928_081234_courses_seo';
 import * as migration_20260928_150000_themes_is_hidden from './20260928_150000_themes_is_hidden';
 import * as migration_20261002_123739_practical_guide_simplified_title from './20261002_123739_practical_guide_simplified_title';
+import * as migration_20261002_134008_remove_cartographie_page from './20261002_134008_remove_cartographie_page';
 
 export const migrations = [
   {
@@ -238,6 +239,11 @@ export const migrations = [
   {
     up: migration_20261002_123739_practical_guide_simplified_title.up,
     down: migration_20261002_123739_practical_guide_simplified_title.down,
-    name: '20261002_123739_practical_guide_simplified_title'
+    name: '20261002_123739_practical_guide_simplified_title',
+  },
+  {
+    up: migration_20261002_134008_remove_cartographie_page.up,
+    down: migration_20261002_134008_remove_cartographie_page.down,
+    name: '20261002_134008_remove_cartographie_page'
   },
 ];

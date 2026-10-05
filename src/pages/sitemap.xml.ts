@@ -17,7 +17,6 @@ const STATIC_PATHS = [
 	"/a-propos/cra",
 	"/a-propos/gncra",
 	"/a-propos/glossaire",
-	"/cartographie",
 	"/contact-particuliers",
 	"/contact-pros-cra",
 	"/accessibilite",
