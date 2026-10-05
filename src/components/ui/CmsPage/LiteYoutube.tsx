@@ -1,6 +1,6 @@
 import { fr } from "@codegouvfr/react-dsfr";
 import { Placeholder } from "@codegouvfr/react-dsfr/consentManagement/Placeholder";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { tss } from "tss-react/dsfr";
 import { useConsent, useFinalityConsent } from "~/utils/consentManagement";
 
@@ -15,9 +15,14 @@ export default function LiteYouTube({
 }) {
 	const [isLoaded, setIsLoaded] = useState(false);
 	const [thumbnailIndex, setThumbnailIndex] = useState(0);
+	const iframeRef = useRef<HTMLIFrameElement>(null);
 	const { classes } = useStyles();
 	const { assumeConsent } = useConsent();
 	const hasYoutubeConsent = useFinalityConsent("youtube");
+
+	useEffect(() => {
+		if (isLoaded) iframeRef.current?.focus();
+	}, [isLoaded]);
 
 	if (!hasYoutubeConsent) {
 		return (
@@ -67,8 +72,9 @@ export default function LiteYouTube({
 	return (
 		<div className={classes.iframeWrapper}>
 			<iframe
+				ref={iframeRef}
 				title="Lecteur vidéo YouTube"
-				src={`https://www.youtube-nocookie.com/embed/${videoId}`}
+				src={`https://www.youtube-nocookie.com/embed/${videoId}?autoplay=1`}
 				allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture"
 				allowFullScreen
 			/>
