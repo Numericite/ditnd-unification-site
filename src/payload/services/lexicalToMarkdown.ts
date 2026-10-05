@@ -3,10 +3,11 @@
 // Used as INPUT for the simplification LLM: we strip the rich blocks
 // (CustomImage, Callout, YouTube, Citation, Highlight) but recurse into
 // their inner text so the model sees the full meaning of the source
-// fiche. Accordions are kept as <accordeon>/<titre> tags. The output uses
-// only the markdown constructs the simplification prompt allows (h2/h3,
-// paragraphs, lists, bold, links, accordion tags), so the LLM is
-// in-domain on both sides.
+// fiche. Accordions are kept as <accordeon>/<titre> tags. Apart from
+// tables, which the prompt asks the model to rewrite row by row, the
+// output uses only the markdown constructs the simplification prompt
+// allows (h2/h3, paragraphs, lists, bold, links, accordion tags), so the
+// LLM is in-domain on both sides.
 
 const FORMAT_BOLD = 1;
 
@@ -95,6 +96,8 @@ function blockNodeToMarkdown(node: unknown): string {
 		return text ? `> ${text}` : "";
 	}
 
+	if (node.type === "table") return tableToMarkdown(node);
+
 	if (node.type === "block") {
 		const fields = isObject(node.fields) ? node.fields : undefined;
 		if (!fields) return "";
@@ -151,6 +154,34 @@ function accordionToMarkdown(fields: LexicalNode): string {
 	});
 	if (parts.length === 0) return "";
 	return [`<accordeon mode="${mode}">`, ...parts, "</accordeon>"].join("\n\n");
+}
+
+// Tables are sent as markdown tables so the model sees which cells belong
+// to the same row: flattening them to loose paragraphs loses that pairing.
+function tableToMarkdown(node: LexicalNode): string {
+	const rows = (Array.isArray(node.children) ? node.children : [])
+		.filter(isObject)
+		.map((row) =>
+			(Array.isArray(row.children) ? row.children : []).map((cell) =>
+				blockNodeToMarkdown({
+					type: "root",
+					children: isObject(cell) ? cell.children : [],
+				})
+					.replace(/\s*\n+\s*/g, " ")
+					.replace(/\|/g, "\\|"),
+			),
+		)
+		.filter((cells) => cells.some(Boolean));
+	const [header, ...body] = rows;
+	if (!header) return "";
+	const width = Math.max(...rows.map((cells) => cells.length));
+	const toLine = (cells: string[]) =>
+		`| ${Array.from({ length: width }, (_, i) => cells[i] ?? "").join(" | ")} |`;
+	return [
+		toLine(header),
+		toLine(Array(width).fill("---")),
+		...body.map(toLine),
+	].join("\n");
 }
 
 export function lexicalToMarkdown(content: unknown): string {
