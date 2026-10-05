@@ -62,6 +62,7 @@ export default function CardsDisplayGroup({
 							>
 								<CardDisplay
 									{...guide}
+									title={guide.simplifiedTitle || guide.title}
 									imageUrl={guide.image?.url ?? undefined}
 									imageAlt=""
 									conditions={guide.conditions ?? []}
