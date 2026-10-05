@@ -469,6 +469,8 @@ export const youtubeConverter: JSXConverter<SerializedBlockNode> = ({
 
 export const relationshipConverter: JSXConverters<DefaultNodeTypes>["relationship"] =
 	({ node }) => {
+		if (!node.value || typeof node.value !== "object") return null;
+
 		if (node.relationTo === "practical-guides") {
 			const value = node.value as AugmentedPracticalGuide;
 

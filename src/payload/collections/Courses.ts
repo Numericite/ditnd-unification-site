@@ -7,6 +7,7 @@ import { sql } from "@payloadcms/db-postgres";
 import { standardFields } from "../fields/standards";
 import { slugField } from "../fields/slug";
 import { generateEmbedding } from "../services/embedding";
+import type { CoursesSelect } from "../payload-types";
 
 const afterChangeCourse: CollectionAfterChangeHook = async ({ doc, req }) => {
 	if (!req?.payload?.db) return doc;
@@ -98,12 +99,24 @@ const afterDeleteCourse: CollectionAfterDeleteHook = async ({ id, req }) => {
 	}
 };
 
+export const courseCardSelect = {
+	title: true,
+	description: true,
+	slug: true,
+	link: true,
+	type: true,
+	theme: true,
+	conditions: true,
+	image: true,
+} satisfies CoursesSelect<true>;
+
 export const Courses: CollectionConfig = {
 	slug: "courses",
 	admin: {
 		useAsTitle: "title",
 		group: { fr: "Contenus" },
 	},
+	defaultPopulate: courseCardSelect,
 	hooks: {
 		afterChange: [afterChangeCourse],
 		afterDelete: [afterDeleteCourse],

@@ -5,6 +5,7 @@ import { generateEmbedding } from "~/payload/services/embedding";
 import type { AugmentedPracticalGuide } from "./practical-guides";
 import type { AugmentedCourse } from "./courses";
 import type { Glossary } from "~/payload/payload-types";
+import { practicalGuideCardSelect } from "~/payload/collections/PracticalGuides";
 
 export type GlossaryMatch = Pick<
 	Glossary,
@@ -161,13 +162,7 @@ export const searchRouter = createTRPCRouter({
 							depth: 1,
 							limit: 0,
 							draft: false,
-							select: {
-								updatedAt: false,
-								createdAt: false,
-								html: false,
-								content: false,
-								courses: false,
-							},
+							select: practicalGuideCardSelect,
 							where: {
 								id: { in: guideIds.map(String) },
 								_status: { equals: "published" },

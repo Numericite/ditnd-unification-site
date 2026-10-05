@@ -12,6 +12,7 @@ import { expandQuery, type RagSource } from "~/payload/services/queryExpansion";
 import { rerankCandidates } from "~/payload/services/rerank";
 import { sql } from "@payloadcms/db-postgres";
 import type { Condition } from "~/payload/payload-types";
+import { practicalGuideCardSelect } from "~/payload/collections/PracticalGuides";
 import type { AugmentedPracticalGuide } from "./practical-guides";
 import type { AugmentedCourse } from "./courses";
 
@@ -255,6 +256,7 @@ export const aiRouter = createTRPCRouter({
 								_status: { equals: "published" },
 							},
 							depth: 1,
+							select: practicalGuideCardSelect,
 						})
 					: Promise.resolve({ docs: [] }),
 				surfacedCourseIds.length > 0
