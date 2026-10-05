@@ -188,16 +188,15 @@ const internalDocToHref = (doc: {
 	value: unknown;
 }): string | undefined => {
 	const value = doc.value;
-	const slug =
-		value && typeof value === "object" && "slug" in value
-			? (value as { slug?: string | null }).slug
-			: undefined;
-
-	if (!slug) return undefined;
+	if (!value || typeof value !== "object") return undefined;
 
 	switch (doc.relationTo) {
-		case "practical-guides":
-			return `/fiches-pratiques/${slug}`;
+		case "practical-guides": {
+			const { slug } = value as { slug?: string | null };
+			return slug ? `/fiches-pratiques/${slug}` : undefined;
+		}
+		case "medias":
+			return (value as { url?: string | null }).url ?? undefined;
 		default:
 			return undefined;
 	}
