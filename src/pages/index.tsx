@@ -11,7 +11,8 @@ import { homeCMSStore, personStore } from "~/state/store";
 import { personsAndProTiles } from "~/utils/pictograms";
 import Image from "next/image";
 import PageContent from "~/components/ui/PageContent";
-// import NewsletterFollow from "~/components/ui/NewsletterFollow";
+import NewsletterFollow from "~/components/ui/NewsletterFollow";
+import { NEWSLETTER_ENABLED } from "~/utils/newsletter";
 import type { GetServerSideProps } from "next";
 import { createCaller } from "~/server/api/root";
 import { createTRPCContext } from "~/server/api/trpc";
@@ -154,7 +155,7 @@ export default function Home({ mostViewedGuides }: Props) {
 						</div>
 					</div>
 				</div>
-				{/* <NewsletterFollow /> */}
+				{NEWSLETTER_ENABLED && <NewsletterFollow />}
 			</PageContent>
 		</>
 	);

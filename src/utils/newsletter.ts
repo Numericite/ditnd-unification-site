@@ -12,3 +12,6 @@ export const newsletterSubscribeSchema = z.object({
 export type NewsletterSubscribeInput = z.infer<
 	typeof newsletterSubscribeSchema
 >;
+
+export const NEWSLETTER_ENABLED =
+	process.env.NEXT_PUBLIC_NEWSLETTER_ENABLED === "true";

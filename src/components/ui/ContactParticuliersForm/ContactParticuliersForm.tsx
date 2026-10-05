@@ -11,6 +11,7 @@ import { tss } from "tss-react/dsfr";
 import Honeypot from "~/components/ui/Honeypot";
 import { api } from "~/utils/api";
 import { zodValidator } from "~/utils/contactForm";
+import { NEWSLETTER_ENABLED } from "~/utils/newsletter";
 import {
 	AGE_RANGE_VALUES,
 	type AgeRange,
@@ -409,23 +410,25 @@ export default function ContactParticuliersForm() {
 				)}
 			</form.Field>
 
-			{/* <form.Field name="newsletter">
-				{(field) => (
-					<Checkbox
-						options={[
-							{
-								label:
-									"J'accepte de recevoir la newsletter Maison de l'autisme.",
-								nativeInputProps: {
-									name: field.name,
-									checked: field.state.value,
-									onChange: (e) => field.handleChange(e.target.checked),
+			{NEWSLETTER_ENABLED && (
+				<form.Field name="newsletter">
+					{(field) => (
+						<Checkbox
+							options={[
+								{
+									label:
+										"J'accepte de recevoir la newsletter Maison de l'autisme.",
+									nativeInputProps: {
+										name: field.name,
+										checked: field.state.value,
+										onChange: (e) => field.handleChange(e.target.checked),
+									},
 								},
-							},
-						]}
-					/>
-				)}
-			</form.Field> */}
+							]}
+						/>
+					)}
+				</form.Field>
+			)}
 
 			<form.Field name="website">
 				{(field) => (
