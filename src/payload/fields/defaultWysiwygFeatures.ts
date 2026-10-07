@@ -7,6 +7,7 @@ import {
 	type FeatureProviderServer,
 } from "@payloadcms/richtext-lexical";
 import type { Block } from "payload";
+import { DuplicateBlockFeature } from "../features/duplicateBlock/server";
 import { LangBlock } from "../plugins/blocks/LangBlock";
 
 export const defaultWysiwygFeatures = ({
@@ -25,6 +26,7 @@ export const defaultWysiwygFeatures = ({
 		),
 		EXPERIMENTAL_TableFeature(),
 		FixedToolbarFeature(),
+		DuplicateBlockFeature(),
 		HeadingFeature({
 			enabledHeadingSizes: ["h2", "h3", "h4", "h5", "h6"],
 		}),

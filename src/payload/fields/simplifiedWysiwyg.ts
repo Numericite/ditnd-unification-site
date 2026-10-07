@@ -6,6 +6,7 @@ import {
 	lexicalEditor,
 } from "@payloadcms/richtext-lexical";
 import type { Block } from "payload";
+import { DuplicateBlockFeature } from "../features/duplicateBlock/server";
 
 const restrictedFeatures = (
 	defaultFeatures: FeatureProviderServer[],
@@ -31,6 +32,7 @@ const restrictedFeatures = (
 			].includes(feature.key),
 	),
 	HeadingFeature({ enabledHeadingSizes: ["h2", "h3"] }),
+	DuplicateBlockFeature(),
 	...(fixedToolbar ? [FixedToolbarFeature()] : []),
 ];
 

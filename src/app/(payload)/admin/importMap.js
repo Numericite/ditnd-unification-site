@@ -9,6 +9,7 @@ import { default as default_ab41af9dce3f51cc5048db850825e550 } from "../../../pa
 import { default as default_e7e802604829a14677cb1378a9c1f3c9 } from "../../../payload/components/YouTubeEmbed";
 import { RelationshipFeatureClient as RelationshipFeatureClient_e70f5e05f09f93e00b997edb1ef0c864 } from "@payloadcms/richtext-lexical/client";
 import { HeadingFeatureClient as HeadingFeatureClient_e70f5e05f09f93e00b997edb1ef0c864 } from "@payloadcms/richtext-lexical/client";
+import { DuplicateBlockFeatureClient as DuplicateBlockFeatureClient_2762ea80d0281c5b68b0ec4df5f37d55 } from "../../../payload/features/duplicateBlock/client";
 import { FixedToolbarFeatureClient as FixedToolbarFeatureClient_e70f5e05f09f93e00b997edb1ef0c864 } from "@payloadcms/richtext-lexical/client";
 import { TableFeatureClient as TableFeatureClient_e70f5e05f09f93e00b997edb1ef0c864 } from "@payloadcms/richtext-lexical/client";
 import { BoldFeatureClient as BoldFeatureClient_e70f5e05f09f93e00b997edb1ef0c864 } from "@payloadcms/richtext-lexical/client";
@@ -70,6 +71,8 @@ export const importMap = {
 		RelationshipFeatureClient_e70f5e05f09f93e00b997edb1ef0c864,
 	"@payloadcms/richtext-lexical/client#HeadingFeatureClient":
 		HeadingFeatureClient_e70f5e05f09f93e00b997edb1ef0c864,
+	"./features/duplicateBlock/client#DuplicateBlockFeatureClient":
+		DuplicateBlockFeatureClient_2762ea80d0281c5b68b0ec4df5f37d55,
 	"@payloadcms/richtext-lexical/client#FixedToolbarFeatureClient":
 		FixedToolbarFeatureClient_e70f5e05f09f93e00b997edb1ef0c864,
 	"@payloadcms/richtext-lexical/client#TableFeatureClient":
