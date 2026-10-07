@@ -102,6 +102,7 @@ function blockNodeToMarkdown(node: unknown): string {
 		const fields = isObject(node.fields) ? node.fields : undefined;
 		if (!fields) return "";
 		if (fields.blockType === "accordion") return accordionToMarkdown(fields);
+		if (fields.blockType === "carousel") return "";
 		// Other custom Payload blocks (Callout, Citation, CustomImage,
 		// YouTube, Highlight…): we don't preserve the block container, but
 		// we recurse into its fields to recover the inner text and rich

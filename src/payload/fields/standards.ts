@@ -7,6 +7,7 @@ import { CustomImageBlock } from "../plugins/blocks/CustomImageBlock";
 import { YouTubeBlock } from "../plugins/blocks/YouTubeBlock";
 import { HighlightBlock } from "../plugins/blocks/HighlightBlock";
 import { MapBlock } from "../plugins/blocks/MapBlock";
+import { CarouselBlock } from "../plugins/blocks/CarouselBlock";
 import { defaultWysiwygFeatures } from "./defaultWysiwygFeatures";
 
 export const standardFields = {
@@ -86,6 +87,7 @@ export const standardFields = {
 						HighlightBlock,
 						CalloutBlock,
 						MapBlock,
+						CarouselBlock,
 					],
 				}),
 		}),

@@ -50,7 +50,7 @@ const useStyles = tss.withName({ WysiwygContent }).create(() => ({
 			fontSize: "1rem",
 			lineHeight: "1.5rem",
 		},
-		"ul:not(.fr-quote__source)": {
+		"ul:not(.fr-quote__source, [data-carousel])": {
 			paddingInlineStart: "2.5rem",
 			marginBottom: "1.5rem",
 			"li:has(ul)": {
