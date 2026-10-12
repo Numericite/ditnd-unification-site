@@ -92,6 +92,10 @@ const useStyles = tss.withName({ LiteYouTube }).create(() => ({
 			outline: `2px solid ${fr.colors.decisions.border.plain.info.default}`,
 			outlineOffset: "2px",
 		},
+		"&:hover i, &:focus-visible i": {
+			backgroundColor:
+				fr.colors.decisions.background.actionHigh.blueFrance.hover,
+		},
 	},
 	ytThumbnail: {
 		position: "relative",
@@ -105,6 +109,12 @@ const useStyles = tss.withName({ LiteYouTube }).create(() => ({
 		"& i": {
 			position: "relative",
 			zIndex: 1,
+			display: "flex",
+			padding: "clamp(12px, 4vw, 24px)",
+			borderRadius: "50%",
+			backgroundColor:
+				fr.colors.decisions.background.actionHigh.blueFrance.default,
+			boxShadow: "0 0 0 2px white",
 		},
 		"& i:before": {
 			"--icon-size": "clamp(24px, 10vw, 64px)",
