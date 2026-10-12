@@ -77,8 +77,9 @@ export const practicalGuidesRouter = createTRPCRouter({
 							"No guides found on practicalGuidesRouter - getBySlug",
 						);
 					}
+					const { relatedPracticalGuides: _, ...guideWithoutJoin } = guide;
 					return {
-						...guide,
+						...guideWithoutJoin,
 						themes: await resolveRelations(guide.themes, "themes"),
 						courses: await resolveRelations(guide.courses, "courses"),
 						"practical-guides": (
