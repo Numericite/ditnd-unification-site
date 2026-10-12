@@ -69,7 +69,7 @@ export default function WysiwygAccordionGroup({
 				<div className={fr.cx("fr-mb-1w")} style={{ textAlign: "right" }}>
 					<Button
 						size="small"
-						priority="tertiary no outline"
+						priority="primary"
 						iconId={
 							allExpanded
 								? "fr-icon-arrow-up-s-line"

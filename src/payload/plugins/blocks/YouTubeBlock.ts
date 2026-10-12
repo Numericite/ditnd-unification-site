@@ -44,6 +44,16 @@ export const YouTubeBlock: Block = {
 			},
 		},
 		{
+			name: "transcription",
+			type: "textarea",
+			required: false,
+			label: { fr: "Transcription" },
+			admin: {
+				description:
+					"Texte de la vidéo (paroles, descriptions des éléments visuels importants). Si renseigné, un bouton « Transcription » s'affiche sous la vidéo.",
+			},
+		},
+		{
 			name: "sizeUnit",
 			type: "select",
 			required: true,

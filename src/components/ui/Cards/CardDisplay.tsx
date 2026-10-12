@@ -19,6 +19,7 @@ type Props = {
 	kind?: "guides" | "courses";
 	redirect: string;
 	titleAs?: "h2" | "h3" | "h4" | "h5" | "h6" | undefined;
+	horizontal?: boolean;
 };
 
 export default function CardDisplay({
@@ -33,6 +34,7 @@ export default function CardDisplay({
 	kind = "guides",
 	redirect = "/",
 	titleAs = "h4",
+	horizontal = false,
 }: Props) {
 	const { classes, cx } = useStyles();
 
@@ -64,6 +66,7 @@ export default function CardDisplay({
 				) : null
 			}
 			border
+			{...(horizontal ? { horizontal: true } : { horizontal: false })}
 			desc={description ? shortenDescription(description) : undefined}
 			{...imgProps}
 			footer={

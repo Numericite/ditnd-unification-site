@@ -11,7 +11,16 @@ export default async function homeTask(payload: BasePayload) {
 					"La Maison de l'autisme propose de l'information fiable, de l'écoute, des conseils et des temps d'échange autour de l'autisme et des troubles du neurodéveloppement.",
 			},
 			tiles: {
-				description: "Découvrez les parcours personnalisés selon votre profil.",
+				persona: {
+					title: "Qui êtes vous?",
+					description:
+						"Personne concernée par un trouble du neurodéveloppement, proche ou un professionnel, découvrez les parcours personnalisés selon votre profil.",
+				},
+				condition: {
+					title: "Sur quel trouble voulez-vous vous informer ?",
+					description:
+						"Sélectionnez un trouble pour accéder aux informations et ressources adaptées.",
+				},
 			},
 			mostViewedGuides: {
 				title: "Fiches pratiques les plus lues",

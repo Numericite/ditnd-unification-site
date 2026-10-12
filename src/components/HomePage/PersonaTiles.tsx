@@ -5,7 +5,7 @@ import { PersonaGrid } from "../ui/HomePage/PersonaGrid";
 import Tag from "@codegouvfr/react-dsfr/Tag";
 import { useRouter } from "next/router";
 import { tss } from "tss-react/dsfr";
-import type { Persona } from "~/payload/payload-types";
+import type { Home, Persona } from "~/payload/payload-types";
 import type { PictogramName } from "~/utils/pictograms";
 import Breadcrumb from "@codegouvfr/react-dsfr/Breadcrumb";
 
@@ -38,13 +38,17 @@ export type TagItem = {
 // 	display: "condition",
 // };
 
-const titleByDisplay: Record<PersonaTypes, string> = {
-	default: "Qui êtes vous?",
-	person: "Sur quel trouble voulez-vous vous informer ?",
-	professional: "Quel type de professionnel êtes-vous ?",
-	afterProfessional: "Sur quel trouble voulez-vous vous informer ?",
-	condition: "",
-};
+type SectionContent = { title: string; description?: string };
+
+const getContentByDisplay = (
+	tiles: Home["tiles"],
+): Record<PersonaTypes, SectionContent> => ({
+	default: tiles.persona,
+	person: tiles.condition,
+	professional: { title: "Quel type de professionnel êtes-vous ?" },
+	afterProfessional: tiles.condition,
+	condition: { title: "" },
+});
 
 type Props = {
 	tiles: PersonaTile[];
@@ -69,9 +73,6 @@ export const PersonaTiles = ({
 		defaultDisplay || "default",
 	);
 	const [tags, setTags] = useState<TagItem[]>(defaultTags || []);
-	const [subTitle, setSubTitle] = useState(
-		titleByDisplay[defaultDisplay || "default"],
-	);
 
 	const pendingFocusToTag = useRef(false);
 	const tagsContainerRef = useRef<HTMLDivElement>(null);
@@ -110,6 +111,10 @@ export const PersonaTiles = ({
 
 	const homeCMS = homeCMSStore.get();
 
+	const { title: subTitle, description } = getContentByDisplay(homeCMS.tiles)[
+		display
+	];
+
 	// TODO: Réactiver la tuile "Un trouble que je ne sais pas identifier"
 	// const tdhTiles = [unknownTile, ...tdh];
 	const tdhTiles = [...tdh];
@@ -130,17 +135,14 @@ export const PersonaTiles = ({
 		person: (tile) => {
 			handleClick(tile, "default");
 			setDisplay("person");
-			setSubTitle(titleByDisplay.person);
 		},
 		professional: (tile) => {
 			// TODO: Réactiver le sous-niveau spécifique aux professionnels
 			// quand les sous-groupes pros seront disponibles côté back-office.
 			// handleClick(tile, "default");
 			// setDisplay("professional");
-			// setSubTitle(titleByDisplay.professional);
 			handleClick(tile, "default");
 			setDisplay("person");
-			setSubTitle(titleByDisplay.person);
 		},
 		afterProfessional: (tile) => {
 			router.push(`/parcours/${tile.slug}`);
@@ -163,7 +165,6 @@ export const PersonaTiles = ({
 		if (isDismissible) {
 			pendingFocusToTileSlug.current = tag.slug;
 			setDisplay(tag.display);
-			setSubTitle(titleByDisplay[tag.display]);
 			tag.display === "default"
 				? setTags([])
 				: setTags([...tags].filter((t) => t.slug !== tag.slug));
@@ -178,7 +179,6 @@ export const PersonaTiles = ({
 		});
 
 		setDisplay(tag.display);
-		setSubTitle(titleByDisplay[tag.display]);
 	}
 
 	const renderContent = () => {
@@ -267,12 +267,14 @@ export const PersonaTiles = ({
 				<legend className={cx(classes.legend)}>
 					<h2>{subTitle}</h2>
 				</legend>
-				<div
-					className={fr.cx("fr-text--sm", "fr-mb-8v")}
-					style={{ whiteSpace: "pre-line" }}
-				>
-					{homeCMS.tiles.description}
-				</div>
+				{description && (
+					<div
+						className={fr.cx("fr-text--sm", "fr-mb-8v")}
+						style={{ whiteSpace: "pre-line" }}
+					>
+						{description}
+					</div>
+				)}
 
 				{!hideTags && (
 					<div

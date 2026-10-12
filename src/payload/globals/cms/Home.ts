@@ -26,7 +26,20 @@ export const CMSHome: GlobalConfig = {
 				{
 					label: "Persona",
 					name: "tiles",
-					fields: [standardFields.longDescription],
+					fields: [
+						{
+							name: "persona",
+							label: "Choix du profil",
+							type: "group",
+							fields: [standardFields.title, standardFields.longDescription],
+						},
+						{
+							name: "condition",
+							label: "Choix du trouble",
+							type: "group",
+							fields: [standardFields.title, standardFields.longDescription],
+						},
+					],
 				},
 				{
 					label: "Fiches pratiques les plus lues",
