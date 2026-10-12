@@ -76,5 +76,15 @@ export const CustomImageBlock: Block = {
 				},
 			},
 		},
+		{
+			name: "transcription",
+			type: "textarea",
+			required: false,
+			label: { fr: "Transcription" },
+			admin: {
+				description:
+					"Description détaillée du contenu de l'image (schéma, infographie, texte présent dans l'image). Si renseignée, un bouton « Transcription » s'affiche sous l'image.",
+			},
+		},
 	],
 };
