@@ -13,577 +13,552 @@
  * via the `definition` "supportedTimezones".
  */
 export type SupportedTimezones =
-	| "Pacific/Midway"
-	| "Pacific/Niue"
-	| "Pacific/Honolulu"
-	| "Pacific/Rarotonga"
-	| "America/Anchorage"
-	| "Pacific/Gambier"
-	| "America/Los_Angeles"
-	| "America/Tijuana"
-	| "America/Denver"
-	| "America/Phoenix"
-	| "America/Chicago"
-	| "America/Guatemala"
-	| "America/New_York"
-	| "America/Bogota"
-	| "America/Caracas"
-	| "America/Santiago"
-	| "America/Buenos_Aires"
-	| "America/Sao_Paulo"
-	| "Atlantic/South_Georgia"
-	| "Atlantic/Azores"
-	| "Atlantic/Cape_Verde"
-	| "Europe/London"
-	| "Europe/Berlin"
-	| "Africa/Lagos"
-	| "Europe/Athens"
-	| "Africa/Cairo"
-	| "Europe/Moscow"
-	| "Asia/Riyadh"
-	| "Asia/Dubai"
-	| "Asia/Baku"
-	| "Asia/Karachi"
-	| "Asia/Tashkent"
-	| "Asia/Calcutta"
-	| "Asia/Dhaka"
-	| "Asia/Almaty"
-	| "Asia/Jakarta"
-	| "Asia/Bangkok"
-	| "Asia/Shanghai"
-	| "Asia/Singapore"
-	| "Asia/Tokyo"
-	| "Asia/Seoul"
-	| "Australia/Brisbane"
-	| "Australia/Sydney"
-	| "Pacific/Guam"
-	| "Pacific/Noumea"
-	| "Pacific/Auckland"
-	| "Pacific/Fiji";
+  | 'Pacific/Midway'
+  | 'Pacific/Niue'
+  | 'Pacific/Honolulu'
+  | 'Pacific/Rarotonga'
+  | 'America/Anchorage'
+  | 'Pacific/Gambier'
+  | 'America/Los_Angeles'
+  | 'America/Tijuana'
+  | 'America/Denver'
+  | 'America/Phoenix'
+  | 'America/Chicago'
+  | 'America/Guatemala'
+  | 'America/New_York'
+  | 'America/Bogota'
+  | 'America/Caracas'
+  | 'America/Santiago'
+  | 'America/Buenos_Aires'
+  | 'America/Sao_Paulo'
+  | 'Atlantic/South_Georgia'
+  | 'Atlantic/Azores'
+  | 'Atlantic/Cape_Verde'
+  | 'Europe/London'
+  | 'Europe/Berlin'
+  | 'Africa/Lagos'
+  | 'Europe/Athens'
+  | 'Africa/Cairo'
+  | 'Europe/Moscow'
+  | 'Asia/Riyadh'
+  | 'Asia/Dubai'
+  | 'Asia/Baku'
+  | 'Asia/Karachi'
+  | 'Asia/Tashkent'
+  | 'Asia/Calcutta'
+  | 'Asia/Dhaka'
+  | 'Asia/Almaty'
+  | 'Asia/Jakarta'
+  | 'Asia/Bangkok'
+  | 'Asia/Shanghai'
+  | 'Asia/Singapore'
+  | 'Asia/Tokyo'
+  | 'Asia/Seoul'
+  | 'Australia/Brisbane'
+  | 'Australia/Sydney'
+  | 'Pacific/Guam'
+  | 'Pacific/Noumea'
+  | 'Pacific/Auckland'
+  | 'Pacific/Fiji';
 
 export interface Config {
-	auth: {
-		users: UserAuthOperations;
-	};
-	blocks: {};
-	collections: {
-		medias: Media;
-		"practical-guides": PracticalGuide;
-		courses: Course;
-		journeys: Journey;
-		"practical-guide-views": PracticalGuideView;
-		glossary: Glossary;
-		"glossary-categories": GlossaryCategory;
-		"map-categories": MapCategory;
-		"map-markers": MapMarker;
-		maps: Map;
-		personas: Persona;
-		conditions: Condition;
-		themes: Theme;
-		users: User;
-		redirects: Redirect;
-		"search-results": SearchResult;
-		"payload-kv": PayloadKv;
-		"payload-folders": FolderInterface;
-		"payload-locked-documents": PayloadLockedDocument;
-		"payload-preferences": PayloadPreference;
-		"payload-migrations": PayloadMigration;
-	};
-	collectionsJoins: {
-		"practical-guides": {
-			relatedPracticalGuides: "practical-guides";
-		};
-		personas: {
-			relatedPracticalGuides: "practical-guides";
-			relatedCourses: "courses";
-			relatedJourneys: "journeys";
-		};
-		conditions: {
-			relatedPracticalGuides: "practical-guides";
-			relatedCourses: "courses";
-		};
-		themes: {
-			relatedPracticalGuides: "practical-guides";
-			relatedCourses: "courses";
-		};
-		"payload-folders": {
-			documentsAndFolders: "payload-folders" | "medias";
-		};
-	};
-	collectionsSelect: {
-		medias: MediasSelect<false> | MediasSelect<true>;
-		"practical-guides":
-			| PracticalGuidesSelect<false>
-			| PracticalGuidesSelect<true>;
-		courses: CoursesSelect<false> | CoursesSelect<true>;
-		journeys: JourneysSelect<false> | JourneysSelect<true>;
-		"practical-guide-views":
-			| PracticalGuideViewsSelect<false>
-			| PracticalGuideViewsSelect<true>;
-		glossary: GlossarySelect<false> | GlossarySelect<true>;
-		"glossary-categories":
-			| GlossaryCategoriesSelect<false>
-			| GlossaryCategoriesSelect<true>;
-		"map-categories": MapCategoriesSelect<false> | MapCategoriesSelect<true>;
-		"map-markers": MapMarkersSelect<false> | MapMarkersSelect<true>;
-		maps: MapsSelect<false> | MapsSelect<true>;
-		personas: PersonasSelect<false> | PersonasSelect<true>;
-		conditions: ConditionsSelect<false> | ConditionsSelect<true>;
-		themes: ThemesSelect<false> | ThemesSelect<true>;
-		users: UsersSelect<false> | UsersSelect<true>;
-		redirects: RedirectsSelect<false> | RedirectsSelect<true>;
-		"search-results": SearchResultsSelect<false> | SearchResultsSelect<true>;
-		"payload-kv": PayloadKvSelect<false> | PayloadKvSelect<true>;
-		"payload-folders": PayloadFoldersSelect<false> | PayloadFoldersSelect<true>;
-		"payload-locked-documents":
-			| PayloadLockedDocumentsSelect<false>
-			| PayloadLockedDocumentsSelect<true>;
-		"payload-preferences":
-			| PayloadPreferencesSelect<false>
-			| PayloadPreferencesSelect<true>;
-		"payload-migrations":
-			| PayloadMigrationsSelect<false>
-			| PayloadMigrationsSelect<true>;
-	};
-	db: {
-		defaultIDType: number;
-	};
-	fallbackLocale: null;
-	globals: {
-		home: Home;
-		footer: Footer;
-		about: About;
-		cartographie: Cartographie;
-		newsletter: Newsletter;
-		"simplified-content-generator": SimplifiedContentGenerator;
-	};
-	globalsSelect: {
-		home: HomeSelect<false> | HomeSelect<true>;
-		footer: FooterSelect<false> | FooterSelect<true>;
-		about: AboutSelect<false> | AboutSelect<true>;
-		cartographie: CartographieSelect<false> | CartographieSelect<true>;
-		newsletter: NewsletterSelect<false> | NewsletterSelect<true>;
-		"simplified-content-generator":
-			| SimplifiedContentGeneratorSelect<false>
-			| SimplifiedContentGeneratorSelect<true>;
-	};
-	locale: null;
-	widgets: {
-		collections: CollectionsWidget;
-	};
-	user: User;
-	jobs: {
-		tasks: unknown;
-		workflows: unknown;
-	};
+  auth: {
+    users: UserAuthOperations;
+  };
+  blocks: {};
+  collections: {
+    medias: Media;
+    'practical-guides': PracticalGuide;
+    courses: Course;
+    journeys: Journey;
+    'practical-guide-views': PracticalGuideView;
+    glossary: Glossary;
+    'glossary-categories': GlossaryCategory;
+    'map-categories': MapCategory;
+    'map-markers': MapMarker;
+    maps: Map;
+    personas: Persona;
+    conditions: Condition;
+    themes: Theme;
+    users: User;
+    redirects: Redirect;
+    'search-results': SearchResult;
+    'payload-kv': PayloadKv;
+    'payload-folders': FolderInterface;
+    'payload-locked-documents': PayloadLockedDocument;
+    'payload-preferences': PayloadPreference;
+    'payload-migrations': PayloadMigration;
+  };
+  collectionsJoins: {
+    'practical-guides': {
+      relatedPracticalGuides: 'practical-guides';
+    };
+    personas: {
+      relatedPracticalGuides: 'practical-guides';
+      relatedCourses: 'courses';
+      relatedJourneys: 'journeys';
+    };
+    conditions: {
+      relatedPracticalGuides: 'practical-guides';
+      relatedCourses: 'courses';
+    };
+    themes: {
+      relatedPracticalGuides: 'practical-guides';
+      relatedCourses: 'courses';
+    };
+    'payload-folders': {
+      documentsAndFolders: 'payload-folders' | 'medias';
+    };
+  };
+  collectionsSelect: {
+    medias: MediasSelect<false> | MediasSelect<true>;
+    'practical-guides': PracticalGuidesSelect<false> | PracticalGuidesSelect<true>;
+    courses: CoursesSelect<false> | CoursesSelect<true>;
+    journeys: JourneysSelect<false> | JourneysSelect<true>;
+    'practical-guide-views': PracticalGuideViewsSelect<false> | PracticalGuideViewsSelect<true>;
+    glossary: GlossarySelect<false> | GlossarySelect<true>;
+    'glossary-categories': GlossaryCategoriesSelect<false> | GlossaryCategoriesSelect<true>;
+    'map-categories': MapCategoriesSelect<false> | MapCategoriesSelect<true>;
+    'map-markers': MapMarkersSelect<false> | MapMarkersSelect<true>;
+    maps: MapsSelect<false> | MapsSelect<true>;
+    personas: PersonasSelect<false> | PersonasSelect<true>;
+    conditions: ConditionsSelect<false> | ConditionsSelect<true>;
+    themes: ThemesSelect<false> | ThemesSelect<true>;
+    users: UsersSelect<false> | UsersSelect<true>;
+    redirects: RedirectsSelect<false> | RedirectsSelect<true>;
+    'search-results': SearchResultsSelect<false> | SearchResultsSelect<true>;
+    'payload-kv': PayloadKvSelect<false> | PayloadKvSelect<true>;
+    'payload-folders': PayloadFoldersSelect<false> | PayloadFoldersSelect<true>;
+    'payload-locked-documents': PayloadLockedDocumentsSelect<false> | PayloadLockedDocumentsSelect<true>;
+    'payload-preferences': PayloadPreferencesSelect<false> | PayloadPreferencesSelect<true>;
+    'payload-migrations': PayloadMigrationsSelect<false> | PayloadMigrationsSelect<true>;
+  };
+  db: {
+    defaultIDType: number;
+  };
+  fallbackLocale: null;
+  globals: {
+    home: Home;
+    footer: Footer;
+    about: About;
+    newsletter: Newsletter;
+    'simplified-content-generator': SimplifiedContentGenerator;
+  };
+  globalsSelect: {
+    home: HomeSelect<false> | HomeSelect<true>;
+    footer: FooterSelect<false> | FooterSelect<true>;
+    about: AboutSelect<false> | AboutSelect<true>;
+    newsletter: NewsletterSelect<false> | NewsletterSelect<true>;
+    'simplified-content-generator': SimplifiedContentGeneratorSelect<false> | SimplifiedContentGeneratorSelect<true>;
+  };
+  locale: null;
+  widgets: {
+    collections: CollectionsWidget;
+  };
+  user: User;
+  jobs: {
+    tasks: unknown;
+    workflows: unknown;
+  };
 }
 export interface UserAuthOperations {
-	forgotPassword: {
-		email: string;
-		password: string;
-	};
-	login: {
-		email: string;
-		password: string;
-	};
-	registerFirstUser: {
-		email: string;
-		password: string;
-	};
-	unlock: {
-		email: string;
-		password: string;
-	};
+  forgotPassword: {
+    email: string;
+    password: string;
+  };
+  login: {
+    email: string;
+    password: string;
+  };
+  registerFirstUser: {
+    email: string;
+    password: string;
+  };
+  unlock: {
+    email: string;
+    password: string;
+  };
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "medias".
  */
 export interface Media {
-	id: number;
-	alt: string;
-	folder?: (number | null) | FolderInterface;
-	updatedAt: string;
-	createdAt: string;
-	url?: string | null;
-	thumbnailURL?: string | null;
-	filename?: string | null;
-	mimeType?: string | null;
-	filesize?: number | null;
-	width?: number | null;
-	height?: number | null;
-	focalX?: number | null;
-	focalY?: number | null;
-	sizes?: {
-		thumbnail?: {
-			url?: string | null;
-			width?: number | null;
-			height?: number | null;
-			mimeType?: string | null;
-			filesize?: number | null;
-			filename?: string | null;
-		};
-		square?: {
-			url?: string | null;
-			width?: number | null;
-			height?: number | null;
-			mimeType?: string | null;
-			filesize?: number | null;
-			filename?: string | null;
-		};
-		small?: {
-			url?: string | null;
-			width?: number | null;
-			height?: number | null;
-			mimeType?: string | null;
-			filesize?: number | null;
-			filename?: string | null;
-		};
-		medium?: {
-			url?: string | null;
-			width?: number | null;
-			height?: number | null;
-			mimeType?: string | null;
-			filesize?: number | null;
-			filename?: string | null;
-		};
-		large?: {
-			url?: string | null;
-			width?: number | null;
-			height?: number | null;
-			mimeType?: string | null;
-			filesize?: number | null;
-			filename?: string | null;
-		};
-		banner?: {
-			url?: string | null;
-			width?: number | null;
-			height?: number | null;
-			mimeType?: string | null;
-			filesize?: number | null;
-			filename?: string | null;
-		};
-	};
+  id: number;
+  alt: string;
+  folder?: (number | null) | FolderInterface;
+  updatedAt: string;
+  createdAt: string;
+  url?: string | null;
+  thumbnailURL?: string | null;
+  filename?: string | null;
+  mimeType?: string | null;
+  filesize?: number | null;
+  width?: number | null;
+  height?: number | null;
+  focalX?: number | null;
+  focalY?: number | null;
+  sizes?: {
+    thumbnail?: {
+      url?: string | null;
+      width?: number | null;
+      height?: number | null;
+      mimeType?: string | null;
+      filesize?: number | null;
+      filename?: string | null;
+    };
+    square?: {
+      url?: string | null;
+      width?: number | null;
+      height?: number | null;
+      mimeType?: string | null;
+      filesize?: number | null;
+      filename?: string | null;
+    };
+    small?: {
+      url?: string | null;
+      width?: number | null;
+      height?: number | null;
+      mimeType?: string | null;
+      filesize?: number | null;
+      filename?: string | null;
+    };
+    medium?: {
+      url?: string | null;
+      width?: number | null;
+      height?: number | null;
+      mimeType?: string | null;
+      filesize?: number | null;
+      filename?: string | null;
+    };
+    large?: {
+      url?: string | null;
+      width?: number | null;
+      height?: number | null;
+      mimeType?: string | null;
+      filesize?: number | null;
+      filename?: string | null;
+    };
+    banner?: {
+      url?: string | null;
+      width?: number | null;
+      height?: number | null;
+      mimeType?: string | null;
+      filesize?: number | null;
+      filename?: string | null;
+    };
+  };
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "payload-folders".
  */
 export interface FolderInterface {
-	id: number;
-	name: string;
-	folder?: (number | null) | FolderInterface;
-	documentsAndFolders?: {
-		docs?: (
-			| {
-					relationTo?: "payload-folders";
-					value: number | FolderInterface;
-			  }
-			| {
-					relationTo?: "medias";
-					value: number | Media;
-			  }
-		)[];
-		hasNextPage?: boolean;
-		totalDocs?: number;
-	};
-	folderType?: "medias"[] | null;
-	updatedAt: string;
-	createdAt: string;
+  id: number;
+  name: string;
+  folder?: (number | null) | FolderInterface;
+  documentsAndFolders?: {
+    docs?: (
+      | {
+          relationTo?: 'payload-folders';
+          value: number | FolderInterface;
+        }
+      | {
+          relationTo?: 'medias';
+          value: number | Media;
+        }
+    )[];
+    hasNextPage?: boolean;
+    totalDocs?: number;
+  };
+  folderType?: 'medias'[] | null;
+  updatedAt: string;
+  createdAt: string;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "practical-guides".
  */
 export interface PracticalGuide {
-	id: number;
-	/**
-	 * Titre complet affiché en haut de la page de la fiche pratique et dans le fil d'Ariane. Sert aussi de titre SEO si aucun n'est renseigné.
-	 */
-	title: string;
-	/**
-	 * Titre affiché sur les cartes des fiches pratiques (page « Fiches pratiques », recherche, recommandations…). Par défaut identique au titre : laissez vide ou inchangé pour qu'il suive le titre.
-	 */
-	simplifiedTitle?: string | null;
-	/**
-	 * Description courte affichée sur les cartes (120 caractères max)
-	 */
-	description: string;
-	content: {
-		root: {
-			type: string;
-			children: {
-				type: any;
-				version: number;
-				[k: string]: unknown;
-			}[];
-			direction: ("ltr" | "rtl") | null;
-			format: "left" | "start" | "center" | "right" | "end" | "justify" | "";
-			indent: number;
-			version: number;
-		};
-		[k: string]: unknown;
-	};
-	/**
-	 * Version simplifiée du contenu, régénérée automatiquement à chaque publication.
-	 */
-	contentSimplified?: {
-		root: {
-			type: string;
-			children: {
-				type: any;
-				version: number;
-				[k: string]: unknown;
-			}[];
-			direction: ("ltr" | "rtl") | null;
-			format: "left" | "start" | "center" | "right" | "end" | "justify" | "";
-			indent: number;
-			version: number;
-		};
-		[k: string]: unknown;
-	} | null;
-	meta?: {
-		title?: string | null;
-		description?: string | null;
-		/**
-		 * Maximum upload file size: 12MB. Recommended file size for images is <500KB.
-		 */
-		image?: (number | null) | Media;
-	};
-	/**
-	 * Affichée sur le site à côté de « Publié le ». Par défaut, la date de création de la fiche.
-	 */
-	publishedAt?: string | null;
-	image?: (number | null) | Media;
-	imageBanner?: (number | null) | Media;
-	/**
-	 * Utilisé dans l'URL de la page. Laissez vide pour le générer à partir du titre. Le modifier change l'URL publique : pensez à ajouter une redirection.
-	 */
-	slug: string;
-	conditions?: (number | Condition)[] | null;
-	persona: (number | Persona)[];
-	themes: (number | Theme)[];
-	"practical-guides"?: (number | PracticalGuide)[] | null;
-	courses?: (number | Course)[] | null;
-	relatedPracticalGuides?: {
-		docs?: (number | PracticalGuide)[];
-		hasNextPage?: boolean;
-		totalDocs?: number;
-	};
-	hideSimplifiedVersion?: boolean | null;
-	simplifiedGenerationStatus?: ("pending" | "ready" | "failed") | null;
-	simplifiedGeneratedAt?: string | null;
-	updatedAt: string;
-	createdAt: string;
-	_status?: ("draft" | "published") | null;
+  id: number;
+  /**
+   * Titre complet affiché en haut de la page de la fiche pratique et dans le fil d'Ariane. Sert aussi de titre SEO si aucun n'est renseigné.
+   */
+  title: string;
+  /**
+   * Titre affiché sur les cartes des fiches pratiques (page « Fiches pratiques », recherche, recommandations…). Par défaut identique au titre : laissez vide ou inchangé pour qu'il suive le titre.
+   */
+  simplifiedTitle?: string | null;
+  /**
+   * Description courte affichée sur les cartes (120 caractères max)
+   */
+  description: string;
+  content: {
+    root: {
+      type: string;
+      children: {
+        type: any;
+        version: number;
+        [k: string]: unknown;
+      }[];
+      direction: ('ltr' | 'rtl') | null;
+      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+      indent: number;
+      version: number;
+    };
+    [k: string]: unknown;
+  };
+  /**
+   * Version simplifiée du contenu, régénérée automatiquement à chaque publication.
+   */
+  contentSimplified?: {
+    root: {
+      type: string;
+      children: {
+        type: any;
+        version: number;
+        [k: string]: unknown;
+      }[];
+      direction: ('ltr' | 'rtl') | null;
+      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+      indent: number;
+      version: number;
+    };
+    [k: string]: unknown;
+  } | null;
+  meta?: {
+    title?: string | null;
+    description?: string | null;
+    /**
+     * Maximum upload file size: 12MB. Recommended file size for images is <500KB.
+     */
+    image?: (number | null) | Media;
+  };
+  /**
+   * Affichée sur le site à côté de « Publié le ». Par défaut, la date de création de la fiche.
+   */
+  publishedAt?: string | null;
+  image?: (number | null) | Media;
+  imageBanner?: (number | null) | Media;
+  /**
+   * Utilisé dans l'URL de la page. Laissez vide pour le générer à partir du titre. Le modifier change l'URL publique : pensez à ajouter une redirection.
+   */
+  slug: string;
+  conditions?: (number | Condition)[] | null;
+  persona: (number | Persona)[];
+  themes: (number | Theme)[];
+  'practical-guides'?: (number | PracticalGuide)[] | null;
+  courses?: (number | Course)[] | null;
+  relatedPracticalGuides?: {
+    docs?: (number | PracticalGuide)[];
+    hasNextPage?: boolean;
+    totalDocs?: number;
+  };
+  hideSimplifiedVersion?: boolean | null;
+  simplifiedGenerationStatus?: ('pending' | 'ready' | 'failed') | null;
+  simplifiedGeneratedAt?: string | null;
+  updatedAt: string;
+  createdAt: string;
+  _status?: ('draft' | 'published') | null;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "conditions".
  */
 export interface Condition {
-	id: number;
-	_order?: string | null;
-	name: string;
-	/**
-	 * Description courte affichée sur les cartes (120 caractères max)
-	 */
-	description: string;
-	fullDescription: string;
-	acronym: string;
-	slug: string;
-	textColor: string;
-	backgroundColor: string;
-	relatedPracticalGuides?: {
-		docs?: (number | PracticalGuide)[];
-		hasNextPage?: boolean;
-		totalDocs?: number;
-	};
-	relatedCourses?: {
-		docs?: (number | Course)[];
-		hasNextPage?: boolean;
-		totalDocs?: number;
-	};
-	updatedAt: string;
-	createdAt: string;
+  id: number;
+  _order?: string | null;
+  name: string;
+  /**
+   * Description courte affichée sur les cartes (120 caractères max)
+   */
+  description: string;
+  fullDescription: string;
+  acronym: string;
+  slug: string;
+  textColor: string;
+  backgroundColor: string;
+  relatedPracticalGuides?: {
+    docs?: (number | PracticalGuide)[];
+    hasNextPage?: boolean;
+    totalDocs?: number;
+  };
+  relatedCourses?: {
+    docs?: (number | Course)[];
+    hasNextPage?: boolean;
+    totalDocs?: number;
+  };
+  updatedAt: string;
+  createdAt: string;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "courses".
  */
 export interface Course {
-	id: number;
-	title: string;
-	slug: string;
-	description: string;
-	link: string;
-	type: "MOOC" | "Webinaire" | "Présentiel";
-	content?: {
-		root: {
-			type: string;
-			children: {
-				type: any;
-				version: number;
-				[k: string]: unknown;
-			}[];
-			direction: ("ltr" | "rtl") | null;
-			format: "left" | "start" | "center" | "right" | "end" | "justify" | "";
-			indent: number;
-			version: number;
-		};
-		[k: string]: unknown;
-	} | null;
-	theme: number | Theme;
-	persona: number | Persona;
-	conditions: (number | Condition)[];
-	image?: (number | null) | Media;
-	meta?: {
-		title?: string | null;
-		description?: string | null;
-		/**
-		 * Maximum upload file size: 12MB. Recommended file size for images is <500KB.
-		 */
-		image?: (number | null) | Media;
-	};
-	updatedAt: string;
-	createdAt: string;
+  id: number;
+  title: string;
+  slug: string;
+  description: string;
+  link: string;
+  type: 'MOOC' | 'Webinaire' | 'Présentiel';
+  content?: {
+    root: {
+      type: string;
+      children: {
+        type: any;
+        version: number;
+        [k: string]: unknown;
+      }[];
+      direction: ('ltr' | 'rtl') | null;
+      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+      indent: number;
+      version: number;
+    };
+    [k: string]: unknown;
+  } | null;
+  theme: number | Theme;
+  persona: number | Persona;
+  conditions: (number | Condition)[];
+  image?: (number | null) | Media;
+  meta?: {
+    title?: string | null;
+    description?: string | null;
+    /**
+     * Maximum upload file size: 12MB. Recommended file size for images is <500KB.
+     */
+    image?: (number | null) | Media;
+  };
+  updatedAt: string;
+  createdAt: string;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "themes".
  */
 export interface Theme {
-	id: number;
-	name: string;
-	/**
-	 * Description courte affichée sur les cartes (120 caractères max)
-	 */
-	description: string;
-	slug: string;
-	/**
-	 * Le thème n'apparaît plus dans les filtres du site, par exemple tant qu'il contient trop peu de fiches.
-	 */
-	isHidden?: boolean | null;
-	relatedPracticalGuides?: {
-		docs?: (number | PracticalGuide)[];
-		hasNextPage?: boolean;
-		totalDocs?: number;
-	};
-	relatedCourses?: {
-		docs?: (number | Course)[];
-		hasNextPage?: boolean;
-		totalDocs?: number;
-	};
-	updatedAt: string;
-	createdAt: string;
+  id: number;
+  name: string;
+  /**
+   * Description courte affichée sur les cartes (120 caractères max)
+   */
+  description: string;
+  slug: string;
+  /**
+   * Le thème n'apparaît plus dans les filtres du site, par exemple tant qu'il contient trop peu de fiches.
+   */
+  isHidden?: boolean | null;
+  relatedPracticalGuides?: {
+    docs?: (number | PracticalGuide)[];
+    hasNextPage?: boolean;
+    totalDocs?: number;
+  };
+  relatedCourses?: {
+    docs?: (number | Course)[];
+    hasNextPage?: boolean;
+    totalDocs?: number;
+  };
+  updatedAt: string;
+  createdAt: string;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "personas".
  */
 export interface Persona {
-	id: number;
-	_order?: string | null;
-	name: string;
-	/**
-	 * Description courte affichée sur les cartes (120 caractères max)
-	 */
-	description: string;
-	/**
-	 * Texte affiché après 'Je suis' sur les tuiles (optionnel). Ex: 'une personne concernée'. Si vide, le nom du persona sera utilisé.
-	 */
-	displayName?: string | null;
-	/**
-	 * Phrase affichée en titre sur la page parcours (optionnel). Ex: 'Je suis un parent interessé par le'
-	 */
-	journeyIntro?: string | null;
-	slug: string;
-	pictogram?:
-		| (
-				| "Avatar"
-				| "HumanCooperation"
-				| "CityHall"
-				| "SelfTraining"
-				| "Hospital"
-				| "School"
-				| "Companie"
-				| "Ecosystem"
-		  )
-		| null;
-	relatedPracticalGuides?: {
-		docs?: (number | PracticalGuide)[];
-		hasNextPage?: boolean;
-		totalDocs?: number;
-	};
-	relatedCourses?: {
-		docs?: (number | Course)[];
-		hasNextPage?: boolean;
-		totalDocs?: number;
-	};
-	relatedJourneys?: {
-		docs?: (number | Journey)[];
-		hasNextPage?: boolean;
-		totalDocs?: number;
-	};
-	updatedAt: string;
-	createdAt: string;
+  id: number;
+  _order?: string | null;
+  name: string;
+  /**
+   * Description courte affichée sur les cartes (120 caractères max)
+   */
+  description: string;
+  /**
+   * Texte affiché après 'Je suis' sur les tuiles (optionnel). Ex: 'une personne concernée'. Si vide, le nom du persona sera utilisé.
+   */
+  displayName?: string | null;
+  /**
+   * Phrase affichée en titre sur la page parcours (optionnel). Ex: 'Je suis un parent interessé par le'
+   */
+  journeyIntro?: string | null;
+  slug: string;
+  pictogram?:
+    | ('Avatar' | 'HumanCooperation' | 'CityHall' | 'SelfTraining' | 'Hospital' | 'School' | 'Companie' | 'Ecosystem')
+    | null;
+  relatedPracticalGuides?: {
+    docs?: (number | PracticalGuide)[];
+    hasNextPage?: boolean;
+    totalDocs?: number;
+  };
+  relatedCourses?: {
+    docs?: (number | Course)[];
+    hasNextPage?: boolean;
+    totalDocs?: number;
+  };
+  relatedJourneys?: {
+    docs?: (number | Journey)[];
+    hasNextPage?: boolean;
+    totalDocs?: number;
+  };
+  updatedAt: string;
+  createdAt: string;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "journeys".
  */
 export interface Journey {
-	id: number;
-	journey_name: string;
-	persona: number | Persona;
-	image?: (number | null) | Media;
-	practicalGuideDescription?: string | null;
-	courseDescription?: string | null;
-	chapter: {
-		"chapter-name": string;
-		"practical-guides": (number | PracticalGuide)[];
-		courses?: (number | Course)[] | null;
-		id?: string | null;
-	}[];
-	updatedAt: string;
-	createdAt: string;
+  id: number;
+  journey_name: string;
+  persona: number | Persona;
+  image?: (number | null) | Media;
+  practicalGuideDescription?: string | null;
+  courseDescription?: string | null;
+  chapter: {
+    'chapter-name': string;
+    'practical-guides': (number | PracticalGuide)[];
+    courses?: (number | Course)[] | null;
+    id?: string | null;
+  }[];
+  updatedAt: string;
+  createdAt: string;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "practical-guide-views".
  */
 export interface PracticalGuideView {
-	id: number;
-	guide: number | PracticalGuide;
-	viewCount: number;
-	updatedAt: string;
-	createdAt: string;
+  id: number;
+  guide: number | PracticalGuide;
+  viewCount: number;
+  updatedAt: string;
+  createdAt: string;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "glossary".
  */
 export interface Glossary {
-	id: number;
-	name: string;
-	description: string;
-	category?: (number | null) | GlossaryCategory;
-	/**
-	 * Lien optionnel vers une source externe (doit commencer par https://)
-	 */
-	link?: string | null;
-	updatedAt: string;
-	createdAt: string;
+  id: number;
+  name: string;
+  description: string;
+  category?: (number | null) | GlossaryCategory;
+  /**
+   * Lien optionnel vers une source externe (doit commencer par https://)
+   */
+  link?: string | null;
+  updatedAt: string;
+  createdAt: string;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "glossary-categories".
  */
 export interface GlossaryCategory {
-	id: number;
-	name: string;
-	updatedAt: string;
-	createdAt: string;
+  id: number;
+  name: string;
+  updatedAt: string;
+  createdAt: string;
 }
 /**
  * Types de points géolocalisés (ex : MDPH, CRA). Chaque catégorie regroupe une famille de marqueurs qui pourra être affichée sur une ou plusieurs cartes.
@@ -592,67 +567,67 @@ export interface GlossaryCategory {
  * via the `definition` "map-categories".
  */
 export interface MapCategory {
-	id: number;
-	/**
-	 * Nom affiché dans la légende des cartes.
-	 */
-	name: string;
-	/**
-	 * Identifiant stable utilisé en interne (kebab-case).
-	 */
-	slug: string;
-	/**
-	 * Couleur DSFR appliquée aux marqueurs de cette catégorie.
-	 */
-	colorVariant?:
-		| (
-				| "green-tilleul-verveine"
-				| "green-bourgeon"
-				| "green-emeraude"
-				| "green-menthe"
-				| "green-archipel"
-				| "blue-ecume"
-				| "blue-cumulus"
-				| "purple-glycine"
-				| "pink-macaron"
-				| "pink-tuile"
-				| "yellow-tournesol"
-				| "yellow-moutarde"
-				| "orange-terre-battue"
-				| "brown-cafe-creme"
-				| "brown-caramel"
-				| "brown-opera"
-				| "beige-gris-galet"
-		  )
-		| null;
-	iconId?: string | null;
-	description?: string | null;
-	/**
-	 * Champs supplémentaires affichés dans les formulaires des marqueurs de cette catégorie.
-	 */
-	customFields?:
-		| {
-				label: string;
-				/**
-				 * Identifiant unique, sans espaces.
-				 */
-				key: string;
-				type: "checkbox" | "text" | "select";
-				/**
-				 * Options disponibles pour ce champ de type liste.
-				 */
-				options?:
-					| {
-							label: string;
-							value: string;
-							id?: string | null;
-					  }[]
-					| null;
-				id?: string | null;
-		  }[]
-		| null;
-	updatedAt: string;
-	createdAt: string;
+  id: number;
+  /**
+   * Nom affiché dans la légende des cartes.
+   */
+  name: string;
+  /**
+   * Identifiant stable utilisé en interne (kebab-case).
+   */
+  slug: string;
+  /**
+   * Couleur DSFR appliquée aux marqueurs de cette catégorie.
+   */
+  colorVariant?:
+    | (
+        | 'green-tilleul-verveine'
+        | 'green-bourgeon'
+        | 'green-emeraude'
+        | 'green-menthe'
+        | 'green-archipel'
+        | 'blue-ecume'
+        | 'blue-cumulus'
+        | 'purple-glycine'
+        | 'pink-macaron'
+        | 'pink-tuile'
+        | 'yellow-tournesol'
+        | 'yellow-moutarde'
+        | 'orange-terre-battue'
+        | 'brown-cafe-creme'
+        | 'brown-caramel'
+        | 'brown-opera'
+        | 'beige-gris-galet'
+      )
+    | null;
+  iconId?: string | null;
+  description?: string | null;
+  /**
+   * Champs supplémentaires affichés dans les formulaires des marqueurs de cette catégorie.
+   */
+  customFields?:
+    | {
+        label: string;
+        /**
+         * Identifiant unique, sans espaces.
+         */
+        key: string;
+        type: 'checkbox' | 'text' | 'select';
+        /**
+         * Options disponibles pour ce champ de type liste.
+         */
+        options?:
+          | {
+              label: string;
+              value: string;
+              id?: string | null;
+            }[]
+          | null;
+        id?: string | null;
+      }[]
+    | null;
+  updatedAt: string;
+  createdAt: string;
 }
 /**
  * Points géolocalisés rattachés à une catégorie. Les coordonnées sont remplies automatiquement à partir de l'adresse via api-adresse.data.gouv.fr.
@@ -661,41 +636,41 @@ export interface MapCategory {
  * via the `definition` "map-markers".
  */
 export interface MapMarker {
-	id: number;
-	name: string;
-	category: number | MapCategory;
-	address: string;
-	postalCode?: string | null;
-	city: string;
-	/**
-	 * Rempli automatiquement à partir de l'adresse. Modifiable pour ajuster manuellement.
-	 */
-	latitude?: number | null;
-	/**
-	 * Rempli automatiquement à partir de l'adresse. Modifiable pour ajuster manuellement.
-	 */
-	longitude?: number | null;
-	phone?: string | null;
-	email?: string | null;
-	website?: string | null;
-	/**
-	 * Description affichée dans l'infobulle du point sur la carte.
-	 */
-	description?: string | null;
-	/**
-	 * Champs supplémentaires définis dans la catégorie de ce marker.
-	 */
-	metadata?:
-		| {
-				[k: string]: unknown;
-		  }
-		| unknown[]
-		| string
-		| number
-		| boolean
-		| null;
-	updatedAt: string;
-	createdAt: string;
+  id: number;
+  name: string;
+  category: number | MapCategory;
+  address: string;
+  postalCode?: string | null;
+  city: string;
+  /**
+   * Rempli automatiquement à partir de l'adresse. Modifiable pour ajuster manuellement.
+   */
+  latitude?: number | null;
+  /**
+   * Rempli automatiquement à partir de l'adresse. Modifiable pour ajuster manuellement.
+   */
+  longitude?: number | null;
+  phone?: string | null;
+  email?: string | null;
+  website?: string | null;
+  /**
+   * Description affichée dans l'infobulle du point sur la carte.
+   */
+  description?: string | null;
+  /**
+   * Champs supplémentaires définis dans la catégorie de ce marker.
+   */
+  metadata?:
+    | {
+        [k: string]: unknown;
+      }
+    | unknown[]
+    | string
+    | number
+    | boolean
+    | null;
+  updatedAt: string;
+  createdAt: string;
 }
 /**
  * Cartes composées d'une ou plusieurs catégories de points. Une carte peut être insérée dans un contenu via le bloc « Carte ».
@@ -704,81 +679,81 @@ export interface MapMarker {
  * via the `definition` "maps".
  */
 export interface Map {
-	id: number;
-	/**
-	 * Nom utilisé en interne pour retrouver la carte (non affiché).
-	 */
-	name: string;
-	slug: string;
-	/**
-	 * Titre optionnel affiché au-dessus de la carte. Si vide, la carte s'affiche sans titre.
-	 */
-	title?: string | null;
-	description?: string | null;
-	/**
-	 * Fond de carte Géoplateforme IGN. Le Plan IGN reste le plus lisible pour repérer une adresse ; les photographies aériennes n'affichent pas les noms de rue.
-	 */
-	basemap: "plan-ign" | "aerial";
-	/**
-	 * Toutes les catégories sélectionnées seront affichées sur la carte avec leurs marqueurs.
-	 */
-	categories: (number | MapCategory)[];
-	/**
-	 * Regroupe les marqueurs proches en clusters colorés selon leurs catégories. Le détail se déploie au zoom.
-	 */
-	enableClustering?: boolean | null;
-	allowFilterByCategory?: boolean | null;
-	allowFilterByRegion?: boolean | null;
-	allowFilterByDepartement?: boolean | null;
-	/**
-	 * Activez les champs personnalisés (case à cocher ou liste) qui seront disponibles comme filtres sur cette carte.
-	 */
-	allowedCustomFieldFilters?:
-		| {
-				[k: string]: unknown;
-		  }
-		| unknown[]
-		| string
-		| number
-		| boolean
-		| null;
-	defaultLatitude?: number | null;
-	defaultLongitude?: number | null;
-	defaultZoom?: number | null;
-	/**
-	 * Si activé, le cadrage par défaut est ignoré quand des marqueurs existent.
-	 */
-	fitToMarkers?: boolean | null;
-	updatedAt: string;
-	createdAt: string;
+  id: number;
+  /**
+   * Nom utilisé en interne pour retrouver la carte (non affiché).
+   */
+  name: string;
+  slug: string;
+  /**
+   * Titre optionnel affiché au-dessus de la carte. Si vide, la carte s'affiche sans titre.
+   */
+  title?: string | null;
+  description?: string | null;
+  /**
+   * Fond de carte Géoplateforme IGN. Le Plan IGN reste le plus lisible pour repérer une adresse ; les photographies aériennes n'affichent pas les noms de rue.
+   */
+  basemap: 'plan-ign' | 'aerial';
+  /**
+   * Toutes les catégories sélectionnées seront affichées sur la carte avec leurs marqueurs.
+   */
+  categories: (number | MapCategory)[];
+  /**
+   * Regroupe les marqueurs proches en clusters colorés selon leurs catégories. Le détail se déploie au zoom.
+   */
+  enableClustering?: boolean | null;
+  allowFilterByCategory?: boolean | null;
+  allowFilterByRegion?: boolean | null;
+  allowFilterByDepartement?: boolean | null;
+  /**
+   * Activez les champs personnalisés (case à cocher ou liste) qui seront disponibles comme filtres sur cette carte.
+   */
+  allowedCustomFieldFilters?:
+    | {
+        [k: string]: unknown;
+      }
+    | unknown[]
+    | string
+    | number
+    | boolean
+    | null;
+  defaultLatitude?: number | null;
+  defaultLongitude?: number | null;
+  defaultZoom?: number | null;
+  /**
+   * Si activé, le cadrage par défaut est ignoré quand des marqueurs existent.
+   */
+  fitToMarkers?: boolean | null;
+  updatedAt: string;
+  createdAt: string;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "users".
  */
 export interface User {
-	id: number;
-	firstName?: string | null;
-	lastName?: string | null;
-	role: "admin" | "editor";
-	updatedAt: string;
-	createdAt: string;
-	email: string;
-	resetPasswordToken?: string | null;
-	resetPasswordExpiration?: string | null;
-	salt?: string | null;
-	hash?: string | null;
-	loginAttempts?: number | null;
-	lockUntil?: string | null;
-	sessions?:
-		| {
-				id: string;
-				createdAt?: string | null;
-				expiresAt: string;
-		  }[]
-		| null;
-	password?: string | null;
-	collection: "users";
+  id: number;
+  firstName?: string | null;
+  lastName?: string | null;
+  role: 'admin' | 'editor';
+  updatedAt: string;
+  createdAt: string;
+  email: string;
+  resetPasswordToken?: string | null;
+  resetPasswordExpiration?: string | null;
+  salt?: string | null;
+  hash?: string | null;
+  loginAttempts?: number | null;
+  lockUntil?: string | null;
+  sessions?:
+    | {
+        id: string;
+        createdAt?: string | null;
+        expiresAt: string;
+      }[]
+    | null;
+  password?: string | null;
+  collection: 'users';
 }
 /**
  * 301 redirects for legacy URLs. An empty target = still to be filled in. Never delete a filled redirect.
@@ -787,27 +762,27 @@ export interface User {
  * via the `definition` "redirects".
  */
 export interface Redirect {
-	id: number;
-	from: string;
-	to?: {
-		type?: ("reference" | "custom") | null;
-		reference?:
-			| ({
-					relationTo: "practical-guides";
-					value: number | PracticalGuide;
-			  } | null)
-			| ({
-					relationTo: "courses";
-					value: number | Course;
-			  } | null);
-		url?: string | null;
-	};
-	/**
-	 * Filled by the seed script.
-	 */
-	legacyTitle?: string | null;
-	updatedAt: string;
-	createdAt: string;
+  id: number;
+  from: string;
+  to?: {
+    type?: ('reference' | 'custom') | null;
+    reference?:
+      | ({
+          relationTo: 'practical-guides';
+          value: number | PracticalGuide;
+        } | null)
+      | ({
+          relationTo: 'courses';
+          value: number | Course;
+        } | null);
+    url?: string | null;
+  };
+  /**
+   * Filled by the seed script.
+   */
+  legacyTitle?: string | null;
+  updatedAt: string;
+  createdAt: string;
 }
 /**
  * This is a collection of automatically created search results. These results are used by the global site search and will be updated automatically as documents in the CMS are created or updated.
@@ -816,777 +791,758 @@ export interface Redirect {
  * via the `definition` "search-results".
  */
 export interface SearchResult {
-	id: number;
-	title?: string | null;
-	priority?: number | null;
-	doc: {
-		relationTo: "practical-guides";
-		value: number | PracticalGuide;
-	};
-	slug?: string | null;
-	description?: string | null;
-	contentText?: string | null;
-	conditionNames?: string | null;
-	themeNames?: string | null;
-	personaNames?: string | null;
-	updatedAt: string;
-	createdAt: string;
+  id: number;
+  title?: string | null;
+  priority?: number | null;
+  doc: {
+    relationTo: 'practical-guides';
+    value: number | PracticalGuide;
+  };
+  slug?: string | null;
+  description?: string | null;
+  contentText?: string | null;
+  conditionNames?: string | null;
+  themeNames?: string | null;
+  personaNames?: string | null;
+  updatedAt: string;
+  createdAt: string;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "payload-kv".
  */
 export interface PayloadKv {
-	id: number;
-	key: string;
-	data:
-		| {
-				[k: string]: unknown;
-		  }
-		| unknown[]
-		| string
-		| number
-		| boolean
-		| null;
+  id: number;
+  key: string;
+  data:
+    | {
+        [k: string]: unknown;
+      }
+    | unknown[]
+    | string
+    | number
+    | boolean
+    | null;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "payload-locked-documents".
  */
 export interface PayloadLockedDocument {
-	id: number;
-	document?:
-		| ({
-				relationTo: "medias";
-				value: number | Media;
-		  } | null)
-		| ({
-				relationTo: "practical-guides";
-				value: number | PracticalGuide;
-		  } | null)
-		| ({
-				relationTo: "courses";
-				value: number | Course;
-		  } | null)
-		| ({
-				relationTo: "journeys";
-				value: number | Journey;
-		  } | null)
-		| ({
-				relationTo: "practical-guide-views";
-				value: number | PracticalGuideView;
-		  } | null)
-		| ({
-				relationTo: "glossary";
-				value: number | Glossary;
-		  } | null)
-		| ({
-				relationTo: "glossary-categories";
-				value: number | GlossaryCategory;
-		  } | null)
-		| ({
-				relationTo: "map-categories";
-				value: number | MapCategory;
-		  } | null)
-		| ({
-				relationTo: "map-markers";
-				value: number | MapMarker;
-		  } | null)
-		| ({
-				relationTo: "maps";
-				value: number | Map;
-		  } | null)
-		| ({
-				relationTo: "personas";
-				value: number | Persona;
-		  } | null)
-		| ({
-				relationTo: "conditions";
-				value: number | Condition;
-		  } | null)
-		| ({
-				relationTo: "themes";
-				value: number | Theme;
-		  } | null)
-		| ({
-				relationTo: "users";
-				value: number | User;
-		  } | null)
-		| ({
-				relationTo: "redirects";
-				value: number | Redirect;
-		  } | null)
-		| ({
-				relationTo: "search-results";
-				value: number | SearchResult;
-		  } | null)
-		| ({
-				relationTo: "payload-folders";
-				value: number | FolderInterface;
-		  } | null);
-	globalSlug?: string | null;
-	user: {
-		relationTo: "users";
-		value: number | User;
-	};
-	updatedAt: string;
-	createdAt: string;
+  id: number;
+  document?:
+    | ({
+        relationTo: 'medias';
+        value: number | Media;
+      } | null)
+    | ({
+        relationTo: 'practical-guides';
+        value: number | PracticalGuide;
+      } | null)
+    | ({
+        relationTo: 'courses';
+        value: number | Course;
+      } | null)
+    | ({
+        relationTo: 'journeys';
+        value: number | Journey;
+      } | null)
+    | ({
+        relationTo: 'practical-guide-views';
+        value: number | PracticalGuideView;
+      } | null)
+    | ({
+        relationTo: 'glossary';
+        value: number | Glossary;
+      } | null)
+    | ({
+        relationTo: 'glossary-categories';
+        value: number | GlossaryCategory;
+      } | null)
+    | ({
+        relationTo: 'map-categories';
+        value: number | MapCategory;
+      } | null)
+    | ({
+        relationTo: 'map-markers';
+        value: number | MapMarker;
+      } | null)
+    | ({
+        relationTo: 'maps';
+        value: number | Map;
+      } | null)
+    | ({
+        relationTo: 'personas';
+        value: number | Persona;
+      } | null)
+    | ({
+        relationTo: 'conditions';
+        value: number | Condition;
+      } | null)
+    | ({
+        relationTo: 'themes';
+        value: number | Theme;
+      } | null)
+    | ({
+        relationTo: 'users';
+        value: number | User;
+      } | null)
+    | ({
+        relationTo: 'redirects';
+        value: number | Redirect;
+      } | null)
+    | ({
+        relationTo: 'search-results';
+        value: number | SearchResult;
+      } | null)
+    | ({
+        relationTo: 'payload-folders';
+        value: number | FolderInterface;
+      } | null);
+  globalSlug?: string | null;
+  user: {
+    relationTo: 'users';
+    value: number | User;
+  };
+  updatedAt: string;
+  createdAt: string;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "payload-preferences".
  */
 export interface PayloadPreference {
-	id: number;
-	user: {
-		relationTo: "users";
-		value: number | User;
-	};
-	key?: string | null;
-	value?:
-		| {
-				[k: string]: unknown;
-		  }
-		| unknown[]
-		| string
-		| number
-		| boolean
-		| null;
-	updatedAt: string;
-	createdAt: string;
+  id: number;
+  user: {
+    relationTo: 'users';
+    value: number | User;
+  };
+  key?: string | null;
+  value?:
+    | {
+        [k: string]: unknown;
+      }
+    | unknown[]
+    | string
+    | number
+    | boolean
+    | null;
+  updatedAt: string;
+  createdAt: string;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "payload-migrations".
  */
 export interface PayloadMigration {
-	id: number;
-	name?: string | null;
-	batch?: number | null;
-	updatedAt: string;
-	createdAt: string;
+  id: number;
+  name?: string | null;
+  batch?: number | null;
+  updatedAt: string;
+  createdAt: string;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "medias_select".
  */
 export interface MediasSelect<T extends boolean = true> {
-	alt?: T;
-	folder?: T;
-	updatedAt?: T;
-	createdAt?: T;
-	url?: T;
-	thumbnailURL?: T;
-	filename?: T;
-	mimeType?: T;
-	filesize?: T;
-	width?: T;
-	height?: T;
-	focalX?: T;
-	focalY?: T;
-	sizes?:
-		| T
-		| {
-				thumbnail?:
-					| T
-					| {
-							url?: T;
-							width?: T;
-							height?: T;
-							mimeType?: T;
-							filesize?: T;
-							filename?: T;
-					  };
-				square?:
-					| T
-					| {
-							url?: T;
-							width?: T;
-							height?: T;
-							mimeType?: T;
-							filesize?: T;
-							filename?: T;
-					  };
-				small?:
-					| T
-					| {
-							url?: T;
-							width?: T;
-							height?: T;
-							mimeType?: T;
-							filesize?: T;
-							filename?: T;
-					  };
-				medium?:
-					| T
-					| {
-							url?: T;
-							width?: T;
-							height?: T;
-							mimeType?: T;
-							filesize?: T;
-							filename?: T;
-					  };
-				large?:
-					| T
-					| {
-							url?: T;
-							width?: T;
-							height?: T;
-							mimeType?: T;
-							filesize?: T;
-							filename?: T;
-					  };
-				banner?:
-					| T
-					| {
-							url?: T;
-							width?: T;
-							height?: T;
-							mimeType?: T;
-							filesize?: T;
-							filename?: T;
-					  };
-		  };
+  alt?: T;
+  folder?: T;
+  updatedAt?: T;
+  createdAt?: T;
+  url?: T;
+  thumbnailURL?: T;
+  filename?: T;
+  mimeType?: T;
+  filesize?: T;
+  width?: T;
+  height?: T;
+  focalX?: T;
+  focalY?: T;
+  sizes?:
+    | T
+    | {
+        thumbnail?:
+          | T
+          | {
+              url?: T;
+              width?: T;
+              height?: T;
+              mimeType?: T;
+              filesize?: T;
+              filename?: T;
+            };
+        square?:
+          | T
+          | {
+              url?: T;
+              width?: T;
+              height?: T;
+              mimeType?: T;
+              filesize?: T;
+              filename?: T;
+            };
+        small?:
+          | T
+          | {
+              url?: T;
+              width?: T;
+              height?: T;
+              mimeType?: T;
+              filesize?: T;
+              filename?: T;
+            };
+        medium?:
+          | T
+          | {
+              url?: T;
+              width?: T;
+              height?: T;
+              mimeType?: T;
+              filesize?: T;
+              filename?: T;
+            };
+        large?:
+          | T
+          | {
+              url?: T;
+              width?: T;
+              height?: T;
+              mimeType?: T;
+              filesize?: T;
+              filename?: T;
+            };
+        banner?:
+          | T
+          | {
+              url?: T;
+              width?: T;
+              height?: T;
+              mimeType?: T;
+              filesize?: T;
+              filename?: T;
+            };
+      };
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "practical-guides_select".
  */
 export interface PracticalGuidesSelect<T extends boolean = true> {
-	title?: T;
-	simplifiedTitle?: T;
-	description?: T;
-	content?: T;
-	contentSimplified?: T;
-	meta?:
-		| T
-		| {
-				title?: T;
-				description?: T;
-				image?: T;
-		  };
-	publishedAt?: T;
-	image?: T;
-	imageBanner?: T;
-	slug?: T;
-	conditions?: T;
-	persona?: T;
-	themes?: T;
-	"practical-guides"?: T;
-	courses?: T;
-	relatedPracticalGuides?: T;
-	hideSimplifiedVersion?: T;
-	simplifiedGenerationStatus?: T;
-	simplifiedGeneratedAt?: T;
-	updatedAt?: T;
-	createdAt?: T;
-	_status?: T;
+  title?: T;
+  simplifiedTitle?: T;
+  description?: T;
+  content?: T;
+  contentSimplified?: T;
+  meta?:
+    | T
+    | {
+        title?: T;
+        description?: T;
+        image?: T;
+      };
+  publishedAt?: T;
+  image?: T;
+  imageBanner?: T;
+  slug?: T;
+  conditions?: T;
+  persona?: T;
+  themes?: T;
+  'practical-guides'?: T;
+  courses?: T;
+  relatedPracticalGuides?: T;
+  hideSimplifiedVersion?: T;
+  simplifiedGenerationStatus?: T;
+  simplifiedGeneratedAt?: T;
+  updatedAt?: T;
+  createdAt?: T;
+  _status?: T;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "courses_select".
  */
 export interface CoursesSelect<T extends boolean = true> {
-	title?: T;
-	slug?: T;
-	description?: T;
-	link?: T;
-	type?: T;
-	content?: T;
-	theme?: T;
-	persona?: T;
-	conditions?: T;
-	image?: T;
-	meta?:
-		| T
-		| {
-				title?: T;
-				description?: T;
-				image?: T;
-		  };
-	updatedAt?: T;
-	createdAt?: T;
+  title?: T;
+  slug?: T;
+  description?: T;
+  link?: T;
+  type?: T;
+  content?: T;
+  theme?: T;
+  persona?: T;
+  conditions?: T;
+  image?: T;
+  meta?:
+    | T
+    | {
+        title?: T;
+        description?: T;
+        image?: T;
+      };
+  updatedAt?: T;
+  createdAt?: T;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "journeys_select".
  */
 export interface JourneysSelect<T extends boolean = true> {
-	journey_name?: T;
-	persona?: T;
-	image?: T;
-	practicalGuideDescription?: T;
-	courseDescription?: T;
-	chapter?:
-		| T
-		| {
-				"chapter-name"?: T;
-				"practical-guides"?: T;
-				courses?: T;
-				id?: T;
-		  };
-	updatedAt?: T;
-	createdAt?: T;
+  journey_name?: T;
+  persona?: T;
+  image?: T;
+  practicalGuideDescription?: T;
+  courseDescription?: T;
+  chapter?:
+    | T
+    | {
+        'chapter-name'?: T;
+        'practical-guides'?: T;
+        courses?: T;
+        id?: T;
+      };
+  updatedAt?: T;
+  createdAt?: T;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "practical-guide-views_select".
  */
 export interface PracticalGuideViewsSelect<T extends boolean = true> {
-	guide?: T;
-	viewCount?: T;
-	updatedAt?: T;
-	createdAt?: T;
+  guide?: T;
+  viewCount?: T;
+  updatedAt?: T;
+  createdAt?: T;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "glossary_select".
  */
 export interface GlossarySelect<T extends boolean = true> {
-	name?: T;
-	description?: T;
-	category?: T;
-	link?: T;
-	updatedAt?: T;
-	createdAt?: T;
+  name?: T;
+  description?: T;
+  category?: T;
+  link?: T;
+  updatedAt?: T;
+  createdAt?: T;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "glossary-categories_select".
  */
 export interface GlossaryCategoriesSelect<T extends boolean = true> {
-	name?: T;
-	updatedAt?: T;
-	createdAt?: T;
+  name?: T;
+  updatedAt?: T;
+  createdAt?: T;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "map-categories_select".
  */
 export interface MapCategoriesSelect<T extends boolean = true> {
-	name?: T;
-	slug?: T;
-	colorVariant?: T;
-	iconId?: T;
-	description?: T;
-	customFields?:
-		| T
-		| {
-				label?: T;
-				key?: T;
-				type?: T;
-				options?:
-					| T
-					| {
-							label?: T;
-							value?: T;
-							id?: T;
-					  };
-				id?: T;
-		  };
-	updatedAt?: T;
-	createdAt?: T;
+  name?: T;
+  slug?: T;
+  colorVariant?: T;
+  iconId?: T;
+  description?: T;
+  customFields?:
+    | T
+    | {
+        label?: T;
+        key?: T;
+        type?: T;
+        options?:
+          | T
+          | {
+              label?: T;
+              value?: T;
+              id?: T;
+            };
+        id?: T;
+      };
+  updatedAt?: T;
+  createdAt?: T;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "map-markers_select".
  */
 export interface MapMarkersSelect<T extends boolean = true> {
-	name?: T;
-	category?: T;
-	address?: T;
-	postalCode?: T;
-	city?: T;
-	latitude?: T;
-	longitude?: T;
-	phone?: T;
-	email?: T;
-	website?: T;
-	description?: T;
-	metadata?: T;
-	updatedAt?: T;
-	createdAt?: T;
+  name?: T;
+  category?: T;
+  address?: T;
+  postalCode?: T;
+  city?: T;
+  latitude?: T;
+  longitude?: T;
+  phone?: T;
+  email?: T;
+  website?: T;
+  description?: T;
+  metadata?: T;
+  updatedAt?: T;
+  createdAt?: T;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "maps_select".
  */
 export interface MapsSelect<T extends boolean = true> {
-	name?: T;
-	slug?: T;
-	title?: T;
-	description?: T;
-	basemap?: T;
-	categories?: T;
-	enableClustering?: T;
-	allowFilterByCategory?: T;
-	allowFilterByRegion?: T;
-	allowFilterByDepartement?: T;
-	allowedCustomFieldFilters?: T;
-	defaultLatitude?: T;
-	defaultLongitude?: T;
-	defaultZoom?: T;
-	fitToMarkers?: T;
-	updatedAt?: T;
-	createdAt?: T;
+  name?: T;
+  slug?: T;
+  title?: T;
+  description?: T;
+  basemap?: T;
+  categories?: T;
+  enableClustering?: T;
+  allowFilterByCategory?: T;
+  allowFilterByRegion?: T;
+  allowFilterByDepartement?: T;
+  allowedCustomFieldFilters?: T;
+  defaultLatitude?: T;
+  defaultLongitude?: T;
+  defaultZoom?: T;
+  fitToMarkers?: T;
+  updatedAt?: T;
+  createdAt?: T;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "personas_select".
  */
 export interface PersonasSelect<T extends boolean = true> {
-	_order?: T;
-	name?: T;
-	description?: T;
-	displayName?: T;
-	journeyIntro?: T;
-	slug?: T;
-	pictogram?: T;
-	relatedPracticalGuides?: T;
-	relatedCourses?: T;
-	relatedJourneys?: T;
-	updatedAt?: T;
-	createdAt?: T;
+  _order?: T;
+  name?: T;
+  description?: T;
+  displayName?: T;
+  journeyIntro?: T;
+  slug?: T;
+  pictogram?: T;
+  relatedPracticalGuides?: T;
+  relatedCourses?: T;
+  relatedJourneys?: T;
+  updatedAt?: T;
+  createdAt?: T;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "conditions_select".
  */
 export interface ConditionsSelect<T extends boolean = true> {
-	_order?: T;
-	name?: T;
-	description?: T;
-	fullDescription?: T;
-	acronym?: T;
-	slug?: T;
-	textColor?: T;
-	backgroundColor?: T;
-	relatedPracticalGuides?: T;
-	relatedCourses?: T;
-	updatedAt?: T;
-	createdAt?: T;
+  _order?: T;
+  name?: T;
+  description?: T;
+  fullDescription?: T;
+  acronym?: T;
+  slug?: T;
+  textColor?: T;
+  backgroundColor?: T;
+  relatedPracticalGuides?: T;
+  relatedCourses?: T;
+  updatedAt?: T;
+  createdAt?: T;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "themes_select".
  */
 export interface ThemesSelect<T extends boolean = true> {
-	name?: T;
-	description?: T;
-	slug?: T;
-	isHidden?: T;
-	relatedPracticalGuides?: T;
-	relatedCourses?: T;
-	updatedAt?: T;
-	createdAt?: T;
+  name?: T;
+  description?: T;
+  slug?: T;
+  isHidden?: T;
+  relatedPracticalGuides?: T;
+  relatedCourses?: T;
+  updatedAt?: T;
+  createdAt?: T;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "users_select".
  */
 export interface UsersSelect<T extends boolean = true> {
-	firstName?: T;
-	lastName?: T;
-	role?: T;
-	updatedAt?: T;
-	createdAt?: T;
-	email?: T;
-	resetPasswordToken?: T;
-	resetPasswordExpiration?: T;
-	salt?: T;
-	hash?: T;
-	loginAttempts?: T;
-	lockUntil?: T;
-	sessions?:
-		| T
-		| {
-				id?: T;
-				createdAt?: T;
-				expiresAt?: T;
-		  };
+  firstName?: T;
+  lastName?: T;
+  role?: T;
+  updatedAt?: T;
+  createdAt?: T;
+  email?: T;
+  resetPasswordToken?: T;
+  resetPasswordExpiration?: T;
+  salt?: T;
+  hash?: T;
+  loginAttempts?: T;
+  lockUntil?: T;
+  sessions?:
+    | T
+    | {
+        id?: T;
+        createdAt?: T;
+        expiresAt?: T;
+      };
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "redirects_select".
  */
 export interface RedirectsSelect<T extends boolean = true> {
-	from?: T;
-	to?:
-		| T
-		| {
-				type?: T;
-				reference?: T;
-				url?: T;
-		  };
-	legacyTitle?: T;
-	updatedAt?: T;
-	createdAt?: T;
+  from?: T;
+  to?:
+    | T
+    | {
+        type?: T;
+        reference?: T;
+        url?: T;
+      };
+  legacyTitle?: T;
+  updatedAt?: T;
+  createdAt?: T;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "search-results_select".
  */
 export interface SearchResultsSelect<T extends boolean = true> {
-	title?: T;
-	priority?: T;
-	doc?: T;
-	slug?: T;
-	description?: T;
-	contentText?: T;
-	conditionNames?: T;
-	themeNames?: T;
-	personaNames?: T;
-	updatedAt?: T;
-	createdAt?: T;
+  title?: T;
+  priority?: T;
+  doc?: T;
+  slug?: T;
+  description?: T;
+  contentText?: T;
+  conditionNames?: T;
+  themeNames?: T;
+  personaNames?: T;
+  updatedAt?: T;
+  createdAt?: T;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "payload-kv_select".
  */
 export interface PayloadKvSelect<T extends boolean = true> {
-	key?: T;
-	data?: T;
+  key?: T;
+  data?: T;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "payload-folders_select".
  */
 export interface PayloadFoldersSelect<T extends boolean = true> {
-	name?: T;
-	folder?: T;
-	documentsAndFolders?: T;
-	folderType?: T;
-	updatedAt?: T;
-	createdAt?: T;
+  name?: T;
+  folder?: T;
+  documentsAndFolders?: T;
+  folderType?: T;
+  updatedAt?: T;
+  createdAt?: T;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "payload-locked-documents_select".
  */
 export interface PayloadLockedDocumentsSelect<T extends boolean = true> {
-	document?: T;
-	globalSlug?: T;
-	user?: T;
-	updatedAt?: T;
-	createdAt?: T;
+  document?: T;
+  globalSlug?: T;
+  user?: T;
+  updatedAt?: T;
+  createdAt?: T;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "payload-preferences_select".
  */
 export interface PayloadPreferencesSelect<T extends boolean = true> {
-	user?: T;
-	key?: T;
-	value?: T;
-	updatedAt?: T;
-	createdAt?: T;
+  user?: T;
+  key?: T;
+  value?: T;
+  updatedAt?: T;
+  createdAt?: T;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "payload-migrations_select".
  */
 export interface PayloadMigrationsSelect<T extends boolean = true> {
-	name?: T;
-	batch?: T;
-	updatedAt?: T;
-	createdAt?: T;
+  name?: T;
+  batch?: T;
+  updatedAt?: T;
+  createdAt?: T;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "home".
  */
 export interface Home {
-	id: number;
-	header: {
-		title: string;
-		description: string;
-	};
-	tiles: {
-		description: string;
-	};
-	mostViewedGuides: {
-		title: string;
-		description: string;
-	};
-	updatedAt?: string | null;
-	createdAt?: string | null;
+  id: number;
+  header: {
+    title: string;
+    description: string;
+  };
+  tiles: {
+    persona: {
+      title: string;
+      description: string;
+    };
+    condition: {
+      title: string;
+      description: string;
+    };
+  };
+  mostViewedGuides: {
+    title: string;
+    description: string;
+  };
+  updatedAt?: string | null;
+  createdAt?: string | null;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "footer".
  */
 export interface Footer {
-	id: number;
-	title: string;
-	accessibility: {
-		title: string;
-		content: {
-			root: {
-				type: string;
-				children: {
-					type: any;
-					version: number;
-					[k: string]: unknown;
-				}[];
-				direction: ("ltr" | "rtl") | null;
-				format: "left" | "start" | "center" | "right" | "end" | "justify" | "";
-				indent: number;
-				version: number;
-			};
-			[k: string]: unknown;
-		};
-	};
-	legalNotice: {
-		title: string;
-		content: {
-			root: {
-				type: string;
-				children: {
-					type: any;
-					version: number;
-					[k: string]: unknown;
-				}[];
-				direction: ("ltr" | "rtl") | null;
-				format: "left" | "start" | "center" | "right" | "end" | "justify" | "";
-				indent: number;
-				version: number;
-			};
-			[k: string]: unknown;
-		};
-	};
-	contactProsCra: {
-		title: string;
-		imageBanner?: (number | null) | Media;
-		content: {
-			root: {
-				type: string;
-				children: {
-					type: any;
-					version: number;
-					[k: string]: unknown;
-				}[];
-				direction: ("ltr" | "rtl") | null;
-				format: "left" | "start" | "center" | "right" | "end" | "justify" | "";
-				indent: number;
-				version: number;
-			};
-			[k: string]: unknown;
-		};
-	};
-	contactParticuliers: {
-		title: string;
-		imageBanner?: (number | null) | Media;
-		content: {
-			root: {
-				type: string;
-				children: {
-					type: any;
-					version: number;
-					[k: string]: unknown;
-				}[];
-				direction: ("ltr" | "rtl") | null;
-				format: "left" | "start" | "center" | "right" | "end" | "justify" | "";
-				indent: number;
-				version: number;
-			};
-			[k: string]: unknown;
-		};
-	};
-	updatedAt?: string | null;
-	createdAt?: string | null;
+  id: number;
+  title: string;
+  accessibility: {
+    title: string;
+    content: {
+      root: {
+        type: string;
+        children: {
+          type: any;
+          version: number;
+          [k: string]: unknown;
+        }[];
+        direction: ('ltr' | 'rtl') | null;
+        format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+        indent: number;
+        version: number;
+      };
+      [k: string]: unknown;
+    };
+  };
+  legalNotice: {
+    title: string;
+    content: {
+      root: {
+        type: string;
+        children: {
+          type: any;
+          version: number;
+          [k: string]: unknown;
+        }[];
+        direction: ('ltr' | 'rtl') | null;
+        format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+        indent: number;
+        version: number;
+      };
+      [k: string]: unknown;
+    };
+  };
+  contactProsCra: {
+    title: string;
+    imageBanner?: (number | null) | Media;
+    content: {
+      root: {
+        type: string;
+        children: {
+          type: any;
+          version: number;
+          [k: string]: unknown;
+        }[];
+        direction: ('ltr' | 'rtl') | null;
+        format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+        indent: number;
+        version: number;
+      };
+      [k: string]: unknown;
+    };
+  };
+  contactParticuliers: {
+    title: string;
+    imageBanner?: (number | null) | Media;
+    content: {
+      root: {
+        type: string;
+        children: {
+          type: any;
+          version: number;
+          [k: string]: unknown;
+        }[];
+        direction: ('ltr' | 'rtl') | null;
+        format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+        indent: number;
+        version: number;
+      };
+      [k: string]: unknown;
+    };
+  };
+  updatedAt?: string | null;
+  createdAt?: string | null;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "about".
  */
 export interface About {
-	id: number;
-	maisonDeLAutisme: {
-		title: string;
-		imageBanner?: (number | null) | Media;
-		content: {
-			root: {
-				type: string;
-				children: {
-					type: any;
-					version: number;
-					[k: string]: unknown;
-				}[];
-				direction: ("ltr" | "rtl") | null;
-				format: "left" | "start" | "center" | "right" | "end" | "justify" | "";
-				indent: number;
-				version: number;
-			};
-			[k: string]: unknown;
-		};
-	};
-	gncra: {
-		title: string;
-		imageBanner?: (number | null) | Media;
-		content: {
-			root: {
-				type: string;
-				children: {
-					type: any;
-					version: number;
-					[k: string]: unknown;
-				}[];
-				direction: ("ltr" | "rtl") | null;
-				format: "left" | "start" | "center" | "right" | "end" | "justify" | "";
-				indent: number;
-				version: number;
-			};
-			[k: string]: unknown;
-		};
-	};
-	cras: {
-		title: string;
-		imageBanner?: (number | null) | Media;
-		content: {
-			root: {
-				type: string;
-				children: {
-					type: any;
-					version: number;
-					[k: string]: unknown;
-				}[];
-				direction: ("ltr" | "rtl") | null;
-				format: "left" | "start" | "center" | "right" | "end" | "justify" | "";
-				indent: number;
-				version: number;
-			};
-			[k: string]: unknown;
-		};
-	};
-	updatedAt?: string | null;
-	createdAt?: string | null;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "cartographie".
- */
-export interface Cartographie {
-	id: number;
-	title: string;
-	imageBanner?: (number | null) | Media;
-	content: {
-		root: {
-			type: string;
-			children: {
-				type: any;
-				version: number;
-				[k: string]: unknown;
-			}[];
-			direction: ("ltr" | "rtl") | null;
-			format: "left" | "start" | "center" | "right" | "end" | "justify" | "";
-			indent: number;
-			version: number;
-		};
-		[k: string]: unknown;
-	};
-	updatedAt?: string | null;
-	createdAt?: string | null;
+  id: number;
+  maisonDeLAutisme: {
+    title: string;
+    imageBanner?: (number | null) | Media;
+    content: {
+      root: {
+        type: string;
+        children: {
+          type: any;
+          version: number;
+          [k: string]: unknown;
+        }[];
+        direction: ('ltr' | 'rtl') | null;
+        format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+        indent: number;
+        version: number;
+      };
+      [k: string]: unknown;
+    };
+  };
+  gncra: {
+    title: string;
+    imageBanner?: (number | null) | Media;
+    content: {
+      root: {
+        type: string;
+        children: {
+          type: any;
+          version: number;
+          [k: string]: unknown;
+        }[];
+        direction: ('ltr' | 'rtl') | null;
+        format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+        indent: number;
+        version: number;
+      };
+      [k: string]: unknown;
+    };
+  };
+  cras: {
+    title: string;
+    imageBanner?: (number | null) | Media;
+    content: {
+      root: {
+        type: string;
+        children: {
+          type: any;
+          version: number;
+          [k: string]: unknown;
+        }[];
+        direction: ('ltr' | 'rtl') | null;
+        format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+        indent: number;
+        version: number;
+      };
+      [k: string]: unknown;
+    };
+  };
+  updatedAt?: string | null;
+  createdAt?: string | null;
 }
 /**
  * Bloc affiché en bas de la page d'accueil. Décochez « Afficher le bloc » pour le retirer du site.
@@ -1595,241 +1551,241 @@ export interface Cartographie {
  * via the `definition` "newsletter".
  */
 export interface Newsletter {
-	id: number;
-	enabled?: boolean | null;
-	/**
-	 * Laissez vide pour utiliser le libellé DSFR par défaut : « Abonnez-vous à notre lettre d'information ».
-	 */
-	title?: string | null;
-	description?: string | null;
-	/**
-	 * Affichée sous le champ email. Laissez vide pour utiliser la mention DSFR par défaut.
-	 */
-	consentHint?: string | null;
-	/**
-	 * Laissez vide pour utiliser le libellé DSFR par défaut : « Suivez-nous sur les réseaux sociaux ».
-	 */
-	socialTitle?: string | null;
-	/**
-	 * Si aucun réseau n'est renseigné, la colonne réseaux sociaux n'est pas affichée.
-	 */
-	socials?:
-		| {
-				type:
-					| "facebook"
-					| "github"
-					| "instagram"
-					| "linkedin"
-					| "mastodon"
-					| "tiktok"
-					| "twitch"
-					| "twitter-x"
-					| "vimeo"
-					| "youtube"
-					| "dailymotion"
-					| "telegram"
-					| "threads"
-					| "mail";
-				url: string;
-				id?: string | null;
-		  }[]
-		| null;
-	updatedAt?: string | null;
-	createdAt?: string | null;
+  id: number;
+  enabled?: boolean | null;
+  /**
+   * Laissez vide pour utiliser le libellé DSFR par défaut : « Abonnez-vous à notre lettre d'information ».
+   */
+  title?: string | null;
+  description?: string | null;
+  /**
+   * Affichée sous le champ email. Laissez vide pour utiliser la mention DSFR par défaut.
+   */
+  consentHint?: string | null;
+  /**
+   * Laissez vide pour utiliser le libellé DSFR par défaut : « Suivez-nous sur les réseaux sociaux ».
+   */
+  socialTitle?: string | null;
+  /**
+   * Si aucun réseau n'est renseigné, la colonne réseaux sociaux n'est pas affichée.
+   */
+  socials?:
+    | {
+        type:
+          | 'facebook'
+          | 'github'
+          | 'instagram'
+          | 'linkedin'
+          | 'mastodon'
+          | 'tiktok'
+          | 'twitch'
+          | 'twitter-x'
+          | 'vimeo'
+          | 'youtube'
+          | 'dailymotion'
+          | 'telegram'
+          | 'threads'
+          | 'mail';
+        url: string;
+        id?: string | null;
+      }[]
+    | null;
+  updatedAt?: string | null;
+  createdAt?: string | null;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "simplified-content-generator".
  */
 export interface SimplifiedContentGenerator {
-	id: number;
-	source?: {
-		root: {
-			type: string;
-			children: {
-				type: any;
-				version: number;
-				[k: string]: unknown;
-			}[];
-			direction: ("ltr" | "rtl") | null;
-			format: "left" | "start" | "center" | "right" | "end" | "justify" | "";
-			indent: number;
-			version: number;
-		};
-		[k: string]: unknown;
-	} | null;
-	result?: {
-		root: {
-			type: string;
-			children: {
-				type: any;
-				version: number;
-				[k: string]: unknown;
-			}[];
-			direction: ("ltr" | "rtl") | null;
-			format: "left" | "start" | "center" | "right" | "end" | "justify" | "";
-			indent: number;
-			version: number;
-		};
-		[k: string]: unknown;
-	} | null;
-	updatedAt?: string | null;
-	createdAt?: string | null;
+  id: number;
+  source?: {
+    root: {
+      type: string;
+      children: {
+        type: any;
+        version: number;
+        [k: string]: unknown;
+      }[];
+      direction: ('ltr' | 'rtl') | null;
+      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+      indent: number;
+      version: number;
+    };
+    [k: string]: unknown;
+  } | null;
+  result?: {
+    root: {
+      type: string;
+      children: {
+        type: any;
+        version: number;
+        [k: string]: unknown;
+      }[];
+      direction: ('ltr' | 'rtl') | null;
+      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+      indent: number;
+      version: number;
+    };
+    [k: string]: unknown;
+  } | null;
+  updatedAt?: string | null;
+  createdAt?: string | null;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "home_select".
  */
 export interface HomeSelect<T extends boolean = true> {
-	header?:
-		| T
-		| {
-				title?: T;
-				description?: T;
-		  };
-	tiles?:
-		| T
-		| {
-				description?: T;
-		  };
-	mostViewedGuides?:
-		| T
-		| {
-				title?: T;
-				description?: T;
-		  };
-	updatedAt?: T;
-	createdAt?: T;
-	globalType?: T;
+  header?:
+    | T
+    | {
+        title?: T;
+        description?: T;
+      };
+  tiles?:
+    | T
+    | {
+        persona?:
+          | T
+          | {
+              title?: T;
+              description?: T;
+            };
+        condition?:
+          | T
+          | {
+              title?: T;
+              description?: T;
+            };
+      };
+  mostViewedGuides?:
+    | T
+    | {
+        title?: T;
+        description?: T;
+      };
+  updatedAt?: T;
+  createdAt?: T;
+  globalType?: T;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "footer_select".
  */
 export interface FooterSelect<T extends boolean = true> {
-	title?: T;
-	accessibility?:
-		| T
-		| {
-				title?: T;
-				content?: T;
-		  };
-	legalNotice?:
-		| T
-		| {
-				title?: T;
-				content?: T;
-		  };
-	contactProsCra?:
-		| T
-		| {
-				title?: T;
-				imageBanner?: T;
-				content?: T;
-		  };
-	contactParticuliers?:
-		| T
-		| {
-				title?: T;
-				imageBanner?: T;
-				content?: T;
-		  };
-	updatedAt?: T;
-	createdAt?: T;
-	globalType?: T;
+  title?: T;
+  accessibility?:
+    | T
+    | {
+        title?: T;
+        content?: T;
+      };
+  legalNotice?:
+    | T
+    | {
+        title?: T;
+        content?: T;
+      };
+  contactProsCra?:
+    | T
+    | {
+        title?: T;
+        imageBanner?: T;
+        content?: T;
+      };
+  contactParticuliers?:
+    | T
+    | {
+        title?: T;
+        imageBanner?: T;
+        content?: T;
+      };
+  updatedAt?: T;
+  createdAt?: T;
+  globalType?: T;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "about_select".
  */
 export interface AboutSelect<T extends boolean = true> {
-	maisonDeLAutisme?:
-		| T
-		| {
-				title?: T;
-				imageBanner?: T;
-				content?: T;
-		  };
-	gncra?:
-		| T
-		| {
-				title?: T;
-				imageBanner?: T;
-				content?: T;
-		  };
-	cras?:
-		| T
-		| {
-				title?: T;
-				imageBanner?: T;
-				content?: T;
-		  };
-	updatedAt?: T;
-	createdAt?: T;
-	globalType?: T;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "cartographie_select".
- */
-export interface CartographieSelect<T extends boolean = true> {
-	title?: T;
-	imageBanner?: T;
-	content?: T;
-	updatedAt?: T;
-	createdAt?: T;
-	globalType?: T;
+  maisonDeLAutisme?:
+    | T
+    | {
+        title?: T;
+        imageBanner?: T;
+        content?: T;
+      };
+  gncra?:
+    | T
+    | {
+        title?: T;
+        imageBanner?: T;
+        content?: T;
+      };
+  cras?:
+    | T
+    | {
+        title?: T;
+        imageBanner?: T;
+        content?: T;
+      };
+  updatedAt?: T;
+  createdAt?: T;
+  globalType?: T;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "newsletter_select".
  */
 export interface NewsletterSelect<T extends boolean = true> {
-	enabled?: T;
-	title?: T;
-	description?: T;
-	consentHint?: T;
-	socialTitle?: T;
-	socials?:
-		| T
-		| {
-				type?: T;
-				url?: T;
-				id?: T;
-		  };
-	updatedAt?: T;
-	createdAt?: T;
-	globalType?: T;
+  enabled?: T;
+  title?: T;
+  description?: T;
+  consentHint?: T;
+  socialTitle?: T;
+  socials?:
+    | T
+    | {
+        type?: T;
+        url?: T;
+        id?: T;
+      };
+  updatedAt?: T;
+  createdAt?: T;
+  globalType?: T;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "simplified-content-generator_select".
  */
 export interface SimplifiedContentGeneratorSelect<T extends boolean = true> {
-	source?: T;
-	result?: T;
-	updatedAt?: T;
-	createdAt?: T;
-	globalType?: T;
+  source?: T;
+  result?: T;
+  updatedAt?: T;
+  createdAt?: T;
+  globalType?: T;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "collections_widget".
  */
 export interface CollectionsWidget {
-	data?: {
-		[k: string]: unknown;
-	};
-	width: "full";
+  data?: {
+    [k: string]: unknown;
+  };
+  width: 'full';
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "auth".
  */
 export interface Auth {
-	[k: string]: unknown;
+  [k: string]: unknown;
 }
 
-declare module "payload" {
-	export interface GeneratedTypes extends Config {}
+
+declare module 'payload' {
+  export interface GeneratedTypes extends Config {}
 }
