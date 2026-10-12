@@ -41,6 +41,7 @@ export default function PracticalGuidesDisplay({
 			content={guide.content}
 			imageBanner={guide.imageBanner}
 			createdAt={guide.publishedAt ?? guide.createdAt}
+			lastUpdatedAt={guide.lastUpdatedAt}
 			showShareSocials
 			extraLinks={extraLinks}
 			headerToolbar={headerToolbar}

@@ -353,6 +353,20 @@ export const PracticalGuides: CollectionConfig = {
 			},
 		},
 		{
+			name: "lastUpdatedAt",
+			type: "date",
+			required: false,
+			label: { fr: "Date de mise à jour" },
+			admin: {
+				position: "sidebar",
+				description:
+					"Facultative. Si renseignée, une mention « Mis à jour le » est affichée sur le site à côté de « Publié le ».",
+				date: {
+					displayFormat: "dd/MM/yyyy",
+				},
+			},
+		},
+		{
 			name: "image",
 			type: "upload",
 			relationTo: "medias",
