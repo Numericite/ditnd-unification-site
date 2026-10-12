@@ -352,6 +352,10 @@ export interface PracticalGuide {
 	 * Affichée sur le site à côté de « Publié le ». Par défaut, la date de création de la fiche.
 	 */
 	publishedAt?: string | null;
+	/**
+	 * Facultative. Si renseignée, une mention « Mis à jour le » est affichée sur le site à côté de « Publié le ».
+	 */
+	lastUpdatedAt?: string | null;
 	image?: (number | null) | Media;
 	imageBanner?: (number | null) | Media;
 	/**
@@ -1065,6 +1069,7 @@ export interface PracticalGuidesSelect<T extends boolean = true> {
 				image?: T;
 		  };
 	publishedAt?: T;
+	lastUpdatedAt?: T;
 	image?: T;
 	imageBanner?: T;
 	slug?: T;
