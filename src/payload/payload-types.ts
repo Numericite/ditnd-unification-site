@@ -153,7 +153,6 @@ export interface Config {
 		home: Home;
 		footer: Footer;
 		about: About;
-		cartographie: Cartographie;
 		newsletter: Newsletter;
 		"simplified-content-generator": SimplifiedContentGenerator;
 	};
@@ -161,7 +160,6 @@ export interface Config {
 		home: HomeSelect<false> | HomeSelect<true>;
 		footer: FooterSelect<false> | FooterSelect<true>;
 		about: AboutSelect<false> | AboutSelect<true>;
-		cartographie: CartographieSelect<false> | CartographieSelect<true>;
 		newsletter: NewsletterSelect<false> | NewsletterSelect<true>;
 		"simplified-content-generator":
 			| SimplifiedContentGeneratorSelect<false>
@@ -1403,7 +1401,14 @@ export interface Home {
 		description: string;
 	};
 	tiles: {
-		description: string;
+		persona: {
+			title: string;
+			description: string;
+		};
+		condition: {
+			title: string;
+			description: string;
+		};
 	};
 	mostViewedGuides: {
 		title: string;
@@ -1563,32 +1568,6 @@ export interface About {
 	createdAt?: string | null;
 }
 /**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "cartographie".
- */
-export interface Cartographie {
-	id: number;
-	title: string;
-	imageBanner?: (number | null) | Media;
-	content: {
-		root: {
-			type: string;
-			children: {
-				type: any;
-				version: number;
-				[k: string]: unknown;
-			}[];
-			direction: ("ltr" | "rtl") | null;
-			format: "left" | "start" | "center" | "right" | "end" | "justify" | "";
-			indent: number;
-			version: number;
-		};
-		[k: string]: unknown;
-	};
-	updatedAt?: string | null;
-	createdAt?: string | null;
-}
-/**
  * Bloc affiché en bas de la page d'accueil. Décochez « Afficher le bloc » pour le retirer du site.
  *
  * This interface was referenced by `Config`'s JSON-Schema
@@ -1690,7 +1669,18 @@ export interface HomeSelect<T extends boolean = true> {
 	tiles?:
 		| T
 		| {
-				description?: T;
+				persona?:
+					| T
+					| {
+							title?: T;
+							description?: T;
+					  };
+				condition?:
+					| T
+					| {
+							title?: T;
+							description?: T;
+					  };
 		  };
 	mostViewedGuides?:
 		| T
@@ -1764,18 +1754,6 @@ export interface AboutSelect<T extends boolean = true> {
 				imageBanner?: T;
 				content?: T;
 		  };
-	updatedAt?: T;
-	createdAt?: T;
-	globalType?: T;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "cartographie_select".
- */
-export interface CartographieSelect<T extends boolean = true> {
-	title?: T;
-	imageBanner?: T;
-	content?: T;
 	updatedAt?: T;
 	createdAt?: T;
 	globalType?: T;
