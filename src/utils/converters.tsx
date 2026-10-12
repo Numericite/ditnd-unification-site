@@ -25,6 +25,7 @@ import type { AugmentedPracticalGuide } from "~/server/api/routers/practical-gui
 import WysiwygAccordionGroup from "~/components/ui/CmsPage/WysiwygAccordionGroup";
 import Image from "next/image";
 import LiteYouTube from "~/components/ui/CmsPage/LiteYoutube";
+import Transcription from "~/components/ui/CmsPage/Transcription";
 import { Table } from "@codegouvfr/react-dsfr/Table";
 import { Download } from "@codegouvfr/react-dsfr/Download";
 import { Quote, type QuoteProps } from "@codegouvfr/react-dsfr/Quote";
@@ -363,6 +364,7 @@ export const customImageSizeConverter: JSXConverter<SerializedBlockNode> = ({
 
 	const image = value.image;
 	const size = value.size;
+	const transcription = (value.transcription as string | undefined)?.trim();
 
 	const a11yProps =
 		value.altType === "nonDecorative"
@@ -384,6 +386,7 @@ export const customImageSizeConverter: JSXConverter<SerializedBlockNode> = ({
 					width={image.width}
 					height={image.height}
 				/>
+				{transcription && <Transcription content={transcription} />}
 			</div>
 		);
 	}
@@ -411,6 +414,7 @@ export const customImageSizeConverter: JSXConverter<SerializedBlockNode> = ({
 					width={customWidth}
 					height={height}
 				/>
+				{transcription && <Transcription content={transcription} />}
 			</div>
 		);
 	}
@@ -441,6 +445,7 @@ export const customImageSizeConverter: JSXConverter<SerializedBlockNode> = ({
 				width={width}
 				height={height}
 			/>
+			{transcription && <Transcription content={transcription} />}
 		</div>
 	);
 };
@@ -468,6 +473,9 @@ export const youtubeConverter: JSXConverter<SerializedBlockNode> = ({
 	const sizeValue = (node.fields?.sizeValue as number) ?? 100;
 	const width = sizeUnit === "percent" ? `${sizeValue}%` : `${sizeValue}px`;
 	const thumbnail = node.fields?.thumbnail as Media | undefined;
+	const transcription = (
+		node.fields?.transcription as string | undefined
+	)?.trim();
 
 	return (
 		<div className={fr.cx("fr-my-3v")} style={{ width, maxWidth: "100%" }}>
@@ -477,6 +485,7 @@ export const youtubeConverter: JSXConverter<SerializedBlockNode> = ({
 					thumbnail?.sizes?.large?.url ?? thumbnail?.url ?? undefined
 				}
 			/>
+			{transcription && <Transcription content={transcription} />}
 		</div>
 	);
 };
