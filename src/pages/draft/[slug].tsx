@@ -108,8 +108,9 @@ export const getServerSideProps: GetServerSideProps<Props> = async (ctx) => {
 			return { props: { isNotFound: true } };
 		}
 
+		const { relatedPracticalGuides: _, ...guideWithoutJoin } = guide;
 		const augmented = {
-			...guide,
+			...guideWithoutJoin,
 			themes: await resolveRelations(guide.themes, "themes"),
 			courses: await resolveRelations(guide.courses, "courses"),
 			"practical-guides": await resolveRelations(
