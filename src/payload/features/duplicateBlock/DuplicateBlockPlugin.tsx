@@ -5,7 +5,7 @@ import {
 	$getNodeByKey,
 	$getRoot,
 	$getSelection,
-	COMMAND_PRIORITY_EDITOR,
+	COMMAND_PRIORITY_LOW,
 	KEY_DOWN_COMMAND,
 	type LexicalEditor,
 } from "@payloadcms/richtext-lexical/lexical";
@@ -87,7 +87,7 @@ export const DuplicateBlockPlugin: PluginComponentWithAnchor = ({
 					$insertCopiesAfter(blocks);
 					return true;
 				},
-				COMMAND_PRIORITY_EDITOR,
+				COMMAND_PRIORITY_LOW,
 			),
 		[editor],
 	);
