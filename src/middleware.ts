@@ -1,5 +1,43 @@
 import { NextResponse, type NextRequest } from "next/server";
 
+// Temporary HTTP Basic Authentication in preprod environment.
+const BASIC_USER = process.env.BASIC_USER ?? "";
+const BASIC_PASSWORD = process.env.BASIC_PASSWORD ?? "";
+
+if (!BASIC_USER || !BASIC_PASSWORD) {
+	throw new Error("Missing env.BASIC_USER or env.BASIC_PASSWORD");
+}
+
+export const isAuthorized = (authHeader: string | null): boolean => {
+	if (!authHeader || !authHeader?.startsWith("Basic ")) {
+		return false;
+	}
+	const decoded = Buffer.from(authHeader.slice(6).trim(), "base64").toString(
+		"utf8",
+	);
+	const [user, pass] = decoded.split(":");
+	return user === BASIC_USER && pass === BASIC_PASSWORD;
+};
+
+const requiresBasicAuth = (request: NextRequest): boolean => {
+	const { pathname } = request.nextUrl;
+	const isFromAdmin = request.headers.get("referer")?.includes("/admin");
+
+	if (
+		pathname.startsWith("/admin") ||
+		(isFromAdmin && pathname.startsWith("/api"))
+	)
+		return false;
+
+	if (
+		process.env.NODE_ENV === "development" ||
+		isAuthorized(request.headers.get("authorization"))
+	)
+		return false;
+
+	return true;
+};
+
 /**
  * Redirections 301 des URLs de l'ancien site WordPress.
  * Voir docs/plan-redirections-seo.md.
@@ -61,7 +99,22 @@ const buildRedirect = (request: NextRequest, target: string) => {
 	return NextResponse.redirect(url, 301);
 };
 
+// Tout sauf les assets, l'admin, les APIs et les fichiers (les anciennes
+// URLs de pages WordPress ne contiennent jamais de point).
+const REDIRECTS_MATCHER = /^\/(?!api|_next|admin|draft|app\/uploads|.*\.).*$/;
+
 export async function middleware(request: NextRequest) {
+	if (requiresBasicAuth(request)) {
+		return new Response("Auth Required", {
+			status: 401,
+			headers: { "WWW-Authenticate": 'Basic realm="Secure Area"' },
+		});
+	}
+
+	if (!REDIRECTS_MATCHER.test(request.nextUrl.pathname)) {
+		return NextResponse.next();
+	}
+
 	const pathname = request.nextUrl.pathname.toLowerCase();
 
 	const map = await getRedirectMap(request.nextUrl.origin);
@@ -78,7 +131,8 @@ export async function middleware(request: NextRequest) {
 }
 
 export const config = {
-	// Tout sauf les assets, l'admin, les APIs et les fichiers (les anciennes
-	// URLs de pages WordPress ne contiennent jamais de point).
-	matcher: ["/((?!api|_next|admin|draft|app/uploads|.*\\.).*)"],
+	// Périmètre de la basic auth ; les redirections sont restreintes plus
+	// finement par REDIRECTS_MATCHER.
+	matcher:
+		"/((?!api|_next/static|_next/image|favicon.ico|sitemap.xml|robots.txt|placeholder.16x9.png).*)",
 };
