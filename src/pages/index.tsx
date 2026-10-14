@@ -17,12 +17,15 @@ import type { GetServerSideProps } from "next";
 import { createCaller } from "~/server/api/root";
 import { createTRPCContext } from "~/server/api/trpc";
 import type { AugmentedPracticalGuide } from "~/server/api/routers/practical-guides";
+import NewsCarousel from "~/components/HomePage/NewsCarousel";
+import type { AugmentedNews } from "~/server/api/routers/news";
 
 type Props = {
 	mostViewedGuides: AugmentedPracticalGuide[];
+	latestNews: AugmentedNews[];
 };
 
-export default function Home({ mostViewedGuides }: Props) {
+export default function Home({ mostViewedGuides, latestNews }: Props) {
 	const { classes, cx } = useStyles();
 
 	const [search, setSearch] = useState("");
@@ -106,6 +109,13 @@ export default function Home({ mostViewedGuides }: Props) {
 						</div>
 					</div>
 				</div>
+				{latestNews.length > 0 && (
+					<div className={fr.cx("fr-container")}>
+						<div className={fr.cx("fr-py-4w")}>
+							<NewsCarousel news={latestNews} />
+						</div>
+					</div>
+				)}
 				<div className={cx(classes.coloredContainer)}>
 					<div className={fr.cx("fr-container")}>
 						<div className={fr.cx("fr-py-6w")}>
@@ -163,11 +173,15 @@ export default function Home({ mostViewedGuides }: Props) {
 
 export const getServerSideProps: GetServerSideProps<Props> = async () => {
 	const caller = createCaller(await createTRPCContext());
-	const mostViewedGuides = await caller.practicalGuide.getByViews();
+	const [mostViewedGuides, latestNews] = await Promise.all([
+		caller.practicalGuide.getByViews(),
+		caller.news.getAll(),
+	]);
 
 	return {
 		props: {
 			mostViewedGuides,
+			latestNews,
 		},
 	};
 };
