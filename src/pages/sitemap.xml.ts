@@ -50,6 +50,7 @@ export const getServerSideProps: GetServerSideProps = async ({ res }) => {
 		}),
 		payload.find({
 			collection: "courses",
+			where: { _status: { equals: "published" } },
 			limit: 1000,
 			pagination: false,
 			select: { slug: true },

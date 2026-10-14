@@ -30,7 +30,6 @@ export interface AugmentedCourse extends Course {
 	conditions: Condition[];
 	image: Media | undefined;
 	imageBanner: Media | undefined;
-	_status?: "draft" | "published";
 }
 
 export const courseRouter = createTRPCRouter({
@@ -43,6 +42,7 @@ export const courseRouter = createTRPCRouter({
 				limit: 1,
 				where: {
 					slug: { equals: input.slug },
+					_status: { equals: "published" },
 				},
 			});
 
@@ -76,7 +76,7 @@ export const courseRouter = createTRPCRouter({
 		)
 		.query(
 			async ({ input, ctx }): Promise<PaginatedResult<AugmentedCourse>> => {
-				const whereConditions: Where[] = [];
+				const whereConditions: Where[] = [{ _status: { equals: "published" } }];
 
 				const { conditions, themes, personas, type, text, page, limit } = input;
 
@@ -145,6 +145,7 @@ export const courseRouter = createTRPCRouter({
 							collection: "courses",
 							limit: VECTOR_SEARCH_CAP,
 							where: {
+								_status: { equals: "published" },
 								or: [
 									{ title: { contains: trimmedText } },
 									{ description: { contains: trimmedText } },
@@ -210,7 +211,7 @@ export const courseRouter = createTRPCRouter({
 						updatedAt: false,
 						createdAt: false,
 					},
-					where: whereConditions.length ? { and: whereConditions } : undefined,
+					where: { and: whereConditions },
 				});
 
 				return {

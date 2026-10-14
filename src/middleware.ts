@@ -3,8 +3,9 @@ import { NextResponse, type NextRequest } from "next/server";
 // Temporary HTTP Basic Authentication in preprod environment.
 const BASIC_USER = process.env.BASIC_USER ?? "";
 const BASIC_PASSWORD = process.env.BASIC_PASSWORD ?? "";
+const BASIC_AUTH_DISABLED = process.env.BASIC_AUTH_DISABLED === "true";
 
-if (!BASIC_USER || !BASIC_PASSWORD) {
+if (!BASIC_AUTH_DISABLED && (!BASIC_USER || !BASIC_PASSWORD)) {
 	throw new Error("Missing env.BASIC_USER or env.BASIC_PASSWORD");
 }
 
@@ -30,6 +31,7 @@ const requiresBasicAuth = (request: NextRequest): boolean => {
 		return false;
 
 	if (
+		BASIC_AUTH_DISABLED ||
 		process.env.NODE_ENV === "development" ||
 		isAuthorized(request.headers.get("authorization"))
 	)
