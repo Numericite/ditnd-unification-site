@@ -17,6 +17,7 @@ export const newsRouter = createTRPCRouter({
 			collection: "news",
 			limit: 3,
 			depth: 1,
+			where: { _status: { equals: "published" } },
 			select: {
 				title: true,
 				description: true,

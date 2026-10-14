@@ -12,6 +12,9 @@ export const News: CollectionConfig = {
 		plural: "Actualités",
 	},
 	orderable: true,
+	versions: {
+		drafts: true,
+	},
 	fields: [
 		{
 			name: "title",
@@ -19,7 +22,7 @@ export const News: CollectionConfig = {
 			required: true,
 			label: { fr: "Titre" },
 		},
-		slugField("news"),
+		slugField("news", { editable: true }),
 		{
 			name: "description",
 			type: "textarea",
