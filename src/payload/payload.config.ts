@@ -4,6 +4,7 @@ import { nodemailerAdapter } from "@payloadcms/email-nodemailer";
 import { lexicalEditor } from "@payloadcms/richtext-lexical";
 import path from "node:path";
 import { buildConfig } from "payload";
+import { createTransport } from "nodemailer";
 import { fileURLToPath } from "node:url";
 import sharp from "sharp";
 import { s3Storage } from "@payloadcms/storage-s3";
@@ -63,7 +64,7 @@ export default buildConfig({
 		defaultFromAddress:
 			process.env.SMTP_FROM_ADDRESS || "contact@maisondelautisme.gouv.fr",
 		defaultFromName: process.env.SMTP_FROM_NAME || "Maison de l'autisme",
-		transportOptions: {
+		transport: createTransport({
 			host: smtpHost || "localhost",
 			port: smtpPort,
 			secure: smtpPort === 465,
@@ -72,7 +73,7 @@ export default buildConfig({
 					? { user: smtpUser, pass: smtpPassword }
 					: undefined,
 			ignoreTLS: !smtpUser && !smtpPassword,
-		},
+		}),
 	}),
 	admin: {
 		user: Users.slug,
