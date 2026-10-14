@@ -141,6 +141,7 @@ export const courseCardSelect = {
 	conditions: true,
 	image: true,
 	imageBanner: true,
+	_status: true,
 } satisfies CoursesSelect<true>;
 
 export const Courses: CollectionConfig = {

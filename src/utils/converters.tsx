@@ -522,6 +522,7 @@ const relationCard = (
 
 	if (relationTo === "courses") {
 		const course = value as AugmentedCourse;
+		if (course._status !== "published") return null;
 
 		return (
 			<CardDisplay
