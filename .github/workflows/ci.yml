@@ -87,6 +87,8 @@ jobs:
       # guide (embeddings, simplification) stays deterministic and offline.
       ALBERT_API_URL: http://127.0.0.1:4010
       ALBERT_API_KEY: e2e-mock
+      # The temporary preprod basic auth would answer 401 to every Cypress visit.
+      BASIC_AUTH_DISABLED: "true"
     steps:
       - uses: actions/checkout@v4
 
