@@ -14,6 +14,37 @@ const afterChangeCourse: CollectionAfterChangeHook = async ({ doc, req }) => {
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	const db = req.payload.db as any;
 
+	// Skip indexing for non-published versions.
+	// Only delete vectors if no published version exists anymore (true unpublish).
+	if (doc._status !== "published") {
+		try {
+			const publishedDoc = await req.payload.findByID({
+				collection: "courses",
+				id: doc.id,
+				draft: false,
+			});
+			// A published version still exists — keep its vectors intact
+			if (publishedDoc?._status === "published") {
+				return doc;
+			}
+		} catch {
+			// No published version found — fall through to delete vectors
+		}
+
+		try {
+			await db.drizzle.execute(
+				sql`DELETE FROM courses_search_vectors WHERE doc_id = ${String(doc.id)}`,
+			);
+		} catch (err) {
+			console.error(
+				"[VectorSearch] Failed to remove course vectors on unpublish:",
+				doc.id,
+				err,
+			);
+		}
+		return doc;
+	}
+
 	try {
 		const title = typeof doc.title === "string" ? doc.title : "";
 		const description =
@@ -47,17 +78,18 @@ const afterChangeCourse: CollectionAfterChangeHook = async ({ doc, req }) => {
 			return names.filter(Boolean);
 		};
 
-		const [personaName, conditionNames, themeName] = await Promise.all([
-			resolveName(doc.persona, "personas"),
+		const [personaNames, conditionNames, themeNames] = await Promise.all([
+			resolveNames(doc.persona, "personas"),
 			resolveNames(doc.conditions, "conditions"),
-			resolveName(doc.theme, "themes"),
+			resolveNames(doc.themes, "themes"),
 		]);
 
 		const metadata: string[] = [];
-		if (personaName) metadata.push(`Public concerné : ${personaName}`);
+		if (personaNames.length)
+			metadata.push(`Public concerné : ${personaNames.join(", ")}`);
 		if (conditionNames.length)
 			metadata.push(`Troubles : ${conditionNames.join(", ")}`);
-		if (themeName) metadata.push(`Thème : ${themeName}`);
+		if (themeNames.length) metadata.push(`Thèmes : ${themeNames.join(", ")}`);
 		if (type) metadata.push(`Type de ressource : ${type}`);
 
 		const fullText = [title, description, ...metadata]
@@ -105,9 +137,11 @@ export const courseCardSelect = {
 	slug: true,
 	link: true,
 	type: true,
-	theme: true,
+	themes: true,
 	conditions: true,
 	image: true,
+	imageBanner: true,
+	_status: true,
 } satisfies CoursesSelect<true>;
 
 export const Courses: CollectionConfig = {
@@ -115,6 +149,7 @@ export const Courses: CollectionConfig = {
 	admin: {
 		useAsTitle: "title",
 		group: { fr: "Contenus" },
+		defaultColumns: ["title", "type", "_status", "updatedAt"],
 	},
 	defaultPopulate: courseCardSelect,
 	hooks: {
@@ -125,52 +160,94 @@ export const Courses: CollectionConfig = {
 		singular: "Formation",
 		plural: "Formations",
 	},
+	versions: {
+		drafts: true,
+	},
 	fields: [
 		{
-			name: "title",
-			type: "text",
-			required: true,
-			label: { fr: "Titre" },
+			type: "tabs",
+			tabs: [
+				{
+					label: { fr: "Contenu" },
+					fields: [
+						{
+							name: "title",
+							type: "text",
+							required: true,
+							label: { fr: "Titre" },
+						},
+						standardFields.longDescription,
+						{
+							name: "link",
+							type: "text",
+							required: true,
+							label: { fr: "Lien de la formation" },
+						},
+						{
+							name: "type",
+							type: "select",
+							required: true,
+							label: { fr: "Type de ressource" },
+							options: ["MOOC", "Webinaire", "Présentiel"],
+						},
+						{
+							...standardFields.wysiwyg,
+							required: false,
+						},
+					],
+				},
+			],
 		},
-		slugField("courses"),
-		standardFields.longDescription,
 		{
-			name: "link",
-			type: "text",
-			required: true,
-			label: { fr: "Lien de la formation" },
-		},
-		{
-			name: "type",
-			type: "select",
-			required: true,
-			label: { fr: "Type de ressource" },
-			options: ["MOOC", "Webinaire", "Présentiel"],
-		},
-		{
-			...standardFields.wysiwyg,
+			name: "publishedAt",
+			type: "date",
 			required: false,
+			label: { fr: "Date de publication" },
+			defaultValue: () => new Date().toISOString(),
+			admin: {
+				position: "sidebar",
+				description:
+					"Affichée sur le site à côté de « Publié le ». Par défaut, la date de création de la formation.",
+				date: {
+					displayFormat: "dd/MM/yyyy",
+				},
+			},
 		},
 		{
-			name: "theme",
-			type: "relationship",
-			required: true,
-			relationTo: "themes",
-			label: { fr: "Thèmes" },
+			name: "lastUpdatedAt",
+			type: "date",
+			required: false,
+			label: { fr: "Date de mise à jour" },
+			admin: {
+				position: "sidebar",
+				description:
+					"Facultative. Si renseignée, une mention « Mis à jour le » est affichée sur le site à côté de « Publié le ».",
+				date: {
+					displayFormat: "dd/MM/yyyy",
+				},
+			},
+		},
+		{
+			name: "image",
+			type: "upload",
+			relationTo: "medias",
+			required: false,
+			label: { fr: "Image à la une" },
 			admin: {
 				position: "sidebar",
 			},
 		},
 		{
-			name: "persona",
-			type: "relationship",
-			required: true,
-			relationTo: "personas",
-			label: { fr: "Persona" },
+			name: "imageBanner",
+			type: "upload",
+			relationTo: "medias",
+			required: false,
+			label: { fr: "Bannière" },
 			admin: {
 				position: "sidebar",
 			},
 		},
+		slugField("courses", { editable: true }),
 		{
 			name: "conditions",
 			type: "relationship",
@@ -183,11 +260,23 @@ export const Courses: CollectionConfig = {
 			},
 		},
 		{
-			name: "image",
-			type: "upload",
-			relationTo: "medias",
-			required: false,
-			label: { fr: "Bannière" },
+			name: "persona",
+			type: "relationship",
+			required: true,
+			relationTo: "personas",
+			hasMany: true,
+			label: { fr: "Persona" },
+			admin: {
+				position: "sidebar",
+			},
+		},
+		{
+			name: "themes",
+			type: "relationship",
+			required: true,
+			relationTo: "themes",
+			hasMany: true,
+			label: { fr: "Thèmes" },
 			admin: {
 				position: "sidebar",
 			},

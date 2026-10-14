@@ -106,9 +106,14 @@ export default function JourneyPage(props: Props) {
 								<h1>{pageTitle}</h1>
 								<p>{conditionDescription}</p>
 							</div>
-							<div className={fr.cx("fr-col-12", "fr-col-lg-6")}>
+							<div
+								className={cx(
+									fr.cx("fr-col-12", "fr-col-lg-6"),
+									classes.imageColumn,
+								)}
+							>
 								<Image
-									className={fr.cx("fr-responsive-img")}
+									className={classes.image}
 									fetchPriority="high"
 									priority
 									alt=""
@@ -175,6 +180,23 @@ const useStyles = tss.withName("JourneyConditionPage").create({
 		top: "var(--sticky-top)",
 		".fr-summary__link:before": {
 			visibility: "hidden",
+		},
+	},
+	imageColumn: {
+		display: "flex",
+		justifyContent: "center",
+		alignItems: "center",
+		[fr.breakpoints.down("lg")]: {
+			order: -1,
+		},
+	},
+	image: {
+		height: "20rem",
+		width: "auto",
+		maxWidth: "100%",
+		objectFit: "contain",
+		[fr.breakpoints.down("lg")]: {
+			height: "14rem",
 		},
 	},
 	centeredContainer: {

@@ -16,22 +16,26 @@ type Props = {
 export default function CourseDisplay({ course }: Props) {
 	const { classes, cx } = useStyles();
 
-	const banner = course.image?.url ? (
+	const banner = course.imageBanner?.url ? (
 		<Image
 			className={cx(fr.cx("fr-responsive-img"), classes.imageBanner)}
 			fetchPriority="high"
 			priority
 			alt=""
 			role="presentation"
-			src={course.image.url}
+			src={course.imageBanner.url}
 			width={1200}
 			height={240}
 		/>
 	) : null;
 
+	const publishedAt = course.publishedAt ?? course.createdAt;
+
 	const dateLine = (
 		<p className={fr.cx("fr-text--sm")}>
-			{`Publié le ${new Date(course.createdAt).toLocaleDateString("fr-FR")} - Modifié le ${new Date(course.updatedAt).toLocaleDateString("fr-FR")}`}
+			{`Publié le ${new Date(publishedAt).toLocaleDateString("fr-FR")}`}
+			{course.lastUpdatedAt &&
+				` - Mis à jour le ${new Date(course.lastUpdatedAt).toLocaleDateString("fr-FR")}`}
 		</p>
 	);
 
@@ -71,11 +75,13 @@ export default function CourseDisplay({ course }: Props) {
 						</Tag>
 					</li>
 				))}
-				<li>
-					<Tag>
-						<strong>{course.theme.name}</strong>
-					</Tag>
-				</li>
+				{course.themes.map((theme) => (
+					<li key={theme.id}>
+						<Tag>
+							<strong>{theme.name}</strong>
+						</Tag>
+					</li>
+				))}
 			</ul>
 		</div>
 	);
