@@ -16,9 +16,6 @@ export default function RecommendedContent({
 	const publishedGuides = guides.filter(
 		(guide) => guide._status === "published",
 	);
-	const publishedCourses = courses.filter(
-		(course) => course._status === "published",
-	);
 
 	return (
 		<div>
@@ -36,7 +33,7 @@ export default function RecommendedContent({
 					</div>
 				</div>
 			)}
-			{publishedCourses.length !== 0 && (
+			{courses.length !== 0 && (
 				<div className={cx(classes.footerContent, classes.marginContent)}>
 					<h3 id="formations">Ces formations pourraient vous intéresser</h3>
 					<div className={fr.cx("fr-grid-row", "fr-grid-row--gutters")}>
@@ -47,7 +44,7 @@ export default function RecommendedContent({
 								"fr-col-md-12",
 								"fr-col-lg-6",
 							)}
-							courses={publishedCourses}
+							courses={courses}
 							kind="courses"
 						/>
 					</div>

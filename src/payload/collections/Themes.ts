@@ -60,7 +60,7 @@ export const Themes: CollectionConfig = {
 			name: "relatedCourses",
 			type: "join",
 			collection: "courses",
-			on: "theme",
+			on: "themes",
 			label: "Formations associées",
 			admin: {
 				position: "sidebar",

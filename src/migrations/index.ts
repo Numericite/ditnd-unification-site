@@ -41,6 +41,7 @@ import * as migration_20261002_123739_practical_guide_simplified_title from './2
 import * as migration_20261002_134008_remove_cartographie_page from './20261002_134008_remove_cartographie_page';
 import * as migration_20261012_083005_home_persona_condition_texts from './20261012_083005_home_persona_condition_texts';
 import * as migration_20261012_090000_add_practical_guide_last_updated_at from './20261012_090000_add_practical_guide_last_updated_at';
+import * as migration_20261014_132050_courses_align_practical_guides from './20261014_132050_courses_align_practical_guides';
 
 export const migrations = [
   {
@@ -251,11 +252,16 @@ export const migrations = [
   {
     up: migration_20261012_083005_home_persona_condition_texts.up,
     down: migration_20261012_083005_home_persona_condition_texts.down,
-    name: '20261012_083005_home_persona_condition_texts'
+    name: '20261012_083005_home_persona_condition_texts',
   },
   {
     up: migration_20261012_090000_add_practical_guide_last_updated_at.up,
     down: migration_20261012_090000_add_practical_guide_last_updated_at.down,
-    name: '20261012_090000_add_practical_guide_last_updated_at'
+    name: '20261012_090000_add_practical_guide_last_updated_at',
+  },
+  {
+    up: migration_20261014_132050_courses_align_practical_guides.up,
+    down: migration_20261014_132050_courses_align_practical_guides.down,
+    name: '20261014_132050_courses_align_practical_guides'
   },
 ];

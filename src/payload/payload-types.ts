@@ -416,7 +416,6 @@ export interface Condition {
 export interface Course {
 	id: number;
 	title: string;
-	slug: string;
 	description: string;
 	link: string;
 	type: "MOOC" | "Webinaire" | "Présentiel";
@@ -435,10 +434,6 @@ export interface Course {
 		};
 		[k: string]: unknown;
 	} | null;
-	theme: number | Theme;
-	persona: number | Persona;
-	conditions: (number | Condition)[];
-	image?: (number | null) | Media;
 	meta?: {
 		title?: string | null;
 		description?: string | null;
@@ -447,35 +442,23 @@ export interface Course {
 		 */
 		image?: (number | null) | Media;
 	};
-	updatedAt: string;
-	createdAt: string;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "themes".
- */
-export interface Theme {
-	id: number;
-	name: string;
 	/**
-	 * Description courte affichée sur les cartes (120 caractères max)
+	 * Affichée sur le site à côté de « Publié le ». Par défaut, la date de création de la formation.
 	 */
-	description: string;
+	publishedAt?: string | null;
+	/**
+	 * Facultative. Si renseignée, une mention « Mis à jour le » est affichée sur le site à côté de « Publié le ».
+	 */
+	lastUpdatedAt?: string | null;
+	image?: (number | null) | Media;
+	imageBanner?: (number | null) | Media;
+	/**
+	 * Utilisé dans l'URL de la page. Laissez vide pour le générer à partir du titre. Le modifier change l'URL publique : pensez à ajouter une redirection.
+	 */
 	slug: string;
-	/**
-	 * Le thème n'apparaît plus dans les filtres du site, par exemple tant qu'il contient trop peu de fiches.
-	 */
-	isHidden?: boolean | null;
-	relatedPracticalGuides?: {
-		docs?: (number | PracticalGuide)[];
-		hasNextPage?: boolean;
-		totalDocs?: number;
-	};
-	relatedCourses?: {
-		docs?: (number | Course)[];
-		hasNextPage?: boolean;
-		totalDocs?: number;
-	};
+	conditions: (number | Condition)[];
+	persona: (number | Persona)[];
+	themes: (number | Theme)[];
 	updatedAt: string;
 	createdAt: string;
 }
@@ -547,6 +530,35 @@ export interface Journey {
 		courses?: (number | Course)[] | null;
 		id?: string | null;
 	}[];
+	updatedAt: string;
+	createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "themes".
+ */
+export interface Theme {
+	id: number;
+	name: string;
+	/**
+	 * Description courte affichée sur les cartes (120 caractères max)
+	 */
+	description: string;
+	slug: string;
+	/**
+	 * Le thème n'apparaît plus dans les filtres du site, par exemple tant qu'il contient trop peu de fiches.
+	 */
+	isHidden?: boolean | null;
+	relatedPracticalGuides?: {
+		docs?: (number | PracticalGuide)[];
+		hasNextPage?: boolean;
+		totalDocs?: number;
+	};
+	relatedCourses?: {
+		docs?: (number | Course)[];
+		hasNextPage?: boolean;
+		totalDocs?: number;
+	};
 	updatedAt: string;
 	createdAt: string;
 }
@@ -1092,15 +1104,10 @@ export interface PracticalGuidesSelect<T extends boolean = true> {
  */
 export interface CoursesSelect<T extends boolean = true> {
 	title?: T;
-	slug?: T;
 	description?: T;
 	link?: T;
 	type?: T;
 	content?: T;
-	theme?: T;
-	persona?: T;
-	conditions?: T;
-	image?: T;
 	meta?:
 		| T
 		| {
@@ -1108,6 +1115,14 @@ export interface CoursesSelect<T extends boolean = true> {
 				description?: T;
 				image?: T;
 		  };
+	publishedAt?: T;
+	lastUpdatedAt?: T;
+	image?: T;
+	imageBanner?: T;
+	slug?: T;
+	conditions?: T;
+	persona?: T;
+	themes?: T;
 	updatedAt?: T;
 	createdAt?: T;
 }

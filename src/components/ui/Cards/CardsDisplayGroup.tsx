@@ -37,10 +37,12 @@ export default function CardsDisplayGroup({
 							>
 								<CardDisplay
 									{...course}
-									imageUrl={course.image?.url ?? undefined}
+									imageUrl={
+										course.image?.url ?? course.imageBanner?.url ?? undefined
+									}
 									imageAlt=""
 									conditions={course.conditions}
-									themes={[course.theme]}
+									themes={course.themes}
 									redirect={
 										course.slug ? `/formations/${course.slug}` : course.link
 									}

@@ -527,14 +527,13 @@ const relationCard = (
 			<CardDisplay
 				title={course.title}
 				description={horizontal ? (course.description ?? undefined) : undefined}
-				imageUrl={course.image?.url ?? undefined}
+				imageUrl={course.image?.url ?? course.imageBanner?.url ?? undefined}
 				imageAlt=""
 				conditions={populated<Condition>(course.conditions)}
-				themes={populated<Theme>([course.theme])}
-				redirect={course.link}
+				themes={populated<Theme>(course.themes)}
+				redirect={course.slug ? `/formations/${course.slug}` : course.link}
 				titleAs={titleAs}
 				horizontal={horizontal}
-				noImg
 				kind="courses"
 			/>
 		);

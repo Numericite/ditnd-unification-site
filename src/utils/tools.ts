@@ -106,7 +106,7 @@ export function courseQuery(
 		course.conditions.some((c) => c.slug.toLowerCase() === condition) &&
 		(course.description.toLowerCase().includes(query) ||
 			course.title.toLowerCase().includes(query) ||
-			course.theme.name.toLowerCase().includes(query))
+			course.themes.some((t) => t.name.toLowerCase().includes(query)))
 	);
 }
 

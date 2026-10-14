@@ -25,10 +25,11 @@ import {
 import { findDocsWithAllConditions } from "~/server/api/all-conditions";
 
 export interface AugmentedCourse extends Course {
-	theme: Theme;
-	persona: Persona;
+	themes: Theme[];
+	persona: Persona[];
 	conditions: Condition[];
-	image: Media;
+	image: Media | undefined;
+	imageBanner: Media | undefined;
 	_status?: "draft" | "published";
 }
 
@@ -38,7 +39,7 @@ export const courseRouter = createTRPCRouter({
 		.query(async ({ input, ctx }): Promise<AugmentedCourse> => {
 			const result = await ctx.payload.find({
 				collection: "courses",
-				depth: 1,
+				depth: 2,
 				limit: 1,
 				where: {
 					slug: { equals: input.slug },
@@ -96,7 +97,7 @@ export const courseRouter = createTRPCRouter({
 
 				if (themes?.length) {
 					whereConditions.push({
-						"theme.slug": { in: themes },
+						"themes.slug": { in: themes },
 					});
 				}
 

@@ -43,7 +43,11 @@ export default function CoursePage(props: Props) {
 	const metaTitle = course.meta?.title?.trim() || course.title;
 	const metaDescription =
 		course.meta?.description?.trim() || course.description?.trim();
-	const metaImage = metaImageObj?.url || course.image?.url || undefined;
+	const metaImage =
+		metaImageObj?.url ||
+		course.imageBanner?.url ||
+		course.image?.url ||
+		undefined;
 
 	return (
 		<>

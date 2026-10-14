@@ -47,17 +47,18 @@ const afterChangeCourse: CollectionAfterChangeHook = async ({ doc, req }) => {
 			return names.filter(Boolean);
 		};
 
-		const [personaName, conditionNames, themeName] = await Promise.all([
-			resolveName(doc.persona, "personas"),
+		const [personaNames, conditionNames, themeNames] = await Promise.all([
+			resolveNames(doc.persona, "personas"),
 			resolveNames(doc.conditions, "conditions"),
-			resolveName(doc.theme, "themes"),
+			resolveNames(doc.themes, "themes"),
 		]);
 
 		const metadata: string[] = [];
-		if (personaName) metadata.push(`Public concerné : ${personaName}`);
+		if (personaNames.length)
+			metadata.push(`Public concerné : ${personaNames.join(", ")}`);
 		if (conditionNames.length)
 			metadata.push(`Troubles : ${conditionNames.join(", ")}`);
-		if (themeName) metadata.push(`Thème : ${themeName}`);
+		if (themeNames.length) metadata.push(`Thèmes : ${themeNames.join(", ")}`);
 		if (type) metadata.push(`Type de ressource : ${type}`);
 
 		const fullText = [title, description, ...metadata]
@@ -105,9 +106,10 @@ export const courseCardSelect = {
 	slug: true,
 	link: true,
 	type: true,
-	theme: true,
+	themes: true,
 	conditions: true,
 	image: true,
+	imageBanner: true,
 } satisfies CoursesSelect<true>;
 
 export const Courses: CollectionConfig = {
@@ -127,50 +129,89 @@ export const Courses: CollectionConfig = {
 	},
 	fields: [
 		{
-			name: "title",
-			type: "text",
-			required: true,
-			label: { fr: "Titre" },
+			type: "tabs",
+			tabs: [
+				{
+					label: { fr: "Contenu" },
+					fields: [
+						{
+							name: "title",
+							type: "text",
+							required: true,
+							label: { fr: "Titre" },
+						},
+						standardFields.longDescription,
+						{
+							name: "link",
+							type: "text",
+							required: true,
+							label: { fr: "Lien de la formation" },
+						},
+						{
+							name: "type",
+							type: "select",
+							required: true,
+							label: { fr: "Type de ressource" },
+							options: ["MOOC", "Webinaire", "Présentiel"],
+						},
+						{
+							...standardFields.wysiwyg,
+							required: false,
+						},
+					],
+				},
+			],
 		},
-		slugField("courses"),
-		standardFields.longDescription,
 		{
-			name: "link",
-			type: "text",
-			required: true,
-			label: { fr: "Lien de la formation" },
-		},
-		{
-			name: "type",
-			type: "select",
-			required: true,
-			label: { fr: "Type de ressource" },
-			options: ["MOOC", "Webinaire", "Présentiel"],
-		},
-		{
-			...standardFields.wysiwyg,
+			name: "publishedAt",
+			type: "date",
 			required: false,
+			label: { fr: "Date de publication" },
+			defaultValue: () => new Date().toISOString(),
+			admin: {
+				position: "sidebar",
+				description:
+					"Affichée sur le site à côté de « Publié le ». Par défaut, la date de création de la formation.",
+				date: {
+					displayFormat: "dd/MM/yyyy",
+				},
+			},
 		},
 		{
-			name: "theme",
-			type: "relationship",
-			required: true,
-			relationTo: "themes",
-			label: { fr: "Thèmes" },
+			name: "lastUpdatedAt",
+			type: "date",
+			required: false,
+			label: { fr: "Date de mise à jour" },
+			admin: {
+				position: "sidebar",
+				description:
+					"Facultative. Si renseignée, une mention « Mis à jour le » est affichée sur le site à côté de « Publié le ».",
+				date: {
+					displayFormat: "dd/MM/yyyy",
+				},
+			},
+		},
+		{
+			name: "image",
+			type: "upload",
+			relationTo: "medias",
+			required: false,
+			label: { fr: "Image à la une" },
 			admin: {
 				position: "sidebar",
 			},
 		},
 		{
-			name: "persona",
-			type: "relationship",
-			required: true,
-			relationTo: "personas",
-			label: { fr: "Persona" },
+			name: "imageBanner",
+			type: "upload",
+			relationTo: "medias",
+			required: false,
+			label: { fr: "Bannière" },
 			admin: {
 				position: "sidebar",
 			},
 		},
+		slugField("courses", { editable: true }),
 		{
 			name: "conditions",
 			type: "relationship",
@@ -183,11 +224,23 @@ export const Courses: CollectionConfig = {
 			},
 		},
 		{
-			name: "image",
-			type: "upload",
-			relationTo: "medias",
-			required: false,
-			label: { fr: "Bannière" },
+			name: "persona",
+			type: "relationship",
+			required: true,
+			relationTo: "personas",
+			hasMany: true,
+			label: { fr: "Persona" },
+			admin: {
+				position: "sidebar",
+			},
+		},
+		{
+			name: "themes",
+			type: "relationship",
+			required: true,
+			relationTo: "themes",
+			hasMany: true,
+			label: { fr: "Thèmes" },
 			admin: {
 				position: "sidebar",
 			},
