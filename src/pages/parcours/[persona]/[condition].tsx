@@ -94,13 +94,13 @@ export default function JourneyPage(props: Props) {
 			</div>
 			<PageContent>
 				<div className={fr.cx("fr-container")}>
-					<div className={fr.cx("fr-py-4w")}>
+					<div className={fr.cx("fr-pb-4w")}>
 						<div
 							className={fr.cx("fr-grid-row", "fr-grid-row--gutters")}
 							style={{ alignItems: "stretch" }}
 						>
 							<div
-								className={fr.cx("fr-col-12", "fr-col-lg-6")}
+								className={fr.cx("fr-col-12", "fr-col-lg-8")}
 								style={{ alignContent: "center" }}
 							>
 								<h1>{pageTitle}</h1>
@@ -108,7 +108,7 @@ export default function JourneyPage(props: Props) {
 							</div>
 							<div
 								className={cx(
-									fr.cx("fr-col-12", "fr-col-lg-6"),
+									fr.cx("fr-col-12", "fr-col-lg-4"),
 									classes.imageColumn,
 								)}
 							>
@@ -119,8 +119,9 @@ export default function JourneyPage(props: Props) {
 									alt=""
 									role="presentation"
 									src={journey.image?.url ?? "/placeholder.16x9.png"}
-									width={580}
-									height={350}
+									width={384}
+									height={384}
+									sizes="12rem"
 								/>
 							</div>
 						</div>
@@ -191,12 +192,10 @@ const useStyles = tss.withName("JourneyConditionPage").create({
 		},
 	},
 	image: {
-		height: "20rem",
+		height: "12rem",
 		width: "auto",
-		maxWidth: "100%",
-		objectFit: "contain",
 		[fr.breakpoints.down("lg")]: {
-			height: "14rem",
+			height: "9rem",
 		},
 	},
 	centeredContainer: {
