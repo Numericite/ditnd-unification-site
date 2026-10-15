@@ -16,7 +16,7 @@ export default function NewsCarousel({ news }: { news: AugmentedNews[] }) {
 	const total = news.length;
 	const current = news[index]!;
 
-	const imageUrl = current.image.url ?? "";
+	const imageUrl = current.image?.url ?? "";
 
 	return (
 		<section aria-label="À la une" className={classes.root}>
