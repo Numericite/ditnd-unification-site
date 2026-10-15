@@ -1,5 +1,6 @@
 import type { CollectionConfig } from "payload";
 import { validateHttpUrl } from "../fields/validateHttpUrl";
+import { validateMarkerMetadata } from "../fields/validateMarkerMetadata";
 import { geocodeMarker } from "../hooks/geocodeMarker";
 
 export const MapMarkers: CollectionConfig = {
@@ -128,6 +129,7 @@ export const MapMarkers: CollectionConfig = {
 			name: "metadata",
 			type: "json",
 			label: { fr: "Informations complémentaires" },
+			validate: validateMarkerMetadata,
 			admin: {
 				description:
 					"Champs supplémentaires définis dans la catégorie de ce marker.",

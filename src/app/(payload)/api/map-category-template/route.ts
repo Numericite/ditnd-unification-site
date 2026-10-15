@@ -27,6 +27,9 @@ type SheetWithValidations = ExcelJS.Worksheet & {
 
 type CustomField = NonNullable<MapCategory["customFields"]>[number];
 
+const LINK_CELL_HINT =
+	"Lien : URL seule (https://…) ou « Libellé | https://… ». Sans libellé, le nom du champ est affiché.";
+
 const COLOR_HEADER_BASE = "1F3A5F";
 const COLOR_HEADER_CUSTOM = "0D6E4B";
 const COLOR_WHITE = "FFFFFFFF";
@@ -128,7 +131,9 @@ async function buildTemplate(category: MapCategory): Promise<Buffer> {
 				? "Valeurs autorisées : Oui, Non, NC\n(NC = Non Renseigné)"
 				: f.type === "select" && f.options?.length
 					? `Valeurs autorisées : ${f.options.map((o) => o.value).join(", ")}`
-					: "Texte libre.",
+					: f.type === "link"
+						? LINK_CELL_HINT
+						: "Texte libre.",
 	}));
 
 	const allColumns = [...baseColumns, ...customColumns];
@@ -304,6 +309,8 @@ async function buildTemplate(category: MapCategory): Promise<Buffer> {
 					)
 					.join(", ");
 				desc = `Valeurs autorisées : ${opts}. Menu déroulant disponible.`;
+			} else if (f.type === "link") {
+				desc = LINK_CELL_HINT;
 			} else {
 				desc = "Texte libre.";
 			}
