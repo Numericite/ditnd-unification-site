@@ -12,6 +12,7 @@ import { personsAndProTiles } from "~/utils/pictograms";
 import Image from "next/image";
 import PageContent from "~/components/ui/PageContent";
 import NewsletterFollow from "~/components/ui/NewsletterFollow";
+import { ContactInfos } from "~/components/HomePage/ContactInfos";
 import { NEWSLETTER_ENABLED } from "~/utils/newsletter";
 import type { GetServerSideProps } from "next";
 import { createCaller } from "~/server/api/root";
@@ -106,6 +107,7 @@ export default function Home({ mostViewedGuides }: Props) {
 						</div>
 					</div>
 				</div>
+				<ContactInfos contactCMS={homeCMS?.contact} />
 				<div className={cx(classes.coloredContainer)}>
 					<div className={fr.cx("fr-container")}>
 						<div className={fr.cx("fr-py-6w")}>
