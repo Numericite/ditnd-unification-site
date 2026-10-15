@@ -1,4 +1,5 @@
 import type { CollectionConfig } from "payload";
+import { isValidHttpUrl } from "~/utils/map-link-field";
 import { validateMarkerMetadata } from "../fields/validateMarkerMetadata";
 import { geocodeMarker } from "../hooks/geocodeMarker";
 
@@ -115,14 +116,8 @@ export const MapMarkers: CollectionConfig = {
 							return true;
 						if (typeof value !== "string")
 							return "Le site web doit être une chaîne de caractères.";
-						try {
-							const url = new URL(value);
-							if (url.protocol !== "https:" && url.protocol !== "http:") {
-								return "L'URL doit commencer par http:// ou https://";
-							}
-						} catch {
-							return "L'URL n'est pas valide.";
-						}
+						if (!isValidHttpUrl(value))
+							return "L'URL doit être valide et commencer par http:// ou https://";
 						return true;
 					},
 				},
