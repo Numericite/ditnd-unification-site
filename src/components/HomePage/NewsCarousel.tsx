@@ -3,13 +3,14 @@ import Badge from "@codegouvfr/react-dsfr/Badge";
 import Button from "@codegouvfr/react-dsfr/Button";
 import Card from "@codegouvfr/react-dsfr/Card";
 import Tag from "@codegouvfr/react-dsfr/Tag";
-import { useState } from "react";
+import { useId, useState } from "react";
 import { tss } from "tss-react/dsfr";
 import type { AugmentedNews } from "~/server/api/routers/news";
 
 export default function NewsCarousel({ news }: { news: AugmentedNews[] }) {
 	const { classes } = useStyles();
 	const [index, setIndex] = useState(0);
+	const titleId = useId();
 
 	if (!news.length) return null;
 
@@ -26,12 +27,14 @@ export default function NewsCarousel({ news }: { news: AugmentedNews[] }) {
 
 	return (
 		<section
-			aria-label="À la une"
+			aria-labelledby={titleId}
 			aria-roledescription="carrousel"
 			className={classes.root}
 		>
 			<div className={classes.header}>
-				<h2 className={classes.title}>À la une</h2>
+				<h2 id={titleId} className={classes.title}>
+					À la une
+				</h2>
 				{total > 1 && (
 					<div className={classes.controls}>
 						<p className={classes.counter} aria-hidden="true">
