@@ -110,57 +110,62 @@ export default function Home({ mostViewedGuides, latestNews }: Props) {
 					</div>
 				</div>
 				{latestNews.length > 0 && (
-					<div className={fr.cx("fr-container")}>
-						<div className={fr.cx("fr-py-4w")}>
-							<NewsCarousel news={latestNews} />
+					<div className={cx(classes.coloredContainer)}>
+						<div className={fr.cx("fr-container")}>
+							<div className={fr.cx("fr-py-4w")}>
+								<NewsCarousel news={latestNews} />
+							</div>
 						</div>
 					</div>
 				)}
-				<div className={cx(classes.coloredContainer)}>
-					<div className={fr.cx("fr-container")}>
-						<div className={fr.cx("fr-py-6w")}>
-							{persons ? (
-								<PersonaTiles tiles={tiles} />
-							) : (
-								<div role="alert" aria-live="assertive">
-									Aucun persona trouvé
-								</div>
-							)}
-						</div>
+				<div className={fr.cx("fr-container")}>
+					<div className={fr.cx("fr-py-6w")}>
+						{persons ? (
+							<PersonaTiles tiles={tiles} />
+						) : (
+							<div role="alert" aria-live="assertive">
+								Aucun persona trouvé
+							</div>
+						)}
 					</div>
 				</div>
-				<div className={fr.cx("fr-container")}>
-					<div className={fr.cx("fr-py-4w")}>
-						<div className={fr.cx("fr-grid-row", "fr-grid-row--gutters")}>
-							<div
-								className={cx(fr.cx("fr-col-12"), classes.mostViewedContainer)}
-							>
-								<h2>{homeCMS?.mostViewedGuides.title}</h2>
-								<div className={cx(fr.cx("fr-text--sm"), classes.preLine)}>
-									{homeCMS?.mostViewedGuides.description}
-								</div>
-
-								{mostViewedGuides?.length === 0 || !mostViewedGuides ? (
-									<div role="alert" aria-live="assertive">
-										Aucune fiche pratique trouvée
-									</div>
-								) : (
-									<MostViewedGuides guides={mostViewedGuides} />
-								)}
-
-								<a
-									href="/fiches-pratiques"
+				<div className={cx(classes.coloredContainer)}>
+					<div className={fr.cx("fr-container")}>
+						<div className={fr.cx("fr-py-4w")}>
+							<div className={fr.cx("fr-grid-row", "fr-grid-row--gutters")}>
+								<div
 									className={cx(
-										fr.cx(
-											"fr-link",
-											"fr-icon-arrow-right-line",
-											"fr-link--icon-right",
-										),
-										classes.viewMoreLink,
+										fr.cx("fr-col-12"),
+										classes.mostViewedContainer,
 									)}
 								>
-									Voir toutes les fiches par thématiques
-								</a>
+									<h2>{homeCMS?.mostViewedGuides.title}</h2>
+									<div className={cx(fr.cx("fr-text--sm"), classes.preLine)}>
+										{homeCMS?.mostViewedGuides.description}
+									</div>
+
+									{mostViewedGuides?.length === 0 || !mostViewedGuides ? (
+										<div role="alert" aria-live="assertive">
+											Aucune fiche pratique trouvée
+										</div>
+									) : (
+										<MostViewedGuides guides={mostViewedGuides} />
+									)}
+
+									<a
+										href="/fiches-pratiques"
+										className={cx(
+											fr.cx(
+												"fr-link",
+												"fr-icon-arrow-right-line",
+												"fr-link--icon-right",
+											),
+											classes.viewMoreLink,
+										)}
+									>
+										Voir toutes les fiches par thématiques
+									</a>
+								</div>
 							</div>
 						</div>
 					</div>
