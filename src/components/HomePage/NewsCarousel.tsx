@@ -81,6 +81,8 @@ export default function NewsCarousel({ news }: { news: AugmentedNews[] }) {
 						iconId="fr-icon-external-link-line"
 						iconPosition="right"
 						style={{ visibility: current.link?.url ? "visible" : "hidden" }}
+						aria-hidden={!current.link?.url}
+						nativeButtonProps={{ tabIndex: current.link?.url ? 0 : -1 }}
 						linkProps={{
 							href: current.link?.url ?? "#",
 							target: "_blank",
