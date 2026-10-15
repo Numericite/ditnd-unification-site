@@ -56,7 +56,6 @@ async function createNews(
 		await payload.create({
 			collection: "news",
 			data: { ...data, _status: "published" },
-			draft: false,
 		});
 	} catch (error) {
 		throw new TRPCError({

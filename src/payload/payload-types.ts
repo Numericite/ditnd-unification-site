@@ -70,6 +70,7 @@ export interface Config {
 		medias: Media;
 		"practical-guides": PracticalGuide;
 		courses: Course;
+		news: News;
 		journeys: Journey;
 		"practical-guide-views": PracticalGuideView;
 		glossary: Glossary;
@@ -81,7 +82,6 @@ export interface Config {
 		conditions: Condition;
 		themes: Theme;
 		users: User;
-		news: News;
 		redirects: Redirect;
 		"search-results": SearchResult;
 		"payload-kv": PayloadKv;
@@ -117,6 +117,7 @@ export interface Config {
 			| PracticalGuidesSelect<false>
 			| PracticalGuidesSelect<true>;
 		courses: CoursesSelect<false> | CoursesSelect<true>;
+		news: NewsSelect<false> | NewsSelect<true>;
 		journeys: JourneysSelect<false> | JourneysSelect<true>;
 		"practical-guide-views":
 			| PracticalGuideViewsSelect<false>
@@ -132,7 +133,6 @@ export interface Config {
 		conditions: ConditionsSelect<false> | ConditionsSelect<true>;
 		themes: ThemesSelect<false> | ThemesSelect<true>;
 		users: UsersSelect<false> | UsersSelect<true>;
-		news: NewsSelect<false> | NewsSelect<true>;
 		redirects: RedirectsSelect<false> | RedirectsSelect<true>;
 		"search-results": SearchResultsSelect<false> | SearchResultsSelect<true>;
 		"payload-kv": PayloadKvSelect<false> | PayloadKvSelect<true>;
@@ -538,25 +538,6 @@ export interface Journey {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "news".
- */
-export interface News {
-	id: number;
-	_order?: string | null;
-	title: string;
-	slug: string;
-	description?: string | null;
-	category?: string | null;
-	link?: {
-		url?: string | null;
-		label?: string | null;
-		id?: string | null;
-	} | null;
-	image: number | Media;
-	personas?: (number | Persona)[] | null;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "themes".
  */
 export interface Theme {
@@ -583,6 +564,33 @@ export interface Theme {
 	};
 	updatedAt: string;
 	createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "news".
+ */
+export interface News {
+	id: number;
+	_order?: string | null;
+	title: string;
+	/**
+	 * Utilisé dans l'URL de la page. Laissez vide pour le générer à partir du titre. Le modifier change l'URL publique : pensez à ajouter une redirection.
+	 */
+	slug: string;
+	/**
+	 * 270 caractères maximum
+	 */
+	description?: string | null;
+	category?: string | null;
+	link?: {
+		url?: string | null;
+		label?: string | null;
+	};
+	image: number | Media;
+	personas?: (number | Persona)[] | null;
+	updatedAt: string;
+	createdAt: string;
+	_status?: ("draft" | "published") | null;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -905,6 +913,10 @@ export interface PayloadLockedDocument {
 				value: number | Course;
 		  } | null)
 		| ({
+				relationTo: "news";
+				value: number | News;
+		  } | null)
+		| ({
 				relationTo: "journeys";
 				value: number | Journey;
 		  } | null)
@@ -947,10 +959,6 @@ export interface PayloadLockedDocument {
 		| ({
 				relationTo: "users";
 				value: number | User;
-		  } | null)
-		| ({
-				relationTo: "news";
-				value: number | News;
 		  } | null)
 		| ({
 				relationTo: "redirects";
@@ -1168,12 +1176,12 @@ export interface NewsSelect<T extends boolean = true> {
 		| {
 				url?: T;
 				label?: T;
-				id?: T;
 		  };
 	image?: T;
 	personas?: T;
 	updatedAt?: T;
 	createdAt?: T;
+	_status?: T;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
