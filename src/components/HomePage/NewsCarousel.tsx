@@ -25,13 +25,20 @@ export default function NewsCarousel({ news }: { news: AugmentedNews[] }) {
 		: {};
 
 	return (
-		<section aria-label="À la une" className={classes.root}>
+		<section
+			aria-label="À la une"
+			aria-roledescription="carrousel"
+			className={classes.root}
+		>
 			<div className={classes.header}>
 				<h2 className={classes.title}>À la une</h2>
 				{total > 1 && (
 					<div className={classes.controls}>
 						<p className={classes.counter} aria-hidden="true">
 							{index + 1} / {total}
+						</p>
+						<p className={fr.cx("fr-sr-only")} aria-live="polite" aria-atomic>
+							Actualité {index + 1} sur {total} : {current.title}
 						</p>
 						<Button
 							iconId="fr-icon-arrow-left-s-line"
