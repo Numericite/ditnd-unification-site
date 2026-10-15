@@ -16,7 +16,13 @@ export default function NewsCarousel({ news }: { news: AugmentedNews[] }) {
 	const total = news.length;
 	const current = news[index]!;
 
-	const imageUrl = current.image?.url ?? "";
+	const imageProps = current.image?.url
+		? {
+				imageUrl: current.image.url,
+				imageAlt: "",
+				nativeImgProps: { role: "presentation" },
+			}
+		: {};
 
 	return (
 		<section aria-label="À la une" className={classes.root}>
@@ -53,9 +59,7 @@ export default function NewsCarousel({ news }: { news: AugmentedNews[] }) {
 				title={current.title}
 				titleAs="h3"
 				desc={current.description ?? undefined}
-				imageUrl={imageUrl}
-				imageAlt=""
-				nativeImgProps={{ role: "presentation" }}
+				{...imageProps}
 				start={
 					current.category || current.personas?.length ? (
 						<ul className={`${fr.cx("fr-tags-group")} ${classes.tags}`}>
