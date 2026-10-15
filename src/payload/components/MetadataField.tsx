@@ -152,7 +152,7 @@ export default function MetadataField({
 								<input
 									type="text"
 									id={id}
-									value={String(val ?? "")}
+									value={typeof val === "object" ? "" : String(val ?? "")}
 									onChange={(e) => handleChange(f.key, e.target.value || null)}
 									style={inputStyle}
 								/>
@@ -171,7 +171,7 @@ export default function MetadataField({
 								</label>
 								<select
 									id={id}
-									value={String(val ?? "")}
+									value={typeof val === "object" ? "" : String(val ?? "")}
 									onChange={(e) => handleChange(f.key, e.target.value || null)}
 									style={{ ...inputStyle, cursor: "pointer" }}
 								>
@@ -200,7 +200,15 @@ export default function MetadataField({
 							handleChange(f.key, label || url ? { label, url } : null);
 						};
 						const url = link.url?.trim() ?? "";
-						const urlInvalid = url !== "" && !isValidHttpUrl(url);
+						const urlError =
+							url === ""
+								? link.label?.trim()
+									? "L'URL est obligatoire."
+									: null
+								: isValidHttpUrl(url)
+									? null
+									: "L'URL doit commencer par http:// ou https://";
+						const urlInvalid = urlError !== null;
 						return (
 							<fieldset
 								key={f.id ?? f.key}
@@ -258,7 +266,7 @@ export default function MetadataField({
 													marginTop: "0.25rem",
 												}}
 											>
-												L'URL doit commencer par http:// ou https://
+												{urlError}
 											</span>
 										)}
 									</div>

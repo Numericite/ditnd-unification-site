@@ -743,6 +743,8 @@ export default function MapDisplay({ map, height }: Props) {
 																		</p>
 																	);
 																}
+																// Valeur d'un autre type (ex : ancien lien)
+																if (typeof raw === "object") return null;
 																let display: string;
 																if (f.type === "checkbox") {
 																	display = raw ? "Oui" : "Non";
@@ -875,6 +877,8 @@ export default function MapDisplay({ map, height }: Props) {
 															</p>
 														);
 													}
+													// Valeur d'un autre type (ex : ancien lien)
+													if (typeof raw === "object") return null;
 													let display: string;
 													if (f.type === "checkbox") {
 														display = raw ? "Oui" : "Non";

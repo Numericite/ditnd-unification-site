@@ -41,7 +41,9 @@ export const toMapLinkValue = (raw: unknown): MapLinkValue | null => {
 export const parseMapLinkCell = (raw: string): MapLinkValue | null => {
 	const value = raw.trim();
 	if (!value) return null;
-	const sep = value.lastIndexOf("|");
+	// Une URL seule peut contenir des "|" : on ne cherche un libellé que si la
+	// cellule ne commence pas déjà par l'URL.
+	const sep = /^https?:\/\//i.test(value) ? -1 : value.indexOf("|");
 	const label = sep >= 0 ? value.slice(0, sep).trim() : "";
 	const url = (sep >= 0 ? value.slice(sep + 1) : value).trim();
 	if (!isValidHttpUrl(url)) return null;
