@@ -27,6 +27,10 @@ export const News: CollectionConfig = {
 			name: "description",
 			type: "textarea",
 			label: { fr: "Description" },
+			maxLength: 270,
+			admin: {
+				description: "270 caractères maximum",
+			},
 		},
 		{
 			name: "category",

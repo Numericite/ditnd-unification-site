@@ -77,19 +77,18 @@ export default function NewsCarousel({ news }: { news: AugmentedNews[] }) {
 					) : undefined
 				}
 				footer={
-					current.link?.url ? (
-						<Button
-							iconId="fr-icon-external-link-line"
-							iconPosition="right"
-							linkProps={{
-								href: current.link.url,
-								target: "_blank",
-								rel: "noopener noreferrer",
-							}}
-						>
-							{current.link.label || "En savoir plus"}
-						</Button>
-					) : undefined
+					<Button
+						iconId="fr-icon-external-link-line"
+						iconPosition="right"
+						style={{ visibility: current.link?.url ? "visible" : "hidden" }}
+						linkProps={{
+							href: current.link?.url ?? "#",
+							target: "_blank",
+							rel: "noopener noreferrer",
+						}}
+					>
+						{current.link?.label || "En savoir plus"}
+					</Button>
 				}
 			/>
 		</section>
@@ -124,6 +123,13 @@ const useStyles = tss.withName({ NewsCarousel }).create(() => ({
 	card: {
 		"& .fr-card__end": {
 			display: "none",
+		},
+		"& .fr-card__desc": {
+			display: "-webkit-box",
+			WebkitLineClamp: 4,
+			WebkitBoxOrient: "vertical",
+			overflow: "hidden",
+			minHeight: "6rem",
 		},
 	},
 	tags: {
