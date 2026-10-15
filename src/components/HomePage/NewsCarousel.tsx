@@ -88,20 +88,22 @@ export default function NewsCarousel({ news }: { news: AugmentedNews[] }) {
 					) : undefined
 				}
 				footer={
-					<Button
-						iconId="fr-icon-external-link-line"
-						iconPosition="right"
-						style={{ visibility: current.link?.url ? "visible" : "hidden" }}
-						linkProps={{
-							href: current.link?.url ?? "#",
-							target: "_blank",
-							rel: "noopener noreferrer",
-							tabIndex: current.link?.url ? 0 : -1,
-							"aria-hidden": !current.link?.url,
-						}}
-					>
-						{current.link?.label || "En savoir plus"}
-					</Button>
+					current.link?.url ? (
+						<Button
+							iconId="fr-icon-external-link-line"
+							iconPosition="right"
+							linkProps={{
+								href: current.link.url,
+								target: "_blank",
+								rel: "noopener noreferrer",
+							}}
+						>
+							{current.link.label || "En savoir plus"}
+						</Button>
+					) : (
+						// Réserve la hauteur du bouton pour éviter que le carrousel saute d'une actu à l'autre
+						<div className={classes.footerPlaceholder} />
+					)
 				}
 			/>
 		</section>
@@ -144,6 +146,9 @@ const useStyles = tss.withName({ NewsCarousel }).create(() => ({
 			overflow: "hidden",
 			minHeight: "6rem",
 		},
+	},
+	footerPlaceholder: {
+		minHeight: "2.5rem",
 	},
 	tags: {
 		alignItems: "center",
