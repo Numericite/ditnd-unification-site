@@ -1,5 +1,6 @@
 import type { CollectionConfig } from "payload";
 import { slugField } from "../fields/slug";
+import { validateHttpUrl } from "../fields/validateHttpUrl";
 
 export const News: CollectionConfig = {
 	slug: "news",
@@ -46,6 +47,7 @@ export const News: CollectionConfig = {
 					name: "url",
 					type: "text",
 					label: { fr: "URL" },
+					validate: validateHttpUrl,
 				},
 				{
 					name: "label",
