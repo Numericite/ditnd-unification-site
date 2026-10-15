@@ -25,6 +25,8 @@ export default function NewsCarousel({ news }: { news: AugmentedNews[] }) {
 			}
 		: {};
 
+	const linkLabel = current.link?.label || "En savoir plus";
+
 	return (
 		<section
 			aria-labelledby={titleId}
@@ -99,9 +101,11 @@ export default function NewsCarousel({ news }: { news: AugmentedNews[] }) {
 								href: current.link.url,
 								target: "_blank",
 								rel: "noopener noreferrer",
+								"aria-label": `${linkLabel} : ${current.title}, nouvelle fenêtre`,
+								title: `${linkLabel} : ${current.title}, nouvelle fenêtre`,
 							}}
 						>
-							{current.link.label || "En savoir plus"}
+							{linkLabel}
 						</Button>
 					) : (
 						// Réserve la hauteur du bouton pour éviter que le carrousel saute d'une actu à l'autre
