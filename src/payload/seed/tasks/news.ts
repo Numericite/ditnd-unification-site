@@ -42,15 +42,21 @@ const newsItems = [
 
 async function createNews(
 	payload: Payload,
-	data: (typeof newsItems)[number],
+	data: {
+		title: string;
+		slug: string;
+		description: string;
+		category: string;
+		link?: { url: string; label: string };
+		image: number;
+		personas: number[];
+	},
 ): Promise<void> {
 	try {
 		await payload.create({
 			collection: "news",
-			data: {
-				...data,
-				_status: "published",
-			},
+			data: { ...data, _status: "published" },
+			draft: false,
 		});
 	} catch (error) {
 		throw new TRPCError({
