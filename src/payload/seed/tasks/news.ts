@@ -30,10 +30,10 @@ const newsItems = [
 		personas: [4],
 	},
 	{
-		title: "Semaine européenne pour l'emploi des personnes handicapées 2024",
-		slug: "seeph-2024",
+		title: "Semaine européenne pour l'emploi des personnes handicapées 2026",
+		slug: "seeph-2026",
 		description:
-			"Du 18 au 22 novembre, la SEEPH met à l'honneur l'inclusion professionnelle des personnes autistes et TND. Retrouvez les événements près de chez vous.",
+			"Du 16 au 20 novembre, la SEEPH met à l'honneur l'inclusion professionnelle des personnes autistes et TND. Retrouvez les événements près de chez vous.",
 		category: "Événement",
 		image: 3,
 		personas: [],
