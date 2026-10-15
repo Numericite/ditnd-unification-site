@@ -2,6 +2,7 @@
 
 import { useState, useCallback, useRef, useEffect } from "react";
 import styles from "./MapImportClient.module.css";
+import { parseMapLinkCell } from "~/utils/map-link-field";
 import {
 	Banner,
 	Button,
@@ -15,7 +16,7 @@ type CustomField = {
 	id?: string | null;
 	label: string;
 	key: string;
-	type: "checkbox" | "text" | "select";
+	type: "checkbox" | "text" | "select" | "link";
 	options?: Array<{ label: string; value: string; id?: string | null }> | null;
 };
 
@@ -60,6 +61,10 @@ function rowErrors(row: ParsedRow, category?: CategoryInfo | null): string[] {
 	for (const f of category?.customFields ?? []) {
 		if (f.type === "checkbox" && !(row[f.key] ?? "").trim()) {
 			errs.push(`${f.label} requis`);
+		}
+		const raw = (row[f.key] ?? "").trim();
+		if (f.type === "link" && raw && !parseMapLinkCell(raw)) {
+			errs.push(`${f.label} : lien invalide`);
 		}
 	}
 	return errs;

@@ -14,6 +14,7 @@ import { tss } from "tss-react/dsfr";
 import { dsfrAccentHex } from "~/utils/dsfr-color-hex";
 import MapClusterMarker from "./MapClusterMarker";
 import { getMarkerGeo } from "~/utils/map-geo";
+import { toMapLinkValue } from "~/utils/map-link-field";
 import { buildBasemapStyle } from "~/utils/map-basemaps";
 import MapFilterDrawer, {
 	type ActiveFilters,
@@ -721,6 +722,27 @@ export default function MapDisplay({ map, height }: Props) {
 																const raw = selectedMarker.metadata?.[f.key];
 																if (raw === undefined || raw === null)
 																	return null;
+																if (f.type === "link") {
+																	const link = toMapLinkValue(raw);
+																	if (!link) return null;
+																	const text = link.label || f.label;
+																	return (
+																		<p
+																			key={f.key}
+																			className={classes.popupLine}
+																		>
+																			<Link
+																				href={link.url}
+																				target="_blank"
+																				rel="noopener noreferrer"
+																				className={fr.cx("fr-link")}
+																				title={`${text} : ${selectedMarker.name}, nouvelle fenêtre`}
+																			>
+																				{text}
+																			</Link>
+																		</p>
+																	);
+																}
 																let display: string;
 																if (f.type === "checkbox") {
 																	display = raw ? "Oui" : "Non";
@@ -835,6 +857,24 @@ export default function MapDisplay({ map, height }: Props) {
 											? category.customFields.map((f: CustomFieldDef) => {
 													const raw = marker.metadata?.[f.key];
 													if (raw === undefined || raw === null) return null;
+													if (f.type === "link") {
+														const link = toMapLinkValue(raw);
+														if (!link) return null;
+														const text = link.label || f.label;
+														return (
+															<p key={f.key} className={classes.cardLine}>
+																<Link
+																	href={link.url}
+																	target="_blank"
+																	rel="noopener noreferrer"
+																	className={fr.cx("fr-link", "fr-link--sm")}
+																	title={`${text} : ${marker.name}, nouvelle fenêtre`}
+																>
+																	{text}
+																</Link>
+															</p>
+														);
+													}
 													let display: string;
 													if (f.type === "checkbox") {
 														display = raw ? "Oui" : "Non";

@@ -7,6 +7,7 @@ import {
 	useFormFields,
 } from "@payloadcms/ui";
 import { useEffect, useState } from "react";
+import { isValidHttpUrl } from "~/utils/map-link-field";
 
 type FieldOption = {
 	id?: string | null;
@@ -18,7 +19,7 @@ type CustomFieldDef = {
 	id?: string | null;
 	label: string;
 	key: string;
-	type: "checkbox" | "text" | "select";
+	type: "checkbox" | "text" | "select" | "link";
 	options?: FieldOption[] | null;
 };
 
@@ -182,6 +183,87 @@ export default function MetadataField({
 									))}
 								</select>
 							</div>
+						);
+					}
+
+					if (f.type === "link") {
+						const link =
+							val && typeof val === "object" && !Array.isArray(val)
+								? (val as { label?: string | null; url?: string | null })
+								: typeof val === "string"
+									? { url: val }
+									: {};
+						const updateLink = (patch: { label?: string; url?: string }) => {
+							const next = { ...link, ...patch };
+							const label = next.label?.trim() ? next.label : null;
+							const url = next.url?.trim() ? next.url : null;
+							handleChange(f.key, label || url ? { label, url } : null);
+						};
+						const url = link.url?.trim() ?? "";
+						const urlInvalid = url !== "" && !isValidHttpUrl(url);
+						return (
+							<fieldset
+								key={f.id ?? f.key}
+								style={{ border: "none", margin: 0, padding: 0 }}
+							>
+								<legend style={labelStyle}>{f.label}</legend>
+								<div style={{ display: "flex", gap: "0.5rem" }}>
+									<div
+										style={{
+											display: "flex",
+											flexDirection: "column",
+											flex: 1,
+										}}
+									>
+										<label htmlFor={`${id}-label`} style={labelStyle}>
+											Libellé du lien
+										</label>
+										<input
+											type="text"
+											id={`${id}-label`}
+											value={link.label ?? ""}
+											placeholder={f.label}
+											onChange={(e) => updateLink({ label: e.target.value })}
+											style={inputStyle}
+										/>
+									</div>
+									<div
+										style={{
+											display: "flex",
+											flexDirection: "column",
+											flex: 2,
+										}}
+									>
+										<label htmlFor={`${id}-url`} style={labelStyle}>
+											URL
+										</label>
+										<input
+											type="url"
+											id={`${id}-url`}
+											value={link.url ?? ""}
+											placeholder="https://"
+											aria-invalid={urlInvalid}
+											aria-describedby={
+												urlInvalid ? `${id}-url-error` : undefined
+											}
+											onChange={(e) => updateLink({ url: e.target.value })}
+											style={inputStyle}
+										/>
+										{urlInvalid && (
+											<span
+												id={`${id}-url-error`}
+												style={{
+													color: "var(--theme-error-500)",
+													fontSize: "0.8125rem",
+													marginTop: "0.25rem",
+												}}
+											>
+												L'URL doit commencer par http:// ou https://
+											</span>
+										)}
+									</div>
+								</div>
+							</fieldset>
 						);
 					}
 

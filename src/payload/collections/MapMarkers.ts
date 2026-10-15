@@ -1,4 +1,5 @@
 import type { CollectionConfig } from "payload";
+import { isValidHttpUrl } from "~/utils/map-link-field";
 import { geocodeMarker } from "../hooks/geocodeMarker";
 
 export const MapMarkers: CollectionConfig = {
@@ -141,6 +142,22 @@ export const MapMarkers: CollectionConfig = {
 			name: "metadata",
 			type: "json",
 			label: { fr: "Informations complémentaires" },
+			validate: (value: unknown) => {
+				if (!value || typeof value !== "object" || Array.isArray(value))
+					return true;
+				for (const entry of Object.values(value)) {
+					if (
+						entry &&
+						typeof entry === "object" &&
+						"url" in entry &&
+						typeof entry.url === "string" &&
+						!isValidHttpUrl(entry.url)
+					) {
+						return "Les liens doivent commencer par http:// ou https://";
+					}
+				}
+				return true;
+			},
 			admin: {
 				description:
 					"Champs supplémentaires définis dans la catégorie de ce marker.",

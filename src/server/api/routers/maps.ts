@@ -12,7 +12,7 @@ export type CustomFieldDef = {
 	id?: string | null;
 	label: string;
 	key: string;
-	type: "checkbox" | "text" | "select";
+	type: "checkbox" | "text" | "select" | "link";
 	options?: Array<{ id?: string | null; label: string; value: string }> | null;
 };
 

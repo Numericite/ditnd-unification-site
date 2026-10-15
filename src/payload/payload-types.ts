@@ -652,7 +652,7 @@ export interface MapCategory {
 				 * Identifiant unique, sans espaces.
 				 */
 				key: string;
-				type: "checkbox" | "text" | "select";
+				type: "checkbox" | "text" | "select" | "link";
 				/**
 				 * Options disponibles pour ce champ de type liste.
 				 */
