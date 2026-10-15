@@ -1,5 +1,5 @@
 import type { CollectionConfig } from "payload";
-import { isValidHttpUrl } from "~/utils/map-link-field";
+import { validateHttpUrl } from "../fields/validateHttpUrl";
 import { validateMarkerMetadata } from "../fields/validateMarkerMetadata";
 import { geocodeMarker } from "../hooks/geocodeMarker";
 
@@ -111,15 +111,7 @@ export const MapMarkers: CollectionConfig = {
 					type: "text",
 					required: false,
 					label: { fr: "Site web" },
-					validate: (value: unknown) => {
-						if (value === undefined || value === null || value === "")
-							return true;
-						if (typeof value !== "string")
-							return "Le site web doit être une chaîne de caractères.";
-						if (!isValidHttpUrl(value))
-							return "L'URL doit être valide et commencer par http:// ou https://";
-						return true;
-					},
+					validate: validateHttpUrl,
 				},
 			],
 		},

@@ -70,6 +70,7 @@ export interface Config {
 		medias: Media;
 		"practical-guides": PracticalGuide;
 		courses: Course;
+		news: News;
 		journeys: Journey;
 		"practical-guide-views": PracticalGuideView;
 		glossary: Glossary;
@@ -116,6 +117,7 @@ export interface Config {
 			| PracticalGuidesSelect<false>
 			| PracticalGuidesSelect<true>;
 		courses: CoursesSelect<false> | CoursesSelect<true>;
+		news: NewsSelect<false> | NewsSelect<true>;
 		journeys: JourneysSelect<false> | JourneysSelect<true>;
 		"practical-guide-views":
 			| PracticalGuideViewsSelect<false>
@@ -565,6 +567,33 @@ export interface Theme {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "news".
+ */
+export interface News {
+	id: number;
+	_order?: string | null;
+	title: string;
+	/**
+	 * Utilisé dans l'URL de la page. Laissez vide pour le générer à partir du titre. Le modifier change l'URL publique : pensez à ajouter une redirection.
+	 */
+	slug: string;
+	/**
+	 * 270 caractères maximum
+	 */
+	description?: string | null;
+	category?: string | null;
+	link?: {
+		url?: string | null;
+		label?: string | null;
+	};
+	image: number | Media;
+	personas?: (number | Persona)[] | null;
+	updatedAt: string;
+	createdAt: string;
+	_status?: ("draft" | "published") | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "practical-guide-views".
  */
 export interface PracticalGuideView {
@@ -884,6 +913,10 @@ export interface PayloadLockedDocument {
 				value: number | Course;
 		  } | null)
 		| ({
+				relationTo: "news";
+				value: number | News;
+		  } | null)
+		| ({
 				relationTo: "journeys";
 				value: number | Journey;
 		  } | null)
@@ -1124,6 +1157,28 @@ export interface CoursesSelect<T extends boolean = true> {
 	conditions?: T;
 	persona?: T;
 	themes?: T;
+	updatedAt?: T;
+	createdAt?: T;
+	_status?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "news_select".
+ */
+export interface NewsSelect<T extends boolean = true> {
+	_order?: T;
+	title?: T;
+	slug?: T;
+	description?: T;
+	category?: T;
+	link?:
+		| T
+		| {
+				url?: T;
+				label?: T;
+		  };
+	image?: T;
+	personas?: T;
 	updatedAt?: T;
 	createdAt?: T;
 	_status?: T;
