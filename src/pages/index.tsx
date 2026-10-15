@@ -17,12 +17,15 @@ import type { GetServerSideProps } from "next";
 import { createCaller } from "~/server/api/root";
 import { createTRPCContext } from "~/server/api/trpc";
 import type { AugmentedPracticalGuide } from "~/server/api/routers/practical-guides";
+import NewsCarousel from "~/components/HomePage/NewsCarousel";
+import type { AugmentedNews } from "~/server/api/routers/news";
 
 type Props = {
 	mostViewedGuides: AugmentedPracticalGuide[];
+	latestNews: AugmentedNews[];
 };
 
-export default function Home({ mostViewedGuides }: Props) {
+export default function Home({ mostViewedGuides, latestNews }: Props) {
 	const { classes, cx } = useStyles();
 
 	const [search, setSearch] = useState("");
@@ -106,51 +109,63 @@ export default function Home({ mostViewedGuides }: Props) {
 						</div>
 					</div>
 				</div>
-				<div className={cx(classes.coloredContainer)}>
-					<div className={fr.cx("fr-container")}>
-						<div className={fr.cx("fr-py-6w")}>
-							{persons ? (
-								<PersonaTiles tiles={tiles} />
-							) : (
-								<div role="alert" aria-live="assertive">
-									Aucun persona trouvé
-								</div>
-							)}
+				{latestNews.length > 0 && (
+					<div className={cx(classes.coloredContainer)}>
+						<div className={fr.cx("fr-container")}>
+							<div className={fr.cx("fr-py-4w")}>
+								<NewsCarousel news={latestNews} />
+							</div>
 						</div>
 					</div>
-				</div>
+				)}
 				<div className={fr.cx("fr-container")}>
-					<div className={fr.cx("fr-py-4w")}>
-						<div className={fr.cx("fr-grid-row", "fr-grid-row--gutters")}>
-							<div
-								className={cx(fr.cx("fr-col-12"), classes.mostViewedContainer)}
-							>
-								<h2>{homeCMS?.mostViewedGuides.title}</h2>
-								<div className={cx(fr.cx("fr-text--sm"), classes.preLine)}>
-									{homeCMS?.mostViewedGuides.description}
-								</div>
-
-								{mostViewedGuides?.length === 0 || !mostViewedGuides ? (
-									<div role="alert" aria-live="assertive">
-										Aucune fiche pratique trouvée
-									</div>
-								) : (
-									<MostViewedGuides guides={mostViewedGuides} />
-								)}
-
-								<a
-									href="/fiches-pratiques"
+					<div className={fr.cx("fr-py-6w")}>
+						{persons ? (
+							<PersonaTiles tiles={tiles} />
+						) : (
+							<div role="alert" aria-live="assertive">
+								Aucun persona trouvé
+							</div>
+						)}
+					</div>
+				</div>
+				<div className={cx(classes.coloredContainer)}>
+					<div className={fr.cx("fr-container")}>
+						<div className={fr.cx("fr-py-4w")}>
+							<div className={fr.cx("fr-grid-row", "fr-grid-row--gutters")}>
+								<div
 									className={cx(
-										fr.cx(
-											"fr-link",
-											"fr-icon-arrow-right-line",
-											"fr-link--icon-right",
-										),
-										classes.viewMoreLink,
+										fr.cx("fr-col-12"),
+										classes.mostViewedContainer,
 									)}
 								>
-									Voir toutes les fiches par thématiques
-								</a>
+									<h2>{homeCMS?.mostViewedGuides.title}</h2>
+									<div className={cx(fr.cx("fr-text--sm"), classes.preLine)}>
+										{homeCMS?.mostViewedGuides.description}
+									</div>
+
+									{mostViewedGuides?.length === 0 || !mostViewedGuides ? (
+										<div role="alert" aria-live="assertive">
+											Aucune fiche pratique trouvée
+										</div>
+									) : (
+										<MostViewedGuides guides={mostViewedGuides} />
+									)}
+
+									<a
+										href="/fiches-pratiques"
+										className={cx(
+											fr.cx(
+												"fr-link",
+												"fr-icon-arrow-right-line",
+												"fr-link--icon-right",
+											),
+											classes.viewMoreLink,
+										)}
+									>
+										Voir toutes les fiches par thématiques
+									</a>
+								</div>
 							</div>
 						</div>
 					</div>
@@ -163,11 +178,15 @@ export default function Home({ mostViewedGuides }: Props) {
 
 export const getServerSideProps: GetServerSideProps<Props> = async () => {
 	const caller = createCaller(await createTRPCContext());
-	const mostViewedGuides = await caller.practicalGuide.getByViews();
+	const [mostViewedGuides, latestNews] = await Promise.all([
+		caller.practicalGuide.getByViews(),
+		caller.news.getAll(),
+	]);
 
 	return {
 		props: {
 			mostViewedGuides,
+			latestNews,
 		},
 	};
 };
