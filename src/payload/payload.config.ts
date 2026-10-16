@@ -26,6 +26,7 @@ import { MapCategories } from "./collections/MapCategories";
 import { MapMarkers } from "./collections/MapMarkers";
 import { Maps } from "./collections/Maps";
 import { News } from "./collections/News";
+import { Pages } from "./collections/Pages";
 import { en } from "@payloadcms/translations/languages/en";
 import { fr } from "@payloadcms/translations/languages/fr";
 
@@ -97,14 +98,23 @@ export default buildConfig({
 		},
 		livePreview: {
 			url: ({ data, collectionConfig }) => {
-				if (!data || collectionConfig?.slug !== "practical-guides") return;
+				if (!data) return;
 
-				const basePath =
-					data._status === "draft"
-						? `/draft/${data.slug}`
-						: `/fiches-pratiques/${data.slug}`;
+				if (collectionConfig?.slug === "pages") {
+					const basePath =
+						data._status === "draft"
+							? `/draft/${data.slug}?collection=pages`
+							: `/${data.slug}`;
+					return `${basePath}${data._status !== "draft" ? `?v=${data.updatedAt}` : `&v=${data.updatedAt}`}`;
+				}
 
-				return `${basePath}?v=${data.updatedAt}`;
+				if (collectionConfig?.slug === "practical-guides") {
+					const basePath =
+						data._status === "draft"
+							? `/draft/${data.slug}`
+							: `/fiches-pratiques/${data.slug}`;
+					return `${basePath}?v=${data.updatedAt}`;
+				}
 			},
 			breakpoints: [
 				{
@@ -126,11 +136,12 @@ export default buildConfig({
 					height: 900,
 				},
 			],
-			collections: ["practical-guides"],
+			collections: ["practical-guides", "pages"],
 		},
 	},
 	collections: [
 		Medias,
+		Pages,
 		PracticalGuides,
 		Courses,
 		News,
@@ -251,7 +262,7 @@ export default buildConfig({
 			},
 		}),
 		seoPlugin({
-			collections: ["practical-guides", "courses"],
+			collections: ["practical-guides", "courses", "pages"],
 			uploadsCollection: "medias",
 			tabbedUI: true,
 			generateTitle: ({ doc }) => {
@@ -269,9 +280,11 @@ export default buildConfig({
 				const basePath =
 					collectionConfig?.slug === "courses"
 						? "formations"
-						: "fiches-pratiques";
+						: collectionConfig?.slug === "pages"
+							? ""
+							: "fiches-pratiques";
 				return typeof slug === "string"
-					? `${process.env.NEXT_PUBLIC_SITE_URL || ""}/${basePath}/${slug}`
+					? `${process.env.NEXT_PUBLIC_SITE_URL || ""}/${basePath ? `${basePath}/` : ""}${slug}`
 					: "";
 			},
 		}),
