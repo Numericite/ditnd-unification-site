@@ -681,6 +681,9 @@ export interface MapCategory {
 				 * Identifiant unique, sans espaces.
 				 */
 				key: string;
+				/**
+				 * Le type « Lien » permet de saisir, pour chaque point, un libellé et une URL affichés sous forme de lien.
+				 */
 				type: "checkbox" | "text" | "select" | "link";
 				/**
 				 * Options disponibles pour ce champ de type liste.
@@ -1477,6 +1480,69 @@ export interface Home {
 		title: string;
 		description: string;
 	};
+	contact: {
+		phone: {
+			title?: string | null;
+			number: string;
+			/**
+			 * Ex : Service et appel gratuits
+			 */
+			label?: string | null;
+			/**
+			 * Ex : Appel gratuit depuis un fixe ou un mobile.
+			 */
+			scheduleNote?: string | null;
+			schedule?: {
+				lundi?: {
+					closed?: boolean | null;
+					openTime?: string | null;
+					closeTime?: string | null;
+				};
+				mardi?: {
+					closed?: boolean | null;
+					openTime?: string | null;
+					closeTime?: string | null;
+				};
+				mercredi?: {
+					closed?: boolean | null;
+					openTime?: string | null;
+					closeTime?: string | null;
+				};
+				jeudi?: {
+					closed?: boolean | null;
+					openTime?: string | null;
+					closeTime?: string | null;
+				};
+				vendredi?: {
+					closed?: boolean | null;
+					openTime?: string | null;
+					closeTime?: string | null;
+				};
+				samedi?: {
+					closed?: boolean | null;
+					openTime?: string | null;
+					closeTime?: string | null;
+				};
+				dimanche?: {
+					closed?: boolean | null;
+					openTime?: string | null;
+					closeTime?: string | null;
+				};
+			};
+		};
+		contactForm?: {
+			title?: string | null;
+			description?: string | null;
+			buttonLabel?: string | null;
+			url?: string | null;
+		};
+		directory?: {
+			title?: string | null;
+			description?: string | null;
+			buttonLabel?: string | null;
+			url?: string | null;
+		};
+	};
 	tiles: {
 		persona: {
 			title: string;
@@ -1742,6 +1808,87 @@ export interface HomeSelect<T extends boolean = true> {
 		| {
 				title?: T;
 				description?: T;
+		  };
+	contact?:
+		| T
+		| {
+				phone?:
+					| T
+					| {
+							title?: T;
+							number?: T;
+							label?: T;
+							scheduleNote?: T;
+							schedule?:
+								| T
+								| {
+										lundi?:
+											| T
+											| {
+													closed?: T;
+													openTime?: T;
+													closeTime?: T;
+											  };
+										mardi?:
+											| T
+											| {
+													closed?: T;
+													openTime?: T;
+													closeTime?: T;
+											  };
+										mercredi?:
+											| T
+											| {
+													closed?: T;
+													openTime?: T;
+													closeTime?: T;
+											  };
+										jeudi?:
+											| T
+											| {
+													closed?: T;
+													openTime?: T;
+													closeTime?: T;
+											  };
+										vendredi?:
+											| T
+											| {
+													closed?: T;
+													openTime?: T;
+													closeTime?: T;
+											  };
+										samedi?:
+											| T
+											| {
+													closed?: T;
+													openTime?: T;
+													closeTime?: T;
+											  };
+										dimanche?:
+											| T
+											| {
+													closed?: T;
+													openTime?: T;
+													closeTime?: T;
+											  };
+								  };
+					  };
+				contactForm?:
+					| T
+					| {
+							title?: T;
+							description?: T;
+							buttonLabel?: T;
+							url?: T;
+					  };
+				directory?:
+					| T
+					| {
+							title?: T;
+							description?: T;
+							buttonLabel?: T;
+							url?: T;
+					  };
 		  };
 	tiles?:
 		| T
