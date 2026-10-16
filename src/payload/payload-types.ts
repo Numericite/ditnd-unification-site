@@ -303,10 +303,6 @@ export interface Page {
 	 * Titre complet affiché en haut de la page et dans le fil d'Ariane. Sert aussi de titre SEO si aucun n'est renseigné.
 	 */
 	title: string;
-	/**
-	 * Description courte affichée sur les cartes (120 caractères max)
-	 */
-	description: string;
 	content: {
 		root: {
 			type: string;
@@ -1166,7 +1162,6 @@ export interface MediasSelect<T extends boolean = true> {
  */
 export interface PagesSelect<T extends boolean = true> {
 	title?: T;
-	description?: T;
 	content?: T;
 	meta?:
 		| T

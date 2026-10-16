@@ -37,7 +37,6 @@ export const Pages: CollectionConfig = {
 									"Titre complet affiché en haut de la page et dans le fil d'Ariane. Sert aussi de titre SEO si aucun n'est renseigné.",
 							},
 						},
-						standardFields.description,
 						standardFields.wysiwyg,
 					],
 				},

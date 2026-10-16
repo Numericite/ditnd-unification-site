@@ -1,6 +1,5 @@
 import { FolderTableCell as FolderTableCell_f9c02e79a4aed9a3924487c0cd4cafb1 } from "@payloadcms/next/rsc";
 import { FolderField as FolderField_f9c02e79a4aed9a3924487c0cd4cafb1 } from "@payloadcms/next/rsc";
-import { default as default_4ea1f3fd4d8a7a71bd05e2762be80ffe } from "../../../payload/components/DescriptionTextarea";
 import { RscEntryLexicalCell as RscEntryLexicalCell_44fe37237e0ebf4470c9990d8cb7b07e } from "@payloadcms/richtext-lexical/rsc";
 import { RscEntryLexicalField as RscEntryLexicalField_44fe37237e0ebf4470c9990d8cb7b07e } from "@payloadcms/richtext-lexical/rsc";
 import { LexicalDiffComponent as LexicalDiffComponent_44fe37237e0ebf4470c9990d8cb7b07e } from "@payloadcms/richtext-lexical/rsc";
@@ -33,6 +32,7 @@ import { MetaTitleComponent as MetaTitleComponent_a8a977ebc872c5d5ea7ee689724c08
 import { MetaDescriptionComponent as MetaDescriptionComponent_a8a977ebc872c5d5ea7ee689724c0860 } from "@payloadcms/plugin-seo/client";
 import { MetaImageComponent as MetaImageComponent_a8a977ebc872c5d5ea7ee689724c0860 } from "@payloadcms/plugin-seo/client";
 import { PreviewComponent as PreviewComponent_a8a977ebc872c5d5ea7ee689724c0860 } from "@payloadcms/plugin-seo/client";
+import { default as default_4ea1f3fd4d8a7a71bd05e2762be80ffe } from "../../../payload/components/DescriptionTextarea";
 import { default as default_cd31b5ee51188f80370eaec27fcfca00 } from "../../../payload/components/MapCategoryExcelExport";
 import { default as default_1dc9df847c6c8ec54f552b6626b54e17 } from "../../../payload/components/MetadataField";
 import { default as default_ab9295f833f2f5fee5779f5535e576a4 } from "../../../payload/components/MapMarkersImportLink";
@@ -53,8 +53,6 @@ export const importMap = {
 		FolderTableCell_f9c02e79a4aed9a3924487c0cd4cafb1,
 	"@payloadcms/next/rsc#FolderField":
 		FolderField_f9c02e79a4aed9a3924487c0cd4cafb1,
-	"../payload/components/DescriptionTextarea#default":
-		default_4ea1f3fd4d8a7a71bd05e2762be80ffe,
 	"@payloadcms/richtext-lexical/rsc#RscEntryLexicalCell":
 		RscEntryLexicalCell_44fe37237e0ebf4470c9990d8cb7b07e,
 	"@payloadcms/richtext-lexical/rsc#RscEntryLexicalField":
@@ -119,6 +117,8 @@ export const importMap = {
 		MetaImageComponent_a8a977ebc872c5d5ea7ee689724c0860,
 	"@payloadcms/plugin-seo/client#PreviewComponent":
 		PreviewComponent_a8a977ebc872c5d5ea7ee689724c0860,
+	"../payload/components/DescriptionTextarea#default":
+		default_4ea1f3fd4d8a7a71bd05e2762be80ffe,
 	"../payload/components/MapCategoryExcelExport#default":
 		default_cd31b5ee51188f80370eaec27fcfca00,
 	"../payload/components/MetadataField#default":
