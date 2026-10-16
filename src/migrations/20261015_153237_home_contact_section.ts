@@ -34,7 +34,7 @@ export async function up({ db, payload, req }: MigrateUpArgs): Promise<void> {
   ALTER TABLE "home" ADD COLUMN "contact_directory_title" varchar DEFAULT 'Annuaire';
   ALTER TABLE "home" ADD COLUMN "contact_directory_description" varchar;
   ALTER TABLE "home" ADD COLUMN "contact_directory_button_label" varchar DEFAULT 'Consulter l''annuaire';
-  ALTER TABLE "home" ADD COLUMN "contact_directory_url" varchar;`)
+  ALTER TABLE "home" ADD COLUMN "contact_directory_url" varchar DEFAULT 'https://annuaire.autismeinfoservice.fr/';`)
 }
 
 export async function down({ db, payload, req }: MigrateDownArgs): Promise<void> {
