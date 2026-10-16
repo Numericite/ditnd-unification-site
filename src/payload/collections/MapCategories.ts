@@ -130,7 +130,12 @@ export const MapCategories: CollectionConfig = {
 						{ label: "Case à cocher", value: "checkbox" },
 						{ label: "Texte", value: "text" },
 						{ label: "Liste de choix", value: "select" },
+						{ label: "Lien", value: "link" },
 					],
+					admin: {
+						description:
+							"Le type « Lien » permet de saisir, pour chaque point, un libellé et une URL affichés sous forme de lien.",
+					},
 				},
 				{
 					name: "options",

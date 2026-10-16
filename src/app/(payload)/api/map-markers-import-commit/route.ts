@@ -2,6 +2,7 @@ import { type NextRequest, NextResponse } from "next/server";
 import { getPayload } from "payload";
 import configPromise from "@payload-config";
 import type { MapCategory } from "../../../../payload/payload-types";
+import { parseMapLinkCell } from "~/utils/map-link-field";
 
 type CustomField = NonNullable<MapCategory["customFields"]>[number];
 
@@ -79,6 +80,9 @@ export async function POST(req: NextRequest) {
 					if (field.type === "checkbox") {
 						const boolVal = parseCheckboxValue(raw);
 						if (boolVal !== null) metadata[field.key] = boolVal;
+					} else if (field.type === "link") {
+						const link = parseMapLinkCell(raw);
+						if (link) metadata[field.key] = link;
 					} else {
 						metadata[field.key] = raw;
 					}
