@@ -1,3 +1,4 @@
+import { forwardRef } from "react";
 import { fr } from "@codegouvfr/react-dsfr";
 import { tss } from "tss-react/dsfr";
 import type { Home } from "~/payload/payload-types";
@@ -16,56 +17,71 @@ const SCHEDULE_DAYS: {
 	{ label: "Dimanche", key: "dimanche", dayOfWeek: 0 },
 ];
 
+const TITLE_ID = "phone-schedule-title";
+
 type Props = {
 	schedule: Home["contact"]["phone"]["schedule"];
 	scheduleNote?: string | null;
 };
 
-export function PhoneSchedulePanel({ schedule, scheduleNote }: Props) {
-	const { classes } = useStyles();
-	const todayDayOfWeek = new Date().getDay();
+export const PhoneSchedulePanel = forwardRef<HTMLElement, Props>(
+	function PhoneSchedulePanel({ schedule, scheduleNote }, ref) {
+		const { classes, cx } = useStyles();
+		const todayDayOfWeek = new Date().getDay();
 
-	return (
-		<div className={classes.panel}>
-			<p className={classes.title}>Horaires de la ligne</p>
-			<table className={classes.table}>
-				<tbody>
-					{SCHEDULE_DAYS.map(({ label, key, dayOfWeek }) => {
-						const day = schedule?.[key];
-						const isToday = dayOfWeek === todayDayOfWeek;
-						return (
-							<tr
-								key={key}
-								className={isToday ? classes.todayRow : classes.row}
-							>
-								<td className={isToday ? classes.todayCell : classes.cell}>
-									{isToday ? `${label} (aujourd'hui)` : label}
-								</td>
-								<td
-									className={
-										isToday
-											? classes.todayCell
-											: day?.closed
-												? classes.closedCell
-												: classes.cell
-									}
-									style={{ textAlign: "right" }}
+		return (
+			<section
+				ref={ref}
+				id="phone-schedule-panel"
+				aria-labelledby={TITLE_ID}
+				tabIndex={-1}
+				className={classes.panel}
+			>
+				<p id={TITLE_ID} className={classes.title}>
+					Horaires de la ligne
+				</p>
+				<table className={classes.table} aria-labelledby={TITLE_ID}>
+					<thead className={classes.visuallyHidden}>
+						<tr>
+							<th scope="col">Jour</th>
+							<th scope="col">Horaires</th>
+						</tr>
+					</thead>
+					<tbody>
+						{SCHEDULE_DAYS.map(({ label, key, dayOfWeek }) => {
+							const day = schedule?.[key];
+							const isToday = dayOfWeek === todayDayOfWeek;
+							const baseCell = isToday ? classes.todayCell : classes.cell;
+							const hoursCell = isToday
+								? classes.todayCell
+								: day?.closed
+									? classes.closedCell
+									: classes.cell;
+							return (
+								<tr
+									key={key}
+									className={isToday ? classes.todayRow : classes.row}
 								>
-									{day?.closed
-										? "Fermé"
-										: day?.openTime && day?.closeTime
-											? `${day.openTime} – ${day.closeTime}`
-											: "–"}
-								</td>
-							</tr>
-						);
-					})}
-				</tbody>
-			</table>
-			{scheduleNote && <p className={classes.note}>{scheduleNote}</p>}
-		</div>
-	);
-}
+									<th scope="row" className={baseCell}>
+										{isToday ? `${label} (aujourd'hui)` : label}
+									</th>
+									<td className={cx(hoursCell, classes.cellRight)}>
+										{day?.closed
+											? "Fermé"
+											: day?.openTime && day?.closeTime
+												? `${day.openTime} – ${day.closeTime}`
+												: "–"}
+									</td>
+								</tr>
+							);
+						})}
+					</tbody>
+				</table>
+				{scheduleNote && <p className={classes.note}>{scheduleNote}</p>}
+			</section>
+		);
+	},
+);
 
 const useStyles = tss.withName({ PhoneSchedulePanel }).create({
 	panel: {
@@ -89,6 +105,17 @@ const useStyles = tss.withName({ PhoneSchedulePanel }).create({
 		borderCollapse: "collapse",
 		marginBottom: fr.spacing("2w"),
 	},
+	visuallyHidden: {
+		position: "absolute",
+		width: 1,
+		height: 1,
+		padding: 0,
+		margin: -1,
+		overflow: "hidden",
+		clip: "rect(0,0,0,0)",
+		whiteSpace: "nowrap",
+		border: 0,
+	},
 	row: {},
 	todayRow: {
 		backgroundColor: fr.colors.decisions.background.alt.blueFrance.default,
@@ -106,6 +133,9 @@ const useStyles = tss.withName({ PhoneSchedulePanel }).create({
 		padding: `${fr.spacing("2v")} ${fr.spacing("2w")}`,
 		fontSize: "0.9375rem",
 		color: fr.colors.decisions.text.default.error.default,
+	},
+	cellRight: {
+		textAlign: "right",
 	},
 	note: {
 		fontSize: "0.875rem",
