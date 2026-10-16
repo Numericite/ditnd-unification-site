@@ -118,8 +118,10 @@ export function ContactInfos({ contactCMS }: Props) {
 				<div className={fr.cx("fr-grid-row", "fr-grid-row--gutters")}>
 					<div
 						ref={phoneColumnRef}
-						className={fr.cx("fr-col-12", "fr-col-md-4")}
-						style={{ position: "relative" }}
+						className={cx(
+							fr.cx("fr-col-12", "fr-col-md-4"),
+							classes.phoneColumn,
+						)}
 					>
 						<Tile
 							title={contactCMS?.phone.title ?? "Par téléphone"}
@@ -131,49 +133,25 @@ export function ContactInfos({ contactCMS }: Props) {
 							}
 							desc={
 								<>
-									<span
-										style={{
-											fontSize: "1.75rem",
-											fontWeight: 700,
-											color:
-												fr.colors.decisions.text.actionHigh.blueFrance.default,
-										}}
-									>
+									<span className={classes.phoneNumber}>
 										{contactCMS?.phone.number ?? "0 800 71 40 40"}
 									</span>
-									<br />
-									<span
-										style={{
-											color: fr.colors.decisions.text.mention.grey.default,
-										}}
-									>
+									<span className={classes.phoneLabel}>
 										{contactCMS?.phone.label ?? "Service et appel gratuits"}
 									</span>
 								</>
 							}
 							detail={
-								<span
-									style={{
-										display: "flex",
-										alignItems: "center",
-										gap: "12px",
-										flexWrap: "wrap",
-									}}
-								>
+								<span className={classes.detailRow}>
 									{isOpen !== null && (
 										<>
 											<span
-												style={{
-													width: 10,
-													height: 10,
-													borderRadius: "50%",
-													backgroundColor: isOpen ? "#18753c" : "#c9191e",
-													display: "inline-block",
-													flexShrink: 0,
-													boxShadow: isOpen
-														? "0 0 0 5px rgba(24,117,60,0.2)"
-														: "0 0 0 5px rgba(201,25,30,0.2)",
-												}}
+												className={cx(
+													classes.statusDot,
+													isOpen
+														? classes.statusDotOpen
+														: classes.statusDotClosed,
+												)}
 											/>
 											<Badge
 												noIcon
@@ -199,7 +177,7 @@ export function ContactInfos({ contactCMS }: Props) {
 								</span>
 							}
 							noIcon
-							classes={{ root: classes.tileLeft }}
+							classes={{ root: cx(classes.tileLeft, classes.tilePhoneDetail) }}
 						/>
 						{showSchedule && (
 							<PhoneSchedulePanel
@@ -219,16 +197,19 @@ export function ContactInfos({ contactCMS }: Props) {
 							}
 							desc={contactCMS?.contactForm?.description ?? ""}
 							detail={
-								<Button
-									priority="secondary"
-									iconId="fr-icon-arrow-right-line"
-									iconPosition="right"
-									linkProps={{
-										href: contactCMS?.contactForm?.url ?? "/contact",
-									}}
-								>
-									{contactCMS?.contactForm?.buttonLabel ?? "Écrire au service"}
-								</Button>
+								<div className={classes.tileButtonWrapper}>
+									<Button
+										priority="secondary"
+										iconId="fr-icon-arrow-right-line"
+										iconPosition="right"
+										linkProps={{
+											href: contactCMS?.contactForm?.url ?? "/contact",
+										}}
+									>
+										{contactCMS?.contactForm?.buttonLabel ??
+											"Écrire au service"}
+									</Button>
+								</div>
 							}
 							noIcon
 							classes={{ root: classes.tileLeft }}
@@ -248,19 +229,22 @@ export function ContactInfos({ contactCMS }: Props) {
 							}
 							desc={contactCMS?.directory?.description ?? ""}
 							detail={
-								<Button
-									priority="secondary"
-									iconId="fr-icon-external-link-line"
-									iconPosition="right"
-									linkProps={{
-										href:
-											contactCMS?.directory?.url ??
-											"https://annuaire.maisondelautisme.gouv.fr",
-										target: "_blank",
-									}}
-								>
-									{contactCMS?.directory?.buttonLabel ?? "Consulter l'annuaire"}
-								</Button>
+								<div className={classes.tileButtonWrapper}>
+									<Button
+										priority="secondary"
+										iconId="fr-icon-external-link-line"
+										iconPosition="right"
+										linkProps={{
+											href:
+												contactCMS?.directory?.url ??
+												"https://annuaire.maisondelautisme.gouv.fr",
+											target: "_blank",
+										}}
+									>
+										{contactCMS?.directory?.buttonLabel ??
+											"Consulter l'annuaire"}
+									</Button>
+								</div>
 							}
 							noIcon
 							classes={{ root: classes.tileLeft }}
@@ -273,6 +257,44 @@ export function ContactInfos({ contactCMS }: Props) {
 }
 
 const useStyles = tss.withName({ ContactInfos }).create({
+	phoneNumber: {
+		display: "block",
+		fontSize: "1.75rem",
+		fontWeight: 700,
+		color: fr.colors.decisions.text.actionHigh.blueFrance.default,
+		marginBottom: "8px",
+	},
+	phoneLabel: {
+		fontSize: "0.875rem",
+		color: fr.colors.decisions.text.mention.grey.default,
+	},
+	detailRow: {
+		display: "flex",
+		alignItems: "center",
+		gap: "12px",
+		flexWrap: "wrap",
+	},
+	statusDot: {
+		width: 10,
+		height: 10,
+		borderRadius: "50%",
+		display: "inline-block",
+		flexShrink: 0,
+	},
+	statusDotOpen: {
+		backgroundColor: "#18753c",
+		boxShadow: "0 0 0 5px rgba(24,117,60,0.2)",
+	},
+	statusDotClosed: {
+		backgroundColor: "#c9191e",
+		boxShadow: "0 0 0 5px rgba(201,25,30,0.2)",
+	},
+	phoneColumn: {
+		position: "relative",
+	},
+	tileButtonWrapper: {
+		marginTop: fr.spacing("3w"),
+	},
 	scheduleButton: {
 		flexShrink: 0,
 	},
@@ -287,6 +309,11 @@ const useStyles = tss.withName({ ContactInfos }).create({
 		color: fr.colors.decisions.text.actionHigh.blueFrance.default,
 		"&::before": {
 			"--icon-size": "1.5rem",
+		},
+	},
+	tilePhoneDetail: {
+		"& .fr-tile__desc": {
+			flexGrow: 0,
 		},
 	},
 	tileLeft: {
