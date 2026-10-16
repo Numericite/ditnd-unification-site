@@ -33,7 +33,7 @@ export default function SeoMeta({
 		? rawImage
 		: `${SITE_URL}${rawImage}`;
 
-	const url = pathname ? `${SITE_URL}${pathname}` : undefined;
+	const url = pathname ? `${SITE_URL}${pathname.split(/[?#]/)[0]}` : undefined;
 
 	return (
 		<Head>
@@ -57,6 +57,7 @@ export default function SeoMeta({
 			<meta key="og:locale" property="og:locale" content="fr_FR" />
 			<meta key="og:image" property="og:image" content={finalImage} />
 			{url && <meta key="og:url" property="og:url" content={url} />}
+			{url && <link key="canonical" rel="canonical" href={url} />}
 			<meta
 				key="twitter:card"
 				name="twitter:card"
