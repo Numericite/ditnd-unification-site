@@ -99,14 +99,23 @@ export default buildConfig({
 		},
 		livePreview: {
 			url: ({ data, collectionConfig }) => {
-				if (!data || collectionConfig?.slug !== "practical-guides") return;
+				if (!data) return;
 
-				const basePath =
-					data._status === "draft"
-						? `/draft/${data.slug}`
-						: `/fiches-pratiques/${data.slug}`;
+				if (collectionConfig?.slug === "pages") {
+					const basePath =
+						data._status === "draft"
+							? `/draft/${data.slug}?collection=pages`
+							: `/${data.slug}`;
+					return `${basePath}${data._status !== "draft" ? `?v=${data.updatedAt}` : `&v=${data.updatedAt}`}`;
+				}
 
-				return `${basePath}?v=${data.updatedAt}`;
+				if (collectionConfig?.slug === "practical-guides") {
+					const basePath =
+						data._status === "draft"
+							? `/draft/${data.slug}`
+							: `/fiches-pratiques/${data.slug}`;
+					return `${basePath}?v=${data.updatedAt}`;
+				}
 			},
 			breakpoints: [
 				{
@@ -128,7 +137,7 @@ export default buildConfig({
 					height: 900,
 				},
 			],
-			collections: ["practical-guides"],
+			collections: ["practical-guides", "pages"],
 		},
 	},
 	collections: [

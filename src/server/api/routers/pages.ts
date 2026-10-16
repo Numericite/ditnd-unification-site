@@ -3,7 +3,7 @@ import { createTRPCRouter, publicProcedure } from "~/server/api/trpc";
 import type { Media, Page } from "~/payload/payload-types";
 
 export interface AugmentedPage extends Omit<Page, "imageBanner"> {
-	imageBanner: Media | undefined;
+	imageBanner: Media | null;
 	meta?: {
 		title?: string | null;
 		description?: string | null;
@@ -36,7 +36,7 @@ export const pagesRouter = createTRPCRouter({
 				imageBanner:
 					typeof page.imageBanner === "object" && page.imageBanner !== null
 						? (page.imageBanner as Media)
-						: undefined,
+						: null,
 				meta: {
 					...page.meta,
 					image:

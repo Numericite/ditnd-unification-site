@@ -1,6 +1,7 @@
 import Breadcrumb from "@codegouvfr/react-dsfr/Breadcrumb";
 import Head from "next/head";
 import PracticalGuidesDisplay from "~/components/PracticalGuides/PracticalGuidesDisplay";
+import CmsPageLayout from "~/components/ui/CmsPage/CmsPageLayout";
 import { fr } from "@codegouvfr/react-dsfr";
 import PageContent from "~/components/ui/PageContent";
 import type { GetServerSideProps } from "next";
@@ -8,16 +9,16 @@ import { getPayload } from "payload";
 import payloadConfig from "~/payload/payload.config";
 import { onlyPublished, resolveRelations } from "~/server/api/trpc";
 import type { AugmentedPracticalGuide } from "~/server/api/routers/practical-guides";
+import type { AugmentedPage } from "~/server/api/routers/pages";
+import type { Media } from "~/payload/payload-types";
 import ErrorPage from "~/components/ui/ErrorPage/ErrorPage";
 
 type Props =
 	| { isNotFound: true }
-	| {
-			isNotFound?: false;
-			guide: AugmentedPracticalGuide;
-	  };
+	| { isNotFound?: false; kind: "guide"; guide: AugmentedPracticalGuide }
+	| { isNotFound?: false; kind: "page"; page: AugmentedPage };
 
-export default function PracticalGuideDraftPage(props: Props) {
+export default function DraftPage(props: Props) {
 	if (props.isNotFound) {
 		return (
 			<>
@@ -30,68 +31,133 @@ export default function PracticalGuideDraftPage(props: Props) {
 		);
 	}
 
-	const { guide } = props;
+	if (props.kind === "guide") {
+		const { guide } = props;
+		return (
+			<>
+				<Head>
+					<title>{guide.title} (brouillon) - Maison de l'autisme</title>
+					<meta name="robots" content="noindex" />
+				</Head>
+				<div className={fr.cx("fr-container")}>
+					<Breadcrumb
+						currentPageLabel={guide.title}
+						homeLinkProps={{ href: "/" }}
+						segments={[
+							{
+								label: "Fiches Pratiques",
+								linkProps: { href: "/fiches-pratiques" },
+							},
+						]}
+					/>
+					<PageContent>
+						<PracticalGuidesDisplay guide={guide} />
+					</PageContent>
+				</div>
+			</>
+		);
+	}
 
+	const { page } = props;
 	return (
 		<>
 			<Head>
-				<title>{guide.title} (brouillon) - Maison de l'autisme</title>
-				<meta
-					name="description"
-					content={`${guide.title} : brouillon de fiche pratique - Maison de l'autisme`}
-				/>
+				<title>{page.title} (brouillon) - Maison de l'autisme</title>
+				<meta name="robots" content="noindex" />
 			</Head>
 			<div className={fr.cx("fr-container")}>
 				<Breadcrumb
-					currentPageLabel={guide.title}
-					homeLinkProps={{
-						href: "/",
-					}}
-					segments={[
-						{
-							label: "Fiches Pratiques",
-							linkProps: {
-								href: "/fiches-pratiques",
-							},
-						},
-					]}
+					currentPageLabel={page.title}
+					homeLinkProps={{ href: "/" }}
+					segments={[]}
 				/>
 				<PageContent>
-					<PracticalGuidesDisplay guide={guide} />
+					<CmsPageLayout
+						title={page.title}
+						content={page.content}
+						imageBanner={page.imageBanner ?? undefined}
+						createdAt={page.publishedAt ?? page.createdAt}
+						lastUpdatedAt={page.lastUpdatedAt}
+					/>
 				</PageContent>
 			</div>
 		</>
 	);
 }
 
+async function getAuthenticatedPayloadUser(
+	ctx: Parameters<GetServerSideProps>[0],
+) {
+	const payload = await getPayload({ config: payloadConfig });
+	const headers = new Headers();
+	for (const [key, value] of Object.entries(ctx.req.headers)) {
+		if (typeof value === "string") headers.set(key, value);
+		else if (Array.isArray(value)) headers.set(key, value.join(", "));
+	}
+	const { user } = await payload.auth({ headers });
+	return { payload, user };
+}
+
 export const getServerSideProps: GetServerSideProps<Props> = async (ctx) => {
 	const slug = ctx.params?.slug;
+	const collection = ctx.query?.collection;
 
 	if (typeof slug !== "string") {
 		ctx.res.statusCode = 404;
 		return { props: { isNotFound: true } };
 	}
 
-	const payload = await getPayload({ config: payloadConfig });
-
-	// Verify the requester is an authenticated Payload admin.
-	// Payload's Local API bypasses collection access rules, so we must
-	// gate draft access ourselves before issuing the find().
-	const headers = new Headers();
-	for (const [key, value] of Object.entries(ctx.req.headers)) {
-		if (typeof value === "string") headers.set(key, value);
-		else if (Array.isArray(value)) headers.set(key, value.join(", "));
-	}
-
-	const { user } = await payload.auth({ headers });
+	const { payload, user } = await getAuthenticatedPayloadUser(ctx);
 
 	if (!user || (user as { role?: string }).role !== "admin") {
-		// Return 404 (not a redirect) so we don't leak the existence of
-		// unpublished slugs to anonymous visitors.
 		ctx.res.statusCode = 404;
 		return { props: { isNotFound: true } };
 	}
 
+	if (collection === "pages") {
+		try {
+			const result = await payload.find({
+				collection: "pages",
+				limit: 1,
+				depth: 2,
+				draft: true,
+				where: { slug: { equals: slug } },
+			});
+
+			const page = result.docs[0];
+			if (!page) {
+				ctx.res.statusCode = 404;
+				return { props: { isNotFound: true } };
+			}
+
+			const metaImage = page.meta?.image;
+
+			return {
+				props: {
+					kind: "page",
+					page: {
+						...page,
+						imageBanner:
+							typeof page.imageBanner === "object" && page.imageBanner !== null
+								? (page.imageBanner as Media)
+								: null,
+						meta: {
+							...page.meta,
+							image:
+								typeof metaImage === "object" && metaImage !== null
+									? (metaImage as Media)
+									: null,
+						},
+					} as AugmentedPage,
+				},
+			};
+		} catch {
+			ctx.res.statusCode = 404;
+			return { props: { isNotFound: true } };
+		}
+	}
+
+	// Default: practical-guides
 	try {
 		const result = await payload.find({
 			collection: "practical-guides",
@@ -119,7 +185,7 @@ export const getServerSideProps: GetServerSideProps<Props> = async (ctx) => {
 			),
 		} as AugmentedPracticalGuide;
 
-		return { props: { guide: augmented } };
+		return { props: { kind: "guide", guide: augmented } };
 	} catch {
 		ctx.res.statusCode = 404;
 		return { props: { isNotFound: true } };
