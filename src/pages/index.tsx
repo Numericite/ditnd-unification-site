@@ -110,6 +110,7 @@ export default function Home({ mostViewedGuides, latestNews }: Props) {
 						</div>
 					</div>
 				</div>
+				<ContactInfos contactCMS={homeCMS?.contact} />
 				{latestNews.length > 0 && (
 					<div className={cx(classes.coloredContainer)}>
 						<div className={fr.cx("fr-container")}>
@@ -119,7 +120,6 @@ export default function Home({ mostViewedGuides, latestNews }: Props) {
 						</div>
 					</div>
 				)}
-				<ContactInfos contactCMS={homeCMS?.contact} />
 				<div className={fr.cx("fr-container")}>
 					<div className={fr.cx("fr-py-6w")}>
 						{persons ? (
