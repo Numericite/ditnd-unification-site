@@ -138,16 +138,6 @@ function App({ Component, pageProps }: AppPropsWithGlobal) {
 						<FooterConsentManagementItem key="consent-management" />,
 						<FooterPersonalDataPolicyItem key="personal-data-policy" />,
 						{
-							text: "Code source",
-							linkProps: {
-								href: "https://github.com/Numericite/ditnd-unification-site",
-								"aria-label": "Code source, nouvelle fenêtre",
-								title: "Code source, nouvelle fenêtre",
-								target: "_blank",
-								rel: "noopener noreferrer",
-							},
-						},
-						{
 							text: "Contact particuliers",
 							linkProps: { href: "/contact-particuliers" },
 						},
