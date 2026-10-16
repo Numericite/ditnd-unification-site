@@ -113,142 +113,153 @@ export function ContactInfos({ contactCMS }: Props) {
 	}, [showSchedule]);
 
 	return (
-		<div className={fr.cx("fr-container")}>
-			<div className={fr.cx("fr-py-4w")}>
-				<div className={fr.cx("fr-grid-row", "fr-grid-row--gutters")}>
-					<div
-						ref={phoneColumnRef}
-						className={cx(
-							fr.cx("fr-col-12", "fr-col-md-4"),
-							classes.phoneColumn,
-						)}
-					>
-						<Tile
-							title={contactCMS?.phone.title ?? "Par téléphone"}
-							start={
-								<span
-									className={cx(fr.cx("fr-icon-phone-line"), classes.tileIcon)}
-									aria-hidden="true"
-								/>
-							}
-							desc={
-								<>
-									<span className={classes.phoneNumber}>
-										{contactCMS?.phone.number ?? "0 800 71 40 40"}
-									</span>
-									<span className={classes.phoneLabel}>
-										{contactCMS?.phone.label ?? "Service et appel gratuits"}
-									</span>
-								</>
-							}
-							detail={
-								<span className={classes.detailRow}>
-									{isOpen !== null && (
-										<>
-											<span
-												className={cx(
-													classes.statusDot,
-													isOpen
-														? classes.statusDotOpen
-														: classes.statusDotClosed,
-												)}
-											/>
-											<Badge
-												noIcon
-												small
-												severity={isOpen ? "success" : "error"}
-											>
-												{isOpen ? "OUVERT" : "FERMÉ"}
-											</Badge>
-											{isOpen ? todayLabel : closedLabel}
-										</>
-									)}
-									<button
-										type="button"
-										aria-label="Voir les horaires de la ligne"
-										aria-expanded={showSchedule}
-										onClick={() => setShowSchedule((v) => !v)}
+		<div className={classes.sectionWrapper}>
+			<div className={fr.cx("fr-container")}>
+				<div className={fr.cx("fr-py-4w")}>
+					<div className={fr.cx("fr-grid-row", "fr-grid-row--gutters")}>
+						<div
+							ref={phoneColumnRef}
+							className={cx(
+								fr.cx("fr-col-12", "fr-col-md-4"),
+								classes.phoneColumn,
+							)}
+						>
+							<Tile
+								title={contactCMS?.phone.title ?? "Par téléphone"}
+								start={
+									<span
 										className={cx(
-											fr.cx("fr-btn", "fr-btn--sm", "fr-icon-information-line"),
-											"fr-btn--tertiary-no-outline",
-											classes.scheduleButton,
+											fr.cx("fr-icon-phone-line"),
+											classes.tileIcon,
 										)}
+										aria-hidden="true"
 									/>
-								</span>
-							}
-							noIcon
-							classes={{ root: cx(classes.tileLeft, classes.tilePhoneDetail) }}
-						/>
-						{showSchedule && (
-							<PhoneSchedulePanel
-								schedule={contactCMS?.phone.schedule}
-								scheduleNote={contactCMS?.phone.scheduleNote}
+								}
+								desc={
+									<>
+										<span className={classes.phoneNumber}>
+											{contactCMS?.phone.number ?? "0 800 71 40 40"}
+										</span>
+										<span className={classes.phoneLabel}>
+											{contactCMS?.phone.label ?? "Service et appel gratuits"}
+										</span>
+									</>
+								}
+								detail={
+									<span className={classes.detailRow}>
+										{isOpen !== null && (
+											<>
+												<span
+													className={cx(
+														classes.statusDot,
+														isOpen
+															? classes.statusDotOpen
+															: classes.statusDotClosed,
+													)}
+												/>
+												<Badge
+													noIcon
+													small
+													severity={isOpen ? "success" : "error"}
+												>
+													{isOpen ? "OUVERT" : "FERMÉ"}
+												</Badge>
+												{isOpen ? todayLabel : closedLabel}
+											</>
+										)}
+										<button
+											type="button"
+											aria-label="Voir les horaires de la ligne"
+											aria-expanded={showSchedule}
+											onClick={() => setShowSchedule((v) => !v)}
+											className={cx(
+												fr.cx(
+													"fr-btn",
+													"fr-btn--sm",
+													"fr-icon-information-line",
+												),
+												"fr-btn--tertiary-no-outline",
+												classes.scheduleButton,
+											)}
+										/>
+									</span>
+								}
+								noIcon
+								classes={{
+									root: cx(classes.tileLeft, classes.tilePhoneDetail),
+								}}
 							/>
-						)}
-					</div>
-					<div className={fr.cx("fr-col-12", "fr-col-md-4")}>
-						<Tile
-							title={contactCMS?.contactForm?.title ?? "Par écrit"}
-							start={
-								<span
-									className={cx(fr.cx("fr-icon-mail-line"), classes.tileIcon)}
-									aria-hidden="true"
+							{showSchedule && (
+								<PhoneSchedulePanel
+									schedule={contactCMS?.phone.schedule}
+									scheduleNote={contactCMS?.phone.scheduleNote}
 								/>
-							}
-							desc={contactCMS?.contactForm?.description ?? ""}
-							detail={
-								<div className={classes.tileButtonWrapper}>
-									<Button
-										priority="secondary"
-										iconId="fr-icon-arrow-right-line"
-										iconPosition="right"
-										linkProps={{
-											href: contactCMS?.contactForm?.url ?? "/contact",
-										}}
-									>
-										{contactCMS?.contactForm?.buttonLabel ??
-											"Écrire au service"}
-									</Button>
-								</div>
-							}
-							noIcon
-							classes={{ root: classes.tileLeft }}
-						/>
-					</div>
-					<div className={fr.cx("fr-col-12", "fr-col-md-4")}>
-						<Tile
-							title={contactCMS?.directory?.title ?? "Annuaire"}
-							start={
-								<span
-									className={cx(
-										fr.cx("fr-icon-map-pin-user-line"),
-										classes.tileIcon,
-									)}
-									aria-hidden="true"
-								/>
-							}
-							desc={contactCMS?.directory?.description ?? ""}
-							detail={
-								<div className={classes.tileButtonWrapper}>
-									<Button
-										priority="secondary"
-										iconId="fr-icon-external-link-line"
-										iconPosition="right"
-										linkProps={{
-											href:
-												contactCMS?.directory?.url ??
-												"https://annuaire.maisondelautisme.gouv.fr",
-											target: "_blank",
-										}}
-									>
-										{contactCMS?.directory?.buttonLabel ??
-											"Consulter l'annuaire"}
-									</Button>
-								</div>
-							}
-							noIcon
-							classes={{ root: classes.tileLeft }}
-						/>
+							)}
+						</div>
+						<div className={fr.cx("fr-col-12", "fr-col-md-4")}>
+							<Tile
+								title={contactCMS?.contactForm?.title ?? "Par écrit"}
+								start={
+									<span
+										className={cx(fr.cx("fr-icon-mail-line"), classes.tileIcon)}
+										aria-hidden="true"
+									/>
+								}
+								desc={contactCMS?.contactForm?.description ?? ""}
+								detail={
+									<div className={classes.tileButtonWrapper}>
+										<Button
+											priority="secondary"
+											iconId="fr-icon-arrow-right-line"
+											iconPosition="right"
+											linkProps={{
+												href: contactCMS?.contactForm?.url ?? "/contact",
+											}}
+										>
+											{contactCMS?.contactForm?.buttonLabel ??
+												"Écrire au service"}
+										</Button>
+									</div>
+								}
+								noIcon
+								classes={{ root: classes.tileLeft }}
+							/>
+						</div>
+						<div className={fr.cx("fr-col-12", "fr-col-md-4")}>
+							<Tile
+								title={contactCMS?.directory?.title ?? "Annuaire"}
+								start={
+									<span
+										className={cx(
+											fr.cx("fr-icon-map-pin-user-line"),
+											classes.tileIcon,
+										)}
+										aria-hidden="true"
+									/>
+								}
+								desc={contactCMS?.directory?.description ?? ""}
+								detail={
+									<div className={classes.tileButtonWrapper}>
+										<Button
+											priority="secondary"
+											iconId="fr-icon-external-link-line"
+											iconPosition="right"
+											linkProps={{
+												href:
+													contactCMS?.directory?.url ??
+													"https://annuaire.maisondelautisme.gouv.fr",
+												target: "_blank",
+											}}
+										>
+											{contactCMS?.directory?.buttonLabel ??
+												"Consulter l'annuaire"}
+										</Button>
+									</div>
+								}
+								noIcon
+								classes={{ root: classes.tileLeft }}
+							/>
+						</div>
 					</div>
 				</div>
 			</div>
@@ -257,6 +268,9 @@ export function ContactInfos({ contactCMS }: Props) {
 }
 
 const useStyles = tss.withName({ ContactInfos }).create({
+	sectionWrapper: {
+		background: `linear-gradient(to bottom, transparent 50%, ${fr.colors.decisions.background.alt.blueFrance.default} 50%)`,
+	},
 	phoneNumber: {
 		display: "block",
 		fontSize: "1.75rem",
