@@ -133,7 +133,6 @@ export const CMSHome: GlobalConfig = {
 									name: "url",
 									type: "text",
 									label: { fr: "URL" },
-									validate: validateHttpUrl,
 								},
 							],
 						},

@@ -48,14 +48,14 @@ export default async function homeTask(payload: BasePayload) {
 					description:
 						"Posez votre question via notre formulaire de contact, disponible 24h/24 et 7j/7.",
 					buttonLabel: "Écrire au service",
-					url: "/contact",
+					url: "/contact-particuliers",
 				},
 				directory: {
 					title: "Annuaire",
 					description:
 						"Trouvez les structures et les professionnels près de chez vous.",
 					buttonLabel: "Consulter l'annuaire",
-					url: "https://annuaire.maisondelautisme.gouv.fr",
+					url: "https://annuaire.autismeinfoservice.fr/",
 				},
 			},
 		},
