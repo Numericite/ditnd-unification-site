@@ -1,6 +1,7 @@
 import type { Field, GlobalConfig } from "payload";
 import { hideForNonAdmin, isAdmin } from "~/payload/hooks";
 import { standardFields } from "~/payload/fields/standards";
+import { validateHttpUrl } from "~/payload/fields/validateHttpUrl";
 
 const dayGroup = (name: string, label: string): Field => ({
 	name,
@@ -132,6 +133,7 @@ export const CMSHome: GlobalConfig = {
 									name: "url",
 									type: "text",
 									label: { fr: "URL" },
+									validate: validateHttpUrl,
 								},
 							],
 						},
@@ -161,6 +163,7 @@ export const CMSHome: GlobalConfig = {
 									name: "url",
 									type: "text",
 									label: { fr: "URL" },
+									validate: validateHttpUrl,
 								},
 							],
 						},
