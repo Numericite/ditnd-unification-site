@@ -1,9 +1,9 @@
-import { MigrateUpArgs, MigrateDownArgs, sql } from '@payloadcms/db-postgres'
+import { type MigrateUpArgs, type MigrateDownArgs, sql } from '@payloadcms/db-postgres'
 
 export async function up({ db, payload, req }: MigrateUpArgs): Promise<void> {
   await db.execute(sql`
-   ALTER TABLE "home" ADD COLUMN "contact_phone_title" varchar DEFAULT 'Par téléphone';
-  ALTER TABLE "home" ADD COLUMN "contact_phone_number" varchar NOT NULL;
+  ALTER TABLE "home" ADD COLUMN "contact_phone_title" varchar DEFAULT 'Par téléphone';
+  ALTER TABLE "home" ADD COLUMN "contact_phone_number" varchar DEFAULT '';
   ALTER TABLE "home" ADD COLUMN "contact_phone_label" varchar;
   ALTER TABLE "home" ADD COLUMN "contact_phone_schedule_note" varchar;
   ALTER TABLE "home" ADD COLUMN "contact_phone_schedule_lundi_closed" boolean DEFAULT false;
