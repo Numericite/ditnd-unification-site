@@ -156,9 +156,12 @@ export function ContactInfos({ contactCMS }: Props) {
 								}
 								desc={
 									<>
-										<span className={classes.phoneNumber}>
+										<a
+											href={`tel:${(contactCMS?.phone.number ?? "0800714040").replace(/\s/g, "")}`}
+											className={classes.phoneNumber}
+										>
 											{contactCMS?.phone.number ?? "0 800 71 40 40"}
-										</span>
+										</a>
 										<span className={classes.phoneLabel}>
 											{contactCMS?.phone.label ?? "Service et appel gratuits"}
 										</span>
@@ -300,6 +303,10 @@ const useStyles = tss.withName({ ContactInfos }).create({
 		fontWeight: 700,
 		color: fr.colors.decisions.text.actionHigh.blueFrance.default,
 		marginBottom: "8px",
+		backgroundImage: "none",
+		"&:hover": {
+			backgroundImage: "none",
+		},
 	},
 	phoneLabel: {
 		fontSize: "0.875rem",
