@@ -68,6 +68,7 @@ export interface Config {
 	blocks: {};
 	collections: {
 		medias: Media;
+		pages: Page;
 		"practical-guides": PracticalGuide;
 		courses: Course;
 		news: News;
@@ -113,6 +114,7 @@ export interface Config {
 	};
 	collectionsSelect: {
 		medias: MediasSelect<false> | MediasSelect<true>;
+		pages: PagesSelect<false> | PagesSelect<true>;
 		"practical-guides":
 			| PracticalGuidesSelect<false>
 			| PracticalGuidesSelect<true>;
@@ -290,6 +292,60 @@ export interface FolderInterface {
 	folderType?: "medias"[] | null;
 	updatedAt: string;
 	createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "pages".
+ */
+export interface Page {
+	id: number;
+	/**
+	 * Titre complet affiché en haut de la page et dans le fil d'Ariane. Sert aussi de titre SEO si aucun n'est renseigné.
+	 */
+	title: string;
+	/**
+	 * Description courte affichée sur les cartes (120 caractères max)
+	 */
+	description: string;
+	content: {
+		root: {
+			type: string;
+			children: {
+				type: any;
+				version: number;
+				[k: string]: unknown;
+			}[];
+			direction: ("ltr" | "rtl") | null;
+			format: "left" | "start" | "center" | "right" | "end" | "justify" | "";
+			indent: number;
+			version: number;
+		};
+		[k: string]: unknown;
+	};
+	meta?: {
+		title?: string | null;
+		description?: string | null;
+		/**
+		 * Maximum upload file size: 12MB. Recommended file size for images is <500KB.
+		 */
+		image?: (number | null) | Media;
+	};
+	/**
+	 * Affichée sur le site à côté de « Publié le ». Par défaut, la date de création de la page.
+	 */
+	publishedAt?: string | null;
+	/**
+	 * Facultative. Si renseignée, une mention « Mis à jour le » est affichée sur le site.
+	 */
+	lastUpdatedAt?: string | null;
+	imageBanner?: (number | null) | Media;
+	/**
+	 * Utilisé dans l'URL de la page. Laissez vide pour le générer à partir du titre. Le modifier change l'URL publique : pensez à ajouter une redirection.
+	 */
+	slug: string;
+	updatedAt: string;
+	createdAt: string;
+	_status?: ("draft" | "published") | null;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -909,6 +965,10 @@ export interface PayloadLockedDocument {
 				value: number | Media;
 		  } | null)
 		| ({
+				relationTo: "pages";
+				value: number | Page;
+		  } | null)
+		| ({
 				relationTo: "practical-guides";
 				value: number | PracticalGuide;
 		  } | null)
@@ -1100,6 +1160,29 @@ export interface MediasSelect<T extends boolean = true> {
 							filename?: T;
 					  };
 		  };
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "pages_select".
+ */
+export interface PagesSelect<T extends boolean = true> {
+	title?: T;
+	description?: T;
+	content?: T;
+	meta?:
+		| T
+		| {
+				title?: T;
+				description?: T;
+				image?: T;
+		  };
+	publishedAt?: T;
+	lastUpdatedAt?: T;
+	imageBanner?: T;
+	slug?: T;
+	updatedAt?: T;
+	createdAt?: T;
+	_status?: T;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
