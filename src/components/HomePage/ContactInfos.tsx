@@ -24,7 +24,8 @@ const parseTime = (t: string): number | null => {
 	const match = t.match(/^(\d+)h(\d*)$/);
 	if (!match) return null;
 	return (
-		parseInt(match[1]!, 10) * 60 + (match[2] ? parseInt(match[2], 10) || 0 : 0)
+		parseInt(match[1] ?? "0", 10) * 60 +
+		(match[2] ? parseInt(match[2], 10) || 0 : 0)
 	);
 };
 
@@ -35,9 +36,11 @@ function getNextOpenLabel(
 ): string {
 	for (let i = 1; i <= 6; i++) {
 		const nextDow = (todayDow + i) % 7;
-		const nextEntry = schedule[DAY_KEYS[nextDow]!];
+		const dayKey = DAY_KEYS[nextDow];
+		if (!dayKey) continue;
+		const nextEntry = schedule[dayKey];
 		if (!nextEntry || nextEntry.closed || !nextEntry.openTime) continue;
-		const label = i === 1 ? "demain" : DAY_KEYS[nextDow]!;
+		const label = i === 1 ? "demain" : dayKey;
 		return `Réouvre ${label} à ${nextEntry.openTime}`;
 	}
 	return "";
@@ -49,7 +52,7 @@ function getPhoneStatus(schedule: Home["contact"]["phone"]["schedule"]) {
 	const now = new Date();
 	const todayDow = now.getDay();
 	const currentMinutes = now.getHours() * 60 + now.getMinutes();
-	const entry = schedule[DAY_KEYS[todayDow]!];
+	const entry = schedule[DAY_KEYS[todayDow] ?? "lundi"];
 
 	if (!entry) return { isOpen: null, todayLabel: "", closedLabel: "" };
 
@@ -99,6 +102,13 @@ export function ContactInfos({ contactCMS }: Props) {
 
 	const [showSchedule, setShowSchedule] = useState(false);
 	const phoneColumnRef = useRef<HTMLDivElement>(null);
+	const schedulePanelRef = useRef<HTMLElement>(null);
+
+	useEffect(() => {
+		if (showSchedule) {
+			schedulePanelRef.current?.focus();
+		}
+	}, [showSchedule]);
 
 	useEffect(() => {
 		if (!showSchedule) return;
@@ -110,8 +120,15 @@ export function ContactInfos({ contactCMS }: Props) {
 				setShowSchedule(false);
 			}
 		};
+		const handleEscape = (e: KeyboardEvent) => {
+			if (e.key === "Escape") setShowSchedule(false);
+		};
 		document.addEventListener("mousedown", handleClickOutside);
-		return () => document.removeEventListener("mousedown", handleClickOutside);
+		document.addEventListener("keydown", handleEscape);
+		return () => {
+			document.removeEventListener("mousedown", handleClickOutside);
+			document.removeEventListener("keydown", handleEscape);
+		};
 	}, [showSchedule]);
 
 	return (
@@ -152,6 +169,7 @@ export function ContactInfos({ contactCMS }: Props) {
 										{isOpen !== null && (
 											<>
 												<span
+													aria-hidden="true"
 													className={cx(
 														classes.statusDot,
 														isOpen
@@ -173,6 +191,7 @@ export function ContactInfos({ contactCMS }: Props) {
 											type="button"
 											aria-label="Voir les horaires de la ligne"
 											aria-expanded={showSchedule}
+											aria-controls="phone-schedule-panel"
 											onClick={() => setShowSchedule((v) => !v)}
 											className={cx(
 												fr.cx(
@@ -193,6 +212,7 @@ export function ContactInfos({ contactCMS }: Props) {
 							/>
 							{showSchedule && (
 								<PhoneSchedulePanel
+									ref={schedulePanelRef}
 									schedule={contactCMS?.phone.schedule}
 									scheduleNote={contactCMS?.phone.scheduleNote}
 								/>
@@ -251,6 +271,7 @@ export function ContactInfos({ contactCMS }: Props) {
 													contactCMS?.directory?.url ??
 													"https://annuaire.maisondelautisme.gouv.fr",
 												target: "_blank",
+												rel: "noopener noreferrer",
 											}}
 										>
 											{contactCMS?.directory?.buttonLabel ??
