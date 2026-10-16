@@ -20,9 +20,9 @@ const DAY_KEYS: Record<
 	6: "samedi",
 };
 
-const parseTime = (t: string) => {
+const parseTime = (t: string): number | null => {
 	const match = t.match(/^(\d+)h(\d*)$/);
-	if (!match) return 0;
+	if (!match) return null;
 	return (
 		parseInt(match[1]!, 10) * 60 + (match[2] ? parseInt(match[2], 10) || 0 : 0)
 	);
@@ -33,7 +33,7 @@ function getNextOpenLabel(
 	todayDow: number,
 	_currentMinutes: number,
 ): string {
-	for (let i = 1; i <= 7; i++) {
+	for (let i = 1; i <= 6; i++) {
 		const nextDow = (todayDow + i) % 7;
 		const nextEntry = schedule[DAY_KEYS[nextDow]!];
 		if (!nextEntry || nextEntry.closed || !nextEntry.openTime) continue;
@@ -66,6 +66,8 @@ function getPhoneStatus(schedule: Home["contact"]["phone"]["schedule"]) {
 
 	const openMin = parseTime(entry.openTime);
 	const closeMin = parseTime(entry.closeTime);
+	if (openMin === null || closeMin === null)
+		return { isOpen: null, todayLabel: "", closedLabel: "" };
 	const isOpen = currentMinutes >= openMin && currentMinutes < closeMin;
 
 	if (isOpen) {
