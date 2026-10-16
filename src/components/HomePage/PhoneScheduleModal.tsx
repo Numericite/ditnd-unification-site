@@ -80,7 +80,7 @@ const useStyles = tss.withName({ PhoneSchedulePanel }).create({
 		zIndex: 100,
 	},
 	title: {
-		fontSize: "1.125rem",
+		fontSize: "1.25rem",
 		fontWeight: 700,
 		margin: `0 ${fr.spacing("2w")} ${fr.spacing("1w")}`,
 	},
