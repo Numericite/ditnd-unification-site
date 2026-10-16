@@ -29,8 +29,7 @@ export default function PageView(props: Props) {
 	const { page } = props;
 
 	const metaTitle = page.meta?.title?.trim() || page.title;
-	const metaDescription =
-		page.meta?.description?.trim() || page.description?.trim() || "";
+	const metaDescription = page.meta?.description?.trim() || "";
 	const metaImage =
 		(page.meta?.image as Media | null)?.url ||
 		page.imageBanner?.url ||
