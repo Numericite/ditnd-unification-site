@@ -113,6 +113,15 @@ export async function middleware(request: NextRequest) {
 		});
 	}
 
+	// Médias hérités : réécrits vers S3 (next.config.js). Le navigateur renvoie
+	// l'en-tête Authorization de la basic auth sur chaque requête ; transmis
+	// à S3, il est interprété comme une signature AWS invalide → AccessDenied.
+	if (request.nextUrl.pathname.startsWith("/app/uploads/")) {
+		const headers = new Headers(request.headers);
+		headers.delete("authorization");
+		return NextResponse.next({ request: { headers } });
+	}
+
 	if (!REDIRECTS_MATCHER.test(request.nextUrl.pathname)) {
 		return NextResponse.next();
 	}
