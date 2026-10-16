@@ -26,6 +26,7 @@ import { MapCategories } from "./collections/MapCategories";
 import { MapMarkers } from "./collections/MapMarkers";
 import { Maps } from "./collections/Maps";
 import { News } from "./collections/News";
+import { Pages } from "./collections/Pages";
 import { en } from "@payloadcms/translations/languages/en";
 import { fr } from "@payloadcms/translations/languages/fr";
 
@@ -131,6 +132,7 @@ export default buildConfig({
 	},
 	collections: [
 		Medias,
+		Pages,
 		PracticalGuides,
 		Courses,
 		News,
@@ -251,7 +253,7 @@ export default buildConfig({
 			},
 		}),
 		seoPlugin({
-			collections: ["practical-guides", "courses"],
+			collections: ["practical-guides", "courses", "pages"],
 			uploadsCollection: "medias",
 			tabbedUI: true,
 			generateTitle: ({ doc }) => {
@@ -269,9 +271,11 @@ export default buildConfig({
 				const basePath =
 					collectionConfig?.slug === "courses"
 						? "formations"
-						: "fiches-pratiques";
+						: collectionConfig?.slug === "pages"
+							? ""
+							: "fiches-pratiques";
 				return typeof slug === "string"
-					? `${process.env.NEXT_PUBLIC_SITE_URL || ""}/${basePath}/${slug}`
+					? `${process.env.NEXT_PUBLIC_SITE_URL || ""}/${basePath ? `${basePath}/` : ""}${slug}`
 					: "";
 			},
 		}),
