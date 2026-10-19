@@ -269,7 +269,7 @@ export function ContactInfos({ contactCMS }: Props) {
 										linkProps={{
 											href:
 												contactCMS?.directory?.url ??
-												"https://annuaire.maisondelautisme.gouv.fr",
+												"https://annuaire.autismeinfoservice.fr/",
 											target: "_blank",
 											rel: "noopener noreferrer",
 										}}
