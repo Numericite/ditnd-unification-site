@@ -91,7 +91,7 @@ const useStyles = tss.withName({ PhoneSchedulePanel }).create({
 		transform: "translateX(-50%)",
 		width: "320px",
 		backgroundColor: fr.colors.decisions.background.default.grey.default,
-		boxShadow: "0 4px 12px rgba(0,0,0,0.12)",
+		boxShadow: "var(--lifted-shadow)",
 		padding: fr.spacing("2w"),
 		zIndex: 100,
 	},

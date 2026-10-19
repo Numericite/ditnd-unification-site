@@ -323,12 +323,12 @@ const useStyles = tss.withName({ ContactInfos }).create({
 		marginInline: 5,
 	},
 	statusDotOpen: {
-		backgroundColor: "#18753c",
-		boxShadow: "0 0 0 5px rgba(24,117,60,0.2)",
+		backgroundColor: fr.colors.decisions.background.flat.success.default,
+		boxShadow: `0 0 0 5px color-mix(in srgb, ${fr.colors.decisions.background.flat.success.default} 20%, transparent)`,
 	},
 	statusDotClosed: {
-		backgroundColor: "#c9191e",
-		boxShadow: "0 0 0 5px rgba(201,25,30,0.2)",
+		backgroundColor: fr.colors.decisions.background.flat.error.default,
+		boxShadow: `0 0 0 5px color-mix(in srgb, ${fr.colors.decisions.background.flat.error.default} 20%, transparent)`,
 	},
 	phoneColumn: {
 		position: "relative",
