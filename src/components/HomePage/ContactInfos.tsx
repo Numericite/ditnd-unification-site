@@ -174,12 +174,12 @@ export function ContactInfos({ contactCMS }: Props) {
 												<span
 													aria-hidden="true"
 													className={cx(
-														classes.statusDot,
-														isOpen
-															? classes.statusDotOpen
-															: classes.statusDotClosed,
+														classes.statusHalo,
+														isOpen ? classes.statusOpen : classes.statusClosed,
 													)}
-												/>
+												>
+													<span className={classes.statusDot} />
+												</span>
 												<Badge
 													noIcon
 													small
@@ -314,21 +314,27 @@ const useStyles = tss.withName({ ContactInfos }).create({
 		gap: "12px",
 		flexWrap: "wrap",
 	},
+	statusHalo: {
+		display: "inline-flex",
+		alignItems: "center",
+		justifyContent: "center",
+		width: 20,
+		height: 20,
+		borderRadius: "50%",
+		flexShrink: 0,
+		backgroundColor: "color-mix(in srgb, var(--status-color) 20%, transparent)",
+	},
 	statusDot: {
 		width: 10,
 		height: 10,
 		borderRadius: "50%",
-		display: "inline-block",
-		flexShrink: 0,
-		marginInline: 5,
+		backgroundColor: "var(--status-color)",
 	},
-	statusDotOpen: {
-		backgroundColor: fr.colors.decisions.background.flat.success.default,
-		boxShadow: `0 0 0 5px color-mix(in srgb, ${fr.colors.decisions.background.flat.success.default} 20%, transparent)`,
+	statusOpen: {
+		"--status-color": fr.colors.decisions.background.flat.success.default,
 	},
-	statusDotClosed: {
-		backgroundColor: fr.colors.decisions.background.flat.error.default,
-		boxShadow: `0 0 0 5px color-mix(in srgb, ${fr.colors.decisions.background.flat.error.default} 20%, transparent)`,
+	statusClosed: {
+		"--status-color": fr.colors.decisions.background.flat.error.default,
 	},
 	phoneColumn: {
 		position: "relative",
