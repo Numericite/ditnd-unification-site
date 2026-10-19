@@ -232,19 +232,17 @@ export function ContactInfos({ contactCMS }: Props) {
 								}
 								desc={contactCMS?.contactForm?.description ?? ""}
 								detail={
-									<div className={classes.tileButtonWrapper}>
-										<Button
-											priority="secondary"
-											iconId="fr-icon-arrow-right-line"
-											iconPosition="right"
-											linkProps={{
-												href: contactCMS?.contactForm?.url ?? "/contact",
-											}}
-										>
-											{contactCMS?.contactForm?.buttonLabel ??
-												"Écrire au service"}
-										</Button>
-									</div>
+									<Button
+										priority="secondary"
+										iconId="fr-icon-arrow-right-line"
+										iconPosition="right"
+										linkProps={{
+											href: contactCMS?.contactForm?.url ?? "/contact",
+										}}
+									>
+										{contactCMS?.contactForm?.buttonLabel ??
+											"Écrire au service"}
+									</Button>
 								}
 								noIcon
 								classes={{ root: classes.tileLeft }}
@@ -264,23 +262,21 @@ export function ContactInfos({ contactCMS }: Props) {
 								}
 								desc={contactCMS?.directory?.description ?? ""}
 								detail={
-									<div className={classes.tileButtonWrapper}>
-										<Button
-											priority="secondary"
-											iconId="fr-icon-external-link-line"
-											iconPosition="right"
-											linkProps={{
-												href:
-													contactCMS?.directory?.url ??
-													"https://annuaire.maisondelautisme.gouv.fr",
-												target: "_blank",
-												rel: "noopener noreferrer",
-											}}
-										>
-											{contactCMS?.directory?.buttonLabel ??
-												"Consulter l'annuaire"}
-										</Button>
-									</div>
+									<Button
+										priority="secondary"
+										iconId="fr-icon-external-link-line"
+										iconPosition="right"
+										linkProps={{
+											href:
+												contactCMS?.directory?.url ??
+												"https://annuaire.maisondelautisme.gouv.fr",
+											target: "_blank",
+											rel: "noopener noreferrer",
+										}}
+									>
+										{contactCMS?.directory?.buttonLabel ??
+											"Consulter l'annuaire"}
+									</Button>
 								}
 								noIcon
 								classes={{ root: classes.tileLeft }}
@@ -336,9 +332,6 @@ const useStyles = tss.withName({ ContactInfos }).create({
 	},
 	phoneColumn: {
 		position: "relative",
-	},
-	tileButtonWrapper: {
-		marginTop: fr.spacing("3w"),
 	},
 	scheduleButton: {
 		flexShrink: 0,
