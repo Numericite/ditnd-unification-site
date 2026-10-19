@@ -324,6 +324,7 @@ const useStyles = tss.withName({ ContactInfos }).create({
 		borderRadius: "50%",
 		display: "inline-block",
 		flexShrink: 0,
+		marginInline: 5,
 	},
 	statusDotOpen: {
 		backgroundColor: "#18753c",
