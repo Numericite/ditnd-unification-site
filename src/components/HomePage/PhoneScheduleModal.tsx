@@ -62,7 +62,7 @@ export const PhoneSchedulePanel = forwardRef<HTMLElement, Props>(
 									key={key}
 									className={isToday ? classes.todayRow : classes.row}
 								>
-									<th scope="row" className={baseCell}>
+									<th scope="row" className={cx(baseCell, classes.dayCell)}>
 										{isToday ? `${label} (aujourd'hui)` : label}
 									</th>
 									<td className={cx(hoursCell, classes.cellRight)}>
@@ -92,18 +92,17 @@ const useStyles = tss.withName({ PhoneSchedulePanel }).create({
 		width: "320px",
 		backgroundColor: fr.colors.decisions.background.default.grey.default,
 		boxShadow: "0 4px 12px rgba(0,0,0,0.12)",
-		padding: `${fr.spacing("3w")} ${fr.spacing("2w")}`,
+		padding: fr.spacing("2w"),
 		zIndex: 100,
 	},
 	title: {
 		fontSize: "1.25rem",
 		fontWeight: 700,
-		margin: `0 ${fr.spacing("2w")} ${fr.spacing("1w")}`,
+		margin: `${fr.spacing("1w")} ${fr.spacing("2w")} ${fr.spacing("1w")} 0`,
 	},
 	table: {
 		width: "100%",
 		borderCollapse: "collapse",
-		marginBottom: fr.spacing("2w"),
 	},
 	visuallyHidden: {
 		position: "absolute",
@@ -133,6 +132,11 @@ const useStyles = tss.withName({ PhoneSchedulePanel }).create({
 		padding: `${fr.spacing("2v")} ${fr.spacing("2w")}`,
 		fontSize: "0.9375rem",
 		color: fr.colors.decisions.text.default.error.default,
+	},
+	dayCell: {
+		textAlign: "left",
+		fontWeight: 400,
+		fontSize: "14px",
 	},
 	cellRight: {
 		textAlign: "right",
