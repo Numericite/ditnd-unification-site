@@ -82,28 +82,42 @@ const linkTileGroup = (
 	label: { fr: label },
 	fields: [
 		{
-			name: "title",
-			type: "text",
-			label: { fr: "Titre de la tuile" },
-			defaultValue: defaults.title,
+			type: "row",
+			fields: [
+				{
+					name: "title",
+					type: "text",
+					label: { fr: "Titre de la tuile" },
+					defaultValue: defaults.title,
+					admin: { width: "40%" },
+				},
+				{
+					name: "description",
+					type: "text",
+					label: { fr: "Description" },
+					admin: { width: "60%" },
+				},
+			],
 		},
 		{
-			name: "description",
-			type: "textarea",
-			label: { fr: "Description" },
-		},
-		{
-			name: "buttonLabel",
-			type: "text",
-			label: { fr: "Texte du bouton" },
-			defaultValue: defaults.buttonLabel,
-		},
-		{
-			name: "url",
-			type: "text",
-			label: { fr: "URL" },
-			defaultValue: defaults.url,
-			validate: validateUrl,
+			type: "row",
+			fields: [
+				{
+					name: "buttonLabel",
+					type: "text",
+					label: { fr: "Texte du bouton" },
+					defaultValue: defaults.buttonLabel,
+					admin: { width: "40%" },
+				},
+				{
+					name: "url",
+					type: "text",
+					label: { fr: "URL" },
+					defaultValue: defaults.url,
+					validate: validateUrl,
+					admin: { width: "60%" },
+				},
+			],
 		},
 	],
 });
