@@ -86,6 +86,17 @@ export function extractTextFromNodes(node: SerializedLexicalNodeWithParent[]) {
 	return node.map((child: any) => child.text ?? "").join(" ");
 }
 
+export function firstParagraphText(content?: DefaultTypedEditorState): string {
+	const collect = (node: any): string =>
+		node.text ?? (node.children ?? []).map(collect).join("");
+
+	const paragraph = content?.root?.children?.find(
+		(node: any) => node.type === "paragraph" && collect(node).trim(),
+	);
+
+	return paragraph ? collect(paragraph).replace(/\s+/g, " ").trim() : "";
+}
+
 export const sanitizeArray = (values: string[]): string[] =>
 	Array.from(new Set(values.map((v) => v.trim())));
 

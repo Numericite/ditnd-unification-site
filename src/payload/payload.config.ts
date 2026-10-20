@@ -1,7 +1,10 @@
 // storage-adapter-import-placeholder
 import { postgresAdapter } from "@payloadcms/db-postgres";
 import { nodemailerAdapter } from "@payloadcms/email-nodemailer";
-import { lexicalEditor } from "@payloadcms/richtext-lexical";
+import {
+	type DefaultTypedEditorState,
+	lexicalEditor,
+} from "@payloadcms/richtext-lexical";
 import path from "node:path";
 import { buildConfig } from "payload";
 import { createTransport } from "nodemailer";
@@ -39,6 +42,7 @@ import {
 	hideForNonAdmin,
 	isAdmin,
 } from "./hooks";
+import { firstParagraphText } from "~/utils/tools";
 
 const hasAwsCreds = Boolean(
 	process.env.S3_ACCESS_KEY_ID &&
@@ -272,9 +276,18 @@ export default buildConfig({
 					? `${title} - Maison de l'autisme`
 					: "Maison de l'autisme";
 			},
-			generateDescription: ({ doc }) => {
-				const description = (doc as Record<string, unknown>)?.description;
-				return typeof description === "string" ? description : "";
+			generateDescription: ({ doc, collectionConfig }) => {
+				const data = doc as Record<string, unknown>;
+				if (typeof data?.description === "string") return data.description;
+
+				if (collectionConfig?.slug === "pages") {
+					const text = firstParagraphText(
+						data?.content as DefaultTypedEditorState | undefined,
+					);
+					return text.length > 155 ? `${text.slice(0, 152).trimEnd()}…` : text;
+				}
+
+				return "";
 			},
 			generateURL: ({ doc, collectionConfig }) => {
 				const slug = (doc as Record<string, unknown>)?.slug;
