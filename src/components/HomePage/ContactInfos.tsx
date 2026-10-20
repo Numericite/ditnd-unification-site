@@ -113,6 +113,7 @@ export function ContactInfos({ contactCMS }: Props) {
 	const [showSchedule, setShowSchedule] = useState(false);
 	const phoneColumnRef = useRef<HTMLDivElement>(null);
 	const schedulePanelRef = useRef<HTMLElement>(null);
+	const scheduleButtonRef = useRef<HTMLButtonElement>(null);
 
 	useEffect(() => {
 		if (showSchedule) {
@@ -131,7 +132,9 @@ export function ContactInfos({ contactCMS }: Props) {
 			}
 		};
 		const handleEscape = (e: KeyboardEvent) => {
-			if (e.key === "Escape") setShowSchedule(false);
+			if (e.key !== "Escape") return;
+			setShowSchedule(false);
+			scheduleButtonRef.current?.focus();
 		};
 		document.addEventListener("mousedown", handleClickOutside);
 		document.addEventListener("keydown", handleEscape);
@@ -145,11 +148,13 @@ export function ContactInfos({ contactCMS }: Props) {
 	const phoneNumber = phone?.number ?? "0 800 71 40 40";
 	const contactForm = contactCMS?.contactForm;
 	const directory = contactCMS?.directory;
+	const directoryLabel = directory?.buttonLabel ?? "Consulter l'annuaire";
 
 	return (
 		<div className={classes.sectionWrapper}>
 			<div className={fr.cx("fr-container")}>
 				<div className={fr.cx("fr-py-4w")}>
+					<h2 className={fr.cx("fr-sr-only")}>Nous contacter</h2>
 					<div className={fr.cx("fr-grid-row", "fr-grid-row--gutters")}>
 						<div
 							ref={phoneColumnRef}
@@ -206,10 +211,13 @@ export function ContactInfos({ contactCMS }: Props) {
 											</>
 										)}
 										<button
+											ref={scheduleButtonRef}
 											type="button"
 											aria-label="Voir les horaires de la ligne"
 											aria-expanded={showSchedule}
-											aria-controls="phone-schedule-panel"
+											aria-controls={
+												showSchedule ? "phone-schedule-panel" : undefined
+											}
 											onClick={() => setShowSchedule((v) => !v)}
 											className={cx(
 												fr.cx(
@@ -286,9 +294,10 @@ export function ContactInfos({ contactCMS }: Props) {
 												"https://annuaire.autismeinfoservice.fr/",
 											target: "_blank",
 											rel: "noopener noreferrer",
+											title: `${directoryLabel} - nouvelle fenêtre`,
 										}}
 									>
-										{directory?.buttonLabel ?? "Consulter l'annuaire"}
+										{directoryLabel}
 									</Button>
 								}
 								noIcon
