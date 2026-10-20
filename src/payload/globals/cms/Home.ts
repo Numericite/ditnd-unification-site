@@ -1,7 +1,50 @@
-import type { Field, GlobalConfig } from "payload";
+import type { Field, GlobalConfig, TextFieldSingleValidation } from "payload";
 import { hideForNonAdmin, isAdmin } from "~/payload/hooks";
 import { standardFields } from "~/payload/fields/standards";
 import { validateHttpUrl } from "~/payload/fields/validateHttpUrl";
+import { date as validateDate } from "payload/shared";
+import type { Home } from "~/payload/payload-types";
+import { toMinutes } from "~/utils/scheduleTime";
+
+type DaySchedule = NonNullable<
+	NonNullable<Home["contact"]["phone"]["schedule"]>["lundi"]
+>;
+type TimeKey = "openTime" | "closeTime";
+
+const timeField = (
+	name: TimeKey,
+	label: string,
+	// Sibling time this one must be strictly later than (e.g. closing > opening)
+	after?: TimeKey,
+): Field => ({
+	name,
+	type: "date",
+	label: { fr: label },
+	validate: (value, args) => {
+		// Payload types siblingData as unknown: these fields live in a day group
+		const siblings = (args.siblingData ?? {}) as Partial<DaySchedule>;
+		if (siblings.closed) return validateDate(value, args);
+		if (!value) return "Obligatoire pour un jour ouvert.";
+		if (after) {
+			// Compare times of day only: the picker may store different dates
+			const minutes = toMinutes(value);
+			const afterMinutes = toMinutes(siblings[after]);
+			if (minutes !== null && afterMinutes !== null && minutes <= afterMinutes)
+				return "L'heure de fermeture doit être après l'heure d'ouverture.";
+		}
+		return validateDate(value, args);
+	},
+	admin: {
+		width: "40%",
+		condition: (_data, siblingData) => !siblingData?.closed,
+		date: {
+			pickerAppearance: "timeOnly",
+			displayFormat: "HH:mm",
+			timeFormat: "HH:mm",
+			timeIntervals: 15,
+		},
+	},
+});
 
 const dayGroup = (name: string, label: string): Field => ({
 	name,
@@ -9,28 +52,58 @@ const dayGroup = (name: string, label: string): Field => ({
 	label: { fr: label },
 	fields: [
 		{
-			name: "closed",
-			type: "checkbox",
-			label: { fr: "Fermé" },
-			defaultValue: false,
+			type: "row",
+			fields: [
+				{
+					name: "closed",
+					type: "checkbox",
+					label: { fr: "Fermé" },
+					defaultValue: false,
+					admin: {
+						width: "20%",
+						style: { alignSelf: "center" },
+					},
+				},
+				timeField("openTime", "Heure d'ouverture"),
+				timeField("closeTime", "Heure de fermeture", "openTime"),
+			],
+		},
+	],
+});
+
+const linkTileGroup = (
+	name: string,
+	label: string,
+	defaults: { title: string; buttonLabel: string; url?: string },
+	validateUrl?: TextFieldSingleValidation,
+): Field => ({
+	name,
+	type: "group",
+	label: { fr: label },
+	fields: [
+		{
+			name: "title",
+			type: "text",
+			label: { fr: "Titre de la tuile" },
+			defaultValue: defaults.title,
 		},
 		{
-			name: "openTime",
-			type: "text",
-			label: { fr: "Heure d'ouverture" },
-			admin: {
-				placeholder: "9h",
-				condition: (_data, siblingData) => !siblingData?.closed,
-			},
+			name: "description",
+			type: "textarea",
+			label: { fr: "Description" },
 		},
 		{
-			name: "closeTime",
+			name: "buttonLabel",
 			type: "text",
-			label: { fr: "Heure de fermeture" },
-			admin: {
-				placeholder: "18h",
-				condition: (_data, siblingData) => !siblingData?.closed,
-			},
+			label: { fr: "Texte du bouton" },
+			defaultValue: defaults.buttonLabel,
+		},
+		{
+			name: "url",
+			type: "text",
+			label: { fr: "URL" },
+			defaultValue: defaults.url,
+			validate: validateUrl,
 		},
 	],
 });
@@ -75,6 +148,7 @@ export const CMSHome: GlobalConfig = {
 									type: "text",
 									label: { fr: "Numéro" },
 									required: true,
+									defaultValue: "0 800 71 40 40",
 								},
 								{
 									name: "label",
@@ -107,65 +181,20 @@ export const CMSHome: GlobalConfig = {
 								},
 							],
 						},
-						{
-							name: "contactForm",
-							type: "group",
-							label: { fr: "Formulaire de contact" },
-							fields: [
-								{
-									name: "title",
-									type: "text",
-									label: { fr: "Titre de la tuile" },
-									defaultValue: "Par écrit",
-								},
-								{
-									name: "description",
-									type: "textarea",
-									label: { fr: "Description" },
-								},
-								{
-									name: "buttonLabel",
-									type: "text",
-									label: { fr: "Texte du bouton" },
-									defaultValue: "Écrire au service",
-								},
-								{
-									name: "url",
-									type: "text",
-									label: { fr: "URL" },
-								},
-							],
-						},
-						{
-							name: "directory",
-							type: "group",
-							label: { fr: "Annuaire" },
-							fields: [
-								{
-									name: "title",
-									type: "text",
-									label: { fr: "Titre de la tuile" },
-									defaultValue: "Annuaire",
-								},
-								{
-									name: "description",
-									type: "textarea",
-									label: { fr: "Description" },
-								},
-								{
-									name: "buttonLabel",
-									type: "text",
-									label: { fr: "Texte du bouton" },
-									defaultValue: "Consulter l'annuaire",
-								},
-								{
-									name: "url",
-									type: "text",
-									label: { fr: "URL" },
-									validate: validateHttpUrl,
-								},
-							],
-						},
+						linkTileGroup("contactForm", "Formulaire de contact", {
+							title: "Par écrit",
+							buttonLabel: "Écrire au service",
+						}),
+						linkTileGroup(
+							"directory",
+							"Annuaire",
+							{
+								title: "Annuaire",
+								buttonLabel: "Consulter l'annuaire",
+								url: "https://annuaire.autismeinfoservice.fr/",
+							},
+							validateHttpUrl,
+						),
 					],
 				},
 				{

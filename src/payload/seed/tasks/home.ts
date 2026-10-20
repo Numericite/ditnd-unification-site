@@ -1,5 +1,9 @@
 import type { BasePayload } from "payload";
 
+// Stores an HH:MM time in Paris time, as the admin time picker does
+const time = (hhmm: string) =>
+	new Date(`2026-01-01T${hhmm}:00+01:00`).toISOString();
+
 export default async function homeTask(payload: BasePayload) {
 	await payload.updateGlobal({
 		slug: "home",
@@ -34,12 +38,36 @@ export default async function homeTask(payload: BasePayload) {
 					label: "Service et appel gratuits",
 					scheduleNote: "Appel gratuit depuis un fixe ou un mobile.",
 					schedule: {
-						lundi: { closed: false, openTime: "9h", closeTime: "18h" },
-						mardi: { closed: false, openTime: "9h", closeTime: "18h" },
-						mercredi: { closed: false, openTime: "9h", closeTime: "18h" },
-						jeudi: { closed: false, openTime: "9h", closeTime: "18h" },
-						vendredi: { closed: false, openTime: "9h", closeTime: "18h" },
-						samedi: { closed: false, openTime: "9h", closeTime: "12h" },
+						lundi: {
+							closed: false,
+							openTime: time("09:00"),
+							closeTime: time("18:00"),
+						},
+						mardi: {
+							closed: false,
+							openTime: time("09:00"),
+							closeTime: time("18:00"),
+						},
+						mercredi: {
+							closed: false,
+							openTime: time("09:00"),
+							closeTime: time("18:00"),
+						},
+						jeudi: {
+							closed: false,
+							openTime: time("09:00"),
+							closeTime: time("18:00"),
+						},
+						vendredi: {
+							closed: false,
+							openTime: time("09:00"),
+							closeTime: time("18:00"),
+						},
+						samedi: {
+							closed: false,
+							openTime: time("09:00"),
+							closeTime: time("12:00"),
+						},
 						dimanche: { closed: true },
 					},
 				},

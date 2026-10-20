@@ -2,12 +2,15 @@ import { forwardRef } from "react";
 import { fr } from "@codegouvfr/react-dsfr";
 import { tss } from "tss-react/dsfr";
 import type { Home } from "~/payload/payload-types";
+import { type DayOfWeek, formatTime, getParisNow } from "~/utils/scheduleTime";
 
-const SCHEDULE_DAYS: {
+type Schedule = Home["contact"]["phone"]["schedule"];
+
+const SCHEDULE_DAYS: ReadonlyArray<{
 	label: string;
-	key: keyof NonNullable<Home["contact"]["phone"]["schedule"]>;
-	dayOfWeek: number;
-}[] = [
+	key: keyof NonNullable<Schedule>;
+	dayOfWeek: DayOfWeek;
+}> = [
 	{ label: "Lundi", key: "lundi", dayOfWeek: 1 },
 	{ label: "Mardi", key: "mardi", dayOfWeek: 2 },
 	{ label: "Mercredi", key: "mercredi", dayOfWeek: 3 },
@@ -20,14 +23,14 @@ const SCHEDULE_DAYS: {
 const TITLE_ID = "phone-schedule-title";
 
 type Props = {
-	schedule: Home["contact"]["phone"]["schedule"];
+	schedule: Schedule;
 	scheduleNote?: string | null;
 };
 
 export const PhoneSchedulePanel = forwardRef<HTMLElement, Props>(
 	function PhoneSchedulePanel({ schedule, scheduleNote }, ref) {
 		const { classes, cx } = useStyles();
-		const todayDayOfWeek = new Date().getDay();
+		const todayDayOfWeek = getParisNow().dayOfWeek;
 
 		return (
 			<section
@@ -69,7 +72,7 @@ export const PhoneSchedulePanel = forwardRef<HTMLElement, Props>(
 										{day?.closed
 											? "Fermé"
 											: day?.openTime && day?.closeTime
-												? `${day.openTime} – ${day.closeTime}`
+												? `${formatTime(day.openTime)} – ${formatTime(day.closeTime)}`
 												: "–"}
 									</td>
 								</tr>

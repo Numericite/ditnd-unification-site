@@ -6,11 +6,17 @@ import Badge from "@codegouvfr/react-dsfr/Badge";
 import { useEffect, useRef, useState } from "react";
 import type { Home } from "~/payload/payload-types";
 import { PhoneSchedulePanel } from "./PhoneScheduleModal";
+import {
+	addDays,
+	type DayOfWeek,
+	formatTime,
+	getParisNow,
+	toMinutes,
+} from "~/utils/scheduleTime";
 
-const DAY_KEYS: Record<
-	number,
-	keyof NonNullable<Home["contact"]["phone"]["schedule"]>
-> = {
+type Schedule = NonNullable<Home["contact"]["phone"]["schedule"]>;
+
+const DAY_KEYS: Readonly<Record<DayOfWeek, keyof Schedule>> = {
 	0: "dimanche",
 	1: "lundi",
 	2: "mardi",
@@ -20,73 +26,77 @@ const DAY_KEYS: Record<
 	6: "samedi",
 };
 
-const parseTime = (t: string): number | null => {
-	const match = t.match(/^(\d+)h(\d*)$/);
-	if (!match) return null;
-	return (
-		parseInt(match[1] ?? "0", 10) * 60 +
-		(match[2] ? parseInt(match[2], 10) || 0 : 0)
-	);
+type PhoneStatus = {
+	/** null when the status cannot be computed (missing or invalid hours). */
+	isOpen: boolean | null;
+	todayLabel: string;
+	closedLabel: string;
 };
 
-function getNextOpenLabel(
-	schedule: NonNullable<Home["contact"]["phone"]["schedule"]>,
-	todayDow: number,
-	_currentMinutes: number,
-): string {
-	for (let i = 1; i <= 6; i++) {
-		const nextDow = (todayDow + i) % 7;
-		const dayKey = DAY_KEYS[nextDow];
-		if (!dayKey) continue;
+const UNKNOWN_STATUS: PhoneStatus = {
+	isOpen: null,
+	todayLabel: "",
+	closedLabel: "",
+};
+
+function getNextOpenLabel(schedule: Schedule, today: DayOfWeek): string {
+	// Up to 7 days ahead: the next opening can be the same weekday, next week
+	for (let i = 1; i <= 7; i++) {
+		const dayKey = DAY_KEYS[addDays(today, i)];
 		const nextEntry = schedule[dayKey];
 		if (!nextEntry || nextEntry.closed || !nextEntry.openTime) continue;
-		const label = i === 1 ? "demain" : dayKey;
-		return `Réouvre ${label} à ${nextEntry.openTime}`;
+		const label = i === 1 ? "demain" : i === 7 ? `${dayKey} prochain` : dayKey;
+		return `Réouvre ${label} à ${formatTime(nextEntry.openTime)}`;
 	}
 	return "";
 }
 
-function getPhoneStatus(schedule: Home["contact"]["phone"]["schedule"]) {
-	if (!schedule) return { isOpen: null, todayLabel: "", closedLabel: "" };
+function getPhoneStatus(schedule: Schedule | null | undefined): PhoneStatus {
+	if (!schedule) return UNKNOWN_STATUS;
 
-	const now = new Date();
-	const todayDow = now.getDay();
-	const currentMinutes = now.getHours() * 60 + now.getMinutes();
-	const entry = schedule[DAY_KEYS[todayDow] ?? "lundi"];
+	const { dayOfWeek: today, minutesOfDay: currentMinutes } = getParisNow();
+	const entry = schedule[DAY_KEYS[today]];
 
-	if (!entry) return { isOpen: null, todayLabel: "", closedLabel: "" };
+	if (!entry) return UNKNOWN_STATUS;
 
 	if (entry.closed) {
 		return {
 			isOpen: false,
 			todayLabel: "",
-			closedLabel: getNextOpenLabel(schedule, todayDow, currentMinutes),
+			closedLabel: getNextOpenLabel(schedule, today),
 		};
 	}
 
-	if (!entry.openTime || !entry.closeTime)
-		return { isOpen: null, todayLabel: "", closedLabel: "" };
-
-	const openMin = parseTime(entry.openTime);
-	const closeMin = parseTime(entry.closeTime);
-	if (openMin === null || closeMin === null)
-		return { isOpen: null, todayLabel: "", closedLabel: "" };
+	const openMin = toMinutes(entry.openTime);
+	const closeMin = toMinutes(entry.closeTime);
+	if (openMin === null || closeMin === null) return UNKNOWN_STATUS;
 	const isOpen = currentMinutes >= openMin && currentMinutes < closeMin;
 
 	if (isOpen) {
 		return {
 			isOpen: true,
-			todayLabel: `Aujourd'hui, ${entry.openTime} – ${entry.closeTime}`,
+			todayLabel: `Aujourd'hui, ${formatTime(entry.openTime)} – ${formatTime(entry.closeTime)}`,
 			closedLabel: "",
 		};
 	}
 
 	const closedLabel =
 		currentMinutes < openMin
-			? `Ouvre aujourd'hui à ${entry.openTime}`
-			: getNextOpenLabel(schedule, todayDow, currentMinutes);
+			? `Ouvre aujourd'hui à ${formatTime(entry.openTime)}`
+			: getNextOpenLabel(schedule, today);
 
 	return { isOpen: false, todayLabel: "", closedLabel };
+}
+
+function usePhoneStatus(schedule: Schedule | null | undefined): PhoneStatus {
+	const [status, setStatus] = useState<PhoneStatus>(UNKNOWN_STATUS);
+	useEffect(() => {
+		const update = () => setStatus(getPhoneStatus(schedule));
+		update();
+		const interval = setInterval(update, 60_000);
+		return () => clearInterval(interval);
+	}, [schedule]);
+	return status;
 }
 
 type Props = {
@@ -96,7 +106,7 @@ type Props = {
 export function ContactInfos({ contactCMS }: Props) {
 	const { classes, cx } = useStyles();
 
-	const { isOpen, todayLabel, closedLabel } = getPhoneStatus(
+	const { isOpen, todayLabel, closedLabel } = usePhoneStatus(
 		contactCMS?.phone.schedule,
 	);
 
@@ -131,6 +141,11 @@ export function ContactInfos({ contactCMS }: Props) {
 		};
 	}, [showSchedule]);
 
+	const phone = contactCMS?.phone;
+	const phoneNumber = phone?.number ?? "0 800 71 40 40";
+	const contactForm = contactCMS?.contactForm;
+	const directory = contactCMS?.directory;
+
 	return (
 		<div className={classes.sectionWrapper}>
 			<div className={fr.cx("fr-container")}>
@@ -144,7 +159,7 @@ export function ContactInfos({ contactCMS }: Props) {
 							)}
 						>
 							<Tile
-								title={contactCMS?.phone.title ?? "Par téléphone"}
+								title={phone?.title ?? "Par téléphone"}
 								start={
 									<span
 										className={cx(
@@ -157,13 +172,13 @@ export function ContactInfos({ contactCMS }: Props) {
 								desc={
 									<>
 										<a
-											href={`tel:${(contactCMS?.phone.number ?? "0800714040").replace(/\s/g, "")}`}
+											href={`tel:${phoneNumber.replace(/\s/g, "")}`}
 											className={classes.phoneNumber}
 										>
-											{contactCMS?.phone.number ?? "0 800 71 40 40"}
+											{phoneNumber}
 										</a>
 										<span className={classes.phoneLabel}>
-											{contactCMS?.phone.label ?? "Service et appel gratuits"}
+											{phone?.label ?? "Service et appel gratuits"}
 										</span>
 									</>
 								}
@@ -216,32 +231,31 @@ export function ContactInfos({ contactCMS }: Props) {
 							{showSchedule && (
 								<PhoneSchedulePanel
 									ref={schedulePanelRef}
-									schedule={contactCMS?.phone.schedule}
-									scheduleNote={contactCMS?.phone.scheduleNote}
+									schedule={phone?.schedule}
+									scheduleNote={phone?.scheduleNote}
 								/>
 							)}
 						</div>
 						<div className={fr.cx("fr-col-12", "fr-col-md-4")}>
 							<Tile
-								title={contactCMS?.contactForm?.title ?? "Par écrit"}
+								title={contactForm?.title ?? "Par écrit"}
 								start={
 									<span
 										className={cx(fr.cx("fr-icon-mail-line"), classes.tileIcon)}
 										aria-hidden="true"
 									/>
 								}
-								desc={contactCMS?.contactForm?.description ?? ""}
+								desc={contactForm?.description ?? ""}
 								detail={
 									<Button
 										priority="secondary"
 										iconId="fr-icon-arrow-right-line"
 										iconPosition="right"
 										linkProps={{
-											href: contactCMS?.contactForm?.url ?? "/contact",
+											href: contactForm?.url ?? "/contact-particuliers",
 										}}
 									>
-										{contactCMS?.contactForm?.buttonLabel ??
-											"Écrire au service"}
+										{contactForm?.buttonLabel ?? "Écrire au service"}
 									</Button>
 								}
 								noIcon
@@ -250,7 +264,7 @@ export function ContactInfos({ contactCMS }: Props) {
 						</div>
 						<div className={fr.cx("fr-col-12", "fr-col-md-4")}>
 							<Tile
-								title={contactCMS?.directory?.title ?? "Annuaire"}
+								title={directory?.title ?? "Annuaire"}
 								start={
 									<span
 										className={cx(
@@ -260,7 +274,7 @@ export function ContactInfos({ contactCMS }: Props) {
 										aria-hidden="true"
 									/>
 								}
-								desc={contactCMS?.directory?.description ?? ""}
+								desc={directory?.description ?? ""}
 								detail={
 									<Button
 										priority="secondary"
@@ -268,14 +282,13 @@ export function ContactInfos({ contactCMS }: Props) {
 										iconPosition="right"
 										linkProps={{
 											href:
-												contactCMS?.directory?.url ??
+												directory?.url ??
 												"https://annuaire.autismeinfoservice.fr/",
 											target: "_blank",
 											rel: "noopener noreferrer",
 										}}
 									>
-										{contactCMS?.directory?.buttonLabel ??
-											"Consulter l'annuaire"}
+										{directory?.buttonLabel ?? "Consulter l'annuaire"}
 									</Button>
 								}
 								noIcon
