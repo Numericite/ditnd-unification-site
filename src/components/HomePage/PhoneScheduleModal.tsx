@@ -92,7 +92,7 @@ const useStyles = tss.withName({ PhoneSchedulePanel }).create({
 		top: "calc(100% - 32px)",
 		left: "50%",
 		transform: "translateX(-50%)",
-		width: "320px",
+		width: "min(320px, calc(100vw - 2rem))",
 		backgroundColor: fr.colors.decisions.background.default.grey.default,
 		boxShadow: "var(--lifted-shadow)",
 		padding: fr.spacing("2w"),

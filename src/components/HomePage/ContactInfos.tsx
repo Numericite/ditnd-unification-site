@@ -13,6 +13,7 @@ import {
 	getParisNow,
 	toMinutes,
 } from "~/utils/scheduleTime";
+import { useKeepInViewport } from "~/utils/useKeepInViewport";
 
 type Schedule = NonNullable<Home["contact"]["phone"]["schedule"]>;
 
@@ -114,6 +115,7 @@ export function ContactInfos({ contactCMS }: Props) {
 	const phoneColumnRef = useRef<HTMLDivElement>(null);
 	const schedulePanelRef = useRef<HTMLElement>(null);
 	const scheduleButtonRef = useRef<HTMLButtonElement>(null);
+	useKeepInViewport(schedulePanelRef, showSchedule);
 
 	useEffect(() => {
 		if (showSchedule) {
