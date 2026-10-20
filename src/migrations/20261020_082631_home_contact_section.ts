@@ -2,31 +2,31 @@ import { type MigrateUpArgs, type MigrateDownArgs, sql } from '@payloadcms/db-po
 
 export async function up({ db, payload, req }: MigrateUpArgs): Promise<void> {
   await db.execute(sql`
-  ALTER TABLE "home" ADD COLUMN "contact_phone_title" varchar DEFAULT 'Par téléphone';
-  ALTER TABLE "home" ADD COLUMN "contact_phone_number" varchar DEFAULT '';
+   ALTER TABLE "home" ADD COLUMN "contact_phone_title" varchar DEFAULT 'Par téléphone';
+  ALTER TABLE "home" ADD COLUMN "contact_phone_number" varchar DEFAULT '0 800 71 40 40' NOT NULL;
   ALTER TABLE "home" ADD COLUMN "contact_phone_label" varchar;
   ALTER TABLE "home" ADD COLUMN "contact_phone_schedule_note" varchar;
   ALTER TABLE "home" ADD COLUMN "contact_phone_schedule_lundi_closed" boolean DEFAULT false;
-  ALTER TABLE "home" ADD COLUMN "contact_phone_schedule_lundi_open_time" varchar;
-  ALTER TABLE "home" ADD COLUMN "contact_phone_schedule_lundi_close_time" varchar;
+  ALTER TABLE "home" ADD COLUMN "contact_phone_schedule_lundi_open_time" timestamp(3) with time zone;
+  ALTER TABLE "home" ADD COLUMN "contact_phone_schedule_lundi_close_time" timestamp(3) with time zone;
   ALTER TABLE "home" ADD COLUMN "contact_phone_schedule_mardi_closed" boolean DEFAULT false;
-  ALTER TABLE "home" ADD COLUMN "contact_phone_schedule_mardi_open_time" varchar;
-  ALTER TABLE "home" ADD COLUMN "contact_phone_schedule_mardi_close_time" varchar;
+  ALTER TABLE "home" ADD COLUMN "contact_phone_schedule_mardi_open_time" timestamp(3) with time zone;
+  ALTER TABLE "home" ADD COLUMN "contact_phone_schedule_mardi_close_time" timestamp(3) with time zone;
   ALTER TABLE "home" ADD COLUMN "contact_phone_schedule_mercredi_closed" boolean DEFAULT false;
-  ALTER TABLE "home" ADD COLUMN "contact_phone_schedule_mercredi_open_time" varchar;
-  ALTER TABLE "home" ADD COLUMN "contact_phone_schedule_mercredi_close_time" varchar;
+  ALTER TABLE "home" ADD COLUMN "contact_phone_schedule_mercredi_open_time" timestamp(3) with time zone;
+  ALTER TABLE "home" ADD COLUMN "contact_phone_schedule_mercredi_close_time" timestamp(3) with time zone;
   ALTER TABLE "home" ADD COLUMN "contact_phone_schedule_jeudi_closed" boolean DEFAULT false;
-  ALTER TABLE "home" ADD COLUMN "contact_phone_schedule_jeudi_open_time" varchar;
-  ALTER TABLE "home" ADD COLUMN "contact_phone_schedule_jeudi_close_time" varchar;
+  ALTER TABLE "home" ADD COLUMN "contact_phone_schedule_jeudi_open_time" timestamp(3) with time zone;
+  ALTER TABLE "home" ADD COLUMN "contact_phone_schedule_jeudi_close_time" timestamp(3) with time zone;
   ALTER TABLE "home" ADD COLUMN "contact_phone_schedule_vendredi_closed" boolean DEFAULT false;
-  ALTER TABLE "home" ADD COLUMN "contact_phone_schedule_vendredi_open_time" varchar;
-  ALTER TABLE "home" ADD COLUMN "contact_phone_schedule_vendredi_close_time" varchar;
+  ALTER TABLE "home" ADD COLUMN "contact_phone_schedule_vendredi_open_time" timestamp(3) with time zone;
+  ALTER TABLE "home" ADD COLUMN "contact_phone_schedule_vendredi_close_time" timestamp(3) with time zone;
   ALTER TABLE "home" ADD COLUMN "contact_phone_schedule_samedi_closed" boolean DEFAULT false;
-  ALTER TABLE "home" ADD COLUMN "contact_phone_schedule_samedi_open_time" varchar;
-  ALTER TABLE "home" ADD COLUMN "contact_phone_schedule_samedi_close_time" varchar;
+  ALTER TABLE "home" ADD COLUMN "contact_phone_schedule_samedi_open_time" timestamp(3) with time zone;
+  ALTER TABLE "home" ADD COLUMN "contact_phone_schedule_samedi_close_time" timestamp(3) with time zone;
   ALTER TABLE "home" ADD COLUMN "contact_phone_schedule_dimanche_closed" boolean DEFAULT false;
-  ALTER TABLE "home" ADD COLUMN "contact_phone_schedule_dimanche_open_time" varchar;
-  ALTER TABLE "home" ADD COLUMN "contact_phone_schedule_dimanche_close_time" varchar;
+  ALTER TABLE "home" ADD COLUMN "contact_phone_schedule_dimanche_open_time" timestamp(3) with time zone;
+  ALTER TABLE "home" ADD COLUMN "contact_phone_schedule_dimanche_close_time" timestamp(3) with time zone;
   ALTER TABLE "home" ADD COLUMN "contact_contact_form_title" varchar DEFAULT 'Par écrit';
   ALTER TABLE "home" ADD COLUMN "contact_contact_form_description" varchar;
   ALTER TABLE "home" ADD COLUMN "contact_contact_form_button_label" varchar DEFAULT 'Écrire au service';

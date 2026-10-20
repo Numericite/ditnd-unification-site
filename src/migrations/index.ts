@@ -45,7 +45,7 @@ import * as migration_20261014_120000_courses_drafts from './20261014_120000_cou
 import * as migration_20261014_140133_courses_align_practical_guides from './20261014_140133_courses_align_practical_guides';
 import * as migration_20261015_081200_news from './20261015_081200_news';
 import * as migration_20261015_100000_map_categories_link_field from './20261015_100000_map_categories_link_field';
-import * as migration_20261015_153237_home_contact_section from './20261015_153237_home_contact_section';
+import * as migration_20261020_082631_home_contact_section from './20261020_082631_home_contact_section';
 
 export const migrations = [
   {
@@ -284,8 +284,8 @@ export const migrations = [
     name: '20261015_100000_map_categories_link_field',
   },
   {
-    up: migration_20261015_153237_home_contact_section.up,
-    down: migration_20261015_153237_home_contact_section.down,
-    name: '20261015_153237_home_contact_section',
+    up: migration_20261020_082631_home_contact_section.up,
+    down: migration_20261020_082631_home_contact_section.down,
+    name: '20261020_082631_home_contact_section'
   },
 ];
