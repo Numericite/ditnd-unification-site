@@ -19,7 +19,7 @@ const timeField = (
 ): Field => ({
 	name,
 	type: "date",
-	label: { fr: label },
+	label,
 	validate: (value, args) => {
 		// Payload types siblingData as unknown: these fields live in a day group
 		const siblings = (args.siblingData ?? {}) as Partial<DaySchedule>;
@@ -49,7 +49,7 @@ const timeField = (
 const dayGroup = (name: string, label: string): Field => ({
 	name,
 	type: "group",
-	label: { fr: label },
+	label,
 	fields: [
 		{
 			type: "row",
@@ -57,7 +57,7 @@ const dayGroup = (name: string, label: string): Field => ({
 				{
 					name: "closed",
 					type: "checkbox",
-					label: { fr: "Fermé" },
+					label: "Fermé",
 					defaultValue: false,
 					admin: {
 						width: "20%",
@@ -79,7 +79,7 @@ const linkTileGroup = (
 ): Field => ({
 	name,
 	type: "group",
-	label: { fr: label },
+	label,
 	fields: [
 		{
 			type: "row",
@@ -87,14 +87,14 @@ const linkTileGroup = (
 				{
 					name: "title",
 					type: "text",
-					label: { fr: "Titre de la tuile" },
+					label: "Titre de la tuile",
 					defaultValue: defaults.title,
 					admin: { width: "40%" },
 				},
 				{
 					name: "description",
 					type: "text",
-					label: { fr: "Description" },
+					label: "Description",
 					admin: { width: "60%" },
 				},
 			],
@@ -105,14 +105,14 @@ const linkTileGroup = (
 				{
 					name: "buttonLabel",
 					type: "text",
-					label: { fr: "Texte du bouton" },
+					label: "Texte du bouton",
 					defaultValue: defaults.buttonLabel,
 					admin: { width: "40%" },
 				},
 				{
 					name: "url",
 					type: "text",
-					label: { fr: "URL" },
+					label: "URL",
 					defaultValue: defaults.url,
 					validate: validateUrl,
 					admin: { width: "60%" },
@@ -149,31 +149,31 @@ export const CMSHome: GlobalConfig = {
 						{
 							name: "phone",
 							type: "group",
-							label: { fr: "Téléphone" },
+							label: "Téléphone",
 							fields: [
 								{
 									name: "title",
 									type: "text",
-									label: { fr: "Titre de la tuile" },
+									label: "Titre de la tuile",
 									defaultValue: "Par téléphone",
 								},
 								{
 									name: "number",
 									type: "text",
-									label: { fr: "Numéro" },
+									label: "Numéro",
 									required: true,
 									defaultValue: "0 800 71 40 40",
 								},
 								{
 									name: "label",
 									type: "text",
-									label: { fr: "Sous-titre" },
+									label: "Sous-titre",
 									admin: { description: "Ex : Service et appel gratuits" },
 								},
 								{
 									name: "scheduleNote",
 									type: "text",
-									label: { fr: "Note dans le popover horaires" },
+									label: "Note dans le popover horaires",
 									admin: {
 										description:
 											"Ex : Appel gratuit depuis un fixe ou un mobile.",
@@ -182,7 +182,7 @@ export const CMSHome: GlobalConfig = {
 								{
 									name: "schedule",
 									type: "group",
-									label: { fr: "Horaires" },
+									label: "Horaires",
 									fields: [
 										dayGroup("lundi", "Lundi"),
 										dayGroup("mardi", "Mardi"),
