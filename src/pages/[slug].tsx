@@ -1,4 +1,5 @@
 import Head from "next/head";
+import { TRPCError } from "@trpc/server";
 import Breadcrumb from "@codegouvfr/react-dsfr/Breadcrumb";
 import SeoMeta from "~/components/ui/SeoMeta";
 import type { Media } from "~/payload/payload-types";
@@ -78,8 +79,12 @@ export const getServerSideProps: GetServerSideProps<Props> = async (ctx) => {
 	try {
 		const page = await caller.page.getBySlug({ slug });
 		return { props: { page } };
-	} catch {
-		ctx.res.statusCode = 404;
-		return { props: { isNotFound: true } };
+	} catch (error) {
+		if (error instanceof TRPCError && error.code === "NOT_FOUND") {
+			ctx.res.statusCode = 404;
+			return { props: { isNotFound: true } };
+		}
+
+		throw error;
 	}
 };

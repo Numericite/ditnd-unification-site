@@ -1,3 +1,4 @@
+import { TRPCError } from "@trpc/server";
 import { z } from "zod";
 import { createTRPCRouter, publicProcedure } from "~/server/api/trpc";
 import type { Media, Page } from "~/payload/payload-types";
@@ -27,7 +28,12 @@ export const pagesRouter = createTRPCRouter({
 			});
 
 			const page = result.docs[0];
-			if (!page) throw new Error("Page not found");
+			if (!page) {
+				throw new TRPCError({
+					code: "NOT_FOUND",
+					message: `No page found for slug: ${input.slug}`,
+				});
+			}
 
 			const metaImage = page.meta?.image;
 
