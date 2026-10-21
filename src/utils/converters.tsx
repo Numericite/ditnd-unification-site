@@ -10,12 +10,7 @@ import {
 	type JSXConverter,
 	type JSXConverters,
 } from "@payloadcms/richtext-lexical/react";
-import {
-	extractTextFromNodes,
-	extractYouTubeId,
-	ImageSizes,
-	slugify,
-} from "./tools";
+import { extractYouTubeId, ImageSizes, lexicalToText, slugify } from "./tools";
 import type { Condition, Media, Theme } from "~/payload/payload-types";
 import type { AugmentedCourse } from "~/server/api/routers/courses";
 import CardDisplay from "~/components/ui/Cards/CardDisplay";
@@ -75,7 +70,7 @@ export const headingConverter: JSXConverters<DefaultNodeTypes>["heading"] = (
 			converters,
 		});
 
-		const headingText = extractTextFromNodes(node.children ?? []);
+		const headingText = lexicalToText(node.children ?? []);
 
 		return <h2 id={slugify(headingText)}>{childrenJSX}</h2>;
 	}
@@ -227,7 +222,7 @@ export const linkConverter: JSXConverters<DefaultNodeTypes>["link"] = (
 	});
 
 	if (node.fields.newTab) {
-		const linkText = extractTextFromNodes(node.children ?? []);
+		const linkText = lexicalToText(node.children ?? []);
 
 		return (
 			<a

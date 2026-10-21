@@ -13,6 +13,7 @@ import { slugField } from "../fields/slug";
 import { generateEmbedding } from "../services/embedding";
 import { generateSimplifiedContent } from "../services/contentSimplification";
 import type { PracticalGuidesSelect } from "../payload-types";
+import { lexicalToText } from "~/utils/tools";
 
 export const practicalGuideCardSelect = {
 	title: true,
@@ -24,17 +25,6 @@ export const practicalGuideCardSelect = {
 	themes: true,
 	_status: true,
 } satisfies PracticalGuidesSelect<true>;
-
-function extractTextFromLexical(node: unknown): string {
-	if (!node || typeof node !== "object") return "";
-	const n = node as Record<string, unknown>;
-	if (n.type === "text" && typeof n.text === "string") return n.text;
-	if (Array.isArray(n.children))
-		return n.children.map(extractTextFromLexical).join(" ");
-	if (n.root && typeof n.root === "object")
-		return extractTextFromLexical(n.root);
-	return "";
-}
 
 const SIMPLIFICATION_INTERNAL_FLAG = "simplificationInternalUpdate";
 const SIMPLIFICATION_SKIP_FLAG = "skipSimplification";
@@ -160,7 +150,7 @@ const afterChangePracticalGuide: CollectionAfterChangeHook = async ({
 		const title = typeof doc.title === "string" ? doc.title : "";
 		const description =
 			typeof doc.description === "string" ? doc.description : "";
-		const contentText = extractTextFromLexical(doc.content);
+		const contentText = lexicalToText(doc.content);
 
 		// Resolve relation names for better semantic search
 		const resolveNames = async (

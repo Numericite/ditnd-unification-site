@@ -1,27 +1,5 @@
 import type { BeforeSync } from "@payloadcms/plugin-search/types";
-
-/**
- * Recursively extracts plain text from a Lexical editor JSON tree.
- */
-function extractTextFromLexical(node: unknown): string {
-	if (!node || typeof node !== "object") return "";
-
-	const n = node as Record<string, unknown>;
-
-	if (n.type === "text" && typeof n.text === "string") {
-		return n.text;
-	}
-
-	if (Array.isArray(n.children)) {
-		return n.children.map(extractTextFromLexical).join(" ");
-	}
-
-	if (n.root && typeof n.root === "object") {
-		return extractTextFromLexical(n.root);
-	}
-
-	return "";
-}
+import { lexicalToText } from "~/utils/tools";
 
 /**
  * Resolves relation names from a hasMany relationship field.
@@ -62,7 +40,7 @@ export const beforeSyncPracticalGuide: BeforeSync = async ({
 }) => {
 	const doc = originalDoc as Record<string, unknown>;
 
-	const contentText = extractTextFromLexical(doc.content);
+	const contentText = lexicalToText(doc.content);
 
 	const [conditionNames, themeNames, personaNames] = await Promise.all([
 		resolveRelationNames(

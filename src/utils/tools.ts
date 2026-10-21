@@ -3,7 +3,6 @@ import type { AugmentedCourse } from "~/server/api/routers/courses";
 import type { AugmentedPracticalGuide } from "~/server/api/routers/practical-guides";
 
 import type { DefaultTypedEditorState } from "@payloadcms/richtext-lexical";
-import type { SerializedLexicalNodeWithParent } from "@payloadcms/richtext-lexical/html";
 
 export type Link = {
 	text: string;
@@ -49,7 +48,7 @@ export function generateSummaryFromRichText(
 
 		nodes.forEach((node) => {
 			if (node.tag === "h2") {
-				const text = extractTextFromNodes(node.children ?? []);
+				const text = lexicalToText(node.children ?? []);
 
 				links.push({
 					linkProps: { href: `#${slugify(text)}` },
@@ -82,19 +81,41 @@ export function generateSummaryFromRichText(
 	return h2FromNodes(content.root.children);
 }
 
-export function extractTextFromNodes(node: SerializedLexicalNodeWithParent[]) {
-	return node.map((child: any) => child.text ?? "").join(" ");
+const INLINE_NODE_TYPES = new Set(["text", "link", "autolink"]);
+
+/**
+ * Plain text of a Lexical tree: an editor state, a node or a list of nodes.
+ * Inline runs are concatenated as is, so formatting inside a word does not
+ * split it; line breaks, tabs and block boundaries become a single space.
+ */
+export function lexicalToText(node: unknown): string {
+	const collect = (n: unknown): string => {
+		if (Array.isArray(n)) return n.map(collect).join("");
+		if (!n || typeof n !== "object") return "";
+
+		const { type, text, children, root } = n as {
+			type?: string;
+			text?: unknown;
+			children?: unknown;
+			root?: unknown;
+		};
+		if (root) return collect(root);
+		if (typeof text === "string") return text;
+		if (type === "linebreak" || type === "tab") return " ";
+
+		const inner = Array.isArray(children) ? collect(children) : "";
+		return type && INLINE_NODE_TYPES.has(type) ? inner : ` ${inner} `;
+	};
+
+	return collect(node).replace(/\s+/g, " ").trim();
 }
 
 export function firstParagraphText(content?: DefaultTypedEditorState): string {
-	const collect = (node: any): string =>
-		node.text ?? (node.children ?? []).map(collect).join("");
-
 	const paragraph = content?.root?.children?.find(
-		(node: any) => node.type === "paragraph" && collect(node).trim(),
+		(node) => node.type === "paragraph" && lexicalToText(node),
 	);
 
-	return paragraph ? collect(paragraph).replace(/\s+/g, " ").trim() : "";
+	return paragraph ? lexicalToText(paragraph) : "";
 }
 
 export const sanitizeArray = (values: string[]): string[] =>
