@@ -204,6 +204,8 @@ export interface UserAuthOperations {
 export interface Media {
 	id: number;
 	alt: string;
+	prefix?: string | null;
+	_objectKey?: string | null;
 	folder?: (number | null) | FolderInterface;
 	updatedAt: string;
 	createdAt: string;
@@ -1084,6 +1086,8 @@ export interface PayloadMigration {
  */
 export interface MediasSelect<T extends boolean = true> {
 	alt?: T;
+	prefix?: T;
+	_objectKey?: T;
 	folder?: T;
 	updatedAt?: T;
 	createdAt?: T;
