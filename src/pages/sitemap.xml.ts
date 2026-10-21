@@ -79,7 +79,7 @@ export const getServerSideProps: GetServerSideProps = async ({ res }) => {
 		...slugsOf(personas.docs).flatMap((persona) => [
 			`/parcours/${persona}`,
 			...slugsOf(conditions.docs).map(
-				(condition) => `/parcours/${persona}/${condition}`,
+				(condition) => `/parcours/${persona}/${condition.toLowerCase()}`,
 			),
 		]),
 	];

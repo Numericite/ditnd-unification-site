@@ -11,6 +11,7 @@ import footerTask from "./tasks/footer";
 import newsletterTask from "./tasks/newsletter";
 import aboutTask from "./tasks/about";
 import { seedPersonas } from "./tasks/personas";
+import { seedNews } from "./tasks/news";
 import { seedGlossary } from "./tasks/glossary";
 import { seedCartography } from "./tasks/cartography";
 
@@ -49,6 +50,7 @@ const seedData = async () => {
 		await aboutTask(payload);
 		await seedConditions(payload);
 		await seedPersonas(payload);
+		await seedNews(payload);
 		await seedCourses(payload);
 		await seedPracticalGuides(payload);
 		await seedJourneys(payload);

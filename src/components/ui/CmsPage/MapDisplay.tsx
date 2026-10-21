@@ -21,8 +21,8 @@ import MapFilterDrawer, {
 } from "./MapFilterDrawer";
 import ActiveFilterTags from "./ActiveFilterTags";
 import MapSearch from "./MapSearch";
+import MarkerCustomFields from "./MarkerCustomFields";
 import type {
-	CustomFieldDef,
 	MapCategorySummary,
 	MapMarkerSummary,
 	MapPayload,
@@ -714,35 +714,14 @@ export default function MapDisplay({ map, height }: Props) {
 													</p>
 												) : null}
 
-												{popupCategory?.customFields &&
-												popupCategory.customFields.length > 0
-													? popupCategory.customFields.map(
-															(f: CustomFieldDef) => {
-																const raw = selectedMarker.metadata?.[f.key];
-																if (raw === undefined || raw === null)
-																	return null;
-																let display: string;
-																if (f.type === "checkbox") {
-																	display = raw ? "Oui" : "Non";
-																} else if (f.type === "select") {
-																	const opt = f.options?.find(
-																		(o) => o.value === String(raw),
-																	);
-																	display = opt ? opt.label : String(raw);
-																} else {
-																	display = String(raw);
-																}
-																return (
-																	<p key={f.key} className={classes.popupLine}>
-																		<span className={classes.popupFieldLabel}>
-																			{f.label} :
-																		</span>{" "}
-																		{display}
-																	</p>
-																);
-															},
-														)
-													: null}
+												<MarkerCustomFields
+													fields={popupCategory?.customFields}
+													metadata={selectedMarker.metadata}
+													markerName={selectedMarker.name}
+													lineClassName={classes.popupLine}
+													labelClassName={classes.popupFieldLabel}
+													linkClassName={fr.cx("fr-link")}
+												/>
 
 												{selectedMarker.phone ? (
 													<p className={classes.popupLine}>
@@ -831,31 +810,14 @@ export default function MapDisplay({ map, height }: Props) {
 											<p className={classes.cardLine}>{marker.description}</p>
 										) : null}
 
-										{category?.customFields && category.customFields.length > 0
-											? category.customFields.map((f: CustomFieldDef) => {
-													const raw = marker.metadata?.[f.key];
-													if (raw === undefined || raw === null) return null;
-													let display: string;
-													if (f.type === "checkbox") {
-														display = raw ? "Oui" : "Non";
-													} else if (f.type === "select") {
-														const opt = f.options?.find(
-															(o) => o.value === String(raw),
-														);
-														display = opt ? opt.label : String(raw);
-													} else {
-														display = String(raw);
-													}
-													return (
-														<p key={f.key} className={classes.cardLine}>
-															<span className={classes.cardFieldLabel}>
-																{f.label} :
-															</span>{" "}
-															{display}
-														</p>
-													);
-												})
-											: null}
+										<MarkerCustomFields
+											fields={category?.customFields}
+											metadata={marker.metadata}
+											markerName={marker.name}
+											lineClassName={classes.cardLine}
+											labelClassName={classes.cardFieldLabel}
+											linkClassName={fr.cx("fr-link", "fr-link--sm")}
+										/>
 
 										<div className={classes.cardActions}>
 											{marker.phone ? (
