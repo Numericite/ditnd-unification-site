@@ -899,6 +899,10 @@ export interface Redirect {
 			| ({
 					relationTo: "courses";
 					value: number | Course;
+			  } | null)
+			| ({
+					relationTo: "pages";
+					value: number | Page;
 			  } | null);
 		url?: string | null;
 	};

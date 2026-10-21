@@ -48,6 +48,7 @@ import * as migration_20261015_081200_news from './20261015_081200_news';
 import * as migration_20261015_100000_map_categories_link_field from './20261015_100000_map_categories_link_field';
 import * as migration_20261021_090000_resync_glossary_id_sequences from './20261021_090000_resync_glossary_id_sequences';
 import * as migration_20261021_122314_pages from './20261021_122314_pages';
+import * as migration_20261021_150000_redirects_pages from './20261021_150000_redirects_pages';
 
 export const migrations = [
   {
@@ -299,5 +300,10 @@ export const migrations = [
     up: migration_20261021_122314_pages.up,
     down: migration_20261021_122314_pages.down,
     name: '20261021_122314_pages',
+  },
+  {
+    up: migration_20261021_150000_redirects_pages.up,
+    down: migration_20261021_150000_redirects_pages.down,
+    name: '20261021_150000_redirects_pages',
   },
 ];

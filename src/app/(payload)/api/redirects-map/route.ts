@@ -23,6 +23,7 @@ type RedirectTarget = {
 const REFERENCE_BASE_PATHS: Record<string, string> = {
 	"practical-guides": "/fiches-pratiques",
 	courses: "/formations",
+	pages: "",
 };
 
 let cache: { map: Record<string, string>; expiresAt: number } | null = null;
@@ -40,7 +41,9 @@ const resolveTarget = (
 	// Un document dépublié ne doit pas devenir une cible (redirection vers un 404).
 	if (ref.value._status && ref.value._status !== "published") return null;
 	const basePath = REFERENCE_BASE_PATHS[ref.relationTo];
-	return basePath && ref.value.slug ? `${basePath}/${ref.value.slug}` : null;
+	return basePath !== undefined && ref.value.slug
+		? `${basePath}/${ref.value.slug}`
+		: null;
 };
 
 export async function GET() {
