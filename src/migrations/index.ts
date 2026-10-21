@@ -43,6 +43,7 @@ import * as migration_20261012_083005_home_persona_condition_texts from './20261
 import * as migration_20261012_090000_add_practical_guide_last_updated_at from './20261012_090000_add_practical_guide_last_updated_at';
 import * as migration_20261014_120000_courses_drafts from './20261014_120000_courses_drafts';
 import * as migration_20261014_140133_courses_align_practical_guides from './20261014_140133_courses_align_practical_guides';
+import * as migration_20261014_163243_payload_3_90_security from './20261014_163243_payload_3_90_security';
 import * as migration_20261015_081200_news from './20261015_081200_news';
 import * as migration_20261015_100000_map_categories_link_field from './20261015_100000_map_categories_link_field';
 
@@ -271,6 +272,11 @@ export const migrations = [
     up: migration_20261014_140133_courses_align_practical_guides.up,
     down: migration_20261014_140133_courses_align_practical_guides.down,
     name: '20261014_140133_courses_align_practical_guides',
+  },
+  {
+    up: migration_20261014_163243_payload_3_90_security.up,
+    down: migration_20261014_163243_payload_3_90_security.down,
+    name: '20261014_163243_payload_3_90_security',
   },
   {
     up: migration_20261015_081200_news.up,
