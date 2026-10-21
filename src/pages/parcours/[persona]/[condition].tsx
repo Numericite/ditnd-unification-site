@@ -144,6 +144,17 @@ export const getServerSideProps: GetServerSideProps<Props> = async (ctx) => {
 		return { props: { isNotFound: true } };
 	}
 
+	const lowerCondition = condition.toLowerCase();
+	if (condition !== lowerCondition) {
+		const queryString = ctx.resolvedUrl.split("?")[1];
+		return {
+			redirect: {
+				destination: `/parcours/${persona}/${lowerCondition}${queryString ? `?${queryString}` : ""}`,
+				permanent: true,
+			},
+		};
+	}
+
 	const caller = createCaller(await createTRPCContext());
 
 	try {
