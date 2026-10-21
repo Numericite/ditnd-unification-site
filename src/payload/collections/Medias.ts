@@ -34,5 +34,13 @@ export const Medias: CollectionConfig = {
 		adminThumbnail: "medium",
 		focalPoint: true,
 		imageSizes: ImageSizes,
+		mimeTypes: [
+			"image/jpeg",
+			"image/png",
+			"image/webp",
+			"image/gif",
+			"image/avif",
+			"application/pdf",
+		],
 	},
 };

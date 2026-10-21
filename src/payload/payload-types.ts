@@ -681,6 +681,9 @@ export interface MapCategory {
 				 * Identifiant unique, sans espaces.
 				 */
 				key: string;
+				/**
+				 * Le type « Lien » permet de saisir, pour chaque point, un libellé et une URL affichés sous forme de lien.
+				 */
 				type: "checkbox" | "text" | "select" | "link";
 				/**
 				 * Options disponibles pour ce champ de type liste.
