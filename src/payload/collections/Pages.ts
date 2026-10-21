@@ -1,6 +1,7 @@
 import type { CollectionConfig } from "payload";
 import { standardFields } from "../fields/standards";
 import { slugField } from "../fields/slug";
+import { validatePageSlug } from "../fields/validatePageSlug";
 
 export const Pages: CollectionConfig = {
 	slug: "pages",
@@ -81,6 +82,6 @@ export const Pages: CollectionConfig = {
 				position: "sidebar",
 			},
 		},
-		slugField("pages", { editable: true }),
+		slugField("pages", { editable: true, validate: validatePageSlug }),
 	],
 };

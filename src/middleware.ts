@@ -1,4 +1,5 @@
 import { NextResponse, type NextRequest } from "next/server";
+import { SECTION_FALLBACKS } from "~/utils/redirects";
 
 // Temporary HTTP Basic Authentication in preprod environment.
 const BASIC_USER = process.env.BASIC_USER ?? "";
@@ -56,15 +57,6 @@ const requiresBasicAuth = (request: NextRequest): boolean => {
 
 const MAP_TTL_MS = 60_000;
 const MAP_FETCH_TIMEOUT_MS = 3_000;
-
-// Anciennes sections sans page équivalente : redirigées vers la section la
-// plus proche du nouveau site. Pas de fallback pour
-// /evenements-maison-de-l-autisme (section actus abandonnée) → 404 enrichie.
-const SECTION_FALLBACKS: Array<[prefix: string, target: string]> = [
-	["/fiches-pratiques-autisme", "/fiches-pratiques"],
-	["/accueil-se-former-tnd", "/formations"],
-	["/accueil", "/a-propos"],
-];
 
 let cachedMap: Record<string, string> = {};
 let mapExpiresAt = 0;

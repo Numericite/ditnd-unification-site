@@ -1,9 +1,11 @@
-import type { CollectionSlug, Field } from "payload";
+import type { CollectionSlug, Field, TextFieldSingleValidation } from "payload";
 import { slugify } from "~/utils/tools";
 
 type SlugFieldOptions = {
 	/** Shows the field in the admin sidebar so editors can override it. */
 	editable?: boolean;
+	/** Runs on the final slug, after the hook below has filled it. */
+	validate?: TextFieldSingleValidation;
 };
 
 /**
@@ -19,7 +21,7 @@ type SlugFieldOptions = {
  */
 export const slugField = (
 	collection: CollectionSlug,
-	{ editable = false }: SlugFieldOptions = {},
+	{ editable = false, validate }: SlugFieldOptions = {},
 ): Field => {
 	const autoSlug = (title: unknown, id: unknown): string | null => {
 		if (typeof title === "string" && title) return slugify(title);
@@ -44,7 +46,7 @@ export const slugField = (
 					hidden: true,
 				},
 		// The value is filled server-side by the hook below when left empty.
-		...(editable && { validate: () => true as const }),
+		...(editable && { validate: validate ?? (() => true as const) }),
 		hooks: {
 			beforeChange: [
 				({ value, siblingData, originalDoc }) => {
