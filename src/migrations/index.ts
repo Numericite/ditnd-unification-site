@@ -45,6 +45,7 @@ import * as migration_20261014_120000_courses_drafts from './20261014_120000_cou
 import * as migration_20261014_140133_courses_align_practical_guides from './20261014_140133_courses_align_practical_guides';
 import * as migration_20261015_081200_news from './20261015_081200_news';
 import * as migration_20261015_100000_map_categories_link_field from './20261015_100000_map_categories_link_field';
+import * as migration_20261021_090000_resync_glossary_id_sequences from './20261021_090000_resync_glossary_id_sequences';
 
 export const migrations = [
   {
@@ -281,5 +282,10 @@ export const migrations = [
     up: migration_20261015_100000_map_categories_link_field.up,
     down: migration_20261015_100000_map_categories_link_field.down,
     name: '20261015_100000_map_categories_link_field',
+  },
+  {
+    up: migration_20261021_090000_resync_glossary_id_sequences.up,
+    down: migration_20261021_090000_resync_glossary_id_sequences.down,
+    name: '20261021_090000_resync_glossary_id_sequences',
   },
 ];
