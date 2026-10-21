@@ -63,7 +63,7 @@ export default function PlanDuSite() {
 														<li key={`${persona.slug}-${condition.slug}`}>
 															<a
 																className={fr.cx("fr-link")}
-																href={`/parcours/${persona.slug}/${condition.slug}`}
+																href={`/parcours/${persona.slug}/${condition.slug.toLowerCase()}`}
 																title={`${persona.name} par le ${condition.acronym || condition.name}`}
 															>
 																par le {condition.acronym || condition.name}
