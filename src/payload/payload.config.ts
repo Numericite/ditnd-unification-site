@@ -304,6 +304,10 @@ export default buildConfig({
 		}),
 		s3Storage({
 			enabled: hasAwsCreds && process.env.NODE_ENV === "production",
+			// Le plugin n'est actif qu'en production, mais il ajoute des colonnes
+			// (`prefix`, `_objectKey`) à `medias`. Sans ceci, le schéma de dev —
+			// et donc les migrations générées — ne les contiennent pas.
+			alwaysInsertFields: true,
 			collections: {
 				medias: true,
 			},
