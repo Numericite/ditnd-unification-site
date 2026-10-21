@@ -46,7 +46,9 @@ function getParcoursBreadcrumbSegments(
 		},
 		{
 			label: conditionSlug.toUpperCase(),
-			linkProps: { href: `/parcours/${personaSlug}/${conditionSlug}` },
+			linkProps: {
+				href: `/parcours/${personaSlug}/${conditionSlug.toLowerCase()}`,
+			},
 		},
 	];
 }

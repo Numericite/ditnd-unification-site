@@ -6,12 +6,14 @@ export const conditionRouter = createTRPCRouter({
 	getBySlug: publicProcedure
 		.input(z.object({ slug: z.string() }))
 		.query(async ({ input, ctx }) => {
+			// Case-insensitive: journey URLs are lowercased whatever the stored slug
 			const result = await ctx.payload.find({
 				collection: "conditions",
-				where: { slug: { equals: input.slug } },
-				limit: 1,
+				where: { slug: { like: input.slug } },
+				limit: 0,
 			});
-			return result.docs[0] ?? null;
+			const slug = input.slug.toLowerCase();
+			return result.docs.find((doc) => doc.slug.toLowerCase() === slug) ?? null;
 		}),
 	all: publicProcedure.query(async ({ ctx }) => {
 		const result = await ctx.payload.find({

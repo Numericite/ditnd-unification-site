@@ -153,7 +153,7 @@ export const PersonaTiles = ({
 				// (le slug "professional" était alors un niveau intermédiaire à retirer de l'URL).
 				// .filter((tag) => tag.slug !== "professional")
 				.map((tag) => tag.slug);
-			router.push(`/parcours/${personaSlug}/${tile.slug}`);
+			router.push(`/parcours/${personaSlug}/${tile.slug.toLowerCase()}`);
 		},
 		default: () => {
 			setDisplay("default");
