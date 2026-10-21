@@ -1,7 +1,10 @@
 // storage-adapter-import-placeholder
 import { postgresAdapter } from "@payloadcms/db-postgres";
 import { nodemailerAdapter } from "@payloadcms/email-nodemailer";
-import { lexicalEditor } from "@payloadcms/richtext-lexical";
+import {
+	type DefaultTypedEditorState,
+	lexicalEditor,
+} from "@payloadcms/richtext-lexical";
 import path from "node:path";
 import { buildConfig } from "payload";
 import { createTransport } from "nodemailer";
@@ -27,6 +30,7 @@ import { MapCategories } from "./collections/MapCategories";
 import { MapMarkers } from "./collections/MapMarkers";
 import { Maps } from "./collections/Maps";
 import { News } from "./collections/News";
+import { Pages } from "./collections/Pages";
 import { en } from "@payloadcms/translations/languages/en";
 import { fr } from "@payloadcms/translations/languages/fr";
 
@@ -38,6 +42,7 @@ import {
 	hideForNonAdmin,
 	isAdmin,
 } from "./hooks";
+import { firstParagraphText } from "~/utils/tools";
 
 const hasAwsCreds = Boolean(
 	process.env.S3_ACCESS_KEY_ID &&
@@ -98,14 +103,23 @@ export default buildConfig({
 		},
 		livePreview: {
 			url: ({ data, collectionConfig }) => {
-				if (!data || collectionConfig?.slug !== "practical-guides") return;
+				if (!data) return;
 
-				const basePath =
-					data._status === "draft"
-						? `/draft/${data.slug}`
-						: `/fiches-pratiques/${data.slug}`;
+				if (collectionConfig?.slug === "pages") {
+					const basePath =
+						data._status === "draft"
+							? `/draft/${data.slug}?collection=pages`
+							: `/${data.slug}`;
+					return `${basePath}${data._status !== "draft" ? `?v=${data.updatedAt}` : `&v=${data.updatedAt}`}`;
+				}
 
-				return `${basePath}?v=${data.updatedAt}`;
+				if (collectionConfig?.slug === "practical-guides") {
+					const basePath =
+						data._status === "draft"
+							? `/draft/${data.slug}`
+							: `/fiches-pratiques/${data.slug}`;
+					return `${basePath}?v=${data.updatedAt}`;
+				}
 			},
 			breakpoints: [
 				{
@@ -127,11 +141,12 @@ export default buildConfig({
 					height: 900,
 				},
 			],
-			collections: ["practical-guides"],
+			collections: ["practical-guides", "pages"],
 		},
 	},
 	collections: [
 		Medias,
+		Pages,
 		PracticalGuides,
 		Courses,
 		News,
@@ -252,7 +267,7 @@ export default buildConfig({
 			},
 		}),
 		seoPlugin({
-			collections: ["practical-guides", "courses"],
+			collections: ["practical-guides", "courses", "pages"],
 			uploadsCollection: "medias",
 			tabbedUI: true,
 			generateTitle: ({ doc }) => {
@@ -261,18 +276,29 @@ export default buildConfig({
 					? `${title} - Maison de l'autisme`
 					: "Maison de l'autisme";
 			},
-			generateDescription: ({ doc }) => {
-				const description = (doc as Record<string, unknown>)?.description;
-				return typeof description === "string" ? description : "";
+			generateDescription: ({ doc, collectionConfig }) => {
+				const data = doc as Record<string, unknown>;
+				if (typeof data?.description === "string") return data.description;
+
+				if (collectionConfig?.slug === "pages") {
+					const text = firstParagraphText(
+						data?.content as DefaultTypedEditorState | undefined,
+					);
+					return text.length > 155 ? `${text.slice(0, 152).trimEnd()}…` : text;
+				}
+
+				return "";
 			},
 			generateURL: ({ doc, collectionConfig }) => {
 				const slug = (doc as Record<string, unknown>)?.slug;
 				const basePath =
 					collectionConfig?.slug === "courses"
 						? "formations"
-						: "fiches-pratiques";
+						: collectionConfig?.slug === "pages"
+							? ""
+							: "fiches-pratiques";
 				return typeof slug === "string"
-					? `${process.env.NEXT_PUBLIC_SITE_URL || ""}/${basePath}/${slug}`
+					? `${process.env.NEXT_PUBLIC_SITE_URL || ""}/${basePath ? `${basePath}/` : ""}${slug}`
 					: "";
 			},
 		}),

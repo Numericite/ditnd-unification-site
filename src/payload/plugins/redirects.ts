@@ -25,7 +25,7 @@ export const mdaRedirectsPlugin = redirectsPlugin({
 	// Collections pointables en cible "référence interne" : les seules dont
 	// l'URL publique se résout depuis le seul slug. Pour toute autre page
 	// (parcours, pages statiques…), utiliser une cible "URL personnalisée".
-	collections: ["practical-guides", "courses"],
+	collections: ["practical-guides", "courses", "pages"],
 	overrides: {
 		admin: {
 			group: { fr: "Autre", en: "Other" },
