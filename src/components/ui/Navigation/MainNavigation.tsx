@@ -49,9 +49,11 @@ export default function MainNavigation() {
 			isActive: router.pathname.startsWith("/fiches-pratiques"),
 		},
 		{
-			text: "Formations",
-			linkProps: { href: "/formations" },
-			isActive: router.pathname.startsWith("/formations"),
+			text: "Se former",
+			linkProps: { href: "/se-former" },
+			isActive:
+				router.pathname === "/se-former" ||
+				router.pathname.startsWith("/formations"),
 		},
 		{
 			text: "Annuaire",

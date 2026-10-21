@@ -91,8 +91,13 @@ export default function PlanDuSite() {
 									</a>
 								</li>
 								<li>
+									<a className={fr.cx("fr-link")} href="/se-former">
+										Se former
+									</a>
+								</li>
+								<li>
 									<a className={fr.cx("fr-link")} href="/formations">
-										Formations
+										Catalogue des formations
 									</a>
 								</li>
 							</ul>
