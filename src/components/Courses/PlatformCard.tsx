@@ -20,7 +20,8 @@ export default function PlatformCard({ platform, variant }: Props) {
 	const imageUrl =
 		(typeof image === "object" ? image?.url : null) ?? "/placeholder.16x9.png";
 
-	const isExternal = link.url.startsWith("http");
+	// The validator only allows "/" paths or http(s) URLs (any case).
+	const isExternal = !link.url.startsWith("/");
 	const externalProps = isExternal
 		? {
 				target: "_blank",
