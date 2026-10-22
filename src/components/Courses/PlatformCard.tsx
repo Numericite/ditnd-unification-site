@@ -53,14 +53,11 @@ export default function PlatformCard({ platform, variant }: Props) {
 			)
 		) : isExternal ? (
 			<a
-				className={cx(
-					fr.cx(
-						"fr-link",
-						"fr-icon-arrow-right-line",
-						"fr-link--icon-right",
-						"fr-link--sm",
-					),
-					classes.arrowLink,
+				className={fr.cx(
+					"fr-link",
+					"fr-icon-arrow-right-line",
+					"fr-link--icon-right",
+					"fr-link--sm",
 				)}
 				href={link.url}
 				{...externalProps}
@@ -127,12 +124,6 @@ const useStyles = tss.withName({ PlatformCard }).create(() => ({
 	},
 	badge: {
 		fontWeight: 500,
-	},
-	arrowLink: {
-		"&[target=_blank]::after": {
-			maskImage: 'url("/dsfr-icons/arrow-right-line.svg")',
-			WebkitMaskImage: 'url("/dsfr-icons/arrow-right-line.svg")',
-		},
 	},
 	featured: {
 		"& .fr-card__desc": {
