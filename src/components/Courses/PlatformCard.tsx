@@ -48,7 +48,12 @@ export default function PlatformCard({ platform, variant }: Props) {
 		) : isExternal ? (
 			<a
 				className={cx(
-					fr.cx("fr-link", "fr-icon-arrow-right-line", "fr-link--icon-right"),
+					fr.cx(
+						"fr-link",
+						"fr-icon-arrow-right-line",
+						"fr-link--icon-right",
+						"fr-link--sm",
+					),
 					classes.arrowLink,
 				)}
 				href={link.url}
@@ -63,6 +68,7 @@ export default function PlatformCard({ platform, variant }: Props) {
 					"fr-link",
 					"fr-icon-arrow-right-line",
 					"fr-link--icon-right",
+					"fr-link--sm",
 				)}
 				href={link.url}
 				title={linkTitle}
@@ -93,7 +99,9 @@ export default function PlatformCard({ platform, variant }: Props) {
 				badge ? (
 					<ul className={fr.cx("fr-tags-group")}>
 						<li>
-							<Tag>{badge}</Tag>
+							<Tag className={variant === "half" ? classes.badge : undefined}>
+								{badge}
+							</Tag>
 						</li>
 					</ul>
 				) : undefined
@@ -117,6 +125,9 @@ const useStyles = tss.withName({ PlatformCard }).create(() => ({
 			display: "none",
 		},
 	},
+	badge: {
+		fontWeight: 500,
+	},
 	// Le DSFR remplace l'icône des liens target="_blank" par « lien externe » ;
 	// la maquette veut la flèche. L'ouverture dans un nouvel onglet reste
 	// annoncée par le title du lien.
@@ -127,6 +138,12 @@ const useStyles = tss.withName({ PlatformCard }).create(() => ({
 		},
 	},
 	featured: {
+		"& .fr-card__desc": {
+			marginTop: "2rem",
+		},
+		"& .fr-card__content": {
+			marginBottom: "1.5rem",
+		},
 		[fr.breakpoints.up("md")]: {
 			minHeight: "396px",
 		},

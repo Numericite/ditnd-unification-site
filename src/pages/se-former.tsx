@@ -74,15 +74,13 @@ export default function SeFormer({ coursesPage }: Props) {
 										<p className={classes.stepNumber} aria-hidden="true">
 											{index + 1}
 										</p>
-										<h3 className={fr.cx("fr-h5", "fr-mb-2w")}>
+										<h3 className={fr.cx("fr-h5")}>
 											<span className={fr.cx("fr-sr-only")}>
 												Étape {index + 1} :{" "}
 											</span>
 											{step.title}
 										</h3>
-										<p className={cx(fr.cx("fr-mb-0"), classes.preLine)}>
-											{step.description}
-										</p>
+										<p className={classes.preLine}>{step.description}</p>
 									</div>
 								</li>
 							))}
@@ -135,7 +133,16 @@ const useStyles = tss.withName({ SeFormer }).create({
 	},
 	step: {
 		height: "100%",
+		display: "flex",
+		flexDirection: "column",
+		gap: "12px",
 		padding: fr.spacing("4w"),
+		"& > *": {
+			margin: 0,
+		},
+		"& > *:last-child": {
+			marginBottom: "1.15rem",
+		},
 		backgroundColor: fr.colors.decisions.background.default.grey.default,
 		border: `1px solid ${fr.colors.decisions.border.default.grey.default}`,
 		borderBottom: `4px solid ${fr.colors.decisions.border.plain.blueFrance.default}`,
@@ -145,7 +152,6 @@ const useStyles = tss.withName({ SeFormer }).create({
 		lineHeight: "2.5rem",
 		fontWeight: 700,
 		color: fr.colors.decisions.text.title.blueFrance.default,
-		marginBottom: fr.spacing("2w"),
 	},
 	buttonContainer: {
 		display: "flex",
