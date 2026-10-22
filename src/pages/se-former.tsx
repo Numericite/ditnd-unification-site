@@ -3,6 +3,7 @@ import Breadcrumb from "@codegouvfr/react-dsfr/Breadcrumb";
 import Button from "@codegouvfr/react-dsfr/Button";
 import type { GetServerSideProps } from "next";
 import Head from "next/head";
+import { useId } from "react";
 import { getPayload } from "payload";
 import { tss } from "tss-react/dsfr";
 import PlatformCard from "~/components/Courses/PlatformCard";
@@ -17,6 +18,7 @@ type Props = {
 
 export default function SeFormer({ coursesPage }: Props) {
 	const { classes, cx } = useStyles();
+	const selectionTitleId = useId();
 
 	if (!coursesPage) return <EmptyScreenZone>Contenu manquant</EmptyScreenZone>;
 
@@ -53,13 +55,21 @@ export default function SeFormer({ coursesPage }: Props) {
 						</div>
 					</div>
 				</div>
-				<section className={classes.coloredContainer}>
+				<section
+					aria-labelledby={selectionTitleId}
+					className={classes.coloredContainer}
+				>
 					<div className={fr.cx("fr-container", "fr-py-8w")}>
-						<h2 className={fr.cx("fr-mb-2w")}>{selection.title}</h2>
+						<h2 id={selectionTitleId} className={fr.cx("fr-mb-2w")}>
+							{selection.title}
+						</h2>
 						<p className={cx(fr.cx("fr-mb-4w"), classes.preLine)}>
 							{selection.description}
 						</p>
+						{/** biome-ignore lint/a11y/useSemanticElements: l'élément est déjà un <ol>, voir role ci-dessous */}
 						<ol
+							// biome-ignore lint/a11y/noRedundantRoles: Safari/VoiceOver retire la sémantique de liste quand list-style vaut none
+							role="list"
 							className={cx(
 								fr.cx("fr-grid-row", "fr-grid-row--gutters"),
 								classes.steps,
@@ -106,7 +116,6 @@ export const getServerSideProps: GetServerSideProps<Props> = async () => {
 		depth: 1,
 	});
 
-	// Tant que le global n'a jamais été enregistré, ses champs sont vides.
 	if (!platforms?.title || !selection?.title)
 		return { props: { coursesPage: null } };
 
@@ -125,7 +134,6 @@ const useStyles = tss.withName({ SeFormer }).create({
 		padding: 0,
 		"& > li": {
 			paddingBottom: 0,
-			// Le DSFR numérote les <ol> via ::marker, le numéro est déjà affiché dans la carte.
 			"&::marker": {
 				content: "none",
 			},

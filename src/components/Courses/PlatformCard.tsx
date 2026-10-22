@@ -10,8 +10,6 @@ export type Platform = CoursesPage["platforms"]["featured"];
 
 type Props = {
 	platform: Platform;
-	// "featured" : pleine largeur, image sur la moitié et bouton.
-	// "half" : demi-largeur, image sur un tiers et lien flèche.
 	variant: "featured" | "half";
 };
 
@@ -23,12 +21,21 @@ export default function PlatformCard({ platform, variant }: Props) {
 		(typeof image === "object" ? image?.url : null) ?? "/placeholder.16x9.png";
 
 	const isExternal = link.url.startsWith("http");
-	const linkTitle = isExternal
-		? `${link.label} : ${title}, nouvelle fenêtre`
-		: `${link.label} : ${title}`;
 	const externalProps = isExternal
-		? { target: "_blank", rel: "noopener noreferrer" }
+		? {
+				target: "_blank",
+				rel: "noopener noreferrer",
+				title: `${link.label} - nouvelle fenêtre`,
+			}
 		: {};
+	const linkContent = (
+		<>
+			{link.label}
+			{isExternal && (
+				<span className={fr.cx("fr-sr-only")}> - nouvelle fenêtre</span>
+			)}
+		</>
+	);
 
 	const footer =
 		variant === "featured" ? (
@@ -36,14 +43,12 @@ export default function PlatformCard({ platform, variant }: Props) {
 				<Button
 					iconId="fr-icon-external-link-line"
 					iconPosition="right"
-					linkProps={{ href: link.url, title: linkTitle, ...externalProps }}
+					linkProps={{ href: link.url, ...externalProps }}
 				>
-					{link.label}
+					{linkContent}
 				</Button>
 			) : (
-				<Button linkProps={{ href: link.url, title: linkTitle }}>
-					{link.label}
-				</Button>
+				<Button linkProps={{ href: link.url }}>{linkContent}</Button>
 			)
 		) : isExternal ? (
 			<a
@@ -57,10 +62,9 @@ export default function PlatformCard({ platform, variant }: Props) {
 					classes.arrowLink,
 				)}
 				href={link.url}
-				title={linkTitle}
 				{...externalProps}
 			>
-				{link.label}
+				{linkContent}
 			</a>
 		) : (
 			<Link
@@ -71,9 +75,8 @@ export default function PlatformCard({ platform, variant }: Props) {
 					"fr-link--sm",
 				)}
 				href={link.url}
-				title={linkTitle}
 			>
-				{link.label}
+				{linkContent}
 			</Link>
 		);
 
@@ -90,7 +93,7 @@ export default function PlatformCard({ platform, variant }: Props) {
 				variant === "featured" ? classes.featured : classes.half,
 			)}
 			title={title}
-			titleAs="h3"
+			titleAs="h2"
 			desc={description}
 			imageUrl={imageUrl}
 			imageAlt=""
@@ -111,16 +114,12 @@ export default function PlatformCard({ platform, variant }: Props) {
 	);
 }
 
-// Hauteurs de la maquette, appliquées seulement quand la carte est horizontale.
-// minHeight laisse la carte grandir si le texte saisi dans le CMS est plus long.
 const useStyles = tss.withName({ PlatformCard }).create(() => ({
 	card: {
 		height: "100%",
 		"& .fr-card__desc": {
 			whiteSpace: "pre-line",
 		},
-		// react-dsfr rend toujours un .fr-card__end, même vide : il ajoute 24px
-		// entre la description et le lien.
 		"& .fr-card__end": {
 			display: "none",
 		},
@@ -128,9 +127,6 @@ const useStyles = tss.withName({ PlatformCard }).create(() => ({
 	badge: {
 		fontWeight: 500,
 	},
-	// Le DSFR remplace l'icône des liens target="_blank" par « lien externe » ;
-	// la maquette veut la flèche. L'ouverture dans un nouvel onglet reste
-	// annoncée par le title du lien.
 	arrowLink: {
 		"&[target=_blank]::after": {
 			maskImage: 'url("/dsfr-icons/arrow-right-line.svg")',
