@@ -474,7 +474,12 @@ export interface Course {
 	title: string;
 	description: string;
 	link: string;
-	type: "MOOC" | "Webinaire" | "Présentiel";
+	format: "pres" | "dist";
+	duration?: ("lt1j" | "1-3j" | "gt3j") | null;
+	/**
+	 * Non affiché sur le site pour l'instant.
+	 */
+	certifying?: ("yes" | "no") | null;
 	content?: {
 		root: {
 			type: string;
@@ -1230,7 +1235,9 @@ export interface CoursesSelect<T extends boolean = true> {
 	title?: T;
 	description?: T;
 	link?: T;
-	type?: T;
+	format?: T;
+	duration?: T;
+	certifying?: T;
 	content?: T;
 	meta?:
 		| T

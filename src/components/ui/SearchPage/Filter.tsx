@@ -26,14 +26,15 @@ export const Filter = ({ label, value, handleOnChange }: Props) => {
 	}, []);
 
 	const router = useRouter();
-	const { conditions, themes, personas, type } = router.query;
+	const { conditions, themes, personas, formats, durations } = router.query;
 	const { classes } = useStyles();
 
 	const isChecked = (slug: string) =>
 		deserialize(conditions).includes(slug) ||
 		deserialize(themes).includes(slug) ||
 		deserialize(personas).includes(slug) ||
-		deserialize(type).includes(slug);
+		deserialize(formats).includes(slug) ||
+		deserialize(durations).includes(slug);
 
 	return (
 		<Accordion
