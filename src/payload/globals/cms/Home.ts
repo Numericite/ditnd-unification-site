@@ -24,7 +24,14 @@ const timeField = (
 		// Payload types siblingData as unknown: these fields live in a day group
 		const siblings = (args.siblingData ?? {}) as Partial<DaySchedule>;
 		if (siblings.closed) return validateDate(value, args);
-		if (!value) return "Obligatoire pour un jour ouvert.";
+		if (!value) {
+			// A day with no hours yet stays valid (status hidden on the site), so
+			// the global can be saved before the schedule is filled in
+			const other: TimeKey = name === "openTime" ? "closeTime" : "openTime";
+			return siblings[other]
+				? "Obligatoire si l'autre horaire est renseigné."
+				: validateDate(value, args);
+		}
 		if (after) {
 			// Compare times of day only: the picker may store different dates
 			const minutes = toMinutes(value);
