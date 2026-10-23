@@ -60,6 +60,20 @@ export default function ContentModeToggle({ mode, onChange }: Props) {
 					},
 				]}
 			/>
+			{mode === "simplified" && (
+				<p
+					className={fr.cx(
+						"fr-text--sm",
+						"fr-mt-1w",
+						"fr-icon-info-line",
+						"fr-icon--sm",
+					)}
+				>
+					{" "}
+					Cette version simplifiée a été générée par une intelligence
+					artificielle souveraine, hébergée par l'État.
+				</p>
+			)}
 			<output
 				className={fr.cx("fr-sr-only")}
 				aria-live="polite"
