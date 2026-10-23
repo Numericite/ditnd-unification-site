@@ -3,7 +3,7 @@ import { tss } from "tss-react/dsfr";
 import Tile from "@codegouvfr/react-dsfr/Tile";
 import Button from "@codegouvfr/react-dsfr/Button";
 import Badge from "@codegouvfr/react-dsfr/Badge";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useId, useRef, useState } from "react";
 import type { Home } from "~/payload/payload-types";
 import { PhoneSchedulePanel } from "./PhoneScheduleModal";
 import {
@@ -115,6 +115,7 @@ export function ContactInfos({ contactCMS }: Props) {
 	const phoneColumnRef = useRef<HTMLDivElement>(null);
 	const schedulePanelRef = useRef<HTMLElement>(null);
 	const scheduleButtonRef = useRef<HTMLButtonElement>(null);
+	const schedulePanelId = useId();
 	useKeepInViewport(schedulePanelRef, showSchedule);
 
 	useEffect(() => {
@@ -138,11 +139,22 @@ export function ContactInfos({ contactCMS }: Props) {
 			setShowSchedule(false);
 			scheduleButtonRef.current?.focus();
 		};
+		// Keyboard focus leaving the column (e.g. Tab) closes the panel; mouse
+		// clicks outside are handled by the mousedown listener
+		const handleFocusOut = (e: FocusEvent) => {
+			const next = e.relatedTarget as Node | null;
+			if (next && !phoneColumnRef.current?.contains(next)) {
+				setShowSchedule(false);
+			}
+		};
+		const column = phoneColumnRef.current;
 		document.addEventListener("mousedown", handleClickOutside);
 		document.addEventListener("keydown", handleEscape);
+		column?.addEventListener("focusout", handleFocusOut);
 		return () => {
 			document.removeEventListener("mousedown", handleClickOutside);
 			document.removeEventListener("keydown", handleEscape);
+			column?.removeEventListener("focusout", handleFocusOut);
 		};
 	}, [showSchedule]);
 
@@ -217,9 +229,7 @@ export function ContactInfos({ contactCMS }: Props) {
 											type="button"
 											aria-label="Voir les horaires de la ligne"
 											aria-expanded={showSchedule}
-											aria-controls={
-												showSchedule ? "phone-schedule-panel" : undefined
-											}
+											aria-controls={showSchedule ? schedulePanelId : undefined}
 											onClick={() => setShowSchedule((v) => !v)}
 											className={cx(
 												fr.cx(
@@ -241,6 +251,7 @@ export function ContactInfos({ contactCMS }: Props) {
 							{showSchedule && (
 								<PhoneSchedulePanel
 									ref={schedulePanelRef}
+									id={schedulePanelId}
 									schedule={phone?.schedule}
 									scheduleNote={phone?.scheduleNote}
 								/>

@@ -1,4 +1,4 @@
-import { forwardRef } from "react";
+import { forwardRef, useId } from "react";
 import { fr } from "@codegouvfr/react-dsfr";
 import { tss } from "tss-react/dsfr";
 import type { Home } from "~/payload/payload-types";
@@ -20,31 +20,31 @@ const SCHEDULE_DAYS: ReadonlyArray<{
 	{ label: "Dimanche", key: "dimanche", dayOfWeek: 0 },
 ];
 
-const TITLE_ID = "phone-schedule-title";
-
 type Props = {
+	id: string;
 	schedule: Schedule;
 	scheduleNote?: string | null;
 };
 
 export const PhoneSchedulePanel = forwardRef<HTMLElement, Props>(
-	function PhoneSchedulePanel({ schedule, scheduleNote }, ref) {
+	function PhoneSchedulePanel({ id, schedule, scheduleNote }, ref) {
 		const { classes, cx } = useStyles();
+		const titleId = useId();
 		const todayDayOfWeek = getParisNow().dayOfWeek;
 
 		return (
 			<section
 				ref={ref}
-				id="phone-schedule-panel"
-				aria-labelledby={TITLE_ID}
+				id={id}
+				aria-labelledby={titleId}
 				tabIndex={-1}
 				className={classes.panel}
 			>
-				<p id={TITLE_ID} className={classes.title}>
+				<p id={titleId} className={classes.title}>
 					Horaires de la ligne
 				</p>
-				<table className={classes.table} aria-labelledby={TITLE_ID}>
-					<thead className={classes.visuallyHidden}>
+				<table className={classes.table} aria-labelledby={titleId}>
+					<thead className={fr.cx("fr-sr-only")}>
 						<tr>
 							<th scope="col">Jour</th>
 							<th scope="col">Horaires</th>
@@ -106,17 +106,6 @@ const useStyles = tss.withName({ PhoneSchedulePanel }).create({
 	table: {
 		width: "100%",
 		borderCollapse: "collapse",
-	},
-	visuallyHidden: {
-		position: "absolute",
-		width: 1,
-		height: 1,
-		padding: 0,
-		margin: -1,
-		overflow: "hidden",
-		clip: "rect(0,0,0,0)",
-		whiteSpace: "nowrap",
-		border: 0,
 	},
 	row: {},
 	todayRow: {
