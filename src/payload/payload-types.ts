@@ -475,6 +475,7 @@ export interface Course {
 	description: string;
 	link: string;
 	format: "pres" | "dist";
+	duration?: ("lt1j" | "1-3j" | "gt3j") | null;
 	content?: {
 		root: {
 			type: string;
@@ -1231,6 +1232,7 @@ export interface CoursesSelect<T extends boolean = true> {
 	description?: T;
 	link?: T;
 	format?: T;
+	duration?: T;
 	content?: T;
 	meta?:
 		| T

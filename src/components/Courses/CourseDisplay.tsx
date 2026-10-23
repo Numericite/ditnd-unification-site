@@ -8,7 +8,7 @@ import { tss } from "tss-react/dsfr";
 import ShareSocials from "~/components/ui/CmsPage/ShareSocials";
 import WysiwygContent from "~/components/ui/CmsPage/WysiwygContent";
 import type { AugmentedCourse } from "~/server/api/routers/courses";
-import { courseFormatLabel } from "~/utils/courses";
+import { courseDurationLabel, courseFormatLabel } from "~/utils/courses";
 
 type Props = {
 	course: AugmentedCourse;
@@ -32,6 +32,7 @@ export default function CourseDisplay({ course }: Props) {
 
 	const publishedAt = course.publishedAt ?? course.createdAt;
 	const format = courseFormatLabel(course.format);
+	const duration = courseDurationLabel(course.duration);
 
 	const dateLine = (
 		<p className={fr.cx("fr-text--sm")}>
@@ -58,13 +59,20 @@ export default function CourseDisplay({ course }: Props) {
 				Accéder à la formation
 			</Button>
 
-			{format && (
-				<div className={fr.cx("fr-mb-2w")}>
-					<Badge noIcon severity="info">
-						{format}
-					</Badge>
-				</div>
-			)}
+			<ul className={fr.cx("fr-badges-group", "fr-mb-2w")}>
+				{format && (
+					<li>
+						<Badge noIcon severity="info">
+							{format}
+						</Badge>
+					</li>
+				)}
+				{duration && (
+					<li>
+						<Badge noIcon>{duration}</Badge>
+					</li>
+				)}
+			</ul>
 
 			<ul className={cx(fr.cx("fr-tags-group"), classes.tagsList)}>
 				{course.conditions.map((condition) => (

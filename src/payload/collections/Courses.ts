@@ -8,7 +8,12 @@ import { standardFields } from "../fields/standards";
 import { slugField } from "../fields/slug";
 import { generateEmbedding } from "../services/embedding";
 import type { CoursesSelect } from "../payload-types";
-import { COURSE_FORMATS, courseFormatLabel } from "~/utils/courses";
+import {
+	COURSE_DURATIONS,
+	COURSE_FORMATS,
+	courseDurationLabel,
+	courseFormatLabel,
+} from "~/utils/courses";
 
 const afterChangeCourse: CollectionAfterChangeHook = async ({ doc, req }) => {
 	if (!req?.payload?.db) return doc;
@@ -51,6 +56,7 @@ const afterChangeCourse: CollectionAfterChangeHook = async ({ doc, req }) => {
 		const description =
 			typeof doc.description === "string" ? doc.description : "";
 		const format = courseFormatLabel(doc.format);
+		const duration = courseDurationLabel(doc.duration);
 
 		// Resolve single relation names
 		const resolveName = async (
@@ -92,6 +98,7 @@ const afterChangeCourse: CollectionAfterChangeHook = async ({ doc, req }) => {
 			metadata.push(`Troubles : ${conditionNames.join(", ")}`);
 		if (themeNames.length) metadata.push(`Thèmes : ${themeNames.join(", ")}`);
 		if (format) metadata.push(`Format : ${format}`);
+		if (duration) metadata.push(`Durée : ${duration}`);
 
 		const fullText = [title, description, ...metadata]
 			.filter(Boolean)
@@ -138,6 +145,7 @@ export const courseCardSelect = {
 	slug: true,
 	link: true,
 	format: true,
+	duration: true,
 	themes: true,
 	conditions: true,
 	image: true,
@@ -193,6 +201,14 @@ export const Courses: CollectionConfig = {
 									required: true,
 									label: { fr: "Format" },
 									options: [...COURSE_FORMATS],
+									admin: { width: "33%" },
+								},
+								{
+									name: "duration",
+									type: "select",
+									required: false,
+									label: { fr: "Durée" },
+									options: [...COURSE_DURATIONS],
 									admin: { width: "33%" },
 								},
 							],
