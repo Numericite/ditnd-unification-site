@@ -17,6 +17,7 @@ export type CoursesFiltersQuery = {
 	themes: string[];
 	personas: string[];
 	formats: string[];
+	durations: string[];
 };
 
 const parsePage = (value: string | string[] | undefined): number => {
@@ -32,7 +33,8 @@ const filtersAreEqual = (a: CoursesFiltersQuery, b: CoursesFiltersQuery) => {
 		sameArray(a.conditions, b.conditions) &&
 		sameArray(a.themes, b.themes) &&
 		sameArray(a.personas, b.personas) &&
-		sameArray(a.formats, b.formats)
+		sameArray(a.formats, b.formats) &&
+		sameArray(a.durations, b.durations)
 	);
 };
 
@@ -84,6 +86,7 @@ export const SearchCoursesDisplay = ({
 		normalizeQueryValue(router.query.themes),
 		normalizeQueryValue(router.query.personas),
 		normalizeQueryValue(router.query.formats),
+		normalizeQueryValue(router.query.durations),
 		normalizeQueryValue(router.query.search),
 	].join("|");
 

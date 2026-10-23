@@ -4,7 +4,7 @@ import {
 	type FiltersQuery,
 } from "../PracticalGuides/GuidesFiltersDisplay";
 import FiltersGroup from "../ui/SearchPage/FiltersGroup";
-import { COURSE_FORMATS } from "~/utils/courses";
+import { COURSE_DURATIONS, COURSE_FORMATS } from "~/utils/courses";
 
 export const CoursesFiltersDisplay = ({
 	setFilters,
@@ -17,6 +17,12 @@ export const CoursesFiltersDisplay = ({
 		label: "Format",
 		collection: "formats",
 		value: COURSE_FORMATS.map(({ value, label }) => ({ slug: value, label })),
+	});
+
+	filters.push({
+		label: "Durée",
+		collection: "durations",
+		value: COURSE_DURATIONS.map(({ value, label }) => ({ slug: value, label })),
 	});
 
 	return <FiltersGroup filters={filters} setFilters={setFilters} />;

@@ -120,6 +120,9 @@ export const getServerSideProps: GetServerSideProps<Props> = async (ctx) => {
 		themes: deserialize(ctx.query.themes as string | string[] | undefined),
 		personas: deserialize(ctx.query.personas as string | string[] | undefined),
 		formats: deserialize(ctx.query.formats as string | string[] | undefined),
+		durations: deserialize(
+			ctx.query.durations as string | string[] | undefined,
+		),
 	};
 	const initialQuery =
 		typeof ctx.query.search === "string" ? ctx.query.search : "";
