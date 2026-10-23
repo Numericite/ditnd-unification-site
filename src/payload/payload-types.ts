@@ -476,6 +476,9 @@ export interface Course {
 	link: string;
 	format: "pres" | "dist";
 	duration?: ("lt1j" | "1-3j" | "gt3j") | null;
+	/**
+	 * Non affiché sur le site pour l'instant.
+	 */
 	certifying?: ("yes" | "no") | null;
 	content?: {
 		root: {

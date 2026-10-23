@@ -23,6 +23,7 @@ import {
 	withoutAllConditions,
 } from "~/utils/conditions-filter";
 import { findDocsWithAllConditions } from "~/server/api/all-conditions";
+import { isCourseDuration, isCourseFormat } from "~/utils/courses";
 
 export interface AugmentedCourse extends Course {
 	themes: Theme[];
@@ -117,15 +118,24 @@ export const courseRouter = createTRPCRouter({
 					});
 				}
 
+				// Format et durée sont des colonnes enum : une valeur inconnue venue
+				// de l'URL ferait échouer la requête SQL. On l'écarte, et sans valeur
+				// valide on renvoie zéro résultat, comme pour un slug inconnu.
 				if (formats?.length) {
+					const validFormats = formats.filter(isCourseFormat);
+					if (!validFormats.length)
+						return emptyPage<AugmentedCourse>(page, limit);
 					whereConditions.push({
-						format: { in: formats },
+						format: { in: validFormats },
 					});
 				}
 
 				if (durations?.length) {
+					const validDurations = durations.filter(isCourseDuration);
+					if (!validDurations.length)
+						return emptyPage<AugmentedCourse>(page, limit);
 					whereConditions.push({
-						duration: { in: durations },
+						duration: { in: validDurations },
 					});
 				}
 

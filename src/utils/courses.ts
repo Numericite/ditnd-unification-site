@@ -17,6 +17,12 @@ export const COURSE_DURATIONS = [
 
 export type CourseDuration = (typeof COURSE_DURATIONS)[number]["value"];
 
+export const isCourseFormat = (value: string): value is CourseFormat =>
+	COURSE_FORMATS.some((format) => format.value === value);
+
+export const isCourseDuration = (value: string): value is CourseDuration =>
+	COURSE_DURATIONS.some((duration) => duration.value === value);
+
 export const courseFormatLabel = (value: string | null | undefined) =>
 	COURSE_FORMATS.find((format) => format.value === value)?.label;
 
