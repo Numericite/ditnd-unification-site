@@ -70,8 +70,8 @@ export default function ContentModeToggle({ mode, onChange }: Props) {
 					)}
 				>
 					{" "}
-					Cette version simplifiée a été générée avec Albert, l'intelligence
-					artificielle souveraine de l'État.
+					Cette version simplifiée a été générée par une intelligence
+					artificielle souveraine, hébergée par l'État.
 				</p>
 			)}
 			<output
