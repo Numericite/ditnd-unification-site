@@ -50,6 +50,7 @@ import * as migration_20261021_090000_resync_glossary_id_sequences from './20261
 import * as migration_20261021_122314_pages from './20261021_122314_pages';
 import * as migration_20261021_150000_redirects_pages from './20261021_150000_redirects_pages';
 import * as migration_20261021_170000_medias_storage_fields from './20261021_170000_medias_storage_fields';
+import * as migration_20261023_123734_courses_format_duration_certifying from './20261023_123734_courses_format_duration_certifying';
 
 export const migrations = [
   {
@@ -311,5 +312,10 @@ export const migrations = [
     up: migration_20261021_170000_medias_storage_fields.up,
     down: migration_20261021_170000_medias_storage_fields.down,
     name: '20261021_170000_medias_storage_fields',
+  },
+  {
+    up: migration_20261023_123734_courses_format_duration_certifying.up,
+    down: migration_20261023_123734_courses_format_duration_certifying.down,
+    name: '20261023_123734_courses_format_duration_certifying'
   },
 ];
