@@ -16,7 +16,7 @@ export interface FiltersQuery {
 	conditions: string[];
 	themes: string[];
 	personas: string[];
-	type?: string[];
+	formats?: string[];
 }
 
 export type FiltersType = {

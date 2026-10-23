@@ -8,6 +8,7 @@ import { standardFields } from "../fields/standards";
 import { slugField } from "../fields/slug";
 import { generateEmbedding } from "../services/embedding";
 import type { CoursesSelect } from "../payload-types";
+import { COURSE_FORMATS, courseFormatLabel } from "~/utils/courses";
 
 const afterChangeCourse: CollectionAfterChangeHook = async ({ doc, req }) => {
 	if (!req?.payload?.db) return doc;
@@ -49,7 +50,7 @@ const afterChangeCourse: CollectionAfterChangeHook = async ({ doc, req }) => {
 		const title = typeof doc.title === "string" ? doc.title : "";
 		const description =
 			typeof doc.description === "string" ? doc.description : "";
-		const type = typeof doc.type === "string" ? doc.type : "";
+		const format = courseFormatLabel(doc.format);
 
 		// Resolve single relation names
 		const resolveName = async (
@@ -90,7 +91,7 @@ const afterChangeCourse: CollectionAfterChangeHook = async ({ doc, req }) => {
 		if (conditionNames.length)
 			metadata.push(`Troubles : ${conditionNames.join(", ")}`);
 		if (themeNames.length) metadata.push(`Thèmes : ${themeNames.join(", ")}`);
-		if (type) metadata.push(`Type de ressource : ${type}`);
+		if (format) metadata.push(`Format : ${format}`);
 
 		const fullText = [title, description, ...metadata]
 			.filter(Boolean)
@@ -136,7 +137,7 @@ export const courseCardSelect = {
 	description: true,
 	slug: true,
 	link: true,
-	type: true,
+	format: true,
 	themes: true,
 	conditions: true,
 	image: true,
@@ -149,7 +150,7 @@ export const Courses: CollectionConfig = {
 	admin: {
 		useAsTitle: "title",
 		group: { fr: "Contenus" },
-		defaultColumns: ["title", "type", "_status", "updatedAt"],
+		defaultColumns: ["title", "format", "_status", "updatedAt"],
 	},
 	defaultPopulate: courseCardSelect,
 	hooks: {
@@ -184,11 +185,17 @@ export const Courses: CollectionConfig = {
 							label: { fr: "Lien de la formation" },
 						},
 						{
-							name: "type",
-							type: "select",
-							required: true,
-							label: { fr: "Type de ressource" },
-							options: ["MOOC", "Webinaire", "Présentiel"],
+							type: "row",
+							fields: [
+								{
+									name: "format",
+									type: "select",
+									required: true,
+									label: { fr: "Format" },
+									options: [...COURSE_FORMATS],
+									admin: { width: "33%" },
+								},
+							],
 						},
 						{
 							...standardFields.wysiwyg,

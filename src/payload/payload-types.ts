@@ -474,7 +474,7 @@ export interface Course {
 	title: string;
 	description: string;
 	link: string;
-	type: "MOOC" | "Webinaire" | "Présentiel";
+	format: "pres" | "dist";
 	content?: {
 		root: {
 			type: string;
@@ -1230,7 +1230,7 @@ export interface CoursesSelect<T extends boolean = true> {
 	title?: T;
 	description?: T;
 	link?: T;
-	type?: T;
+	format?: T;
 	content?: T;
 	meta?:
 		| T
