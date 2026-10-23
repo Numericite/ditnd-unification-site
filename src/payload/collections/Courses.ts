@@ -211,6 +211,21 @@ export const Courses: CollectionConfig = {
 									options: [...COURSE_DURATIONS],
 									admin: { width: "33%" },
 								},
+								{
+									name: "certifying",
+									type: "radio",
+									required: false,
+									label: { fr: "Certifiant" },
+									options: [
+										{ label: "Oui", value: "yes" },
+										{ label: "Non", value: "no" },
+									],
+									admin: {
+										width: "33%",
+										layout: "horizontal",
+										description: "Non affiché sur le site pour l'instant.",
+									},
+								},
 							],
 						},
 						{
