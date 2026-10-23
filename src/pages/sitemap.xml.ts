@@ -11,6 +11,7 @@ import config from "@payload-config";
 const STATIC_PATHS = [
 	"/",
 	"/fiches-pratiques",
+	"/se-former",
 	"/formations",
 	"/a-propos",
 	"/a-propos/maison-de-l-autisme",

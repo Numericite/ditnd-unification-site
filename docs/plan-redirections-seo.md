@@ -11,7 +11,7 @@ Pas de proxy nginx (contrairement à jdma-proxy) : les redirections vivent dans 
 | Niveau | Mécanisme | Contenu |
 |---|---|---|
 | 1 — Exact | Collection Payload (`@payloadcms/plugin-redirects`) lue par le middleware Next (cache mémoire + TTL) | Une entrée par ancienne URL ayant une page équivalente. **Réponse 301.** |
-| 2 — Sections | Règles statiques dans le middleware | `/fiches-pratiques-autisme/*` → `/fiches-pratiques` · `/accueil-se-former-tnd/*` → `/formations` · `/accueil/*` → `/a-propos`. **301.** Pas de fallback pour `/evenements-maison-de-l-autisme/*` (section actus abandonnée). |
+| 2 — Sections | Règles statiques dans le middleware | `/fiches-pratiques-autisme/*` → `/fiches-pratiques` · `/accueil-se-former-tnd/*` → `/se-former` · `/accueil/*` → `/a-propos`. **301.** Pas de fallback pour `/evenements-maison-de-l-autisme/*` (section actus abandonnée). |
 | 3 — Reste | Page 404 enrichie (recherche + liens vers les sections) | Tout le reste, y compris les anciennes pages événements. |
 
 Règles de fond :

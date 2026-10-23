@@ -54,6 +54,7 @@ import { CMSHome } from "./globals/cms/Home";
 import { CMSFooter } from "./globals/cms/Footer";
 import { CMSAbout } from "./globals/cms/About";
 import { CMSNewsletter } from "./globals/cms/Newsletter";
+import { CMSCoursesPage } from "./globals/cms/CoursesPage";
 import { PracticalGuideViews } from "./collections/PracticalGuidesViews";
 import { SimplifiedContentGenerator } from "./globals/SimplifiedContentGenerator";
 
@@ -166,6 +167,7 @@ export default buildConfig({
 		CMSHome,
 		CMSFooter,
 		CMSAbout,
+		CMSCoursesPage,
 		CMSNewsletter,
 		SimplifiedContentGenerator,
 	],

@@ -38,6 +38,16 @@ const medias = [
 		filename: "d4a89268a1c8034d3761137468636e7ac2add30b.jpg",
 		mimeType: "image/jpeg",
 	},
+	{
+		alt: "Deux hommes souriants échangeant devant un ordinateur portable",
+		filename: "1b9de7fd7f574dbf339dc37033b286004cfcae0b.jpg",
+		mimeType: "image/jpeg",
+	},
+	{
+		alt: "Logo du Campus du GNCRA",
+		filename: "131f787cc905d2e0684f1aff25430598ca15605c.jpg",
+		mimeType: "image/jpeg",
+	},
 ];
 
 async function createMedia(
