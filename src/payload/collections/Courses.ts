@@ -2,12 +2,94 @@ import type {
 	CollectionAfterChangeHook,
 	CollectionAfterDeleteHook,
 	CollectionConfig,
+	Payload,
 } from "payload";
 import { sql } from "@payloadcms/db-postgres";
 import { standardFields } from "../fields/standards";
 import { slugField } from "../fields/slug";
 import { generateEmbedding } from "../services/embedding";
-import type { CoursesSelect } from "../payload-types";
+import type { Course, CoursesSelect } from "../payload-types";
+import {
+	COURSE_DURATIONS,
+	COURSE_FORMATS,
+	courseDurationLabel,
+	courseFormatLabel,
+} from "~/utils/courses";
+
+// Calcule le texte indexé d'une formation publiée et met à jour son vecteur
+// de recherche. Utilisé par le hook afterChange et par le script de
+// réindexation (yarn reindex:courses). Lève une erreur en cas d'échec.
+export const indexCourseSearchVector = async (
+	payload: Payload,
+	doc: Course,
+): Promise<void> => {
+	// eslint-disable-next-line @typescript-eslint/no-explicit-any
+	const db = payload.db as any;
+
+	const title = typeof doc.title === "string" ? doc.title : "";
+	const description =
+		typeof doc.description === "string" ? doc.description : "";
+	const format = courseFormatLabel(doc.format);
+	const duration = courseDurationLabel(doc.duration);
+
+	// Resolve single relation names
+	const resolveName = async (
+		id: unknown,
+		collection: "personas" | "conditions" | "themes",
+	): Promise<string> => {
+		if (typeof id === "object" && id !== null && "name" in id)
+			return (id as { name: string }).name;
+		if (typeof id !== "number") return "";
+		try {
+			const item = await payload.findByID({ collection, id });
+			return (item as { name?: string }).name || "";
+		} catch {
+			return "";
+		}
+	};
+
+	const resolveNames = async (
+		ids: unknown,
+		collection: "personas" | "conditions" | "themes",
+	): Promise<string[]> => {
+		if (!Array.isArray(ids)) return [];
+		const names = await Promise.all(
+			ids.map((id) => resolveName(id, collection)),
+		);
+		return names.filter(Boolean);
+	};
+
+	const [personaNames, conditionNames, themeNames] = await Promise.all([
+		resolveNames(doc.persona, "personas"),
+		resolveNames(doc.conditions, "conditions"),
+		resolveNames(doc.themes, "themes"),
+	]);
+
+	const metadata: string[] = [];
+	if (personaNames.length)
+		metadata.push(`Public concerné : ${personaNames.join(", ")}`);
+	if (conditionNames.length)
+		metadata.push(`Troubles : ${conditionNames.join(", ")}`);
+	if (themeNames.length) metadata.push(`Thèmes : ${themeNames.join(", ")}`);
+	if (format) metadata.push(`Format : ${format}`);
+	if (duration) metadata.push(`Durée : ${duration}`);
+
+	const fullText = [title, description, ...metadata]
+		.filter(Boolean)
+		.join(" ")
+		.trim();
+	if (!fullText) return;
+
+	const embedding = await generateEmbedding(fullText);
+
+	await db.drizzle.execute(sql`
+		INSERT INTO courses_search_vectors (doc_id, text, embedding)
+		VALUES (${String(doc.id)}, ${fullText}, ${JSON.stringify(embedding)}::vector)
+		ON CONFLICT (doc_id) DO UPDATE SET
+			text = EXCLUDED.text,
+			embedding = EXCLUDED.embedding
+	`);
+};
 
 const afterChangeCourse: CollectionAfterChangeHook = async ({ doc, req }) => {
 	if (!req?.payload?.db) return doc;
@@ -46,67 +128,7 @@ const afterChangeCourse: CollectionAfterChangeHook = async ({ doc, req }) => {
 	}
 
 	try {
-		const title = typeof doc.title === "string" ? doc.title : "";
-		const description =
-			typeof doc.description === "string" ? doc.description : "";
-		const type = typeof doc.type === "string" ? doc.type : "";
-
-		// Resolve single relation names
-		const resolveName = async (
-			id: unknown,
-			collection: "personas" | "conditions" | "themes",
-		): Promise<string> => {
-			if (typeof id === "object" && id !== null && "name" in id)
-				return (id as { name: string }).name;
-			if (typeof id !== "number") return "";
-			try {
-				const item = await req.payload.findByID({ collection, id });
-				return (item as { name?: string }).name || "";
-			} catch {
-				return "";
-			}
-		};
-
-		const resolveNames = async (
-			ids: unknown,
-			collection: "personas" | "conditions" | "themes",
-		): Promise<string[]> => {
-			if (!Array.isArray(ids)) return [];
-			const names = await Promise.all(
-				ids.map((id) => resolveName(id, collection)),
-			);
-			return names.filter(Boolean);
-		};
-
-		const [personaNames, conditionNames, themeNames] = await Promise.all([
-			resolveNames(doc.persona, "personas"),
-			resolveNames(doc.conditions, "conditions"),
-			resolveNames(doc.themes, "themes"),
-		]);
-
-		const metadata: string[] = [];
-		if (personaNames.length)
-			metadata.push(`Public concerné : ${personaNames.join(", ")}`);
-		if (conditionNames.length)
-			metadata.push(`Troubles : ${conditionNames.join(", ")}`);
-		if (themeNames.length) metadata.push(`Thèmes : ${themeNames.join(", ")}`);
-		if (type) metadata.push(`Type de ressource : ${type}`);
-
-		const fullText = [title, description, ...metadata]
-			.filter(Boolean)
-			.join(" ")
-			.trim();
-		if (!fullText) return doc;
-
-		const embedding = await generateEmbedding(fullText);
-
-		await db.drizzle.execute(sql`
-			INSERT INTO courses_search_vectors (doc_id, text, embedding)
-			VALUES (${String(doc.id)}, ${fullText}, ${JSON.stringify(embedding)}::vector)
-			ON CONFLICT (doc_id) DO UPDATE SET
-				text = EXCLUDED.text,
-				embedding = EXCLUDED.embedding
-		`);
+		await indexCourseSearchVector(req.payload, doc);
 	} catch (err) {
 		console.error("[VectorSearch] Failed to index course:", doc.id, err);
 	}
@@ -136,7 +158,8 @@ export const courseCardSelect = {
 	description: true,
 	slug: true,
 	link: true,
-	type: true,
+	format: true,
+	duration: true,
 	themes: true,
 	conditions: true,
 	image: true,
@@ -149,7 +172,7 @@ export const Courses: CollectionConfig = {
 	admin: {
 		useAsTitle: "title",
 		group: { fr: "Contenus" },
-		defaultColumns: ["title", "type", "_status", "updatedAt"],
+		defaultColumns: ["title", "format", "_status", "updatedAt"],
 	},
 	defaultPopulate: courseCardSelect,
 	hooks: {
@@ -184,11 +207,40 @@ export const Courses: CollectionConfig = {
 							label: { fr: "Lien de la formation" },
 						},
 						{
-							name: "type",
-							type: "select",
-							required: true,
-							label: { fr: "Type de ressource" },
-							options: ["MOOC", "Webinaire", "Présentiel"],
+							type: "row",
+							fields: [
+								{
+									name: "format",
+									type: "select",
+									required: true,
+									label: { fr: "Format" },
+									options: [...COURSE_FORMATS],
+									admin: { width: "33%" },
+								},
+								{
+									name: "duration",
+									type: "select",
+									required: false,
+									label: { fr: "Durée" },
+									options: [...COURSE_DURATIONS],
+									admin: { width: "33%" },
+								},
+								{
+									name: "certifying",
+									type: "radio",
+									required: false,
+									label: { fr: "Certifiant" },
+									options: [
+										{ label: "Oui", value: "yes" },
+										{ label: "Non", value: "no" },
+									],
+									admin: {
+										width: "33%",
+										layout: "horizontal",
+										description: "Non affiché sur le site pour l'instant.",
+									},
+								},
+							],
 						},
 						{
 							...standardFields.wysiwyg,
