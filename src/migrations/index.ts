@@ -51,6 +51,7 @@ import * as migration_20261021_122314_pages from './20261021_122314_pages';
 import * as migration_20261021_150000_redirects_pages from './20261021_150000_redirects_pages';
 import * as migration_20261021_170000_medias_storage_fields from './20261021_170000_medias_storage_fields';
 import * as migration_20261021_180000_courses_page from './20261021_180000_courses_page';
+import * as migration_20261026_161504_menu_global from './20261026_161504_menu_global';
 
 export const migrations = [
   {
@@ -317,5 +318,10 @@ export const migrations = [
     up: migration_20261021_180000_courses_page.up,
     down: migration_20261021_180000_courses_page.down,
     name: '20261021_180000_courses_page',
+  },
+  {
+    up: migration_20261026_161504_menu_global.up,
+    down: migration_20261026_161504_menu_global.down,
+    name: '20261026_161504_menu_global'
   },
 ];
