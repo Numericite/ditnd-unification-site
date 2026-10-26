@@ -86,6 +86,7 @@ export default function FiltersGroup({ filters, setFilters }: Props) {
 				<Filter
 					key={`filter${index}`}
 					label={filter.label}
+					collection={filter.collection}
 					value={filter.value}
 					handleOnChange={(e) => handleOnChange(e, filter.collection)}
 				/>
