@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { getPayload } from "payload";
 import configPromise from "@payload-config";
+import { type DocumentReference, referenceHref } from "~/utils/links";
 
 /**
  * Carte des redirections 301 consommée par le middleware (src/middleware.ts).
@@ -14,16 +15,7 @@ const CACHE_TTL_MS = 60_000;
 type RedirectTarget = {
 	type?: "reference" | "custom" | null;
 	url?: string | null;
-	reference?: {
-		relationTo: string;
-		value: { slug?: string | null; _status?: string | null } | number;
-	} | null;
-};
-
-const REFERENCE_BASE_PATHS: Record<string, string> = {
-	"practical-guides": "/fiches-pratiques",
-	courses: "/formations",
-	pages: "",
+	reference?: DocumentReference | null;
 };
 
 let cache: { map: Record<string, string>; expiresAt: number } | null = null;
@@ -36,14 +28,7 @@ const resolveTarget = (
 		const url = to.url?.trim();
 		return url ? url : null;
 	}
-	const ref = to.reference;
-	if (!ref || typeof ref.value !== "object" || !ref.value) return null;
-	// Un document dépublié ne doit pas devenir une cible (redirection vers un 404).
-	if (ref.value._status && ref.value._status !== "published") return null;
-	const basePath = REFERENCE_BASE_PATHS[ref.relationTo];
-	return basePath !== undefined && ref.value.slug
-		? `${basePath}/${ref.value.slug}`
-		: null;
+	return referenceHref(to.reference);
 };
 
 export async function GET() {
