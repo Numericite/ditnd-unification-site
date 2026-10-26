@@ -2,7 +2,6 @@ import { fr } from "@codegouvfr/react-dsfr";
 import Badge from "@codegouvfr/react-dsfr/Badge";
 import Card from "@codegouvfr/react-dsfr/Card";
 import Tag from "@codegouvfr/react-dsfr/Tag";
-import Link from "next/link";
 import type { Condition, Theme } from "~/payload/payload-types";
 import { shortenDescription } from "~/utils/tools";
 import { tss } from "tss-react/dsfr";
@@ -16,7 +15,6 @@ type Props = {
 	noImg?: boolean;
 	conditions: Condition[];
 	themes: Theme[];
-	kind?: "guides" | "courses";
 	redirect: string;
 	titleAs?: "h2" | "h3" | "h4" | "h5" | "h6" | undefined;
 	horizontal?: boolean;
@@ -31,7 +29,6 @@ export default function CardDisplay({
 	noImg,
 	conditions,
 	themes,
-	kind = "guides",
 	redirect = "/",
 	titleAs = "h4",
 	horizontal = false,
@@ -46,14 +43,16 @@ export default function CardDisplay({
 			}
 		: { imageComponent: undefined };
 
-	const isExternalCourseLink =
-		kind === "courses" && redirect.startsWith("http");
-	const redirectText =
-		kind === "courses" && !isExternalCourseLink
-			? "Voir la formation"
-			: kind === "courses"
-				? "Accéder à la formation"
-				: "Voir la fiche";
+	// Une formation sans page dédiée pointe vers le site de l'organisme.
+	const isExternalLink = redirect.startsWith("http");
+	const linkProps = isExternalLink
+		? {
+				href: redirect,
+				target: "_blank",
+				rel: "noopener noreferrer",
+				title: `${title}, nouvelle fenêtre`,
+			}
+		: { href: redirect };
 
 	return (
 		<Card
@@ -68,30 +67,9 @@ export default function CardDisplay({
 			border
 			{...(horizontal ? { horizontal: true } : { horizontal: false })}
 			desc={description ? shortenDescription(description) : undefined}
+			enlargeLink
+			linkProps={linkProps}
 			{...imgProps}
-			footer={
-				isExternalCourseLink ? (
-					<a
-						className="fr-link fr-icon-arrow-right-line fr-link--icon-right"
-						href={redirect}
-						aria-label={`${redirectText} : ${title}, nouvelle fenêtre`}
-						title={`${redirectText} : ${title}, nouvelle fenêtre`}
-						target="_blank"
-						rel="noopener noreferrer"
-					>
-						{redirectText}
-					</a>
-				) : (
-					<Link
-						className="fr-link fr-icon-arrow-right-line fr-link--icon-right"
-						href={redirect}
-						aria-label={`${redirectText} : ${title}`}
-						title={`${redirectText} : ${title}`}
-					>
-						{redirectText}
-					</Link>
-				)
-			}
 			size="medium"
 			start={
 				<div className={cx(classes.tags)}>

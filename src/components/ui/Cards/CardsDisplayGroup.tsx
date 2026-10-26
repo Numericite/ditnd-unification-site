@@ -47,7 +47,6 @@ export default function CardsDisplayGroup({
 										course.slug ? `/formations/${course.slug}` : course.link
 									}
 									titleAs={titleAs}
-									kind={kind}
 								/>
 							</div>
 						))}
@@ -71,7 +70,6 @@ export default function CardsDisplayGroup({
 									themes={guide.themes}
 									redirect={buildGuideRedirect(guide.slug)}
 									titleAs={titleAs}
-									kind={kind}
 								/>
 							</div>
 						))}

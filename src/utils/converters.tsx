@@ -530,7 +530,6 @@ const relationCard = (
 				redirect={course.slug ? `/formations/${course.slug}` : course.link}
 				titleAs={titleAs}
 				horizontal={horizontal}
-				kind="courses"
 			/>
 		);
 	}
