@@ -52,6 +52,7 @@ const hasAwsCreds = Boolean(
 );
 import { CMSHome } from "./globals/cms/Home";
 import { CMSFooter } from "./globals/cms/Footer";
+import { CMSMenu } from "./globals/cms/Menu";
 import { PracticalGuideViews } from "./collections/PracticalGuidesViews";
 import { SimplifiedContentGenerator } from "./globals/SimplifiedContentGenerator";
 import { documentPath } from "~/utils/pages";
@@ -161,7 +162,7 @@ export default buildConfig({
 		Themes,
 		Users,
 	],
-	globals: [CMSHome, CMSFooter, SimplifiedContentGenerator],
+	globals: [CMSMenu, CMSHome, CMSFooter, SimplifiedContentGenerator],
 	editor: lexicalEditor(),
 	i18n: {
 		supportedLanguages: { en, fr },
