@@ -55,6 +55,7 @@ import { CMSFooter } from "./globals/cms/Footer";
 import { CMSAbout } from "./globals/cms/About";
 import { CMSNewsletter } from "./globals/cms/Newsletter";
 import { CMSCoursesPage } from "./globals/cms/CoursesPage";
+import { CMSMenu } from "./globals/cms/Menu";
 import { PracticalGuideViews } from "./collections/PracticalGuidesViews";
 import { SimplifiedContentGenerator } from "./globals/SimplifiedContentGenerator";
 
@@ -164,6 +165,7 @@ export default buildConfig({
 		Users,
 	],
 	globals: [
+		CMSMenu,
 		CMSHome,
 		CMSFooter,
 		CMSAbout,

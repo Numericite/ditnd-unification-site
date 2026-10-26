@@ -154,6 +154,7 @@ export interface Config {
 	};
 	fallbackLocale: null;
 	globals: {
+		menu: Menu;
 		home: Home;
 		footer: Footer;
 		about: About;
@@ -162,6 +163,7 @@ export interface Config {
 		"simplified-content-generator": SimplifiedContentGenerator;
 	};
 	globalsSelect: {
+		menu: MenuSelect<false> | MenuSelect<true>;
 		home: HomeSelect<false> | HomeSelect<true>;
 		footer: FooterSelect<false> | FooterSelect<true>;
 		about: AboutSelect<false> | AboutSelect<true>;
@@ -1561,6 +1563,78 @@ export interface PayloadMigrationsSelect<T extends boolean = true> {
 	createdAt?: T;
 }
 /**
+ * Liens de la barre de navigation, affichés après les éléments fixes. Les modifications apparaissent sur le site sous une minute.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "menu".
+ */
+export interface Menu {
+	id: number;
+	items?:
+		| {
+				title: string;
+				kind: "link" | "submenu";
+				link?: {
+					type: "reference" | "internal" | "external";
+					reference?:
+						| ({
+								relationTo: "pages";
+								value: number | Page;
+						  } | null)
+						| ({
+								relationTo: "practical-guides";
+								value: number | PracticalGuide;
+						  } | null)
+						| ({
+								relationTo: "courses";
+								value: number | Course;
+						  } | null);
+					/**
+					 * Chemin d'une page du site, par exemple /a-propos/cra.
+					 */
+					internalUrl?: string | null;
+					/**
+					 * Adresse complète, par exemple https://exemple.fr. S'ouvre dans un nouvel onglet.
+					 */
+					externalUrl?: string | null;
+				};
+				children?:
+					| {
+							title: string;
+							link: {
+								type: "reference" | "internal" | "external";
+								reference?:
+									| ({
+											relationTo: "pages";
+											value: number | Page;
+									  } | null)
+									| ({
+											relationTo: "practical-guides";
+											value: number | PracticalGuide;
+									  } | null)
+									| ({
+											relationTo: "courses";
+											value: number | Course;
+									  } | null);
+								/**
+								 * Chemin d'une page du site, par exemple /a-propos/cra.
+								 */
+								internalUrl?: string | null;
+								/**
+								 * Adresse complète, par exemple https://exemple.fr. S'ouvre dans un nouvel onglet.
+								 */
+								externalUrl?: string | null;
+							};
+							id?: string | null;
+					  }[]
+					| null;
+				id?: string | null;
+		  }[]
+		| null;
+	updatedAt?: string | null;
+	createdAt?: string | null;
+}
+/**
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "home".
  */
@@ -1916,6 +1990,44 @@ export interface SimplifiedContentGenerator {
 	} | null;
 	updatedAt?: string | null;
 	createdAt?: string | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "menu_select".
+ */
+export interface MenuSelect<T extends boolean = true> {
+	items?:
+		| T
+		| {
+				title?: T;
+				kind?: T;
+				link?:
+					| T
+					| {
+							type?: T;
+							reference?: T;
+							internalUrl?: T;
+							externalUrl?: T;
+					  };
+				children?:
+					| T
+					| {
+							title?: T;
+							link?:
+								| T
+								| {
+										type?: T;
+										reference?: T;
+										internalUrl?: T;
+										externalUrl?: T;
+								  };
+							id?: T;
+					  };
+				id?: T;
+		  };
+	updatedAt?: T;
+	createdAt?: T;
+	globalType?: T;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
