@@ -1,4 +1,4 @@
-import type { CollectionConfig } from "payload";
+import type { CollectionConfig, Field, PayloadRequest } from "payload";
 
 export const PracticalGuideViews: CollectionConfig = {
 	slug: "practical-guide-views",
@@ -25,4 +25,78 @@ export const PracticalGuideViews: CollectionConfig = {
 			required: true,
 		},
 	],
+};
+
+const findGuideViews = async (
+	req: PayloadRequest,
+	guideId: number | string,
+) => {
+	const { docs } = await req.payload.find({
+		collection: "practical-guide-views",
+		where: { guide: { equals: guideId } },
+		limit: 1,
+		depth: 0,
+		req,
+	});
+	return docs[0];
+};
+
+export const guideViewCountField: Field = {
+	name: "viewCount",
+	type: "number",
+	virtual: true,
+	min: 0,
+	label: { fr: "Nombre de lectures" },
+	validate: (value: unknown) =>
+		value === null ||
+		value === undefined ||
+		(Number.isInteger(value) && (value as number) >= 0) ||
+		"Le nombre de lectures doit être un entier positif ou nul.",
+	admin: {
+		readOnly: false,
+		position: "sidebar",
+		step: 1,
+		description:
+			"Détermine l'ordre de la section « Fiches pratiques les plus lues » de l'accueil. Augmente de 1 à chaque lecture de la fiche. Pris en compte au clic sur « Publier les modifications », pas lors de l'enregistrement automatique.",
+	},
+	hooks: {
+		afterRead: [
+			async ({ req, siblingData }) => {
+				if (!req.user || !siblingData?.id) return undefined;
+				const views = await findGuideViews(req, siblingData.id);
+				return views?.viewCount ?? 0;
+			},
+		],
+		afterChange: [
+			async ({ req, siblingData, originalDoc, value }) => {
+				const next = siblingData?.viewCount;
+				const autosave = req.query?.autosave;
+				if (
+					typeof next !== "number" ||
+					!originalDoc?.id ||
+					autosave === true ||
+					autosave === "true"
+				)
+					return value;
+
+				const count = Math.max(0, Math.round(next));
+				const views = await findGuideViews(req, originalDoc.id);
+				if (!views) {
+					await req.payload.create({
+						collection: "practical-guide-views",
+						data: { guide: originalDoc.id, viewCount: count },
+						req,
+					});
+				} else if (views.viewCount !== count) {
+					await req.payload.update({
+						collection: "practical-guide-views",
+						id: views.id,
+						data: { viewCount: count },
+						req,
+					});
+				}
+				return count;
+			},
+		],
+	},
 };

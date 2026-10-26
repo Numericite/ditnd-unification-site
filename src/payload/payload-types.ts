@@ -412,6 +412,10 @@ export interface PracticalGuide {
 	 * Facultative. Si renseignée, une mention « Mis à jour le » est affichée sur le site à côté de « Publié le ».
 	 */
 	lastUpdatedAt?: string | null;
+	/**
+	 * Détermine l'ordre de la section « Fiches pratiques les plus lues » de l'accueil. Augmente de 1 à chaque lecture de la fiche. Pris en compte au clic sur « Publier les modifications », pas lors de l'enregistrement automatique.
+	 */
+	viewCount?: number | null;
 	image?: (number | null) | Media;
 	imageBanner?: (number | null) | Media;
 	/**
@@ -1206,6 +1210,7 @@ export interface PracticalGuidesSelect<T extends boolean = true> {
 		  };
 	publishedAt?: T;
 	lastUpdatedAt?: T;
+	viewCount?: T;
 	image?: T;
 	imageBanner?: T;
 	slug?: T;
