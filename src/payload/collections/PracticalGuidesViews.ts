@@ -1,4 +1,5 @@
 import type { CollectionConfig, Field, PayloadRequest } from "payload";
+import { isAdmin } from "../hooks";
 
 export const PracticalGuideViews: CollectionConfig = {
 	slug: "practical-guide-views",
@@ -47,6 +48,7 @@ export const guideViewCountField: Field = {
 	virtual: true,
 	min: 0,
 	label: { fr: "Nombre de lectures" },
+	access: { read: isAdmin, create: isAdmin, update: isAdmin },
 	validate: (value: unknown) =>
 		value === null ||
 		value === undefined ||
@@ -62,7 +64,7 @@ export const guideViewCountField: Field = {
 	hooks: {
 		afterRead: [
 			async ({ req, siblingData }) => {
-				if (!req.user || !siblingData?.id) return undefined;
+				if (!isAdmin({ req }) || !siblingData?.id) return undefined;
 				const views = await findGuideViews(req, siblingData.id);
 				return views?.viewCount ?? 0;
 			},
@@ -82,6 +84,7 @@ export const guideViewCountField: Field = {
 				const count = Math.max(0, Math.round(next));
 				const views = await findGuideViews(req, originalDoc.id);
 				if (!views) {
+					if (count === 0) return count;
 					await req.payload.create({
 						collection: "practical-guide-views",
 						data: { guide: originalDoc.id, viewCount: count },
