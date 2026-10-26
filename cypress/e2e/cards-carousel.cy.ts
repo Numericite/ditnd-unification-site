@@ -65,10 +65,7 @@ describe("Cards carousel block", () => {
 
 	it("scrolls a card into view when it receives keyboard focus", () => {
 		guidesCarousel().within(() => {
-			cy.get("ul[data-carousel] > li")
-				.last()
-				.find(".fr-card__footer a")
-				.focus();
+			cy.get("ul[data-carousel] > li").last().find(".fr-card__title a").focus();
 			cy.get("ul[data-carousel]")
 				.its("0.scrollLeft")
 				.should("be.greaterThan", 0);
