@@ -59,20 +59,22 @@ export default function CourseDisplay({ course }: Props) {
 				Accéder à la formation
 			</Button>
 
-			<ul className={fr.cx("fr-badges-group", "fr-mb-2w")}>
-				{format && (
-					<li>
-						<Badge noIcon severity="info">
-							{format}
-						</Badge>
-					</li>
-				)}
-				{duration && (
-					<li>
-						<Badge noIcon>{duration}</Badge>
-					</li>
-				)}
-			</ul>
+			{(format || duration) && (
+				<ul className={fr.cx("fr-badges-group", "fr-mb-2w")}>
+					{format && (
+						<li>
+							<Badge noIcon severity="info">
+								{format}
+							</Badge>
+						</li>
+					)}
+					{duration && (
+						<li>
+							<Badge noIcon>{duration}</Badge>
+						</li>
+					)}
+				</ul>
+			)}
 
 			<ul className={cx(fr.cx("fr-tags-group"), classes.tagsList)}>
 				{course.conditions.map((condition) => (
