@@ -88,6 +88,23 @@ describe("Cards carousel block", () => {
 		);
 	});
 
+	it("makes the whole card a link to the guide or course page", () => {
+		cy.get('section[aria-labelledby="formations-associees"]').within(() => {
+			cy.get(".fr-card")
+				.should("have.length", 3)
+				.and("have.class", "fr-enlarge-link");
+			cy.get(".fr-card__footer").should("not.exist");
+			cy.get(".fr-card__title a").then((links) => {
+				const hrefs = [...links].map((link) => link.getAttribute("href"));
+				expect(hrefs[0]).to.match(/^\/formations\/[^/]+$/);
+				expect(hrefs[1]).to.match(/^\/fiches-pratiques\/[^/]+$/);
+				expect(hrefs[2]).to.match(/^\/formations\/[^/]+$/);
+			});
+			cy.get(".fr-card").first().click("bottom");
+		});
+		cy.location("pathname").should("match", /^\/formations\/[^/]+$/);
+	});
+
 	it("shows one card per view without overflowing the page on mobile", () => {
 		cy.viewport(375, 812);
 		guidesCarousel().within(() => {
