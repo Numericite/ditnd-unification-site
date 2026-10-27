@@ -3,6 +3,7 @@ import payloadConfig from "~/payload/payload.config";
 import type { PersonaTile } from "~/components/HomePage/PersonaTiles";
 import type { TDH } from "~/state/store";
 import type { Home } from "~/payload/payload-types";
+import { type NavItem, resolveMenu } from "~/utils/menu";
 
 export type GlobalData = {
 	persons: PersonaTile[];
@@ -10,6 +11,7 @@ export type GlobalData = {
 	conditions: TDH[];
 	footerTitle: string;
 	homeCMS: Home;
+	menu: NavItem[];
 };
 
 const TTL_MS = 60_000;
@@ -19,22 +21,27 @@ let inflight: Promise<GlobalData> | null = null;
 async function fetchGlobalData(): Promise<GlobalData> {
 	const payload = await getPayload({ config: payloadConfig });
 
-	const [personasResult, conditionsResult, footer, homeCMS] = await Promise.all(
-		[
-			payload.find({
-				collection: "personas",
-				limit: 0,
-				select: { updatedAt: false, createdAt: false },
-			}),
-			payload.find({
-				collection: "conditions",
-				limit: 0,
-				select: { updatedAt: false, createdAt: false },
-			}),
-			payload.findGlobal({ slug: "footer" }),
-			payload.findGlobal({ slug: "home" }),
-		],
-	);
+	const [
+		personasResult,
+		conditionsResult,
+		footer,
+		homeCMS,
+		menu,
+	] = await Promise.all([
+		payload.find({
+			collection: "personas",
+			limit: 0,
+			select: { updatedAt: false, createdAt: false },
+		}),
+		payload.find({
+			collection: "conditions",
+			limit: 0,
+			select: { updatedAt: false, createdAt: false },
+		}),
+		payload.findGlobal({ slug: "footer" }),
+		payload.findGlobal({ slug: "home" }),
+		payload.findGlobal({ slug: "menu", depth: 1 }),
+	]);
 
 	const persons: PersonaTile[] = personasResult.docs.map((persona) => ({
 		...persona,
@@ -56,6 +63,7 @@ async function fetchGlobalData(): Promise<GlobalData> {
 		conditions,
 		footerTitle: footer.title,
 		homeCMS: homeCMS as Home,
+		menu: resolveMenu(menu),
 	};
 }
 

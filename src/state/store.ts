@@ -5,6 +5,7 @@ import type {
 	PersonaTypes,
 } from "~/components/HomePage/PersonaTiles";
 import type { Home } from "~/payload/payload-types";
+import type { NavItem } from "~/utils/menu";
 
 export type TDH = {
 	id?: number;
@@ -24,5 +25,7 @@ export const personStore = observable<PersonaTile[]>([]);
 export const proStore = observable<PersonaTile[]>([]);
 
 export const footerTitleStore = observable<string>("");
+
+export const menuStore = observable<NavItem[]>([]);
 
 export const chatbotOpenStore = observable<boolean>(false);

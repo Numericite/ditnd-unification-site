@@ -4,7 +4,8 @@ import { useEffect, useRef, useState } from "react";
 import SubMenuCustom from "./SubMenuCustom";
 import Button from "@codegouvfr/react-dsfr/Button";
 import Header from "@codegouvfr/react-dsfr/Header";
-import { chatbotOpenStore, personStore } from "~/state/store";
+import { chatbotOpenStore, menuStore, personStore } from "~/state/store";
+import type { NavLink } from "~/utils/menu";
 import { personsAndProTiles } from "~/utils/pictograms";
 import { skipLinks } from "~/utils/tools";
 import SkipLinks from "@codegouvfr/react-dsfr/SkipLinks";
@@ -30,7 +31,21 @@ export default function MainNavigation() {
 	}, [router.query.search]);
 
 	const personas = personsAndProTiles(personStore.get());
-	const currentPath = router.asPath.split(/[?#]/)[0];
+	const currentPath = router.asPath.split(/[?#]/)[0] ?? "";
+	const toNavigationLink = (link: NavLink) => ({
+		text: link.title,
+		isActive:
+			!link.external &&
+			(currentPath === link.href || currentPath.startsWith(`${link.href}/`)),
+		linkProps: link.external
+			? {
+					href: link.href,
+					target: "_blank",
+					rel: "noopener noreferrer",
+					title: `${link.title}, nouvelle fenêtre`,
+				}
+			: { href: link.href },
+	});
 
 	const userNavigationItems: MainNavigationProps.Item[] = [
 		{
@@ -54,39 +69,17 @@ export default function MainNavigation() {
 			linkProps: { href: "/formations" },
 			isActive: router.pathname.startsWith("/formations"),
 		},
-		{
-			text: "Annuaire",
-			linkProps: {
-				href: "https://annuaire.autismeinfoservice.fr/",
-				target: "_blank",
-			},
-		},
-		{
-			text: "À propos",
-			isActive: router.pathname.startsWith("/a-propos"),
-			menuLinks: [
-				{
-					text: "Maison de l'autisme",
-					isActive: currentPath === "/a-propos/maison-de-l-autisme",
-					linkProps: { href: "/a-propos/maison-de-l-autisme" },
-				},
-				{
-					text: "GNCRA",
-					isActive: currentPath === "/a-propos/gncra",
-					linkProps: { href: "/a-propos/gncra" },
-				},
-				{
-					text: "CRA",
-					isActive: currentPath === "/a-propos/cra",
-					linkProps: { href: "/a-propos/cra" },
-				},
-				{
-					text: "Glossaire",
-					isActive: currentPath === "/a-propos/glossaire",
-					linkProps: { href: "/a-propos/glossaire" },
-				},
-			],
-		},
+		...menuStore.get().map((item): MainNavigationProps.Item => {
+			if ("children" in item) {
+				const menuLinks = item.children.map(toNavigationLink);
+				return {
+					text: item.title,
+					isActive: menuLinks.some((link) => link.isActive),
+					menuLinks,
+				};
+			}
+			return toNavigationLink(item);
+		}),
 	];
 
 	useEffect(() => {
