@@ -70,6 +70,7 @@ export const CMSMenu: GlobalConfig = {
 					},
 					minRows: 1,
 					admin: {
+						initCollapsed: true,
 						condition: (_, siblingData) => siblingData?.kind === "submenu",
 						components: rowLabel,
 					},
