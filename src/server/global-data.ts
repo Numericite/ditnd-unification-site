@@ -40,7 +40,13 @@ async function fetchGlobalData(): Promise<GlobalData> {
 		}),
 		payload.findGlobal({ slug: "footer" }),
 		payload.findGlobal({ slug: "home" }),
-		payload.findGlobal({ slug: "menu", depth: 1 }),
+		payload
+			.findGlobal({ slug: "menu", depth: 1 })
+			.then(resolveMenu)
+			.catch((err): NavItem[] => {
+				console.error("[global-data] menu failed:", err);
+				return [];
+			}),
 	]);
 
 	const persons: PersonaTile[] = personasResult.docs.map((persona) => ({
@@ -63,7 +69,7 @@ async function fetchGlobalData(): Promise<GlobalData> {
 		conditions,
 		footerTitle: footer.title,
 		homeCMS: homeCMS as Home,
-		menu: resolveMenu(menu),
+		menu,
 	};
 }
 
