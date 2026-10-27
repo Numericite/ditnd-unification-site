@@ -1,5 +1,9 @@
 import { type MigrateUpArgs, type MigrateDownArgs, sql } from '@payloadcms/db-postgres'
 
+// « Type de ressource » devient « Format » : Présentiel → pres, MOOC et
+// Webinaire → dist. Retouchée à la main pour être rejouable (IF NOT EXISTS,
+// conversion seulement si l'ancienne colonne existe). Lancer ensuite
+// yarn reindex:courses pour réindexer le texte de recherche.
 export async function up({ db, payload, req }: MigrateUpArgs): Promise<void> {
   await db.execute(sql`
    DO $$ BEGIN
