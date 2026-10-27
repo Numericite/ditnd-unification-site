@@ -1,5 +1,5 @@
 import type { Menu } from "~/payload/payload-types";
-import { referenceHref } from "./links";
+import { normalizeFromPath, referenceHref } from "./links";
 
 export type LockedMenuItem = {
 	title: string;
@@ -20,8 +20,11 @@ export const LOCKED_MENU_ITEMS: LockedMenuItem[] = [
 	},
 ];
 
-export const isPathActive = (currentPath: string, path: string) =>
-	currentPath === path || currentPath.startsWith(`${path}/`);
+export const isPathActive = (currentHref: string, href: string) => {
+	const current = normalizeFromPath(currentHref);
+	const path = normalizeFromPath(href);
+	return current === path || current.startsWith(`${path}/`);
+};
 
 export type NavLink = { title: string; href: string; external: boolean };
 

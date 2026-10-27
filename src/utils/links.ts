@@ -32,3 +32,13 @@ export const referenceHref = (
 		? `${basePath}/${value.slug}`
 		: null;
 };
+
+/** Normalise une URL source : path seul, sans domaine, slash final ni query. */
+export const normalizeFromPath = (raw: string): string => {
+	let from = raw.trim();
+	from = from.replace(/^https?:\/\/[^/]+/i, "");
+	from = from.split(/[?#]/)[0] ?? "";
+	if (!from.startsWith("/")) from = `/${from}`;
+	if (from.length > 1) from = from.replace(/\/+$/, "");
+	return from.toLowerCase();
+};
