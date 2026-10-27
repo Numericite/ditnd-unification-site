@@ -43,7 +43,6 @@ export default function CardDisplay({
 			}
 		: { imageComponent: undefined };
 
-	// Une formation sans page dédiée pointe vers le site de l'organisme.
 	const isExternalLink = redirect.startsWith("http");
 	const linkProps = isExternalLink
 		? {
