@@ -8,6 +8,7 @@ import { seedJourneys } from "./tasks/journeys";
 import { seedMedia } from "./tasks/medias";
 import homeTask from "./tasks/home";
 import footerTask from "./tasks/footer";
+import menuTask from "./tasks/menu";
 import newsletterTask from "./tasks/newsletter";
 import aboutTask from "./tasks/about";
 import coursesPageTask from "./tasks/courses-page";
@@ -45,6 +46,7 @@ const seedData = async () => {
 		});
 		await homeTask(payload);
 		await footerTask(payload);
+		await menuTask(payload);
 		await newsletterTask(payload);
 		await seedThemes(payload);
 		await seedMedia(payload);
