@@ -1,5 +1,6 @@
 import { redirectsPlugin } from "@payloadcms/plugin-redirects";
 import type { Field } from "payload";
+import { normalizeFromPath } from "~/utils/links";
 
 /**
  * Redirections 301 de l'ancien site WordPress (et futurs renommages de slugs).
@@ -10,16 +11,6 @@ import type { Field } from "payload";
  * contenu ; l'URL est couverte entre-temps par les fallbacks de section du
  * middleware. Ne jamais supprimer une redirection remplie après le lancement.
  */
-
-/** Normalise une URL source : path seul, sans domaine, slash final ni query. */
-export const normalizeFromPath = (raw: string): string => {
-	let from = raw.trim();
-	from = from.replace(/^https?:\/\/[^/]+/i, "");
-	from = from.split(/[?#]/)[0] ?? "";
-	if (!from.startsWith("/")) from = `/${from}`;
-	if (from.length > 1) from = from.replace(/\/+$/, "");
-	return from.toLowerCase();
-};
 
 export const mdaRedirectsPlugin = redirectsPlugin({
 	// Collections pointables en cible "référence interne" : les seules dont

@@ -3,7 +3,7 @@ import { getPayload } from "payload";
 import fs from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
-import { normalizeFromPath } from "../plugins/redirects";
+import { normalizeFromPath } from "~/utils/links";
 
 /**
  * Pré-remplit la collection "redirects" avec les URLs publiées de l'ancien

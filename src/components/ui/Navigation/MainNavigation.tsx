@@ -37,7 +37,7 @@ export default function MainNavigation() {
 
 	const personas = personsAndProTiles(personStore.get());
 
-	const currentPath = router.asPath.split(/[?#]/)[0] ?? "";
+	const currentPath = router.asPath;
 	const toNavigationLink = (link: NavLink) => ({
 		text: link.title,
 		isActive: !link.external && isPathActive(currentPath, link.href),
