@@ -1,8 +1,27 @@
 import type { Menu } from "~/payload/payload-types";
 import { referenceHref } from "./links";
 
-// Éléments générés par le code (MainNavigation), toujours en tête du menu.
-export const LOCKED_MENU_ITEMS = ["Je suis", "Fiches pratiques", "Me former"];
+export type LockedMenuItem = {
+	title: string;
+	activePaths: string[];
+} & ({ href: string; submenu?: never } | { submenu: "personas"; href?: never });
+
+export const LOCKED_MENU_ITEMS: LockedMenuItem[] = [
+	{ title: "Je suis", activePaths: ["/parcours"], submenu: "personas" },
+	{
+		title: "Fiches pratiques",
+		href: "/fiches-pratiques",
+		activePaths: ["/fiches-pratiques"],
+	},
+	{
+		title: "Me former",
+		href: "/se-former",
+		activePaths: ["/se-former", "/formations"],
+	},
+];
+
+export const isPathActive = (currentPath: string, path: string) =>
+	currentPath === path || currentPath.startsWith(`${path}/`);
 
 export type NavLink = { title: string; href: string; external: boolean };
 
@@ -27,10 +46,6 @@ const resolveLink = (
 	return href ? { title, href, external: false } : null;
 };
 
-/**
- * Liens du global « menu » prêts à afficher. Un lien sans cible publiée est
- * ignoré, ainsi qu'un sous-menu qui ne contient plus aucun lien.
- */
 export const resolveMenu = (menu: Pick<Menu, "items">): NavItem[] =>
 	(menu.items ?? []).flatMap((item): NavItem[] => {
 		if (item.kind === "submenu") {

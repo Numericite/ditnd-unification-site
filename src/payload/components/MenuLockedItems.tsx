@@ -3,15 +3,12 @@
 import { LockIcon } from "@payloadcms/ui/icons/Lock";
 import { LOCKED_MENU_ITEMS } from "~/utils/menu";
 
-// Lignes affichées en tête de la liste « Éléments du menu » (beforeInput du
-// champ array), avec le même rendu qu'un élément replié, mais grisées et sans
-// action : ces éléments sont générés par le code de la navbar.
 export default function MenuLockedItems() {
 	return (
 		<div className="array-field__draggable-rows">
-			{LOCKED_MENU_ITEMS.map((item) => (
+			{LOCKED_MENU_ITEMS.map(({ title }) => (
 				<div
-					key={item}
+					key={title}
 					className="collapsible array-field__row collapsible--collapsed collapsible--style-default collapsible--has-drag-handle"
 					title="Élément fixe : non modifiable"
 					style={{ opacity: 0.55, cursor: "not-allowed" }}
@@ -22,7 +19,7 @@ export default function MenuLockedItems() {
 						</div>
 						<div className="collapsible__header-wrap collapsible__header-wrap--has-drag-handle">
 							<div className="array-field__row-header">
-								<span>{item}</span>
+								<span>{title}</span>
 							</div>
 						</div>
 						<span
