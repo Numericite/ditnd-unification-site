@@ -1,5 +1,5 @@
 import { accordion, block, paragraph, richText } from "../support/lexical";
-import { watchAdminFormState } from "../support/payload";
+import { uniqueTitle, watchAdminFormState } from "../support/payload";
 
 const innermostEditors = () =>
 	cy
@@ -19,40 +19,46 @@ describe("Admin — rich text editor", () => {
 
 	it("keeps accordion content typed before switching tabs", () => {
 		const addedLine = "Ligne ajoutée avant de changer d'onglet.";
-		cy.request("POST", "/api/globals/about?depth=0", {
-			maisonDeLAutisme: {
-				content: richText(
-					paragraph("Présentation de la maison."),
-					accordion("single", [
-						{
-							title: "Accordéon persistant",
-							children: [paragraph("Ligne initiale.")],
-						},
-					]),
-				),
-			},
-		});
+		cy.request("POST", "/api/pages?depth=0", {
+			title: uniqueTitle("Page"),
+			section: "a-propos",
+			_status: "published",
+			content: richText(
+				paragraph("Présentation de la maison."),
+				accordion("single", [
+					{
+						title: "Accordéon persistant",
+						children: [paragraph("Ligne initiale.")],
+					},
+				]),
+			),
+		})
+			.its("body.doc")
+			.as("page");
 
 		const formState = watchAdminFormState();
-		cy.visitAdmin("/globals/about");
+		cy.get<{ id: number }>("@page").then(({ id }) =>
+			cy.visitAdmin(`/collections/pages/${id}`),
+		);
 		innermostEditors()
 			.contains("p", "Ligne initiale.")
 			.click()
 			.type(`{end}{enter}${addedLine}`);
 		formState.shouldInclude(`"text":"${addedLine}"`);
 
-		cy.contains(".tabs-field__tab-button", "GNCRA").click();
-		cy.contains(".tabs-field__tab-button", "Maison de l'autisme").click();
+		cy.contains(".tabs-field__tab-button", "SEO").click();
+		cy.contains(".tabs-field__tab-button", "Contenu").click();
 		innermostEditors().should("contain.text", addedLine);
 
-		saveAndWait("/api/globals/about*");
-		cy.request("/api/globals/about?depth=0")
-			.its("body.maisonDeLAutisme.content")
-			.then((content) => {
-				expect(JSON.stringify(content)).to.contain(addedLine);
-			});
-
-		cy.visit("/a-propos/maison-de-l-autisme");
+		saveAndWait("/api/pages/*");
+		cy.get<{ id: number; slug: string }>("@page").then(({ id, slug }) => {
+			cy.request(`/api/pages/${id}?depth=0`)
+				.its("body.content")
+				.then((content) => {
+					expect(JSON.stringify(content)).to.contain(addedLine);
+				});
+			cy.visit(`/a-propos/${slug}`);
+		});
 		cy.contains(".fr-accordion__btn", "Accordéon persistant")
 			.should("have.attr", "data-fr-js-collapse-button", "true")
 			.click();
