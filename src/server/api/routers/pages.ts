@@ -14,7 +14,12 @@ export interface AugmentedPage extends Omit<Page, "imageBanner"> {
 
 export const pagesRouter = createTRPCRouter({
 	getBySlug: publicProcedure
-		.input(z.object({ slug: z.string() }))
+		.input(
+			z.object({
+				slug: z.string(),
+				section: z.string().nullable().default(null),
+			}),
+		)
 		.query(async ({ input, ctx }) => {
 			const result = await ctx.payload.find({
 				collection: "pages",
@@ -24,6 +29,9 @@ export const pagesRouter = createTRPCRouter({
 				where: {
 					slug: { equals: input.slug },
 					_status: { equals: "published" },
+					section: input.section
+						? { equals: input.section }
+						: { exists: false },
 				},
 			});
 
