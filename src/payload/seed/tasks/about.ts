@@ -115,27 +115,46 @@ const crasContent = buildContent([
 	},
 ]);
 
+const aboutPages = [
+	{
+		slug: "maison-de-l-autisme",
+		title: "Maison de l'autisme",
+		imageBanner: 7,
+		content: maisonDeLAutismeContent,
+		description:
+			"Maison de l'autisme : découvrez la Maison de l'autisme, site national d'informations sur l'autisme et les troubles du neurodéveloppement.",
+	},
+	{
+		slug: "gncra",
+		title: "GNCRA - Groupement National des Centres Ressources Autisme",
+		imageBanner: 1,
+		content: gncraContent,
+		description:
+			"GNCRA - Groupement National des Centres Ressources Autisme : découvrez le Groupement National des Centres Ressources Autisme (GNCRA).",
+	},
+	{
+		slug: "cra",
+		title: "CRA - Centres Ressources Autisme",
+		imageBanner: 4,
+		content: crasContent,
+		description:
+			"CRA - Centres Ressources Autisme : découvrez les Centres Ressources Autisme (CRA) répartis sur le territoire français.",
+	},
+];
+
 export default async function aboutTask(payload: BasePayload) {
-	await payload.updateGlobal({
-		slug: "about",
-		data: {
-			maisonDeLAutisme: {
-				title: "Maison de l'autisme",
-				imageBanner: 7,
-				content: maisonDeLAutismeContent,
+	for (const { description, ...page } of aboutPages) {
+		await payload.create({
+			collection: "pages",
+			data: {
+				...page,
+				section: "a-propos",
+				showDates: false,
+				meta: { description },
+				_status: "published",
 			},
-			gncra: {
-				title: "GNCRA - Groupement National des Centres Ressources Autisme",
-				imageBanner: 1,
-				content: gncraContent,
-			},
-			cras: {
-				title: "CRA - Centres Ressources Autisme",
-				imageBanner: 4,
-				content: crasContent,
-			},
-		},
-	});
+		});
+	}
 
 	payload.logger.info("About content seeded successfully");
 }

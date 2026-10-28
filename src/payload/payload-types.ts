@@ -156,14 +156,12 @@ export interface Config {
 	globals: {
 		home: Home;
 		footer: Footer;
-		about: About;
 		newsletter: Newsletter;
 		"simplified-content-generator": SimplifiedContentGenerator;
 	};
 	globalsSelect: {
 		home: HomeSelect<false> | HomeSelect<true>;
 		footer: FooterSelect<false> | FooterSelect<true>;
-		about: AboutSelect<false> | AboutSelect<true>;
 		newsletter: NewsletterSelect<false> | NewsletterSelect<true>;
 		"simplified-content-generator":
 			| SimplifiedContentGeneratorSelect<false>
@@ -336,7 +334,12 @@ export interface Page {
 	 * Facultative. Si renseignée, une mention « Mis à jour le » est affichée sur le site.
 	 */
 	lastUpdatedAt?: string | null;
+	showDates?: boolean | null;
 	imageBanner?: (number | null) | Media;
+	/**
+	 * Facultative. Une page rangée dans « À propos » est accessible sur /a-propos/{identifiant}.
+	 */
+	section?: "a-propos" | null;
 	/**
 	 * Utilisé dans l'URL de la page. Laissez vide pour le générer à partir du titre. Le modifier change l'URL publique : pensez à ajouter une redirection.
 	 */
@@ -1181,7 +1184,9 @@ export interface PagesSelect<T extends boolean = true> {
 		  };
 	publishedAt?: T;
 	lastUpdatedAt?: T;
+	showDates?: T;
 	imageBanner?: T;
+	section?: T;
 	slug?: T;
 	updatedAt?: T;
 	createdAt?: T;
@@ -1670,72 +1675,6 @@ export interface Footer {
 	createdAt?: string | null;
 }
 /**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "about".
- */
-export interface About {
-	id: number;
-	maisonDeLAutisme: {
-		title: string;
-		imageBanner?: (number | null) | Media;
-		content: {
-			root: {
-				type: string;
-				children: {
-					type: any;
-					version: number;
-					[k: string]: unknown;
-				}[];
-				direction: ("ltr" | "rtl") | null;
-				format: "left" | "start" | "center" | "right" | "end" | "justify" | "";
-				indent: number;
-				version: number;
-			};
-			[k: string]: unknown;
-		};
-	};
-	gncra: {
-		title: string;
-		imageBanner?: (number | null) | Media;
-		content: {
-			root: {
-				type: string;
-				children: {
-					type: any;
-					version: number;
-					[k: string]: unknown;
-				}[];
-				direction: ("ltr" | "rtl") | null;
-				format: "left" | "start" | "center" | "right" | "end" | "justify" | "";
-				indent: number;
-				version: number;
-			};
-			[k: string]: unknown;
-		};
-	};
-	cras: {
-		title: string;
-		imageBanner?: (number | null) | Media;
-		content: {
-			root: {
-				type: string;
-				children: {
-					type: any;
-					version: number;
-					[k: string]: unknown;
-				}[];
-				direction: ("ltr" | "rtl") | null;
-				format: "left" | "start" | "center" | "right" | "end" | "justify" | "";
-				indent: number;
-				version: number;
-			};
-			[k: string]: unknown;
-		};
-	};
-	updatedAt?: string | null;
-	createdAt?: string | null;
-}
-/**
  * Bloc affiché en bas de la page d'accueil. Décochez « Afficher le bloc » pour le retirer du site.
  *
  * This interface was referenced by `Config`'s JSON-Schema
@@ -1886,36 +1825,6 @@ export interface FooterSelect<T extends boolean = true> {
 				content?: T;
 		  };
 	contactParticuliers?:
-		| T
-		| {
-				title?: T;
-				imageBanner?: T;
-				content?: T;
-		  };
-	updatedAt?: T;
-	createdAt?: T;
-	globalType?: T;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "about_select".
- */
-export interface AboutSelect<T extends boolean = true> {
-	maisonDeLAutisme?:
-		| T
-		| {
-				title?: T;
-				imageBanner?: T;
-				content?: T;
-		  };
-	gncra?:
-		| T
-		| {
-				title?: T;
-				imageBanner?: T;
-				content?: T;
-		  };
-	cras?:
 		| T
 		| {
 				title?: T;

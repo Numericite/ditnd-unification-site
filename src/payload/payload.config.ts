@@ -52,10 +52,10 @@ const hasAwsCreds = Boolean(
 );
 import { CMSHome } from "./globals/cms/Home";
 import { CMSFooter } from "./globals/cms/Footer";
-import { CMSAbout } from "./globals/cms/About";
 import { CMSNewsletter } from "./globals/cms/Newsletter";
 import { PracticalGuideViews } from "./collections/PracticalGuidesViews";
 import { SimplifiedContentGenerator } from "./globals/SimplifiedContentGenerator";
+import { pagePath } from "~/utils/pages";
 
 const filename = fileURLToPath(import.meta.url);
 const dirname = path.dirname(filename);
@@ -109,7 +109,7 @@ export default buildConfig({
 					const basePath =
 						data._status === "draft"
 							? `/draft/${data.slug}?collection=pages`
-							: `/${data.slug}`;
+							: pagePath(data);
 					return `${basePath}${data._status !== "draft" ? `?v=${data.updatedAt}` : `&v=${data.updatedAt}`}`;
 				}
 
@@ -162,13 +162,7 @@ export default buildConfig({
 		Themes,
 		Users,
 	],
-	globals: [
-		CMSHome,
-		CMSFooter,
-		CMSAbout,
-		CMSNewsletter,
-		SimplifiedContentGenerator,
-	],
+	globals: [CMSHome, CMSFooter, CMSNewsletter, SimplifiedContentGenerator],
 	editor: lexicalEditor(),
 	i18n: {
 		supportedLanguages: { en, fr },
@@ -290,16 +284,16 @@ export default buildConfig({
 				return "";
 			},
 			generateURL: ({ doc, collectionConfig }) => {
-				const slug = (doc as Record<string, unknown>)?.slug;
-				const basePath =
-					collectionConfig?.slug === "courses"
-						? "formations"
-						: collectionConfig?.slug === "pages"
-							? ""
-							: "fiches-pratiques";
-				return typeof slug === "string"
-					? `${process.env.NEXT_PUBLIC_SITE_URL || ""}/${basePath ? `${basePath}/` : ""}${slug}`
-					: "";
+				const { slug, section } = (doc ?? {}) as {
+					slug?: unknown;
+					section?: string | null;
+				};
+				if (typeof slug !== "string") return "";
+				const path =
+					collectionConfig?.slug === "pages"
+						? pagePath({ slug, section })
+						: `/${collectionConfig?.slug === "courses" ? "formations" : "fiches-pratiques"}/${slug}`;
+				return `${process.env.NEXT_PUBLIC_SITE_URL || ""}${path}`;
 			},
 		}),
 		s3Storage({
