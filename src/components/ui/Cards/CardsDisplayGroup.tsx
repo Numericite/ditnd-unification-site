@@ -1,6 +1,7 @@
 import type { AugmentedPracticalGuide } from "~/server/api/routers/practical-guides";
 import type { AugmentedCourse } from "~/server/api/routers/courses";
 
+import { buildCourseRedirect } from "~/utils/tools";
 import CardDisplay from "./CardDisplay";
 
 type Props = {
@@ -43,11 +44,8 @@ export default function CardsDisplayGroup({
 									imageAlt=""
 									conditions={course.conditions}
 									themes={course.themes}
-									redirect={
-										course.slug ? `/formations/${course.slug}` : course.link
-									}
+									redirect={buildCourseRedirect(course)}
 									titleAs={titleAs}
-									kind={kind}
 								/>
 							</div>
 						))}
@@ -71,7 +69,6 @@ export default function CardsDisplayGroup({
 									themes={guide.themes}
 									redirect={buildGuideRedirect(guide.slug)}
 									titleAs={titleAs}
-									kind={kind}
 								/>
 							</div>
 						))}

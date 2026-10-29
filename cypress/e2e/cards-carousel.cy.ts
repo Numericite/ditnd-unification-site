@@ -15,6 +15,8 @@ const content = richText(
 );
 
 const guidesCarousel = () => cy.get('section[aria-label="Fiches pratiques"]');
+const coursesCarousel = () =>
+	cy.get('section[aria-labelledby="formations-associees"]');
 
 // Drafts skip the Albert simplification and are rendered by /draft/[slug].
 describe("Cards carousel block", () => {
@@ -65,10 +67,7 @@ describe("Cards carousel block", () => {
 
 	it("scrolls a card into view when it receives keyboard focus", () => {
 		guidesCarousel().within(() => {
-			cy.get("ul[data-carousel] > li")
-				.last()
-				.find(".fr-card__footer a")
-				.focus();
+			cy.get("ul[data-carousel] > li").last().find(".fr-card__title a").focus();
 			cy.get("ul[data-carousel]")
 				.its("0.scrollLeft")
 				.should("be.greaterThan", 0);
@@ -81,7 +80,7 @@ describe("Cards carousel block", () => {
 			"have.text",
 			"Formations associées",
 		);
-		cy.get('section[aria-labelledby="formations-associees"]').within(() => {
+		coursesCarousel().within(() => {
 			cy.get("li .fr-card h3").should("have.length", 3);
 		});
 		cy.contains("#summary a", "Formations associées").should(
@@ -89,6 +88,23 @@ describe("Cards carousel block", () => {
 			"href",
 			"#formations-associees",
 		);
+	});
+
+	it("makes the whole card a link to the guide or course page", () => {
+		coursesCarousel().within(() => {
+			cy.get(".fr-card")
+				.should("have.length", 3)
+				.and("have.class", "fr-enlarge-link");
+			cy.get(".fr-card__footer").should("not.exist");
+			cy.get(".fr-card__title a").then((links) => {
+				const hrefs = [...links].map((link) => link.getAttribute("href"));
+				expect(hrefs[0]).to.match(/^\/formations\/[^/]+$/);
+				expect(hrefs[1]).to.match(/^\/fiches-pratiques\/[^/]+$/);
+				expect(hrefs[2]).to.match(/^\/formations\/[^/]+$/);
+			});
+			cy.get(".fr-card").first().click("bottom");
+		});
+		cy.location("pathname").should("match", /^\/formations\/[^/]+$/);
 	});
 
 	it("shows one card per view without overflowing the page on mobile", () => {
