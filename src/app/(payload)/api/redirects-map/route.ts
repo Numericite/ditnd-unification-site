@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { getPayload } from "payload";
 import configPromise from "@payload-config";
-import { pagePath } from "~/utils/pages";
+import { documentPath } from "~/utils/pages";
 
 /**
  * Carte des redirections 301 consommée par le middleware (src/middleware.ts).
@@ -27,11 +27,6 @@ type RedirectTarget = {
 	} | null;
 };
 
-const REFERENCE_BASE_PATHS: Record<string, string> = {
-	"practical-guides": "/fiches-pratiques",
-	courses: "/formations",
-};
-
 let cache: { map: Record<string, string>; expiresAt: number } | null = null;
 
 const resolveTarget = (
@@ -46,13 +41,7 @@ const resolveTarget = (
 	if (!ref || typeof ref.value !== "object" || !ref.value) return null;
 	// Un document dépublié ne doit pas devenir une cible (redirection vers un 404).
 	if (ref.value._status && ref.value._status !== "published") return null;
-	if (ref.relationTo === "pages") {
-		return ref.value.slug ? pagePath(ref.value) : null;
-	}
-	const basePath = REFERENCE_BASE_PATHS[ref.relationTo];
-	return basePath !== undefined && ref.value.slug
-		? `${basePath}/${ref.value.slug}`
-		: null;
+	return documentPath(ref.relationTo, ref.value);
 };
 
 export async function GET() {

@@ -18,3 +18,18 @@ export const pagePath = ({
 	slug?: string | null;
 	section?: string | null;
 }) => (section ? `/${section}/${slug}` : `/${slug}`);
+
+const COLLECTION_PATHS: Record<string, string> = {
+	"practical-guides": "/fiches-pratiques",
+	courses: "/formations",
+};
+
+export const documentPath = (
+	collection: string | undefined,
+	doc: { slug?: string | null; section?: string | null },
+) => {
+	if (!doc.slug) return null;
+	if (collection === "pages") return pagePath(doc);
+	const basePath = collection ? COLLECTION_PATHS[collection] : undefined;
+	return basePath ? `${basePath}/${doc.slug}` : null;
+};

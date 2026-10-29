@@ -55,7 +55,7 @@ import { CMSFooter } from "./globals/cms/Footer";
 import { CMSNewsletter } from "./globals/cms/Newsletter";
 import { PracticalGuideViews } from "./collections/PracticalGuidesViews";
 import { SimplifiedContentGenerator } from "./globals/SimplifiedContentGenerator";
-import { pagePath } from "~/utils/pages";
+import { documentPath } from "~/utils/pages";
 
 const filename = fileURLToPath(import.meta.url);
 const dirname = path.dirname(filename);
@@ -109,7 +109,7 @@ export default buildConfig({
 					const basePath =
 						data._status === "draft"
 							? `/draft/${data.slug}?collection=pages`
-							: pagePath(data);
+							: documentPath("pages", data);
 					return `${basePath}${data._status !== "draft" ? `?v=${data.updatedAt}` : `&v=${data.updatedAt}`}`;
 				}
 
@@ -117,7 +117,7 @@ export default buildConfig({
 					const basePath =
 						data._status === "draft"
 							? `/draft/${data.slug}`
-							: `/fiches-pratiques/${data.slug}`;
+							: documentPath("practical-guides", data);
 					return `${basePath}?v=${data.updatedAt}`;
 				}
 			},
@@ -284,16 +284,11 @@ export default buildConfig({
 				return "";
 			},
 			generateURL: ({ doc, collectionConfig }) => {
-				const { slug, section } = (doc ?? {}) as {
-					slug?: unknown;
-					section?: string | null;
-				};
-				if (typeof slug !== "string") return "";
-				const path =
-					collectionConfig?.slug === "pages"
-						? pagePath({ slug, section })
-						: `/${collectionConfig?.slug === "courses" ? "formations" : "fiches-pratiques"}/${slug}`;
-				return `${process.env.NEXT_PUBLIC_SITE_URL || ""}${path}`;
+				const path = documentPath(
+					collectionConfig?.slug,
+					(doc ?? {}) as { slug?: string | null; section?: string | null },
+				);
+				return path ? `${process.env.NEXT_PUBLIC_SITE_URL || ""}${path}` : "";
 			},
 		}),
 		s3Storage({
