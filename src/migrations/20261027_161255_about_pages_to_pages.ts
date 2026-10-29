@@ -67,6 +67,7 @@ export async function up({ db, payload, req }: MigrateUpArgs): Promise<void> {
           content: about[`${tab}_content`] as never,
           imageBanner: (about[`${tab}_image_banner_id`] as number | null) ?? null,
           showDates: false,
+          publishedAt: about.created_at ? new Date(about.created_at as string).toISOString() : undefined,
           meta: { description: `${title} : ${description}` },
           _status: 'published',
         },
@@ -126,7 +127,7 @@ export async function down({ db, payload, req }: MigrateDownArgs): Promise<void>
         ${mda.title}, ${mda.imageBanner ?? null}, ${JSON.stringify(mda.content)}::jsonb,
         ${gncra.title}, ${gncra.imageBanner ?? null}, ${JSON.stringify(gncra.content)}::jsonb,
         ${cras.title}, ${cras.imageBanner ?? null}, ${JSON.stringify(cras.content)}::jsonb,
-        now(), now()
+        now(), ${mda.publishedAt ?? null}::timestamptz
       )
     `)
   } else {
