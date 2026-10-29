@@ -64,31 +64,31 @@ export const guideViewCountFields: Field[] = [
 			afterRead: [readGuideViewCount],
 			afterChange: [
 				async ({ req, siblingData, originalDoc, value }) => {
-					const next = siblingData?.viewCount;
+					const submittedCount = siblingData?.viewCount;
 					if (
-						!isValidViewCount(next) ||
+						!isValidViewCount(submittedCount) ||
 						!originalDoc?.id ||
-						next === siblingData?.viewCountSnapshot
+						submittedCount === siblingData?.viewCountSnapshot
 					)
 						return value;
 
 					const views = await findGuideViews(req, originalDoc.id);
 					if (!views) {
-						if (next === 0) return next;
+						if (submittedCount === 0) return submittedCount;
 						await req.payload.create({
 							collection: "practical-guide-views",
-							data: { guide: originalDoc.id, viewCount: next },
+							data: { guide: originalDoc.id, viewCount: submittedCount },
 							req,
 						});
-					} else if (views.viewCount !== next) {
+					} else if (views.viewCount !== submittedCount) {
 						await req.payload.update({
 							collection: "practical-guide-views",
 							id: views.id,
-							data: { viewCount: next },
+							data: { viewCount: submittedCount },
 							req,
 						});
 					}
-					return next;
+					return submittedCount;
 				},
 			],
 		},
