@@ -1,10 +1,7 @@
 import { type MigrateUpArgs, type MigrateDownArgs, sql } from '@payloadcms/db-postgres'
 
-// Le global « about » (3 onglets) devient 3 pages de la collection « pages »,
-// rangées dans la rubrique « À propos » pour conserver leurs URL
-// (/a-propos/{slug}). Les dates restent masquées comme sur les anciennes pages
-// et leur meta description est reprise. Si l'un des slugs est déjà pris, la
-// migration échoue sans rien modifier. Le down recrée le global à partir de ces pages.
+// Le global « about » devient 3 pages de la rubrique « À propos » (URL conservées).
+// IF NOT EXISTS : une base de dev poussée peut déjà avoir les colonnes.
 const ABOUT_PAGES = [
   {
     tab: 'maison_de_l_autisme',
