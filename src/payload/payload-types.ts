@@ -337,7 +337,7 @@ export interface Page {
 	showDates?: boolean | null;
 	imageBanner?: (number | null) | Media;
 	/**
-	 * Facultative. Une page rangée dans « À propos » est accessible sur /a-propos/{identifiant}.
+	 * Facultative. Une page rangée dans « À propos » est accessible sur /a-propos/{identifiant}. La modifier change l'URL publique : pensez à ajouter une redirection.
 	 */
 	section?: "a-propos" | null;
 	/**

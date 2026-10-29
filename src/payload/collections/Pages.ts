@@ -101,7 +101,7 @@ export const Pages: CollectionConfig = {
 			admin: {
 				position: "sidebar",
 				description:
-					"Facultative. Une page rangée dans « À propos » est accessible sur /a-propos/{identifiant}.",
+					"Facultative. Une page rangée dans « À propos » est accessible sur /a-propos/{identifiant}. La modifier change l'URL publique : pensez à ajouter une redirection.",
 			},
 		},
 		slugField("pages", { editable: true, validate: validatePageSlug }),
