@@ -50,6 +50,7 @@ export default function CardDisplay({
 				target: "_blank",
 				rel: "noopener noreferrer",
 				title: `${title}, nouvelle fenêtre`,
+				"aria-label": `${title}, nouvelle fenêtre`,
 			}
 		: { href: redirect };
 

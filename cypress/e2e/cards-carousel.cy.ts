@@ -15,6 +15,8 @@ const content = richText(
 );
 
 const guidesCarousel = () => cy.get('section[aria-label="Fiches pratiques"]');
+const coursesCarousel = () =>
+	cy.get('section[aria-labelledby="formations-associees"]');
 
 // Drafts skip the Albert simplification and are rendered by /draft/[slug].
 describe("Cards carousel block", () => {
@@ -78,7 +80,7 @@ describe("Cards carousel block", () => {
 			"have.text",
 			"Formations associées",
 		);
-		cy.get('section[aria-labelledby="formations-associees"]').within(() => {
+		coursesCarousel().within(() => {
 			cy.get("li .fr-card h3").should("have.length", 3);
 		});
 		cy.contains("#summary a", "Formations associées").should(
@@ -89,7 +91,7 @@ describe("Cards carousel block", () => {
 	});
 
 	it("makes the whole card a link to the guide or course page", () => {
-		cy.get('section[aria-labelledby="formations-associees"]').within(() => {
+		coursesCarousel().within(() => {
 			cy.get(".fr-card")
 				.should("have.length", 3)
 				.and("have.class", "fr-enlarge-link");

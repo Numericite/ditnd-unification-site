@@ -10,7 +10,13 @@ import {
 	type JSXConverter,
 	type JSXConverters,
 } from "@payloadcms/richtext-lexical/react";
-import { extractYouTubeId, ImageSizes, lexicalToText, slugify } from "./tools";
+import {
+	buildCourseRedirect,
+	extractYouTubeId,
+	ImageSizes,
+	lexicalToText,
+	slugify,
+} from "./tools";
 import type { Condition, Media, Theme } from "~/payload/payload-types";
 import type { AugmentedCourse } from "~/server/api/routers/courses";
 import CardDisplay from "~/components/ui/Cards/CardDisplay";
@@ -527,7 +533,7 @@ const relationCard = (
 				imageAlt=""
 				conditions={populated<Condition>(course.conditions)}
 				themes={populated<Theme>(course.themes)}
-				redirect={course.slug ? `/formations/${course.slug}` : course.link}
+				redirect={buildCourseRedirect(course)}
 				titleAs={titleAs}
 				horizontal={horizontal}
 			/>
