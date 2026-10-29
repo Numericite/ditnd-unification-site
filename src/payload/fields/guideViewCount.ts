@@ -1,4 +1,9 @@
-import type { Field, FieldHook, PayloadRequest } from "payload";
+import type {
+	Field,
+	FieldHook,
+	NumberFieldSingleValidation,
+	PayloadRequest,
+} from "payload";
 import { isAdmin } from "../hooks";
 
 const findGuideViews = async (
@@ -16,7 +21,13 @@ const findGuideViews = async (
 };
 
 const isValidViewCount = (value: unknown): value is number =>
-	Number.isInteger(value) && (value as number) >= 0;
+	typeof value === "number" && Number.isInteger(value) && value >= 0;
+
+const validateViewCount: NumberFieldSingleValidation = (value) =>
+	value === null ||
+	value === undefined ||
+	isValidViewCount(value) ||
+	"Le nombre de lectures doit être un entier positif ou nul.";
 
 const viewCountContextKey = (guideId: number | string) =>
 	`guideViewCount:${guideId}`;
@@ -41,11 +52,7 @@ export const guideViewCountFields: Field[] = [
 		min: 0,
 		label: { fr: "Nombre de lectures" },
 		access: { read: isAdmin, create: isAdmin, update: isAdmin },
-		validate: (value: unknown) =>
-			value === null ||
-			value === undefined ||
-			isValidViewCount(value) ||
-			"Le nombre de lectures doit être un entier positif ou nul.",
+		validate: validateViewCount,
 		admin: {
 			readOnly: false,
 			position: "sidebar",
