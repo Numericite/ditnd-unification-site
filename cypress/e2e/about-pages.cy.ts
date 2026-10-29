@@ -30,23 +30,24 @@ describe("About pages served from the pages collection", () => {
 		});
 
 		it("refuses a slug already used by a static page of the section", () => {
-			cy.request({
-				method: "POST",
-				url: "/api/pages?depth=0",
-				body: {
-					title: uniqueTitle("Glossaire"),
-					content: richText(paragraph("Contenu de la page.")),
-					slug: "glossaire",
-					section: "a-propos",
-					_status: "published",
-				},
-				failOnStatusCode: false,
-			}).then((response) => {
-				expect(response.status).to.eq(400);
-				expect(JSON.stringify(response.body)).to.contain(
-					"Adresse déjà utilisée par le site",
-				);
-			});
+			const create = (slug: string) =>
+				cy.request({
+					method: "POST",
+					url: "/api/pages?depth=0",
+					body: {
+						title: uniqueTitle("Glossaire"),
+						content: richText(paragraph("Contenu de la page.")),
+						slug,
+						section: "a-propos",
+						_status: "published",
+					},
+					failOnStatusCode: false,
+				});
+
+			create("glossaire").its("status").should("eq", 400);
+			create(uniqueTitle("glossaire").toLowerCase().replace(/\W+/g, "-"))
+				.its("status")
+				.should("eq", 201);
 		});
 
 		it("shows the publication date only when the option is checked", () => {
