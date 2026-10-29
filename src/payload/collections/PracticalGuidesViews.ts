@@ -50,10 +50,19 @@ const findGuideViews = async (
 const isValidViewCount = (value: unknown): value is number =>
 	Number.isInteger(value) && (value as number) >= 0;
 
-const readGuideViewCount: FieldHook = async ({ req, siblingData }) => {
+const viewCountContextKey = (guideId: number | string) =>
+	`guideViewCount:${guideId}`;
+
+const readGuideViewCount: FieldHook = async ({ req, siblingData, context }) => {
+	// Les hooks afterRead s'exécutent avant le contrôle d'accès au champ.
 	if (!isAdmin({ req }) || !siblingData?.id) return undefined;
-	const views = await findGuideViews(req, siblingData.id);
-	return views?.viewCount ?? 0;
+	const key = viewCountContextKey(siblingData.id);
+	if (!(key in context)) {
+		context[key] = findGuideViews(req, siblingData.id).then(
+			(views) => views?.viewCount ?? 0,
+		);
+	}
+	return context[key];
 };
 
 export const guideViewCountFields: Field[] = [
