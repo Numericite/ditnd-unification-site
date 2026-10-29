@@ -2,12 +2,14 @@ import type { CollectionConfig } from "payload";
 import { standardFields } from "../fields/standards";
 import { slugField } from "../fields/slug";
 import { validatePageSlug } from "../fields/validatePageSlug";
+import { PAGE_SECTIONS } from "~/utils/pages";
 
 export const Pages: CollectionConfig = {
 	slug: "pages",
 	admin: {
 		useAsTitle: "title",
 		group: { fr: "Contenus" },
+		defaultColumns: ["title", "section", "_status", "updatedAt"],
 	},
 	labels: {
 		singular: "Page",
@@ -73,6 +75,15 @@ export const Pages: CollectionConfig = {
 			},
 		},
 		{
+			name: "showDates",
+			type: "checkbox",
+			defaultValue: true,
+			label: { fr: "Afficher les dates de publication et de mise à jour" },
+			admin: {
+				position: "sidebar",
+			},
+		},
+		{
 			name: "imageBanner",
 			type: "upload",
 			relationTo: "medias",
@@ -80,6 +91,17 @@ export const Pages: CollectionConfig = {
 			label: { fr: "Bannière" },
 			admin: {
 				position: "sidebar",
+			},
+		},
+		{
+			name: "section",
+			type: "select",
+			label: { fr: "Rubrique" },
+			options: [...PAGE_SECTIONS],
+			admin: {
+				position: "sidebar",
+				description:
+					"Facultative. Une page rangée dans « À propos » est accessible sur /a-propos/{identifiant}. La modifier change l'URL publique : pensez à ajouter une redirection.",
 			},
 		},
 		slugField("pages", { editable: true, validate: validatePageSlug }),

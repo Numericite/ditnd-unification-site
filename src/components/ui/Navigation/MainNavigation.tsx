@@ -30,6 +30,7 @@ export default function MainNavigation() {
 	}, [router.query.search]);
 
 	const personas = personsAndProTiles(personStore.get());
+	const currentPath = router.asPath.split(/[?#]/)[0];
 
 	const userNavigationItems: MainNavigationProps.Item[] = [
 		{
@@ -66,22 +67,22 @@ export default function MainNavigation() {
 			menuLinks: [
 				{
 					text: "Maison de l'autisme",
-					isActive: router.pathname === "/a-propos/maison-de-l-autisme",
+					isActive: currentPath === "/a-propos/maison-de-l-autisme",
 					linkProps: { href: "/a-propos/maison-de-l-autisme" },
 				},
 				{
 					text: "GNCRA",
-					isActive: router.pathname === "/a-propos/gncra",
+					isActive: currentPath === "/a-propos/gncra",
 					linkProps: { href: "/a-propos/gncra" },
 				},
 				{
 					text: "CRA",
-					isActive: router.pathname === "/a-propos/cra",
+					isActive: currentPath === "/a-propos/cra",
 					linkProps: { href: "/a-propos/cra" },
 				},
 				{
 					text: "Glossaire",
-					isActive: router.pathname === "/a-propos/glossaire",
+					isActive: currentPath === "/a-propos/glossaire",
 					linkProps: { href: "/a-propos/glossaire" },
 				},
 			],
