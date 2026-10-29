@@ -6,10 +6,7 @@ import type {
 } from "payload";
 import { isAdmin } from "../hooks";
 
-const findGuideViews = async (
-	req: PayloadRequest,
-	guideId: number | string,
-) => {
+const findGuideViews = async (req: PayloadRequest, guideId: number) => {
 	const { docs } = await req.payload.find({
 		collection: "practical-guide-views",
 		where: { guide: { equals: guideId } },
@@ -29,8 +26,7 @@ const validateViewCount: NumberFieldSingleValidation = (value) =>
 	isValidViewCount(value) ||
 	"Le nombre de lectures doit être un entier positif ou nul.";
 
-const viewCountContextKey = (guideId: number | string) =>
-	`guideViewCount:${guideId}`;
+const viewCountContextKey = (guideId: number) => `guideViewCount:${guideId}`;
 
 const readGuideViewCount: FieldHook = async ({ req, siblingData, context }) => {
 	// Les hooks afterRead s'exécutent avant le contrôle d'accès au champ.
@@ -44,6 +40,8 @@ const readGuideViewCount: FieldHook = async ({ req, siblingData, context }) => {
 	return context[key];
 };
 
+const adminOnly = { read: isAdmin, create: isAdmin, update: isAdmin };
+
 export const guideViewCountFields: Field[] = [
 	{
 		name: "viewCount",
@@ -51,7 +49,7 @@ export const guideViewCountFields: Field[] = [
 		virtual: true,
 		min: 0,
 		label: { fr: "Nombre de lectures" },
-		access: { read: isAdmin, create: isAdmin, update: isAdmin },
+		access: adminOnly,
 		validate: validateViewCount,
 		admin: {
 			readOnly: false,
@@ -104,7 +102,7 @@ export const guideViewCountFields: Field[] = [
 		name: "viewCountSnapshot",
 		type: "number",
 		virtual: true,
-		access: { read: isAdmin, create: isAdmin, update: isAdmin },
+		access: adminOnly,
 		admin: {
 			hidden: true,
 			readOnly: false,
