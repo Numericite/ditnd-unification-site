@@ -68,7 +68,7 @@ export const guideViewCountFields: Field[] = [
 					if (
 						!isValidViewCount(next) ||
 						!originalDoc?.id ||
-						next === siblingData?.viewCountLoaded
+						next === siblingData?.viewCountSnapshot
 					)
 						return value;
 
@@ -93,8 +93,15 @@ export const guideViewCountFields: Field[] = [
 			],
 		},
 	},
+	/**
+	 * Valeur du compteur au chargement du formulaire, cachée à l'admin.
+	 * `viewCount` n'est écrit que s'il en diffère : sans cela, chaque sauvegarde
+	 * de la fiche écraserait les lectures arrivées pendant l'édition.
+	 * Son `afterChange` renvoie la valeur saisie : après chaque sauvegarde, la
+	 * comparaison repart de ce que l'admin voit dans le formulaire.
+	 */
 	{
-		name: "viewCountLoaded",
+		name: "viewCountSnapshot",
 		type: "number",
 		virtual: true,
 		access: { read: isAdmin, create: isAdmin, update: isAdmin },

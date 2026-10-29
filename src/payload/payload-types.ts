@@ -416,7 +416,7 @@ export interface PracticalGuide {
 	 * Détermine l'ordre de la section « Fiches pratiques les plus lues » de l'accueil. Augmente de 1 à chaque lecture de la fiche.
 	 */
 	viewCount?: number | null;
-	viewCountLoaded?: number | null;
+	viewCountSnapshot?: number | null;
 	image?: (number | null) | Media;
 	imageBanner?: (number | null) | Media;
 	/**
@@ -1212,7 +1212,7 @@ export interface PracticalGuidesSelect<T extends boolean = true> {
 	publishedAt?: T;
 	lastUpdatedAt?: T;
 	viewCount?: T;
-	viewCountLoaded?: T;
+	viewCountSnapshot?: T;
 	image?: T;
 	imageBanner?: T;
 	slug?: T;
