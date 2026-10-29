@@ -47,6 +47,9 @@ const findGuideViews = async (
 	return docs[0];
 };
 
+const isValidViewCount = (value: unknown): value is number =>
+	Number.isInteger(value) && (value as number) >= 0;
+
 const readGuideViewCount: FieldHook = async ({ req, siblingData }) => {
 	if (!isAdmin({ req }) || !siblingData?.id) return undefined;
 	const views = await findGuideViews(req, siblingData.id);
@@ -64,7 +67,7 @@ export const guideViewCountFields: Field[] = [
 		validate: (value: unknown) =>
 			value === null ||
 			value === undefined ||
-			(Number.isInteger(value) && (value as number) >= 0) ||
+			isValidViewCount(value) ||
 			"Le nombre de lectures doit être un entier positif ou nul.",
 		admin: {
 			readOnly: false,
@@ -79,30 +82,29 @@ export const guideViewCountFields: Field[] = [
 				async ({ req, siblingData, originalDoc, value }) => {
 					const next = siblingData?.viewCount;
 					if (
-						typeof next !== "number" ||
+						!isValidViewCount(next) ||
 						!originalDoc?.id ||
 						next === siblingData?.viewCountLoaded
 					)
 						return value;
 
-					const count = Math.max(0, Math.round(next));
 					const views = await findGuideViews(req, originalDoc.id);
 					if (!views) {
-						if (count === 0) return count;
+						if (next === 0) return next;
 						await req.payload.create({
 							collection: "practical-guide-views",
-							data: { guide: originalDoc.id, viewCount: count },
+							data: { guide: originalDoc.id, viewCount: next },
 							req,
 						});
-					} else if (views.viewCount !== count) {
+					} else if (views.viewCount !== next) {
 						await req.payload.update({
 							collection: "practical-guide-views",
 							id: views.id,
-							data: { viewCount: count },
+							data: { viewCount: next },
 							req,
 						});
 					}
-					return count;
+					return next;
 				},
 			],
 		},
