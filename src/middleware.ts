@@ -137,5 +137,5 @@ export const config = {
 	// Périmètre de la basic auth ; les redirections sont restreintes plus
 	// finement par REDIRECTS_MATCHER.
 	matcher:
-		"/((?!api|_next/static|_next/image|favicon.ico|sitemap.xml|robots.txt|placeholder.16x9.png).*)",
+		"/((?!api|_next/static|_next/image|favicon.ico|sitemap.xml|robots.txt|llms.txt|placeholder.16x9.png).*)",
 };

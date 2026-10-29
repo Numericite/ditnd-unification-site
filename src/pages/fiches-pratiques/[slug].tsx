@@ -9,6 +9,7 @@ import { fr } from "@codegouvfr/react-dsfr";
 import Head from "next/head";
 import PageContent from "~/components/ui/PageContent";
 import SeoMeta from "~/components/ui/SeoMeta";
+import JsonLd, { ORGANIZATION_ID, SITE_URL } from "~/components/ui/JsonLd";
 import { useEffect, useMemo, useState } from "react";
 import { personStore, proStore } from "~/state/store";
 import type { Media } from "~/payload/payload-types";
@@ -131,8 +132,49 @@ export default function PracticalGuidePage(props: Props) {
 		guide.image?.url ||
 		undefined;
 
+	const url = `${SITE_URL}/fiches-pratiques/${guide.slug}`;
+	const articleJsonLd = {
+		"@context": "https://schema.org",
+		"@type": "Article",
+		headline: guide.title,
+		description: metaDescription,
+		url,
+		mainEntityOfPage: url,
+		inLanguage: "fr-FR",
+		datePublished: guide.publishedAt ?? guide.createdAt,
+		dateModified: guide.lastUpdatedAt ?? guide.updatedAt,
+		...(metaImage && {
+			image: metaImage.startsWith("http")
+				? metaImage
+				: `${SITE_URL}${metaImage}`,
+		}),
+		author: { "@id": ORGANIZATION_ID },
+		publisher: { "@id": ORGANIZATION_ID },
+	};
+	const breadcrumbJsonLd = {
+		"@context": "https://schema.org",
+		"@type": "BreadcrumbList",
+		itemListElement: [
+			{
+				"@type": "ListItem",
+				position: 1,
+				name: "Accueil",
+				item: `${SITE_URL}/`,
+			},
+			{
+				"@type": "ListItem",
+				position: 2,
+				name: "Fiches pratiques",
+				item: `${SITE_URL}/fiches-pratiques`,
+			},
+			{ "@type": "ListItem", position: 3, name: guide.title, item: url },
+		],
+	};
+
 	return (
 		<>
+			<JsonLd id="article" data={articleJsonLd} />
+			<JsonLd id="breadcrumb" data={breadcrumbJsonLd} />
 			<SeoMeta
 				title={metaTitle}
 				description={metaDescription}
