@@ -13,6 +13,7 @@ import { slugField } from "../fields/slug";
 import { generateEmbedding } from "../services/embedding";
 import { generateSimplifiedContent } from "../services/contentSimplification";
 import type { PracticalGuidesSelect } from "../payload-types";
+import { guideViewCountFields } from "../fields/guideViewCount";
 import { lexicalToText } from "~/utils/tools";
 
 export const practicalGuideCardSelect = {
@@ -356,6 +357,7 @@ export const PracticalGuides: CollectionConfig = {
 				},
 			},
 		},
+		...guideViewCountFields,
 		{
 			name: "image",
 			type: "upload",
