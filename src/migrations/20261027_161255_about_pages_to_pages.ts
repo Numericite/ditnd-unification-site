@@ -3,8 +3,8 @@ import { type MigrateUpArgs, type MigrateDownArgs, sql } from '@payloadcms/db-po
 // Le global « about » (3 onglets) devient 3 pages de la collection « pages »,
 // rangées dans la rubrique « À propos » pour conserver leurs URL
 // (/a-propos/{slug}). Les dates restent masquées comme sur les anciennes pages
-// et leur meta description est reprise. Une page dont le slug est déjà pris
-// n'est pas créée. Le down recrée le global à partir de ces pages.
+// et leur meta description est reprise. Si l'un des slugs est déjà pris, la
+// migration échoue sans rien modifier. Le down recrée le global à partir de ces pages.
 const ABOUT_PAGES = [
   {
     tab: 'maison_de_l_autisme',
@@ -56,8 +56,9 @@ export async function up({ db, payload, req }: MigrateUpArgs): Promise<void> {
         req,
       })
       if (existing.docs.length) {
-        payload.logger.warn(`Page « ${slug} » déjà existante : onglet « ${title} » non migré.`)
-        continue
+        throw new Error(
+          `Page « ${slug} » déjà existante : renommez-la avant de relancer la migration (onglet « ${title} »)`,
+        )
       }
 
       await payload.create({
@@ -104,18 +105,19 @@ export async function down({ db, payload, req }: MigrateDownArgs): Promise<void>
   CREATE INDEX "about_gncra_gncra_image_banner_idx" ON "about" USING btree ("gncra_image_banner_id");
   CREATE INDEX "about_cras_cras_image_banner_idx" ON "about" USING btree ("cras_image_banner_id");`)
 
-  const pages = new Map<string, AboutRow>()
+  const pages = []
   for (const { slug } of ABOUT_PAGES) {
-    const page = (
-      await db.execute(sql`
-        SELECT "id", "title", "content", "image_banner_id" FROM "pages"
-        WHERE "slug" = ${slug} AND "section" = 'a-propos'
-      `)
-    ).rows[0] as AboutRow | undefined
-    if (page) pages.set(slug, page)
+    const { docs } = await payload.find({
+      collection: 'pages',
+      where: { slug: { equals: slug }, section: { equals: 'a-propos' } },
+      limit: 1,
+      depth: 0,
+      req,
+    })
+    pages.push(docs[0])
   }
 
-  const [mda, gncra, cras] = ABOUT_PAGES.map(({ slug }) => pages.get(slug))
+  const [mda, gncra, cras] = pages
   if (mda && gncra && cras) {
     await db.execute(sql`
       INSERT INTO "about" (
@@ -124,9 +126,9 @@ export async function down({ db, payload, req }: MigrateDownArgs): Promise<void>
         "cras_title", "cras_image_banner_id", "cras_content",
         "updated_at", "created_at"
       ) VALUES (
-        ${mda.title}, ${mda.image_banner_id}, ${JSON.stringify(mda.content)}::jsonb,
-        ${gncra.title}, ${gncra.image_banner_id}, ${JSON.stringify(gncra.content)}::jsonb,
-        ${cras.title}, ${cras.image_banner_id}, ${JSON.stringify(cras.content)}::jsonb,
+        ${mda.title}, ${mda.imageBanner ?? null}, ${JSON.stringify(mda.content)}::jsonb,
+        ${gncra.title}, ${gncra.imageBanner ?? null}, ${JSON.stringify(gncra.content)}::jsonb,
+        ${cras.title}, ${cras.imageBanner ?? null}, ${JSON.stringify(cras.content)}::jsonb,
         now(), now()
       )
     `)
@@ -134,8 +136,8 @@ export async function down({ db, payload, req }: MigrateDownArgs): Promise<void>
     payload.logger.warn('Pages « À propos » incomplètes : le global « about » est recréé vide.')
   }
 
-  for (const page of pages.values()) {
-    await payload.delete({ collection: 'pages', id: page.id as number, req })
+  for (const page of pages) {
+    if (page) await payload.delete({ collection: 'pages', id: page.id, req })
   }
 
   await db.execute(sql`
