@@ -157,6 +157,7 @@ export interface Config {
 		home: Home;
 		footer: Footer;
 		about: About;
+		"courses-page": CoursesPage;
 		newsletter: Newsletter;
 		"simplified-content-generator": SimplifiedContentGenerator;
 	};
@@ -164,6 +165,7 @@ export interface Config {
 		home: HomeSelect<false> | HomeSelect<true>;
 		footer: FooterSelect<false> | FooterSelect<true>;
 		about: AboutSelect<false> | AboutSelect<true>;
+		"courses-page": CoursesPageSelect<false> | CoursesPageSelect<true>;
 		newsletter: NewsletterSelect<false> | NewsletterSelect<true>;
 		"simplified-content-generator":
 			| SimplifiedContentGeneratorSelect<false>
@@ -1736,6 +1738,98 @@ export interface About {
 	createdAt?: string | null;
 }
 /**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "courses-page".
+ */
+export interface CoursesPage {
+	id: number;
+	platforms: {
+		title: string;
+		description: string;
+		featured: {
+			/**
+			 * Nom de l'organisme (ex : Campus du GNCRA)
+			 */
+			badge?: string | null;
+			title: string;
+			description: string;
+			/**
+			 * Facultative : une illustration par défaut est affichée en son absence
+			 */
+			image?: (number | null) | Media;
+			link: {
+				label: string;
+				/**
+				 * Lien interne (ex : /formations) ou externe (ex : https://...)
+				 */
+				url: string;
+			};
+		};
+		left: {
+			/**
+			 * Nom de l'organisme (ex : Campus du GNCRA)
+			 */
+			badge?: string | null;
+			title: string;
+			description: string;
+			/**
+			 * Facultative : une illustration par défaut est affichée en son absence
+			 */
+			image?: (number | null) | Media;
+			link: {
+				label: string;
+				/**
+				 * Lien interne (ex : /formations) ou externe (ex : https://...)
+				 */
+				url: string;
+			};
+		};
+		right: {
+			/**
+			 * Nom de l'organisme (ex : Campus du GNCRA)
+			 */
+			badge?: string | null;
+			title: string;
+			description: string;
+			/**
+			 * Facultative : une illustration par défaut est affichée en son absence
+			 */
+			image?: (number | null) | Media;
+			link: {
+				label: string;
+				/**
+				 * Lien interne (ex : /formations) ou externe (ex : https://...)
+				 */
+				url: string;
+			};
+		};
+	};
+	selection: {
+		title: string;
+		description: string;
+		/**
+		 * Les étapes sont numérotées automatiquement dans l'ordre de la liste.
+		 */
+		steps: {
+			title: string;
+			description: string;
+			id?: string | null;
+		}[];
+		/**
+		 * Facultatif : le bouton n'est affiché que si le texte et l'URL sont renseignés.
+		 */
+		link?: {
+			label?: string | null;
+			/**
+			 * Lien interne (ex : /formations) ou externe (ex : https://...)
+			 */
+			url?: string | null;
+		};
+	};
+	updatedAt?: string | null;
+	createdAt?: string | null;
+}
+/**
  * Bloc affiché en bas de la page d'accueil. Décochez « Afficher le bloc » pour le retirer du site.
  *
  * This interface was referenced by `Config`'s JSON-Schema
@@ -1921,6 +2015,82 @@ export interface AboutSelect<T extends boolean = true> {
 				title?: T;
 				imageBanner?: T;
 				content?: T;
+		  };
+	updatedAt?: T;
+	createdAt?: T;
+	globalType?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "courses-page_select".
+ */
+export interface CoursesPageSelect<T extends boolean = true> {
+	platforms?:
+		| T
+		| {
+				title?: T;
+				description?: T;
+				featured?:
+					| T
+					| {
+							badge?: T;
+							title?: T;
+							description?: T;
+							image?: T;
+							link?:
+								| T
+								| {
+										label?: T;
+										url?: T;
+								  };
+					  };
+				left?:
+					| T
+					| {
+							badge?: T;
+							title?: T;
+							description?: T;
+							image?: T;
+							link?:
+								| T
+								| {
+										label?: T;
+										url?: T;
+								  };
+					  };
+				right?:
+					| T
+					| {
+							badge?: T;
+							title?: T;
+							description?: T;
+							image?: T;
+							link?:
+								| T
+								| {
+										label?: T;
+										url?: T;
+								  };
+					  };
+		  };
+	selection?:
+		| T
+		| {
+				title?: T;
+				description?: T;
+				steps?:
+					| T
+					| {
+							title?: T;
+							description?: T;
+							id?: T;
+					  };
+				link?:
+					| T
+					| {
+							label?: T;
+							url?: T;
+					  };
 		  };
 	updatedAt?: T;
 	createdAt?: T;

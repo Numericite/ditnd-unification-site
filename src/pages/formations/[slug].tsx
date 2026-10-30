@@ -63,6 +63,7 @@ export default function CoursePage(props: Props) {
 					currentPageLabel={course.title}
 					homeLinkProps={{ href: "/" }}
 					segments={[
+						{ label: "Se former", linkProps: { href: "/se-former" } },
 						{
 							label: "Formations",
 							linkProps: { href: "/formations" },

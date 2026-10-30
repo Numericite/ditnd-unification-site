@@ -11,6 +11,7 @@ describe("Page loads", () => {
 			path: "/fiches-pratiques/le-tsa-explique-aux-familles",
 			titleIncludes: "Le TSA expliqué aux familles",
 		},
+		{ path: "/se-former", titleIncludes: "Se former" },
 		{ path: "/formations", titleIncludes: "Maison de l'autisme" },
 		{
 			path: "/formations/comprendre-le-tsa-chez-l-enfant",

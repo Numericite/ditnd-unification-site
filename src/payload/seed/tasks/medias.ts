@@ -2,6 +2,19 @@ import type { Payload } from "payload";
 import fs from "node:fs";
 import path from "node:path";
 
+export const coursesPageMedias = {
+	featured: {
+		alt: "Deux hommes souriants échangeant devant un ordinateur portable",
+		filename: "1b9de7fd7f574dbf339dc37033b286004cfcae0b.jpg",
+		mimeType: "image/jpeg",
+	},
+	left: {
+		alt: "Logo du Campus du GNCRA",
+		filename: "131f787cc905d2e0684f1aff25430598ca15605c.jpg",
+		mimeType: "image/jpeg",
+	},
+};
+
 const medias = [
 	{
 		alt: "Un amphitheatre remplie d'étudiant d'un établissement universitaire",
@@ -38,21 +51,23 @@ const medias = [
 		filename: "d4a89268a1c8034d3761137468636e7ac2add30b.jpg",
 		mimeType: "image/jpeg",
 	},
+	coursesPageMedias.featured,
+	coursesPageMedias.left,
 ];
 
-async function createMedia(
+export async function createMedia(
 	payload: Payload,
 	data: {
 		alt: string;
 		filename: string;
 	},
-): Promise<void> {
+): Promise<number> {
 	try {
 		const filePath = path.resolve(process.cwd(), "public/seed", data.filename);
 
 		const fileBuffer = fs.readFileSync(filePath);
 
-		await payload.create({
+		const media = await payload.create({
 			collection: "medias",
 			data: {
 				alt: data.alt,
@@ -65,6 +80,7 @@ async function createMedia(
 			},
 			draft: false,
 		});
+		return media.id;
 	} catch (error) {
 		throw new Error(`Error creating media: ${error}`);
 	}
