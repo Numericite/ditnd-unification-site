@@ -23,6 +23,9 @@ export const validateHttpUrl: TextFieldSingleValidation = (value) => {
 // ou « /<tab>/exemple.fr » deviendraient des liens vers un autre site.
 const INTERNAL_PATH = /^\/(?![/\\])[^\s\\]*$/;
 
+// Un `validate` personnalisé remplace celui de Payload : les validateurs
+// ci-dessous rappellent `text` pour conserver la vérification de `required`.
+
 /** Chemin interne au site (`/formations`), obligatoire si `required`. */
 export const validateInternalPath: TextFieldSingleValidation = (
 	value,
@@ -30,11 +33,10 @@ export const validateInternalPath: TextFieldSingleValidation = (
 ) => {
 	const textResult = text(value, options);
 	if (textResult !== true) return textResult;
-	if (!value) return true;
-	return (
-		INTERNAL_PATH.test(value) ||
-		"Le lien interne doit commencer par « / » (ex : /formations)."
-	);
+	if (!value || INTERNAL_PATH.test(value)) return true;
+	return value.startsWith("/")
+		? "Le lien interne n'est pas valide (ex : /formations)."
+		: "Le lien interne doit commencer par « / » (ex : /formations).";
 };
 
 /** URL externe en http(s), obligatoire si `required`. */
@@ -53,19 +55,7 @@ export const validateRequiredHttpUrl: TextFieldSingleValidation = (
 export const validateHttpOrInternalUrl: TextFieldSingleValidation = (
 	value,
 	options,
-) => {
-	// Un `validate` personnalisé remplace celui de Payload : on rappelle `text`
-	// pour conserver la vérification de `required`.
-	const textResult = text(value, options);
-	if (textResult !== true) return textResult;
-	if (!value) return true;
-
-	if (value.startsWith("/")) {
-		return (
-			INTERNAL_PATH.test(value) ||
-			"Le lien interne n'est pas valide (ex : /formations)."
-		);
-	}
-
-	return validateHttpUrl(value, options);
-};
+) =>
+	value?.startsWith("/")
+		? validateInternalPath(value, options)
+		: validateRequiredHttpUrl(value, options);
