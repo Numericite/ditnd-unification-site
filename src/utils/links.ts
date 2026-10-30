@@ -41,12 +41,15 @@ export const referenceHref = (
 		: null;
 };
 
-/** Normalise une URL source : path seul, sans domaine, slash final ni query. */
-export const normalizeFromPath = (raw: string): string => {
-	let from = raw.trim();
-	from = from.replace(/^https?:\/\/[^/]+/i, "");
-	from = from.split(/[?#]/)[0] ?? "";
-	if (!from.startsWith("/")) from = `/${from}`;
-	if (from.length > 1) from = from.replace(/\/+$/, "");
-	return from.toLowerCase();
+/**
+ * Normalise une URL pour la comparer : path seul en minuscules, sans domaine,
+ * slash final ni query.
+ */
+export const normalizePath = (raw: string): string => {
+	let path = raw.trim();
+	path = path.replace(/^https?:\/\/[^/]+/i, "");
+	path = path.split(/[?#]/)[0] ?? "";
+	if (!path.startsWith("/")) path = `/${path}`;
+	if (path.length > 1) path = path.replace(/\/+$/, "");
+	return path.toLowerCase();
 };

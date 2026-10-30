@@ -4,7 +4,7 @@ import fs from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import type { Redirect } from "../payload-types";
-import { normalizeFromPath } from "~/utils/links";
+import { normalizePath } from "~/utils/links";
 
 /**
  * Remplit la collection "redirects" avec les URLs publiées de l'ancien site
@@ -69,7 +69,7 @@ const parseCsv = (raw: string): Entry[] =>
 		.map((line) => {
 			const [from = "", to = "", legacyTitle = ""] = parseCsvLine(line);
 			return {
-				from: normalizeFromPath(from),
+				from: normalizePath(from),
 				to: to.trim(),
 				legacyTitle,
 			};
