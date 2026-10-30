@@ -1,6 +1,9 @@
 import type { BasePayload } from "payload";
 
-export default async function coursesPageTask(payload: BasePayload) {
+export default async function coursesPageTask(
+	payload: BasePayload,
+	images: { featured: number; left: number } = { featured: 8, left: 9 },
+) {
 	await payload.updateGlobal({
 		slug: "courses-page",
 		data: {
@@ -11,7 +14,7 @@ export default async function coursesPageTask(payload: BasePayload) {
 				featured: {
 					badge: "Maison de l'autisme",
 					title: "Le catalogue de la Maison de l'autisme",
-					image: 8,
+					image: images.featured,
 					description:
 						"Des formations proposées par des organismes, évaluées par les membres de notre commission puis référencées. Filtrez par trouble, thématique, public et format (formation en ligne, webinaire, présentiel).",
 					link: {
@@ -22,7 +25,7 @@ export default async function coursesPageTask(payload: BasePayload) {
 				left: {
 					badge: "Campus du GNCRA",
 					title: "Comprendre, apprendre et mieux accompagner.",
-					image: 9,
+					image: images.left,
 					description:
 						"Des formations sur l'autisme et les troubles du neurodéveloppement, conçues avec des experts nationaux. Campus est une plateforme de formations en ligne, créée par le Groupement national des centres ressources autisme (GNCRA). Vous y trouverez des modules de formation en ligne co-conçus par le GNCRA et le réseau des CRA, à destination des différents publics concernés par les TND.",
 					link: {
