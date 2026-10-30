@@ -2,19 +2,27 @@
 // redirection, liens du menu principal). Seules les collections dont l'URL se
 // déduit du slug sont prises en charge.
 
+// Seule liste des collections pointables : le menu et les redirections la
+// réutilisent. Ajouter une collection ici avec son chemin public suffit.
+const REFERENCE_BASE_PATHS = {
+	pages: "",
+	"practical-guides": "/fiches-pratiques",
+	courses: "/formations",
+} as const;
+
+export type ReferenceCollection = keyof typeof REFERENCE_BASE_PATHS;
+
+export const REFERENCE_COLLECTIONS = Object.keys(
+	REFERENCE_BASE_PATHS,
+) as ReferenceCollection[];
+
 export type DocumentReference = {
-	relationTo: string;
+	relationTo: ReferenceCollection;
 	value:
 		| { slug?: string | null; _status?: string | null }
 		| number
 		| string
 		| null;
-};
-
-const REFERENCE_BASE_PATHS: Record<string, string> = {
-	"practical-guides": "/fiches-pratiques",
-	courses: "/formations",
-	pages: "",
 };
 
 /**

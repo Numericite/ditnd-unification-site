@@ -1,14 +1,9 @@
 import type { GroupField } from "payload";
+import { REFERENCE_COLLECTIONS } from "~/utils/links";
 import {
 	validateInternalPath,
 	validateRequiredHttpUrl,
 } from "./validateHttpUrl";
-
-export const MENU_LINK_COLLECTIONS = [
-	"pages",
-	"practical-guides",
-	"courses",
-] as const;
 
 // Cible d'un lien du menu principal. Un lien externe s'ouvre toujours dans un
 // nouvel onglet : ce n'est pas un choix laissé à l'éditeur.
@@ -33,7 +28,7 @@ export const menuLinkField: GroupField = {
 		{
 			name: "reference",
 			type: "relationship",
-			relationTo: [...MENU_LINK_COLLECTIONS],
+			relationTo: REFERENCE_COLLECTIONS,
 			required: true,
 			label: { fr: "Contenu" },
 			filterOptions: { _status: { equals: "published" } },
