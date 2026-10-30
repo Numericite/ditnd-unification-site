@@ -899,16 +899,16 @@ export interface Redirect {
 		type?: ("reference" | "custom") | null;
 		reference?:
 			| ({
+					relationTo: "pages";
+					value: number | Page;
+			  } | null)
+			| ({
 					relationTo: "practical-guides";
 					value: number | PracticalGuide;
 			  } | null)
 			| ({
 					relationTo: "courses";
 					value: number | Course;
-			  } | null)
-			| ({
-					relationTo: "pages";
-					value: number | Page;
 			  } | null);
 		url?: string | null;
 	};

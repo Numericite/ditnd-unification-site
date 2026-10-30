@@ -3,7 +3,7 @@ import payloadConfig from "~/payload/payload.config";
 import type { PersonaTile } from "~/components/HomePage/PersonaTiles";
 import type { TDH } from "~/state/store";
 import type { Home, Newsletter } from "~/payload/payload-types";
-import { MENU_LINK_COLLECTIONS } from "~/payload/fields/menuLink";
+import { REFERENCE_COLLECTIONS } from "~/utils/links";
 import { type NavItem, resolveMenu } from "~/utils/menu";
 
 export type GlobalData = {
@@ -20,7 +20,7 @@ const TTL_MS = 60_000;
 
 // Seuls le slug et le statut servent à construire l'URL d'un lien du menu.
 const menuLinkPopulate = Object.fromEntries(
-	MENU_LINK_COLLECTIONS.map((collection) => [
+	REFERENCE_COLLECTIONS.map((collection) => [
 		collection,
 		{ slug: true, _status: true },
 	]),

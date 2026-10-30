@@ -1,6 +1,6 @@
 import { redirectsPlugin } from "@payloadcms/plugin-redirects";
 import type { Field } from "payload";
-import { normalizeFromPath } from "~/utils/links";
+import { normalizeFromPath, REFERENCE_COLLECTIONS } from "~/utils/links";
 
 /**
  * Redirections 301 de l'ancien site WordPress (et futurs renommages de slugs).
@@ -16,7 +16,7 @@ export const mdaRedirectsPlugin = redirectsPlugin({
 	// Collections pointables en cible "référence interne" : les seules dont
 	// l'URL publique se résout depuis le seul slug. Pour toute autre page
 	// (parcours, pages statiques…), utiliser une cible "URL personnalisée".
-	collections: ["practical-guides", "courses", "pages"],
+	collections: REFERENCE_COLLECTIONS,
 	overrides: {
 		admin: {
 			group: { fr: "Autre", en: "Other" },
