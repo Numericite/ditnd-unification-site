@@ -1,6 +1,6 @@
 import { redirectsPlugin } from "@payloadcms/plugin-redirects";
 import type { Field } from "payload";
-import { normalizeFromPath, REFERENCE_COLLECTIONS } from "~/utils/links";
+import { normalizePath, REFERENCE_COLLECTIONS } from "~/utils/links";
 
 /**
  * Redirections 301 de l'ancien site WordPress (et futurs renommages de slugs).
@@ -65,14 +65,14 @@ export const mdaRedirectsPlugin = redirectsPlugin({
 				({ data }) => {
 					if (!data) return data;
 					if (typeof data.from === "string" && data.from.length > 0) {
-						data.from = normalizeFromPath(data.from);
+						data.from = normalizePath(data.from);
 					}
 					// Anti-boucle : une redirection vers sa propre source est refusée.
 					if (
 						data.to?.type === "custom" &&
 						typeof data.to.url === "string" &&
 						data.to.url.length > 0 &&
-						normalizeFromPath(data.to.url) === data.from
+						normalizePath(data.to.url) === data.from
 					) {
 						throw new Error(
 							`Redirection en boucle : la cible "${data.to.url}" correspond à la source "${data.from}".`,
