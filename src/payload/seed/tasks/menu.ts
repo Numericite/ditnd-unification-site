@@ -33,4 +33,6 @@ export default async function menuTask(payload: BasePayload) {
 		slug: "menu",
 		data: { items: defaultMenuItems },
 	});
+
+	payload.logger.info("Menu content seeded successfully");
 }
