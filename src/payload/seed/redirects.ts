@@ -3,7 +3,7 @@ import { getPayload } from "payload";
 import fs from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
-import { normalizeFromPath } from "../plugins/redirects";
+import { normalizePath } from "~/utils/links";
 
 /**
  * Pré-remplit la collection "redirects" avec les URLs publiées de l'ancien
@@ -30,7 +30,7 @@ const parseCsv = (raw: string): Array<{ from: string; legacyTitle: string }> =>
 			// Le champ titre peut être quoté (virgules dans les titres).
 			const match = line.match(/^([^,]+),"?(.*?)"?$/);
 			return {
-				from: normalizeFromPath(match?.[1] ?? line),
+				from: normalizePath(match?.[1] ?? line),
 				legacyTitle: (match?.[2] ?? "").replace(/""/g, '"'),
 			};
 		});

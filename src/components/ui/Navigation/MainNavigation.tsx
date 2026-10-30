@@ -4,7 +4,13 @@ import { useEffect, useRef, useState } from "react";
 import SubMenuCustom from "./SubMenuCustom";
 import Button from "@codegouvfr/react-dsfr/Button";
 import Header from "@codegouvfr/react-dsfr/Header";
-import { chatbotOpenStore, personStore } from "~/state/store";
+import { chatbotOpenStore, menuStore, personStore } from "~/state/store";
+import {
+	LOCKED_MENU_ITEMS,
+	type LockedMenuItem,
+	type NavLink,
+	isPathActive,
+} from "~/utils/menu";
 import { personsAndProTiles } from "~/utils/pictograms";
 import { skipLinks } from "~/utils/tools";
 import SkipLinks from "@codegouvfr/react-dsfr/SkipLinks";
@@ -31,63 +37,56 @@ export default function MainNavigation() {
 
 	const personas = personsAndProTiles(personStore.get());
 
-	const userNavigationItems: MainNavigationProps.Item[] = [
-		{
-			text: "Je suis",
-			isActive: router.pathname.startsWith("/parcours"),
-			menuLinks: personas.map((persona) => ({
+	const currentPath = router.asPath;
+	const toNavigationLink = (link: NavLink) => ({
+		text: link.title,
+		isActive: !link.external && isPathActive(currentPath, link.href),
+		linkProps: link.external
+			? {
+					href: link.href,
+					target: "_blank",
+					rel: "noopener noreferrer",
+					title: `${link.title}, nouvelle fenêtre`,
+				}
+			: { href: link.href },
+	});
+
+	const lockedSubmenus: Record<
+		NonNullable<LockedMenuItem["submenu"]>,
+		() => MainNavigationProps.Item.Link[]
+	> = {
+		personas: () =>
+			personas.map((persona) => ({
 				text: <SubMenuCustom key={persona.slug} persona={{ ...persona }} />,
-				isActive: router.asPath.startsWith(`/parcours/${persona.slug}`),
-				linkProps: {
-					href: `/parcours/${persona.slug}`,
-				},
+				isActive: isPathActive(currentPath, `/parcours/${persona.slug}`),
+				linkProps: { href: `/parcours/${persona.slug}` },
 			})),
-		},
-		{
-			text: "Fiches pratiques",
-			linkProps: { href: "/fiches-pratiques" },
-			isActive: router.pathname.startsWith("/fiches-pratiques"),
-		},
-		{
-			text: "Se former",
-			linkProps: { href: "/se-former" },
-			isActive:
-				router.pathname === "/se-former" ||
-				router.pathname.startsWith("/formations"),
-		},
-		{
-			text: "Annuaire",
-			linkProps: {
-				href: "https://annuaire.autismeinfoservice.fr/",
-				target: "_blank",
-			},
-		},
-		{
-			text: "À propos",
-			isActive: router.pathname.startsWith("/a-propos"),
-			menuLinks: [
-				{
-					text: "Maison de l'autisme",
-					isActive: router.pathname === "/a-propos/maison-de-l-autisme",
-					linkProps: { href: "/a-propos/maison-de-l-autisme" },
-				},
-				{
-					text: "GNCRA",
-					isActive: router.pathname === "/a-propos/gncra",
-					linkProps: { href: "/a-propos/gncra" },
-				},
-				{
-					text: "CRA",
-					isActive: router.pathname === "/a-propos/cra",
-					linkProps: { href: "/a-propos/cra" },
-				},
-				{
-					text: "Glossaire",
-					isActive: router.pathname === "/a-propos/glossaire",
-					linkProps: { href: "/a-propos/glossaire" },
-				},
-			],
-		},
+	};
+
+	const userNavigationItems: MainNavigationProps.Item[] = [
+		...LOCKED_MENU_ITEMS.map((item): MainNavigationProps.Item => {
+			const isActive = item.activePaths.some((path) =>
+				isPathActive(currentPath, path),
+			);
+			return item.submenu
+				? {
+						text: item.title,
+						isActive,
+						menuLinks: lockedSubmenus[item.submenu](),
+					}
+				: { text: item.title, isActive, linkProps: { href: item.href } };
+		}),
+		...menuStore.get().map((item): MainNavigationProps.Item => {
+			if ("children" in item) {
+				const menuLinks = item.children.map(toNavigationLink);
+				return {
+					text: item.title,
+					isActive: menuLinks.some((link) => link.isActive),
+					menuLinks,
+				};
+			}
+			return toNavigationLink(item);
+		}),
 	];
 
 	useEffect(() => {
