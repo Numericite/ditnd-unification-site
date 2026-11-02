@@ -11,6 +11,11 @@ declare global {
 
 const MATOMO_URL = process.env.NEXT_PUBLIC_MATOMO_URL;
 const MATOMO_SITE_ID = process.env.NEXT_PUBLIC_MATOMO_SITE_ID;
+const EXCLUDED_PATHS = /^\/(admin|draft)(\/|\?|#|$)/;
+
+function isTrackingExcluded(path: string) {
+	return window.self !== window.top || EXCLUDED_PATHS.test(path);
+}
 
 function pushMatomo(...args: unknown[]) {
 	window._paq = window._paq || [];
@@ -34,6 +39,7 @@ export default function Matomo() {
 		if (!MATOMO_URL || !MATOMO_SITE_ID) return;
 
 		const handleRouteChange = (url: string) => {
+			if (isTrackingExcluded(url)) return;
 			pushMatomo("setCustomUrl", url);
 			pushMatomo("setDocumentTitle", document.title);
 			pushMatomo("trackPageView");
@@ -56,10 +62,11 @@ export default function Matomo() {
 			dangerouslySetInnerHTML={{
 				__html: `
 					var _paq = window._paq = window._paq || [];
-					_paq.push(['requireConsent']);
-					_paq.push(['trackPageView']);
-					_paq.push(['enableLinkTracking']);
 					(function() {
+						if (window.self !== window.top || ${EXCLUDED_PATHS}.test(location.pathname)) return;
+						_paq.push(['requireConsent']);
+						_paq.push(['trackPageView']);
+						_paq.push(['enableLinkTracking']);
 						var u="${trackerUrl}";
 						_paq.push(['setTrackerUrl', u+'matomo.php']);
 						_paq.push(['setSiteId', '${MATOMO_SITE_ID}']);
