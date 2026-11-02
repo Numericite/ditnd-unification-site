@@ -3,6 +3,7 @@ import Button from "@codegouvfr/react-dsfr/Button";
 import { useState, useRef, useEffect, useCallback } from "react";
 import { tss } from "tss-react/dsfr";
 import { Input } from "@codegouvfr/react-dsfr/Input";
+import { trackEvent } from "~/components/Matomo/Matomo";
 import { api } from "~/utils/api";
 import { chatbotOpenStore } from "~/state/store";
 import { useSelector } from "@legendapp/state/react";
@@ -62,6 +63,10 @@ const ChatBot = () => {
 			}, 50);
 		}
 	}, [isOpen, response]);
+
+	useEffect(() => {
+		if (isOpen) trackEvent("Chatbot", "ouverture");
+	}, [isOpen]);
 
 	useEffect(() => {
 		if (!isOpen) return;
@@ -151,6 +156,7 @@ const ChatBot = () => {
 		setUserQuestion(text);
 		setMessage("");
 		setError(null);
+		trackEvent("Chatbot", "question");
 
 		if (text.length > MAX_USER_MESSAGE_CHARS) {
 			setResponse({

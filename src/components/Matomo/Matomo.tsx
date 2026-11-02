@@ -22,6 +22,12 @@ function pushMatomo(...args: unknown[]) {
 	window._paq.push(args);
 }
 
+export function trackEvent(category: string, action: string, name?: string) {
+	if (!MATOMO_URL || !MATOMO_SITE_ID) return;
+	if (isTrackingExcluded(window.location.pathname)) return;
+	pushMatomo("trackEvent", category, action, ...(name ? [name] : []));
+}
+
 export default function Matomo() {
 	const router = useRouter();
 	const { finalityConsent } = useConsent();

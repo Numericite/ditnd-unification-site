@@ -11,6 +11,7 @@ import "maplibre-gl/dist/maplibre-gl.css";
 import Supercluster from "supercluster";
 import { fr } from "@codegouvfr/react-dsfr";
 import { tss } from "tss-react/dsfr";
+import { trackEvent } from "~/components/Matomo/Matomo";
 import { dsfrAccentHex } from "~/utils/dsfr-color-hex";
 import MapClusterMarker from "./MapClusterMarker";
 import { getMarkerGeo } from "~/utils/map-geo";
@@ -388,14 +389,17 @@ export default function MapDisplay({ map, height }: Props) {
 	}, [filteredMarkers]);
 
 	const handleRegionsChange = useCallback((codes: string[]) => {
+		if (codes.length > 0) trackEvent("Carto", "filtre", "region");
 		setActiveFilters((prev) => ({ ...prev, regions: codes }));
 	}, []);
 
 	const handleDepartementsChange = useCallback((codes: string[]) => {
+		if (codes.length > 0) trackEvent("Carto", "filtre", "departement");
 		setActiveFilters((prev) => ({ ...prev, departements: codes }));
 	}, []);
 
 	const handleCategoriesChange = useCallback((ids: number[]) => {
+		if (ids.length > 0) trackEvent("Carto", "filtre", "categorie");
 		setActiveFilters((prev) => ({ ...prev, categories: ids }));
 	}, []);
 
@@ -410,6 +414,7 @@ export default function MapDisplay({ map, height }: Props) {
 
 	const handleCustomFieldChange = useCallback(
 		(key: string, values: string[]) => {
+			if (values.length > 0) trackEvent("Carto", "filtre", key);
 			setActiveFilters((prev) => ({
 				...prev,
 				customFields: { ...prev.customFields, [key]: values },
