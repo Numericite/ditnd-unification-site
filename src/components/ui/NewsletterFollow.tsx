@@ -2,6 +2,7 @@ import { fr } from "@codegouvfr/react-dsfr";
 import { Follow, type FollowProps } from "@codegouvfr/react-dsfr/Follow";
 import { type FormEvent, useState } from "react";
 import Honeypot from "~/components/ui/Honeypot";
+import { trackEvent } from "~/components/Matomo/Matomo";
 import { api } from "~/utils/api";
 import { HONEYPOT_FIELD_NAME } from "~/utils/contactForm";
 import { newsletterSubscribeSchema } from "~/utils/newsletter";
@@ -57,6 +58,7 @@ export default function NewsletterFollow() {
 			await subscribeMutation.mutateAsync(parsed.data);
 			setSuccess(true);
 			setEmail("");
+			trackEvent("Newsletter", "inscription");
 		} catch {
 			setError(NETWORK_ERROR);
 		}

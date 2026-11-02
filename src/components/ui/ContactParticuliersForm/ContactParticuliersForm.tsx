@@ -8,6 +8,7 @@ import { Select } from "@codegouvfr/react-dsfr/Select";
 import { useForm } from "@tanstack/react-form";
 import { useState } from "react";
 import { tss } from "tss-react/dsfr";
+import { trackEvent } from "~/components/Matomo/Matomo";
 import Honeypot from "~/components/ui/Honeypot";
 import { api } from "~/utils/api";
 import { zodValidator } from "~/utils/contactForm";
@@ -116,6 +117,7 @@ export default function ContactParticuliersForm() {
 					website: value.website,
 				});
 				setSuccess(true);
+				trackEvent("Contact", "envoi", "particuliers");
 				formApi.reset();
 			} catch {
 				setNetworkError(true);
