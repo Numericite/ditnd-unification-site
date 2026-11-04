@@ -60,7 +60,7 @@ Les URLs d'origine sont **préservées à l'identique** — aucune redirection �
 - [x] `robots.txt` dynamique (`src/pages/robots.txt.ts`) : sitemap référencé, `Disallow: /admin /api /draft` ; `Disallow: /` intégral si `NEXT_PUBLIC_NOINDEX=true`
 - [x] Sitemaps Yoast de l'ancien site (`/sitemap_index.xml`, `/page-sitemap.xml`, `/wp-sitemap.xml`) redirigés en 301 vers `/sitemap.xml` dans `next.config.js` : le middleware ignore les chemins contenant un point, une redirection saisie dans l'admin pour ces URLs serait sans effet.
 - [x] Couverture du sitemap Yoast vérifiée : ses 74 URLs sont toutes dans le CSV ou servies au même chemin.
-- [ ] Cible de `/fiches-pratiques-autisme/communication-autisme` à saisir dans l'admin (seule URL du sitemap Yoast sans cible, repli `/fiches-pratiques` en attendant)
+- [x] Cible de `/fiches-pratiques-autisme/communication-autisme` saisie dans l'admin (seule URL du sitemap Yoast sans cible dans le CSV)
 - [ ] Script de smoke-test des anciennes URLs (301 puis 200, signale 302/307 et 404) : `scripts-migration/smoke_test_redirects.py` absent du dépôt, à retrouver ou réécrire
 
 **Search Console**
