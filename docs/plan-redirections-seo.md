@@ -24,7 +24,7 @@ Règles de fond :
 
 ## Workflow équipe contenu
 
-1. Script de seed : crée les 74 entrées avec `from` rempli et `to` vide (inertes tant que vides — le niveau 2 les couvre entre-temps).
+1. Script de seed : crée les entrées avec leur cible (`from,to,legacyTitle`, cibles issues du tableau « Agenda refonte pages MDA.xlsx »). Une cible vide reste inerte, le niveau 2 la couvre entre-temps.
 2. L'équipe remplit les `to` dans l'admin Payload au fil de la création des contenus. Un `to` vide = travail restant (filtrable dans l'admin).
 3. Prise d'effet sans déploiement (TTL du cache middleware).
 
@@ -50,9 +50,9 @@ Les URLs d'origine sont **préservées à l'identique** — aucune redirection �
 - [x] `@payloadcms/plugin-redirects` configuré (`src/payload/plugins/redirects.ts`) — cibles optionnelles (todo seedés), champ `legacyTitle`, groupe admin « Autre »
 - [x] Hook `beforeValidate` de normalisation du champ `from` (strip domaine / slash final / query) + anti-boucle
 - [x] Middleware (`src/middleware.ts`) : lookup exact (carte servie par `/api/redirects-map`, cache 60 s) → fallbacks sections → pass-through — testé en dev le 10/06/2026 (301 exact, query transférée, fallbacks, 404 événements)
-- [x] Script de seed (`yarn seed:redirects`, source : `src/payload/seed/data/legacy-urls.csv`, 69 entrées — exclut la racine et les 4 chemins identiques sur le nouveau site). Idempotent : à rejouer en prod au moment de la migration.
+- [x] Script de seed (`yarn seed:redirects`, source : `src/payload/seed/data/legacy-urls.csv`, 74 entrées dont 70 avec cible — exclut la racine et les 5 chemins identiques sur le nouveau site). Fiches, formations et pages CMS en référence au document, le reste en URL personnalisée. Idempotent : crée les absentes, complète les cibles vides, signale sans écraser les cibles divergentes (`REDIRECTS_OVERWRITE=true` pour forcer). À rejouer en prod au moment de la migration.
 - [x] Migration de schéma `20260923_141759_add_redirects_and_newsletter` (`src/migrations/`) — le projet applique des migrations explicites, lancées à la main (`payload migrate`) : ni la CI ni Clever Cloud ne les déclenchent, et `push` est désactivé hors développement. Chaîne complète rejouée sur une base vide pour validation.
-- [ ] Atelier de définition des cibles avec la webmaster de l'ancien site (69 entrées seedées, `to` à remplir)
+- [x] Définition des cibles avec l'équipe contenu (tableau « Agenda refonte pages MDA.xlsx », reporté dans le CSV)
 - [ ] L'équipe contenu a rempli les `to` pour toutes les pages ayant un équivalent
 - [x] Page 404 (`src/pages/[...slug].tsx` + `ErrorPage`) : statut 404 réel, lien accueil, renvoi vers le moteur de recherche de l'en-tête. Enrichissement possible plus tard (liens directs vers les sections).
 - [x] Upload `legacy-uploads/` vers S3 (préfixe `legacy/`) + bucket policy publique sur `legacy/*` (fait le 10/06/2026)
