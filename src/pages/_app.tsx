@@ -24,6 +24,7 @@ import "~/utils/styles/sticky-header.css";
 import BackToTop from "~/components/ui/BackToTop";
 import MainNavigation from "~/components/ui/Navigation/MainNavigation";
 import SeoMeta from "~/components/ui/SeoMeta";
+import JsonLd, { organizationJsonLd } from "~/components/ui/JsonLd";
 import { fr } from "@codegouvfr/react-dsfr";
 import type { GlobalData } from "~/server/global-data";
 import {
@@ -106,6 +107,7 @@ function App({ Component, pageProps }: AppPropsWithGlobal) {
 				description="Site national d'informations pour toutes les personnes concernées par l'autisme et les troubles du neurodéveloppement. Retrouvez des ressources, diagnostics et formations."
 				pathname={router.asPath}
 			/>
+			<JsonLd id="organization" data={organizationJsonLd} />
 			<ConsentBannerAndConsentManagement />
 			<Matomo />
 			<div id="top" tabIndex={-1} className={cx(classes.headerContainer)}>
