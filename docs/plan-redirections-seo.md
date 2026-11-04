@@ -75,7 +75,6 @@ Les URLs d'origine sont **préservées à l'identique** — aucune redirection �
 - [x] Matomo et clé Albert de production
 
 **Services tiers**
-- [ ] App OAuth GitHub (connexion admin) : URL de callback sur le nouveau domaine
 - [ ] Matomo : ajouter `maisondelautisme.gouv.fr` aux URLs du site
 - [ ] Brevo : expéditeur et domaine `@maisondelautisme.gouv.fr` validés
 
