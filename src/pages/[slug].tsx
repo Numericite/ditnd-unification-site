@@ -10,6 +10,7 @@ import ErrorPage from "~/components/ui/ErrorPage/ErrorPage";
 import type { GetServerSideProps } from "next";
 import { createCaller } from "~/server/api/root";
 import { createTRPCContext } from "~/server/api/trpc";
+import { legacyRedirect } from "~/server/redirects";
 import type { AugmentedPage } from "~/server/api/routers/pages";
 
 type Props = { isNotFound: true } | { isNotFound?: false; page: AugmentedPage };
@@ -81,6 +82,9 @@ export const getServerSideProps: GetServerSideProps<Props> = async (ctx) => {
 		return { props: { page } };
 	} catch (error) {
 		if (error instanceof TRPCError && error.code === "NOT_FOUND") {
+			const redirect = await legacyRedirect(ctx.resolvedUrl);
+			if (redirect) return redirect;
+
 			ctx.res.statusCode = 404;
 			return { props: { isNotFound: true } };
 		}

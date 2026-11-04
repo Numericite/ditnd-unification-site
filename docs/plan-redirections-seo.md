@@ -10,8 +10,8 @@ Pas de proxy nginx (contrairement à jdma-proxy) : les redirections vivent dans 
 
 | Niveau | Mécanisme | Contenu |
 |---|---|---|
-| 1 — Exact | Collection Payload (`@payloadcms/plugin-redirects`) lue par le middleware Next (cache mémoire + TTL) | Une entrée par ancienne URL ayant une page équivalente. **Réponse 301.** |
-| 2 — Sections | Règles statiques dans le middleware | `/fiches-pratiques-autisme/*` → `/fiches-pratiques` · `/accueil-se-former-tnd/*` → `/formations` · `/accueil/*` → `/a-propos`. **301.** Pas de fallback pour `/evenements-maison-de-l-autisme/*` (section actus abandonnée). |
+| 1 — Exact | Collection Payload (`@payloadcms/plugin-redirects`) lue en base dans le `getServerSideProps` des pages qui renverraient une 404 (`src/server/redirects.ts`) | Une entrée par ancienne URL ayant une page équivalente. **Réponse 301.** |
+| 2 — Sections | Règles statiques (`src/utils/redirects.ts`) | `/fiches-pratiques-autisme/*` → `/fiches-pratiques` · `/accueil-se-former-tnd/*` → `/formations` · `/accueil/*` → `/a-propos`. **301.** Pas de fallback pour `/evenements-maison-de-l-autisme/*` (section actus abandonnée). |
 | 3 — Reste | Page 404 enrichie (recherche + liens vers les sections) | Tout le reste, y compris les anciennes pages événements. |
 
 Règles de fond :
@@ -26,7 +26,7 @@ Règles de fond :
 
 1. Script de seed : crée les entrées avec leur cible (`from,to,legacyTitle`, cibles issues du tableau « Agenda refonte pages MDA.xlsx »). Une cible vide reste inerte, le niveau 2 la couvre entre-temps.
 2. L'équipe remplit les `to` dans l'admin Payload au fil de la création des contenus. Un `to` vide = travail restant (filtrable dans l'admin).
-3. Prise d'effet sans déploiement (TTL du cache middleware).
+3. Prise d'effet immédiate, sans déploiement (lecture en base à chaque requête).
 
 ## Médias hérités (`/app/uploads/*`)
 
@@ -49,7 +49,7 @@ Les URLs d'origine sont **préservées à l'identique** — aucune redirection �
 
 - [x] `@payloadcms/plugin-redirects` configuré (`src/payload/plugins/redirects.ts`) — cibles optionnelles (todo seedés), champ `legacyTitle`, groupe admin « Autre »
 - [x] Hook `beforeValidate` de normalisation du champ `from` (strip domaine / slash final / query) + anti-boucle
-- [x] Middleware (`src/middleware.ts`) : lookup exact (carte servie par `/api/redirects-map`, cache 60 s) → fallbacks sections → pass-through — testé en dev le 10/06/2026 (301 exact, query transférée, fallbacks, 404 événements)
+- [x] Résolution des redirections (`src/server/redirects.ts`), appelée par `[...slug]`, `[slug]`, `fiches-pratiques/[slug]` et `formations/[slug]` avant de répondre 404 : lookup exact en base, puis fallbacks de section, puis 404. Remplace l'ancienne version dans le middleware, qui chargeait la carte par un appel HTTP du site vers lui-même : cet appel échouait en silence sur Clever Cloud (carte vide, seuls les fallbacks s'appliquaient). Testé en dev le 04/11/2026 (301 exact, query transférée, cible externe, fallbacks, slug renommé, 404).
 - [x] Script de seed (`yarn seed:redirects`, source : `src/payload/seed/data/legacy-urls.csv`, 74 entrées dont 70 avec cible — exclut la racine et les 5 chemins identiques sur le nouveau site). Fiches, formations et pages CMS en référence au document, le reste en URL personnalisée. Idempotent : crée les absentes, complète les cibles vides, signale sans écraser les cibles divergentes (`REDIRECTS_OVERWRITE=true` pour forcer). À rejouer en prod au moment de la migration.
 - [x] Migration de schéma `20260923_141759_add_redirects_and_newsletter` (`src/migrations/`) — le projet applique des migrations explicites, lancées à la main (`payload migrate`) : ni la CI ni Clever Cloud ne les déclenchent, et `push` est désactivé hors développement. Chaîne complète rejouée sur une base vide pour validation.
 - [x] Définition des cibles avec l'équipe contenu (tableau « Agenda refonte pages MDA.xlsx », reporté dans le CSV)
@@ -58,7 +58,7 @@ Les URLs d'origine sont **préservées à l'identique** — aucune redirection �
 - [x] Rewrite `/app/uploads/:path*` vers le bucket (next.config.js) — testé en dev
 - [x] `sitemap.xml` dynamique généré depuis Payload (`src/pages/sitemap.xml.ts` : fiches publiées, formations, parcours persona×condition, pages statiques). Liste statique à maintenir à chaque ajout ou renommage de page.
 - [x] `robots.txt` dynamique (`src/pages/robots.txt.ts`) : sitemap référencé, `Disallow: /admin /api /draft` ; `Disallow: /` intégral si `NEXT_PUBLIC_NOINDEX=true`
-- [x] Sitemaps Yoast de l'ancien site (`/sitemap_index.xml`, `/page-sitemap.xml`, `/wp-sitemap.xml`) redirigés en 301 vers `/sitemap.xml` dans `next.config.js` : le middleware ignore les chemins contenant un point, une redirection saisie dans l'admin pour ces URLs serait sans effet.
+- [x] Sitemaps Yoast de l'ancien site (`/sitemap_index.xml`, `/page-sitemap.xml`, `/wp-sitemap.xml`) redirigés en 301 vers `/sitemap.xml` dans `next.config.js`.
 - [x] Couverture du sitemap Yoast vérifiée : ses 74 URLs sont toutes dans le CSV ou servies au même chemin.
 - [ ] Cible de `/fiches-pratiques-autisme/communication-autisme` à saisir dans l'admin (seule URL du sitemap Yoast sans cible, repli `/fiches-pratiques` en attendant)
 - [ ] Script de smoke-test des anciennes URLs (301 puis 200, signale 302/307 et 404) : `scripts-migration/smoke_test_redirects.py` absent du dépôt, à retrouver ou réécrire

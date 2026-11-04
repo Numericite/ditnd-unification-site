@@ -5,6 +5,7 @@ import Head from "next/head";
 import type { GetServerSideProps } from "next";
 import { createCaller } from "~/server/api/root";
 import { createTRPCContext } from "~/server/api/trpc";
+import { legacyRedirect } from "~/server/redirects";
 import type { AugmentedCourse } from "~/server/api/routers/courses";
 import type { Media } from "~/payload/payload-types";
 import SeoMeta from "~/components/ui/SeoMeta";
@@ -93,6 +94,9 @@ export const getServerSideProps: GetServerSideProps<Props> = async (ctx) => {
 		return { props: { course } };
 	} catch (error) {
 		if (error instanceof TRPCError && error.code === "NOT_FOUND") {
+			const redirect = await legacyRedirect(ctx.resolvedUrl);
+			if (redirect) return redirect;
+
 			ctx.res.statusCode = 404;
 			return { props: { isNotFound: true } };
 		}
