@@ -51,7 +51,7 @@ Les URLs d'origine sont **préservées à l'identique** — aucune redirection �
 - [x] Hook `beforeValidate` de normalisation du champ `from` (strip domaine / slash final / query) + anti-boucle
 - [x] Résolution des redirections (`src/server/redirects.ts`), appelée par `[...slug]`, `[slug]`, `fiches-pratiques/[slug]` et `formations/[slug]` avant de répondre 404 : lookup exact en base, puis fallbacks de section, puis 404. Remplace l'ancienne version dans le middleware, qui chargeait la carte par un appel HTTP du site vers lui-même : cet appel échouait en silence sur Clever Cloud (carte vide, seuls les fallbacks s'appliquaient). Testé en dev le 04/11/2026 (301 exact, query transférée, cible externe, fallbacks, slug renommé, 404).
 - [x] Script de seed (`yarn seed:redirects`, source : `src/payload/seed/data/legacy-urls.csv`, 74 entrées dont 70 avec cible — exclut la racine et les 5 chemins identiques sur le nouveau site). Fiches, formations et pages CMS en référence au document, le reste en URL personnalisée. Idempotent : crée les absentes, complète les cibles vides, signale sans écraser les cibles divergentes (`REDIRECTS_OVERWRITE=true` pour forcer). Exécuté sur la base de recette, qui devient la base de production.
-- [x] Migration de schéma `20260923_141759_add_redirects_and_newsletter` (`src/migrations/`) — le projet applique des migrations explicites, lancées à la main (`payload migrate`) : ni la CI ni Clever Cloud ne les déclenchent, et `push` est désactivé hors développement. Chaîne complète rejouée sur une base vide pour validation.
+- [x] Migration de schéma `20260923_141759_add_redirects_and_newsletter` (`src/migrations/`). Les migrations sont appliquées à chaque déploiement Clever Cloud (`npx payload migrate` en fin de `CC_CUSTOM_BUILD_TOOL`) ; `push` est désactivé hors développement.
 - [x] Définition des cibles avec l'équipe contenu (tableau « Agenda refonte pages MDA.xlsx », reporté dans le CSV)
 - [x] Page 404 (`src/pages/[...slug].tsx` + `ErrorPage`) : statut 404 réel, lien accueil, renvoi vers le moteur de recherche de l'en-tête. Enrichissement possible plus tard (liens directs vers les sections).
 - [x] Upload `legacy-uploads/` vers S3 (préfixe `legacy/`) + bucket policy publique sur `legacy/*` (fait le 10/06/2026)
@@ -84,8 +84,7 @@ Les URLs d'origine sont **préservées à l'identique** — aucune redirection �
 - [ ] Redéploiement
 
 **Bascule et contrôles**
-- [ ] La production reprend l'app et la base de la recette : schéma à jour (aucune migration en attente au 04/11/2026), 74 redirections déjà en base, pas de seed à rejouer. `payload migrate` uniquement si une PR contenant une migration a été mergée depuis.
-- [ ] Bascule DNS de `maisondelautisme.gouv.fr` vers l'app Clever Cloud de la recette (certificat TLS du domaine actif)
+- [ ] Bascule DNS de `maisondelautisme.gouv.fr` vers l'app Clever Cloud de la recette, qui devient la production avec sa base (redirections déjà en base, migrations appliquées au déploiement) ; certificat TLS du domaine actif
 - [ ] `BASE_URL=https://maisondelautisme.gouv.fr yarn smoke:redirects` : 0 échec
 - [ ] Un PDF `/app/uploads/...` s'ouvre
 - [ ] Absence de l'en-tête `X-Robots-Tag: noindex` et de la basic auth
