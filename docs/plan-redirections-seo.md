@@ -50,8 +50,8 @@ Les URLs d'origine sont **préservées à l'identique** — aucune redirection �
 - [x] `@payloadcms/plugin-redirects` configuré (`src/payload/plugins/redirects.ts`) — cibles optionnelles (todo seedés), champ `legacyTitle`, groupe admin « Autre »
 - [x] Hook `beforeValidate` de normalisation du champ `from` (strip domaine / slash final / query) + anti-boucle
 - [x] Résolution des redirections (`src/server/redirects.ts`), appelée par `[...slug]`, `[slug]`, `fiches-pratiques/[slug]` et `formations/[slug]` avant de répondre 404 : lookup exact en base, puis fallbacks de section, puis 404. Remplace l'ancienne version dans le middleware, qui chargeait la carte par un appel HTTP du site vers lui-même : cet appel échouait en silence sur Clever Cloud (carte vide, seuls les fallbacks s'appliquaient). Testé en dev le 04/11/2026 (301 exact, query transférée, cible externe, fallbacks, slug renommé, 404).
-- [x] Script de seed (`yarn seed:redirects`, source : `src/payload/seed/data/legacy-urls.csv`, 74 entrées dont 70 avec cible — exclut la racine et les 5 chemins identiques sur le nouveau site). Fiches, formations et pages CMS en référence au document, le reste en URL personnalisée. Idempotent : crée les absentes, complète les cibles vides, signale sans écraser les cibles divergentes (`REDIRECTS_OVERWRITE=true` pour forcer). À rejouer en prod au moment de la migration.
-- [x] Migration de schéma `20260923_141759_add_redirects_and_newsletter` (`src/migrations/`) — le projet applique des migrations explicites, lancées à la main (`payload migrate`) : ni la CI ni Clever Cloud ne les déclenchent, et `push` est désactivé hors développement. Chaîne complète rejouée sur une base vide pour validation.
+- [x] Script de seed (`yarn seed:redirects`, source : `src/payload/seed/data/legacy-urls.csv`, 74 entrées dont 70 avec cible — exclut la racine et les 5 chemins identiques sur le nouveau site). Fiches, formations et pages CMS en référence au document, le reste en URL personnalisée. Idempotent : crée les absentes, complète les cibles vides, signale sans écraser les cibles divergentes (`REDIRECTS_OVERWRITE=true` pour forcer). Exécuté sur la base de recette, qui devient la base de production.
+- [x] Migration de schéma `20260923_141759_add_redirects_and_newsletter` (`src/migrations/`). Les migrations sont appliquées à chaque déploiement Clever Cloud (`npx payload migrate` en fin de `CC_CUSTOM_BUILD_TOOL`) ; `push` est désactivé hors développement.
 - [x] Définition des cibles avec l'équipe contenu (tableau « Agenda refonte pages MDA.xlsx », reporté dans le CSV)
 - [x] Page 404 (`src/pages/[...slug].tsx` + `ErrorPage`) : statut 404 réel, lien accueil, renvoi vers le moteur de recherche de l'en-tête. Enrichissement possible plus tard (liens directs vers les sections).
 - [x] Upload `legacy-uploads/` vers S3 (préfixe `legacy/`) + bucket policy publique sur `legacy/*` (fait le 10/06/2026)
@@ -60,37 +60,37 @@ Les URLs d'origine sont **préservées à l'identique** — aucune redirection �
 - [x] `robots.txt` dynamique (`src/pages/robots.txt.ts`) : sitemap référencé, `Disallow: /admin /api /draft` ; `Disallow: /` intégral si `NEXT_PUBLIC_NOINDEX=true`
 - [x] Sitemaps Yoast de l'ancien site (`/sitemap_index.xml`, `/page-sitemap.xml`, `/wp-sitemap.xml`) redirigés en 301 vers `/sitemap.xml` dans `next.config.js`.
 - [x] Couverture du sitemap Yoast vérifiée : ses 74 URLs sont toutes dans le CSV ou servies au même chemin.
-- [ ] Cible de `/fiches-pratiques-autisme/communication-autisme` à saisir dans l'admin (seule URL du sitemap Yoast sans cible, repli `/fiches-pratiques` en attendant)
+- [x] Cible de `/fiches-pratiques-autisme/communication-autisme` saisie dans l'admin (seule URL du sitemap Yoast sans cible dans le CSV)
 - [x] Script de smoke-test (`scripts/smoke-test-redirects.mjs`) : chaque ligne du CSV doit répondre en une seule 301 vers sa cible puis 200 (un 308 de slash final toléré avant), plus chemins identiques, sitemaps Yoast, slash final, query string et 404. Signale 302/307, chaînes, mauvaises cibles et cibles en erreur.
   `BASE_URL=https://ditnd.numericite.eu BASIC_AUTH=utilisateur:motdepasse yarn smoke:redirects` sur la recette, puis `BASE_URL=https://maisondelautisme.gouv.fr yarn smoke:redirects` le jour J
+- [x] Smoke-test sur la recette le 04/11/2026 : 80 OK, 0 échec, 4 sans cible (3 pages `/accueil/...` vers `/a-propos`, `communication-autisme` vers sa cible saisie dans l'admin)
 
 **Search Console**
-- [ ] Demander au client la méthode de validation de la propriété. DNS TXT : s'assurer que la DNUM conserve l'enregistrement `google-site-verification` à la bascule. Fichier HTML, balise meta ou tag Analytics/GTM : à reprendre sur le nouveau site (fichier dans `public/` ou balise dans `SeoMeta`) avant la bascule, sinon le client perd l'accès.
+- [x] Propriété validée par balise meta `google-site-verification` (pas d'enregistrement DNS TXT), seul propriétaire validé. Balise reprise dans `src/pages/_document.tsx`, présente sur la recette (vérifié le 04/11/2026).
 
-**Variables d'environnement Clever Cloud** (les `NEXT_PUBLIC_*` sont figées au build : redéployer après modification)
-- [ ] `NEXT_PUBLIC_SITE_URL=https://maisondelautisme.gouv.fr` (canonical, sitemap, robots.txt, aperçu admin)
-- [ ] `NEXT_PUBLIC_NOINDEX` absent ou différent de `true` (à `true`, tout le site est désindexé)
-- [ ] `BASIC_AUTH_DISABLED=true`
-- [ ] `BREVO_DOI_REDIRECT_URL` sur le nouveau domaine
-- [ ] SMTP et destinataires des formulaires (`SMTP_FROM_ADDRESS`, `CONTACT_PROS_CRA_RECIPIENT`, `CONTACT_PARTICULIERS_RECIPIENT`) sur les boîtes `@maisondelautisme.gouv.fr`
-- [x] Matomo et clé Albert de production
-
-**Services tiers**
-- [ ] App OAuth GitHub (connexion admin) : URL de callback sur le nouveau domaine
-- [ ] Matomo : ajouter `maisondelautisme.gouv.fr` aux URLs du site
-- [ ] Brevo : expéditeur et domaine `@maisondelautisme.gouv.fr` validés
+**Services tiers et configuration**
+- [x] Matomo : clé de production et domaine `maisondelautisme.gouv.fr` déclaré
+- [x] Clé Albert de production
+- [x] SMTP et destinataires des formulaires de contact
+- [x] Newsletter masquée au lancement : pas de configuration Brevo nécessaire
 
 ### Jour J
 
-- [ ] `payload migrate` en prod, puis `yarn seed:redirects` (lire le rapport : aucune « cible introuvable »)
-- [ ] Bascule DNS / domaine vers la nouvelle app Clever Cloud (certificat TLS du domaine actif)
+**Variables d'environnement Clever Cloud** (les `NEXT_PUBLIC_*` sont figées au build : redéployer après modification)
+- [ ] `NEXT_PUBLIC_SITE_URL=https://maisondelautisme.gouv.fr` (canonical, sitemap, robots.txt, aperçu admin)
+- [ ] `NEXT_PUBLIC_NOINDEX` supprimée (à `true`, tout le site est désindexé)
+- [ ] `BASIC_AUTH_DISABLED=true`
+- [ ] `NEXT_PUBLIC_NEWSLETTER_ENABLED` absente ou à `false` (newsletter masquée)
+- [ ] Redéploiement
+
+**Bascule et contrôles**
+- [ ] Bascule DNS de `maisondelautisme.gouv.fr` vers l'app Clever Cloud de la recette, qui devient la production avec sa base (redirections déjà en base, migrations appliquées au déploiement) ; certificat TLS du domaine actif
 - [ ] `BASE_URL=https://maisondelautisme.gouv.fr yarn smoke:redirects` : 0 échec
-- [ ] Tester : slash final (`/fiches-pratiques-autisme/etudier-autisme/`), query string transférée, un PDF `/app/uploads/...`, `/sitemap_index.xml`
-- [ ] Vérifier l'absence de l'en-tête `X-Robots-Tag: noindex` et de la basic auth en prod
-- [ ] Vérifier canonical et `robots.txt` sur le nouveau domaine
-- [ ] Connexion à `/admin`, envoi des deux formulaires de contact, inscription newsletter
+- [ ] Un PDF `/app/uploads/...` s'ouvre
+- [ ] Absence de l'en-tête `X-Robots-Tag: noindex` et de la basic auth
+- [ ] Canonical et `robots.txt` sur le nouveau domaine
+- [ ] Connexion à `/admin`, envoi des deux formulaires de contact
 - [ ] Search Console : propriété toujours validée, retirer l'ancien sitemap Yoast, soumettre `/sitemap.xml`
-- [ ] Vérifier la page 404 sur une URL inconnue
 
 ### Après le lancement (4 à 12 semaines)
 
