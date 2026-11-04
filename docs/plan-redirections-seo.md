@@ -61,7 +61,8 @@ Les URLs d'origine sont **préservées à l'identique** — aucune redirection �
 - [x] Sitemaps Yoast de l'ancien site (`/sitemap_index.xml`, `/page-sitemap.xml`, `/wp-sitemap.xml`) redirigés en 301 vers `/sitemap.xml` dans `next.config.js` : le middleware ignore les chemins contenant un point, une redirection saisie dans l'admin pour ces URLs serait sans effet.
 - [x] Couverture du sitemap Yoast vérifiée : ses 74 URLs sont toutes dans le CSV ou servies au même chemin.
 - [ ] Cible de `/fiches-pratiques-autisme/communication-autisme` à saisir dans l'admin (seule URL du sitemap Yoast sans cible, repli `/fiches-pratiques` en attendant)
-- [ ] Script de smoke-test des anciennes URLs (301 puis 200, signale 302/307 et 404) : `scripts-migration/smoke_test_redirects.py` absent du dépôt, à retrouver ou réécrire
+- [x] Script de smoke-test (`scripts/smoke-test-redirects.mjs`) : chaque ligne du CSV doit répondre en une seule 301 vers sa cible puis 200 (un 308 de slash final toléré avant), plus chemins identiques, sitemaps Yoast, slash final, query string et 404. Signale 302/307, chaînes, mauvaises cibles et cibles en erreur.
+  `BASE_URL=https://ditnd.numericite.eu BASIC_AUTH=utilisateur:motdepasse yarn smoke:redirects` sur la recette, puis `BASE_URL=https://maisondelautisme.gouv.fr yarn smoke:redirects` le jour J
 
 **Search Console**
 - [ ] Demander au client la méthode de validation de la propriété. DNS TXT : s'assurer que la DNUM conserve l'enregistrement `google-site-verification` à la bascule. Fichier HTML, balise meta ou tag Analytics/GTM : à reprendre sur le nouveau site (fichier dans `public/` ou balise dans `SeoMeta`) avant la bascule, sinon le client perd l'accès.
@@ -83,7 +84,7 @@ Les URLs d'origine sont **préservées à l'identique** — aucune redirection �
 
 - [ ] `payload migrate` en prod, puis `yarn seed:redirects` (lire le rapport : aucune « cible introuvable »)
 - [ ] Bascule DNS / domaine vers la nouvelle app Clever Cloud (certificat TLS du domaine actif)
-- [ ] Smoke-test des anciennes URLs en prod (301, une seule redirection applicative, cible 200)
+- [ ] `BASE_URL=https://maisondelautisme.gouv.fr yarn smoke:redirects` : 0 échec
 - [ ] Tester : slash final (`/fiches-pratiques-autisme/etudier-autisme/`), query string transférée, un PDF `/app/uploads/...`, `/sitemap_index.xml`
 - [ ] Vérifier l'absence de l'en-tête `X-Robots-Tag: noindex` et de la basic auth en prod
 - [ ] Vérifier canonical et `robots.txt` sur le nouveau domaine

@@ -18,6 +18,7 @@
 		"seed:prod": "PAYLOAD_CONFIG_PATH=./src/payload/payload.config.ts payload run ./src/payload/seed/index.ts",
 		"seed:dev": "NODE_ENV=development PAYLOAD_CONFIG_PATH=./src/payload/payload.config.ts PAYLOAD_DROP_DATABASE=true payload run ./src/payload/seed/index.ts",
 		"seed:redirects": "PAYLOAD_CONFIG_PATH=./src/payload/payload.config.ts payload run ./src/payload/seed/redirects.ts",
+		"smoke:redirects": "node scripts/smoke-test-redirects.mjs",
 		"seed:glossary": "PAYLOAD_CONFIG_PATH=./src/payload/payload.config.ts payload run ./src/payload/seed/glossary.ts",
 		"seed:cartography": "PAYLOAD_CONFIG_PATH=./src/payload/payload.config.ts payload run ./src/payload/seed/cartography.ts",
 		"seed:newsletter": "PAYLOAD_CONFIG_PATH=./src/payload/payload.config.ts payload run ./src/payload/seed/newsletter.ts",
