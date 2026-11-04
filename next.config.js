@@ -31,6 +31,11 @@ const config = {
 				destination: "/a-propos/cra",
 				permanent: true,
 			},
+			// Sitemaps Yoast de l'ancien site WordPress : hors du périmètre du
+			// middleware (chemins avec un point), donc redirigés ici.
+			...["/sitemap_index.xml", "/page-sitemap.xml", "/wp-sitemap.xml"].map(
+				(source) => ({ source, destination: "/sitemap.xml", statusCode: 301 }),
+			),
 		];
 	},
 	async rewrites() {
