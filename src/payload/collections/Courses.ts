@@ -173,6 +173,9 @@ export const Courses: CollectionConfig = {
 		useAsTitle: "title",
 		group: { fr: "Contenus" },
 		defaultColumns: ["title", "format", "_status", "updatedAt"],
+		components: {
+			beforeListTable: ["../payload/components/CoursesImport"],
+		},
 	},
 	defaultPopulate: courseCardSelect,
 	hooks: {
@@ -300,6 +303,24 @@ export const Courses: CollectionConfig = {
 			},
 		},
 		slugField("courses", { editable: true }),
+		{
+			name: "ditndId",
+			type: "number",
+			required: false,
+			index: true,
+			label: { fr: "Identifiant DITND" },
+			admin: {
+				position: "sidebar",
+				readOnly: true,
+				description: "Renseigné par l'import des formations.",
+				condition: (data) =>
+					data?.ditndId !== null && data?.ditndId !== undefined,
+			},
+			hooks: {
+				// Une copie n'est pas la formation importée : on ne garde pas l'identifiant.
+				beforeDuplicate: [() => null],
+			},
+		},
 		{
 			name: "conditions",
 			type: "relationship",

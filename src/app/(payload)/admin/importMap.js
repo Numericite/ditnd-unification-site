@@ -33,6 +33,7 @@ import { MetaDescriptionComponent as MetaDescriptionComponent_a8a977ebc872c5d5ea
 import { MetaImageComponent as MetaImageComponent_a8a977ebc872c5d5ea7ee689724c0860 } from "@payloadcms/plugin-seo/client";
 import { PreviewComponent as PreviewComponent_a8a977ebc872c5d5ea7ee689724c0860 } from "@payloadcms/plugin-seo/client";
 import { default as default_4ea1f3fd4d8a7a71bd05e2762be80ffe } from "../../../payload/components/DescriptionTextarea";
+import { default as default_2cd990c14ce67b94249409473d13dbfb } from "../../../payload/components/CoursesImport";
 import { default as default_cd31b5ee51188f80370eaec27fcfca00 } from "../../../payload/components/MapCategoryExcelExport";
 import { default as default_1dc9df847c6c8ec54f552b6626b54e17 } from "../../../payload/components/MetadataField";
 import { default as default_ab9295f833f2f5fee5779f5535e576a4 } from "../../../payload/components/MapMarkersImportLink";
@@ -42,10 +43,10 @@ import { LinkToDoc as LinkToDoc_aead06e4cbf6b2620c5c51c9ab283634 } from "@payloa
 import { ReindexButton as ReindexButton_aead06e4cbf6b2620c5c51c9ab283634 } from "@payloadcms/plugin-search/client";
 import { FolderTypeField as FolderTypeField_2b8867833a34864a02ddf429b0728a40 } from "@payloadcms/next/client";
 import { default as default_a8430564fd2c4f0a506836a5de510638 } from "../../../payload/components/SimplifiedContentGeneratorHeaderButton";
-import { S3ClientUploadHandler as S3ClientUploadHandler_f97aa6c64367fa259c5bc0567239ef24 } from "@payloadcms/storage-s3/client";
 import { default as default_4bf3fd4f8b9e4bf53a867035a745e24a } from "../../../payload/views/MapImportView";
 import { default as default_9c11b756bbfd4fdef7b9a95d9b38e373 } from "../../../payload/views/SimplifiedContentGeneratorView";
 import { CollectionCards as CollectionCards_f9c02e79a4aed9a3924487c0cd4cafb1 } from "@payloadcms/next/rsc";
+import { S3ClientUploadHandler as S3ClientUploadHandler_f97aa6c64367fa259c5bc0567239ef24 } from "@payloadcms/storage-s3/client";
 
 /** @type import('payload').ImportMap */
 export const importMap = {
@@ -119,6 +120,8 @@ export const importMap = {
 		PreviewComponent_a8a977ebc872c5d5ea7ee689724c0860,
 	"../payload/components/DescriptionTextarea#default":
 		default_4ea1f3fd4d8a7a71bd05e2762be80ffe,
+	"../payload/components/CoursesImport#default":
+		default_2cd990c14ce67b94249409473d13dbfb,
 	"../payload/components/MapCategoryExcelExport#default":
 		default_cd31b5ee51188f80370eaec27fcfca00,
 	"../payload/components/MetadataField#default":
@@ -137,11 +140,11 @@ export const importMap = {
 		FolderTypeField_2b8867833a34864a02ddf429b0728a40,
 	"./components/SimplifiedContentGeneratorHeaderButton#default":
 		default_a8430564fd2c4f0a506836a5de510638,
-	"@payloadcms/storage-s3/client#S3ClientUploadHandler":
-		S3ClientUploadHandler_f97aa6c64367fa259c5bc0567239ef24,
 	"./views/MapImportView#default": default_4bf3fd4f8b9e4bf53a867035a745e24a,
 	"./views/SimplifiedContentGeneratorView#default":
 		default_9c11b756bbfd4fdef7b9a95d9b38e373,
 	"@payloadcms/next/rsc#CollectionCards":
 		CollectionCards_f9c02e79a4aed9a3924487c0cd4cafb1,
+	"@payloadcms/storage-s3/client#S3ClientUploadHandler":
+		S3ClientUploadHandler_f97aa6c64367fa259c5bc0567239ef24,
 };
