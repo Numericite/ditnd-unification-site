@@ -81,7 +81,6 @@ jobs:
       SMTP_FROM_ADDRESS: ci@maisondelautisme.test
       SMTP_FROM_NAME: CI
       CONTACT_PROS_CRA_RECIPIENT: contact@maisondelautisme.test
-      CONTACT_PARTICULIERS_RECIPIENT: contact@maisondelautisme.test
       NEXT_PUBLIC_NOINDEX: "true"
       # Albert is served by cypress/mocks/albert.mjs: publishing a practical
       # guide (embeddings, simplification) stays deterministic and offline.
