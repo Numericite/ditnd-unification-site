@@ -13,8 +13,11 @@ export async function POST(req: NextRequest) {
 	const payload = await getPayload({ config: configPromise });
 
 	const { user } = await payload.auth({ headers: req.headers });
-	if (!user || (user.role !== "admin" && user.role !== "editor")) {
-		return NextResponse.json({ error: "Non autorisé" }, { status: 401 });
+	if (!user) {
+		return NextResponse.json({ error: "Non connecté" }, { status: 401 });
+	}
+	if (user.role !== "admin" && user.role !== "editor") {
+		return NextResponse.json({ error: "Non autorisé" }, { status: 403 });
 	}
 
 	let formData: FormData;

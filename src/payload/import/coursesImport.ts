@@ -20,7 +20,8 @@ export type ImportSource = {
 	data: unknown;
 };
 
-type FieldKey =
+type FieldKey = keyof Pick<
+	Course,
 	| "title"
 	| "description"
 	| "link"
@@ -29,11 +30,10 @@ type FieldKey =
 	| "certifying"
 	| "content"
 	| "publishedAt"
-	| "image"
-	| "imageBanner"
 	| "conditions"
 	| "persona"
-	| "themes";
+	| "themes"
+>;
 
 const FIELDS: { key: FieldKey; label: string; required: boolean }[] = [
 	{ key: "title", label: "Titre", required: true },
@@ -44,8 +44,6 @@ const FIELDS: { key: FieldKey; label: string; required: boolean }[] = [
 	{ key: "certifying", label: "Certifiant", required: false },
 	{ key: "content", label: "Contenu", required: false },
 	{ key: "publishedAt", label: "Date de publication", required: false },
-	{ key: "image", label: "Image à la une", required: false },
-	{ key: "imageBanner", label: "Bannière", required: false },
 	{ key: "conditions", label: "Troubles", required: true },
 	{ key: "persona", label: "Persona", required: true },
 	{ key: "themes", label: "Thèmes", required: true },
@@ -55,12 +53,17 @@ const FIELDS: { key: FieldKey; label: string; required: boolean }[] = [
 // renseignée, elle n'est pas « à compléter ».
 const NEVER_MISSING: FieldKey[] = ["publishedAt"];
 
-type RelationCollection = "conditions" | "personas" | "themes";
+type RelationKey = "conditions" | "persona" | "themes";
 
-const normalizeKey = (value: string) => value.trim().toLowerCase();
+const RELATION_COLLECTIONS = {
+	conditions: "conditions",
+	persona: "personas",
+	themes: "themes",
+} as const;
 
-export const normalizeTitle = (value: string) =>
-	value.trim().replace(/\s+/g, " ").toLowerCase();
+type Certifying = NonNullable<Course["certifying"]>;
+
+const normalize = (value: string) => value.trim().toLowerCase();
 
 const asTrimmedString = (value: unknown): string | null => {
 	if (typeof value === "number") return String(value);
@@ -82,17 +85,17 @@ const asStringList = (value: unknown): string[] => {
 
 const matchOption = <T extends string>(
 	options: readonly { label: string; value: T }[],
-	raw: string,
+	input: string,
 ): T | null => {
-	const key = normalizeKey(raw);
+	const key = normalize(input);
 	return (
 		options.find(
-			(o) => normalizeKey(o.value) === key || normalizeKey(o.label) === key,
+			(o) => normalize(o.value) === key || normalize(o.label) === key,
 		)?.value ?? null
 	);
 };
 
-const CERTIFYING_VALUES: Record<string, "yes" | "no"> = {
+const CERTIFYING_VALUES: Record<string, Certifying> = {
 	yes: "yes",
 	oui: "yes",
 	true: "yes",
@@ -103,11 +106,17 @@ const CERTIFYING_VALUES: Record<string, "yes" | "no"> = {
 	"0": "no",
 };
 
-const parseCertifying = (value: unknown): "yes" | "no" | null => {
+const parseCertifying = (value: unknown): Certifying | null => {
 	if (typeof value === "boolean") return value ? "yes" : "no";
-	const raw = asTrimmedString(value);
-	if (!raw) return null;
-	return CERTIFYING_VALUES[normalizeKey(raw)] ?? null;
+	const input = asTrimmedString(value);
+	if (!input) return null;
+	return CERTIFYING_VALUES[normalize(input)] ?? null;
+};
+
+const parseDitndId = (value: unknown): number | null | undefined => {
+	if (value === null || value === undefined || value === "") return undefined;
+	const n = typeof value === "number" ? value : Number(asTrimmedString(value));
+	return Number.isInteger(n) ? n : null;
 };
 
 const collectEntries = (sources: ImportSource[]) => {
@@ -124,31 +133,26 @@ const collectEntries = (sources: ImportSource[]) => {
 	return entries;
 };
 
-const loadRelationIndex = async (
+const loadSlugIndex = async (
 	payload: Payload,
-	collection: RelationCollection,
+	user: User,
+	collection: (typeof RELATION_COLLECTIONS)[RelationKey],
 ) => {
 	const { docs } = await payload.find({
 		collection,
 		pagination: false,
 		depth: 0,
-		select: { slug: true, name: true },
+		overrideAccess: false,
+		user,
+		select: { slug: true },
 	});
-	const index = new Map<string, number>();
-	for (const doc of docs) {
-		const { id, name } = doc as { id: number; name?: string };
-		if (name) index.set(normalizeKey(name), id);
-	}
-	// Les slugs sont prioritaires sur les noms.
-	for (const doc of docs) {
-		const { id, slug } = doc as { id: number; slug?: string };
-		if (slug) index.set(normalizeKey(slug), id);
-	}
-	return index;
+	return new Map(
+		docs.flatMap((doc) => (doc.slug ? [[normalize(doc.slug), doc.id]] : [])),
+	);
 };
 
 // Le dernier brouillon d'une formation publiée peut avoir un autre titre : on lit les deux.
-const loadExistingCourses = async (payload: Payload) => {
+const loadExistingCourses = async (payload: Payload, user: User) => {
 	const titles = new Set<string>();
 	const slugs = new Set<string>();
 	const ditndIds = new Set<number>();
@@ -158,21 +162,17 @@ const loadExistingCourses = async (payload: Payload) => {
 			pagination: false,
 			depth: 0,
 			draft,
+			overrideAccess: false,
+			user,
 			select: { title: true, slug: true, ditndId: true },
 		});
 		for (const doc of docs) {
-			if (doc.title) titles.add(normalizeTitle(doc.title));
+			if (doc.title) titles.add(normalize(doc.title));
 			if (doc.slug) slugs.add(doc.slug);
 			if (typeof doc.ditndId === "number") ditndIds.add(doc.ditndId);
 		}
 	}
 	return { titles, slugs, ditndIds };
-};
-
-const parseDitndId = (value: unknown): number | null | undefined => {
-	if (value === null || value === undefined || value === "") return undefined;
-	const n = typeof value === "number" ? value : Number(asTrimmedString(value));
-	return Number.isFinite(n) ? n : null;
 };
 
 const uniqueSlug = (title: string, taken: Set<string>) => {
@@ -192,10 +192,7 @@ const EXCLUDED_FEATURES = [
 	"heading",
 ];
 
-// Ne pas réutiliser la config du champ « content » : Turbopack peut charger
-// deux copies de lexical, et ses nœuds sont alors refusés par l'éditeur
-// headless de convertHTMLToLexical (« is not a constructor that subclasses
-// LexicalNode »). Construite ici, la config partage la copie de la conversion.
+// Pas la config du champ « content » : Turbopack peut charger une autre copie de lexical que convertHTMLToLexical.
 const getContentEditorConfig = (payload: Payload) =>
 	editorConfigFactory.fromFeatures({
 		config: payload.config,
@@ -216,24 +213,35 @@ export async function importCourses({
 }): Promise<CoursesImportReport> {
 	const report: CoursesImportReport = { imported: [], rejected: [] };
 
-	const [existing, conditionsIndex, personasIndex, themesIndex] =
-		await Promise.all([
-			loadExistingCourses(payload),
-			loadRelationIndex(payload, "conditions"),
-			loadRelationIndex(payload, "personas"),
-			loadRelationIndex(payload, "themes"),
-		]);
+	const [onSite, conditions, persona, themes] = await Promise.all([
+		loadExistingCourses(payload, user),
+		loadSlugIndex(payload, user, RELATION_COLLECTIONS.conditions),
+		loadSlugIndex(payload, user, RELATION_COLLECTIONS.persona),
+		loadSlugIndex(payload, user, RELATION_COLLECTIONS.themes),
+	]);
+	const slugIndexes: Record<RelationKey, Map<string, number>> = {
+		conditions,
+		persona,
+		themes,
+	};
 
-	const relationIndexes = {
-		conditions: conditionsIndex,
-		persona: personasIndex,
-		themes: themesIndex,
-	} as const;
+	// Seules les formations réellement créées comptent comme doublons dans l'import.
+	const imported = { titles: new Set<string>(), ditndIds: new Set<number>() };
+
+	const duplicateReason = (
+		label: string,
+		existsOnSite: boolean,
+		alreadyImported: boolean,
+	) => {
+		if (existsOnSite)
+			return `Une formation avec ${label} existe déjà sur le site.`;
+		if (alreadyImported)
+			return `Une formation avec ${label} est déjà importée plus haut : seule la première est importée.`;
+		return null;
+	};
 
 	let editorConfig: Awaited<ReturnType<typeof getContentEditorConfig>> | null =
 		null;
-	const seenTitles = new Set<string>();
-	const seenDitndIds = new Set<number>();
 
 	for (const { source, data } of collectEntries(sources)) {
 		if (typeof data !== "object" || data === null || Array.isArray(data)) {
@@ -244,110 +252,101 @@ export async function importCourses({
 			});
 			continue;
 		}
-		const raw = data as Record<string, unknown>;
+		const entry = data as Record<string, unknown>;
 
-		const title = asTrimmedString(raw.title)?.replace(/\s+/g, " ") ?? null;
+		const title = asTrimmedString(entry.title);
 		if (!title) {
 			report.rejected.push({ title: null, source, reason: "Titre manquant." });
 			continue;
 		}
-		const titleKey = normalizeTitle(title);
-		if (existing.titles.has(titleKey) || seenTitles.has(titleKey)) {
-			report.rejected.push({
-				title,
-				source,
-				reason: existing.titles.has(titleKey)
-					? "Une formation portant ce titre existe déjà sur le site."
-					: "Titre en double dans l'import : seule la première formation est importée.",
-			});
+		const titleKey = normalize(title);
+
+		const warnings: string[] = [];
+		const ditndId = parseDitndId(entry.ditndId);
+		if (ditndId === null)
+			warnings.push(
+				`Identifiant DITND invalide ignoré : « ${String(entry.ditndId)} »`,
+			);
+
+		const duplicate =
+			duplicateReason(
+				"ce titre",
+				onSite.titles.has(titleKey),
+				imported.titles.has(titleKey),
+			) ??
+			(typeof ditndId === "number"
+				? duplicateReason(
+						`l'identifiant DITND ${ditndId}`,
+						onSite.ditndIds.has(ditndId),
+						imported.ditndIds.has(ditndId),
+					)
+				: null);
+		if (duplicate) {
+			report.rejected.push({ title, source, reason: duplicate });
 			continue;
 		}
 
-		const warnings: string[] = [];
+		const fields: Partial<Pick<Course, FieldKey>> = { title };
 
-		const ditndId = parseDitndId(raw.ditndId);
-		if (ditndId === null) {
-			warnings.push(
-				`Identifiant DITND invalide ignoré : « ${String(raw.ditndId)} »`,
-			);
-		} else if (ditndId !== undefined) {
-			if (existing.ditndIds.has(ditndId) || seenDitndIds.has(ditndId)) {
-				report.rejected.push({
-					title,
-					source,
-					reason: existing.ditndIds.has(ditndId)
-						? `Une formation avec l'identifiant DITND ${ditndId} existe déjà sur le site.`
-						: `Identifiant DITND ${ditndId} en double dans l'import : seule la première formation est importée.`,
-				});
-				continue;
-			}
-			seenDitndIds.add(ditndId);
-		}
-		seenTitles.add(titleKey);
+		const description = asTrimmedString(entry.description);
+		if (description) fields.description = description;
+		const link = asTrimmedString(entry.link);
+		if (link) fields.link = link;
 
-		const values: Partial<Record<FieldKey, unknown>> = {};
-
-		values.title = title;
-		const description = asTrimmedString(raw.description);
-		if (description) values.description = description;
-		const link = asTrimmedString(raw.link);
-		if (link) values.link = link;
-
-		const formatRaw = asTrimmedString(raw.format);
-		if (formatRaw) {
-			const format = matchOption<CourseFormat>(COURSE_FORMATS, formatRaw);
-			if (format) values.format = format;
-			else warnings.push(`Format inconnu ignoré : « ${formatRaw} »`);
+		const formatInput = asTrimmedString(entry.format);
+		if (formatInput) {
+			const format = matchOption<CourseFormat>(COURSE_FORMATS, formatInput);
+			if (format) fields.format = format;
+			else warnings.push(`Format inconnu ignoré : « ${formatInput} »`);
 		}
 
-		const durationRaw = asTrimmedString(raw.duration);
-		if (durationRaw) {
+		const durationInput = asTrimmedString(entry.duration);
+		if (durationInput) {
 			const duration = matchOption<CourseDuration>(
 				COURSE_DURATIONS,
-				durationRaw,
+				durationInput,
 			);
-			if (duration) values.duration = duration;
-			else warnings.push(`Durée inconnue ignorée : « ${durationRaw} »`);
+			if (duration) fields.duration = duration;
+			else warnings.push(`Durée inconnue ignorée : « ${durationInput} »`);
 		}
 
-		if (raw.certifying !== null && raw.certifying !== undefined) {
-			const certifying = parseCertifying(raw.certifying);
-			if (certifying) values.certifying = certifying;
+		if (entry.certifying !== null && entry.certifying !== undefined) {
+			const certifying = parseCertifying(entry.certifying);
+			if (certifying) fields.certifying = certifying;
 			else
 				warnings.push(
-					`Valeur « Certifiant » inconnue ignorée : « ${String(raw.certifying)} »`,
+					`Valeur « Certifiant » inconnue ignorée : « ${String(entry.certifying)} »`,
 				);
 		}
 
-		const publishedRaw = asTrimmedString(raw.publishedAt);
-		if (publishedRaw) {
-			const date = new Date(publishedRaw);
+		const publishedInput = asTrimmedString(entry.publishedAt);
+		if (publishedInput) {
+			const date = new Date(publishedInput);
 			if (Number.isNaN(date.getTime()))
 				warnings.push(
-					`Date de publication invalide ignorée : « ${publishedRaw} »`,
+					`Date de publication invalide ignorée : « ${publishedInput} »`,
 				);
-			else values.publishedAt = date.toISOString();
+			else fields.publishedAt = date.toISOString();
 		}
 
 		for (const key of ["conditions", "persona", "themes"] as const) {
-			const index = relationIndexes[key];
 			const ids: number[] = [];
 			const unknown: string[] = [];
-			for (const item of asStringList(raw[key])) {
-				const id = index.get(normalizeKey(item));
-				if (id === undefined) unknown.push(item);
+			for (const slug of asStringList(entry[key])) {
+				const id = slugIndexes[key].get(normalize(slug));
+				if (id === undefined) unknown.push(slug);
 				else if (!ids.includes(id)) ids.push(id);
 			}
-			if (ids.length) values[key] = ids;
+			if (ids.length) fields[key] = ids;
 			if (unknown.length) {
 				const label = FIELDS.find((f) => f.key === key)?.label ?? key;
 				warnings.push(
-					`${label} inconnu${unknown.length > 1 ? "s" : ""} ignoré${unknown.length > 1 ? "s" : ""} : ${unknown.map((u) => `« ${u} »`).join(", ")}`,
+					`Ignoré dans « ${label} » (slug inconnu) : ${unknown.map((u) => `« ${u} »`).join(", ")}`,
 				);
 			}
 		}
 
-		const html = asTrimmedString(raw.contentHtml);
+		const html = asTrimmedString(entry.contentHtml);
 		if (html) {
 			try {
 				editorConfig ??= await getContentEditorConfig(payload);
@@ -357,7 +356,7 @@ export async function importCourses({
 					html: html.replace(/<(\/?)h1\b/gi, "<$1h2"),
 					JSDOM,
 				});
-				if (content.root.children.length) values.content = content;
+				if (content.root.children.length) fields.content = content;
 			} catch (error) {
 				payload.logger.error({ err: error, msg: "[CoursesImport] HTML" });
 				warnings.push("Contenu illisible ignoré (HTML non convertible).");
@@ -370,13 +369,17 @@ export async function importCourses({
 				draft: true,
 				overrideAccess: false,
 				user,
+				// Brouillon : les champs obligatoires manquants sont acceptés.
 				data: {
-					...(values as Partial<Course>),
+					...fields,
 					...(typeof ditndId === "number" && { ditndId }),
-					slug: uniqueSlug(title, existing.slugs),
+					slug: uniqueSlug(title, onSite.slugs),
 					_status: "draft",
 				} as Course,
 			});
+			imported.titles.add(titleKey);
+			if (typeof ditndId === "number") imported.ditndIds.add(ditndId);
+
 			const summary: ImportedCourse = {
 				id: doc.id,
 				title,
@@ -386,7 +389,7 @@ export async function importCourses({
 				warnings,
 			};
 			for (const field of FIELDS) {
-				if (values[field.key] !== undefined) summary.filled.push(field.label);
+				if (fields[field.key] !== undefined) summary.filled.push(field.label);
 				else if (NEVER_MISSING.includes(field.key)) continue;
 				else if (field.required) summary.missingRequired.push(field.label);
 				else summary.missingOptional.push(field.label);
