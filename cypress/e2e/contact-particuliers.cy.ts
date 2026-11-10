@@ -58,6 +58,10 @@ describe("Contact particuliers form", () => {
 				"24.1": "1",
 			});
 			expect(entry).not.to.have.any.keys("1", "6", "17", "18", "23.1");
+
+			cy.request(`${GRAVITY_FORMS_MOCK_URL}/__last-notified-entry`)
+				.its("body.entryId")
+				.should("eq", entry.id);
 		});
 	});
 

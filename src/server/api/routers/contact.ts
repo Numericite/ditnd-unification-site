@@ -3,6 +3,7 @@ import { createTRPCRouter, publicProcedure } from "~/server/api/trpc";
 import {
 	createGravityFormsEntry,
 	getGravityFormsConfig,
+	sendGravityFormsNotifications,
 	toGravityFormsEntry,
 } from "~/server/gravityForms";
 import { contactParticuliersSchema } from "~/utils/contactParticuliers";
@@ -123,8 +124,9 @@ export const contactRouter = createTRPCRouter({
 				});
 			}
 
+			let entryId: number | undefined;
 			try {
-				const entryId = await createGravityFormsEntry(
+				entryId = await createGravityFormsEntry(
 					config,
 					toGravityFormsEntry(input),
 				);
@@ -141,6 +143,23 @@ export const contactRouter = createTRPCRouter({
 					code: "INTERNAL_SERVER_ERROR",
 					message: "Failed to send message.",
 				});
+			}
+
+			if (entryId === undefined) {
+				ctx.payload.logger.error(
+					"Contact particuliers: Gravity Forms returned no entry id, notifications not sent",
+				);
+				return { ok: true };
+			}
+
+			// The entry is already saved in the WP back-office, so a notification failure must not report the message as lost.
+			try {
+				await sendGravityFormsNotifications(config, entryId);
+			} catch (err) {
+				ctx.payload.logger.error(
+					{ err, entryId },
+					"Failed to send contact-particuliers Gravity Forms notifications",
+				);
 			}
 
 			return { ok: true };

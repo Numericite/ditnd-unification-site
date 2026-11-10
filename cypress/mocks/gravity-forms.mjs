@@ -1,11 +1,18 @@
-// Stand-in for the Gravity Forms REST API so E2E submissions never create real entries.
-// GET /__last-entry returns the last body received, for assertions.
+// Stand-in for the Gravity Forms REST API so E2E submissions never create real entries nor send emails.
+// GET /__last-entry returns the last entry received (with its id), GET /__last-notified-entry the id of the last entry whose notifications were requested.
 import { createServer } from "node:http";
 
 const PORT = Number(process.env.GRAVITY_FORMS_MOCK_PORT) || 4011;
+const NOTIFICATIONS_PATH = /^\/entries\/(\d+)\/notifications$/;
 
 let lastEntry = null;
+let lastNotifiedEntryId = null;
 let nextId = 1;
+
+const sendJson = (res, status, body) => {
+	res.writeHead(status, { "Content-Type": "application/json" });
+	res.end(JSON.stringify(body));
+};
 
 createServer((req, res) => {
 	let raw = "";
@@ -16,12 +23,17 @@ createServer((req, res) => {
 		const path = req.url?.split("?")[0] ?? "";
 
 		if (req.method === "GET" && path === "/__last-entry") {
-			res.writeHead(200, { "Content-Type": "application/json" });
-			res.end(JSON.stringify(lastEntry));
+			sendJson(res, 200, lastEntry);
 			return;
 		}
 
-		if (req.method !== "POST" || path !== "/entries") {
+		if (req.method === "GET" && path === "/__last-notified-entry") {
+			sendJson(res, 200, { entryId: lastNotifiedEntryId });
+			return;
+		}
+
+		const notificationsMatch = path.match(NOTIFICATIONS_PATH);
+		if (req.method !== "POST" || (path !== "/entries" && !notificationsMatch)) {
 			res.writeHead(404).end();
 			return;
 		}
@@ -31,13 +43,17 @@ createServer((req, res) => {
 			return;
 		}
 
+		if (notificationsMatch) {
+			lastNotifiedEntryId = notificationsMatch[1];
+			sendJson(res, 200, ["mock-notification"]);
+			return;
+		}
+
 		try {
-			lastEntry = JSON.parse(raw);
-			res.writeHead(201, { "Content-Type": "application/json" });
-			res.end(JSON.stringify({ ...lastEntry, id: String(nextId++) }));
+			lastEntry = { ...JSON.parse(raw), id: String(nextId++) };
+			sendJson(res, 201, lastEntry);
 		} catch (error) {
-			res.writeHead(400, { "Content-Type": "application/json" });
-			res.end(JSON.stringify({ error: String(error) }));
+			sendJson(res, 400, { error: String(error) });
 		}
 	});
 }).listen(PORT, "127.0.0.1", () => {

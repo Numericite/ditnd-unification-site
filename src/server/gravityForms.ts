@@ -31,36 +31,53 @@ export function getGravityFormsConfig(): GravityFormsConfig | null {
 	};
 }
 
-// POST /entries skips Gravity Forms validation: the values must already match its choices exactly.
-export async function createGravityFormsEntry(
+async function postToGravityForms(
 	config: GravityFormsConfig,
-	entry: GravityFormsEntry,
-): Promise<number | undefined> {
+	path: string,
+	body?: unknown,
+): Promise<unknown> {
 	const credentials = Buffer.from(
 		`${config.consumerKey}:${config.consumerSecret}`,
 	).toString("base64");
 
-	const response = await fetch(`${config.apiUrl}/entries`, {
+	const response = await fetch(`${config.apiUrl}${path}`, {
 		method: "POST",
 		headers: {
 			Authorization: `Basic ${credentials}`,
 			"Content-Type": "application/json",
 		},
-		body: JSON.stringify({ form_id: config.formId, ...entry }),
+		body: body === undefined ? undefined : JSON.stringify(body),
 		signal: AbortSignal.timeout(10_000),
 	});
 
 	if (!response.ok) {
-		const body = await response.text().catch(() => "");
+		const text = await response.text().catch(() => "");
 		throw new Error(
-			`Gravity Forms responded ${response.status}: ${body.slice(0, 500)}`,
+			`Gravity Forms responded ${response.status} on ${path}: ${text.slice(0, 500)}`,
 		);
 	}
 
-	const created = (await response.json().catch(() => null)) as {
-		id?: number | string;
-	} | null;
+	return response.json().catch(() => null);
+}
+
+// POST /entries skips Gravity Forms validation: the values must already match its choices exactly.
+export async function createGravityFormsEntry(
+	config: GravityFormsConfig,
+	entry: GravityFormsEntry,
+): Promise<number | undefined> {
+	const created = (await postToGravityForms(config, "/entries", {
+		form_id: config.formId,
+		...entry,
+	})) as { id?: number | string } | null;
 	return created?.id === undefined ? undefined : Number(created.id);
+}
+
+// POST /entries does not send the form's notifications; this sends those bound to the form_submission event.
+export async function sendGravityFormsNotifications(
+	config: GravityFormsConfig,
+	entryId: number,
+): Promise<void> {
+	await postToGravityForms(config, `/entries/${entryId}/notifications`);
 }
 
 const FIELDS = {
