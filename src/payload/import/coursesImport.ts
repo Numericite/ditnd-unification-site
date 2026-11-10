@@ -114,8 +114,12 @@ const parseCertifying = (value: unknown): Certifying | null => {
 };
 
 const parseDitndId = (value: unknown): number | null | undefined => {
-	if (value === null || value === undefined || value === "") return undefined;
-	const n = typeof value === "number" ? value : Number(asTrimmedString(value));
+	if (value === null || value === undefined) return undefined;
+	if (typeof value === "number") return Number.isInteger(value) ? value : null;
+	if (typeof value !== "string") return null;
+	const input = value.trim();
+	if (!input) return undefined;
+	const n = Number(input);
 	return Number.isInteger(n) ? n : null;
 };
 
