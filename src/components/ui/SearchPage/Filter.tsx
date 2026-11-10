@@ -1,10 +1,7 @@
 import Accordion from "@codegouvfr/react-dsfr/Accordion";
 import Checkbox from "@codegouvfr/react-dsfr/Checkbox";
 import { useEffect, useState } from "react";
-import type {
-	FilterItem,
-	FiltersQuery,
-} from "~/components/PracticalGuides/GuidesFiltersDisplay";
+import type { FilterItem } from "~/components/PracticalGuides/GuidesFiltersDisplay";
 import { useBreakpointsValuesPx } from "@codegouvfr/react-dsfr/useBreakpointsValuesPx";
 import { useRouter } from "next/router";
 import { deserialize } from "~/utils/tools";
@@ -12,7 +9,8 @@ import { tss } from "tss-react/dsfr";
 
 type Props = {
 	label: string;
-	collection: keyof FiltersQuery;
+	/** Clé de l'URL qui porte les valeurs cochées de ce filtre. */
+	collection: string;
 	value: FilterItem[];
 	handleOnChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
 };

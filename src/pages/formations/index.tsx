@@ -1,6 +1,6 @@
 import { fr } from "@codegouvfr/react-dsfr";
 import Head from "next/head";
-import { useState, type Dispatch, type SetStateAction } from "react";
+import { useState } from "react";
 import Breadcrumb from "@codegouvfr/react-dsfr/Breadcrumb";
 import SingleSkipLink from "~/components/ui/SingleSkipLink";
 import {
@@ -8,7 +8,6 @@ import {
 	type CoursesFiltersQuery,
 } from "~/components/Courses/SearchCoursesDisplay";
 import { CoursesFiltersDisplay } from "~/components/Courses/CoursesFiltersDisplay";
-import type { FiltersQuery } from "~/components/PracticalGuides/GuidesFiltersDisplay";
 import { tss } from "tss-react/dsfr";
 import { deserialize } from "~/utils/tools";
 import PageContent from "~/components/ui/PageContent";
@@ -74,11 +73,7 @@ export default function Courses({
 									anchor="#results"
 								/>
 								<div className={fr.cx("fr-mt-2w")}>
-									<CoursesFiltersDisplay
-										setFilters={
-											setFilters as Dispatch<SetStateAction<FiltersQuery>>
-										}
-									/>
+									<CoursesFiltersDisplay setFilters={setFilters} />
 								</div>
 							</div>
 						</aside>
