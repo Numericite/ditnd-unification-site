@@ -1,0 +1,32 @@
+/*
+ * DSFR draws the checkbox border with 8 background-image gradients that get
+ * pixelated at non-integer zoom levels: hide those layers (size 0, only the
+ * check icon keeps its size) and use a real border instead.
+ */
+.fr-checkbox-group input[type="checkbox"] + label::before {
+	border: 1px solid var(--border-action-high-blue-france);
+	background-size:
+		0 0,
+		0 0,
+		0 0,
+		0 0,
+		0 0,
+		0 0,
+		0 0,
+		0 0,
+		1rem;
+}
+
+.fr-checkbox-group input[type="checkbox"]:disabled + label::before {
+	border-color: var(--background-disabled-grey);
+}
+
+.fr-checkbox-group--error input[type="checkbox"] + label::before,
+.fr-fieldset--error .fr-checkbox-group input[type="checkbox"] + label::before {
+	border-color: var(--border-plain-error);
+}
+
+.fr-checkbox-group--valid input[type="checkbox"] + label::before,
+.fr-fieldset--valid .fr-checkbox-group input[type="checkbox"] + label::before {
+	border-color: var(--border-plain-success);
+}
