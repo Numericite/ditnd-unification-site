@@ -11,7 +11,13 @@ import {
 	type JSXConverters,
 } from "@payloadcms/richtext-lexical/react";
 import { extractYouTubeId, ImageSizes, lexicalToText, slugify } from "./tools";
-import type { Condition, Media, Theme } from "~/payload/payload-types";
+import type {
+	Condition,
+	Glossary,
+	Media,
+	Theme,
+} from "~/payload/payload-types";
+import GlossaryTerm from "~/components/ui/CmsPage/GlossaryTerm";
 import type { AugmentedCourse } from "~/server/api/routers/courses";
 import CardDisplay from "~/components/ui/Cards/CardDisplay";
 import CardsCarousel from "~/components/ui/Cards/CardsCarousel";
@@ -210,6 +216,21 @@ export const linkConverter: JSXConverters<DefaultNodeTypes>["link"] = (
 	args,
 ) => {
 	const { node, nodesToJSX, converters } = args;
+
+	const glossaryTerm =
+		node.fields.linkType === "internal" &&
+		node.fields.doc?.relationTo === "glossary" &&
+		typeof node.fields.doc.value === "object"
+			? (node.fields.doc.value as Partial<Glossary>)
+			: undefined;
+
+	if (glossaryTerm?.description) {
+		return (
+			<GlossaryTerm description={glossaryTerm.description}>
+				{nodesToJSX({ nodes: node.children ?? [], converters })}
+			</GlossaryTerm>
+		);
+	}
 
 	const href =
 		node.fields.linkType === "internal" && node.fields.doc
