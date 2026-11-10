@@ -1,5 +1,6 @@
 import { FolderTableCell as FolderTableCell_f9c02e79a4aed9a3924487c0cd4cafb1 } from "@payloadcms/next/rsc";
 import { FolderField as FolderField_f9c02e79a4aed9a3924487c0cd4cafb1 } from "@payloadcms/next/rsc";
+import { AdminOnlyExportListMenuItem as AdminOnlyExportListMenuItem_ee5dd843cad526874c08628a3559c0f7 } from "../../../payload/components/AdminOnlyExportListMenuItem";
 import { RscEntryLexicalCell as RscEntryLexicalCell_44fe37237e0ebf4470c9990d8cb7b07e } from "@payloadcms/richtext-lexical/rsc";
 import { RscEntryLexicalField as RscEntryLexicalField_44fe37237e0ebf4470c9990d8cb7b07e } from "@payloadcms/richtext-lexical/rsc";
 import { LexicalDiffComponent as LexicalDiffComponent_44fe37237e0ebf4470c9990d8cb7b07e } from "@payloadcms/richtext-lexical/rsc";
@@ -40,12 +41,25 @@ import { default as default_30b019d33d2d57b9c17407beecd72e60 } from "../../../pa
 import { default as default_22a653d96dc1a6313610d55237ed703e } from "../../../payload/components/ColorPicker";
 import { LinkToDoc as LinkToDoc_aead06e4cbf6b2620c5c51c9ab283634 } from "@payloadcms/plugin-search/client";
 import { ReindexButton as ReindexButton_aead06e4cbf6b2620c5c51c9ab283634 } from "@payloadcms/plugin-search/client";
+import { FormatField as FormatField_cdf7e044479f899a31f804427d568b36 } from "@payloadcms/plugin-import-export/rsc";
+import { LimitField as LimitField_cdf7e044479f899a31f804427d568b36 } from "@payloadcms/plugin-import-export/rsc";
+import { Page as Page_cdf7e044479f899a31f804427d568b36 } from "@payloadcms/plugin-import-export/rsc";
+import { SortBy as SortBy_cdf7e044479f899a31f804427d568b36 } from "@payloadcms/plugin-import-export/rsc";
+import { SortOrder as SortOrder_cdf7e044479f899a31f804427d568b36 } from "@payloadcms/plugin-import-export/rsc";
+import { SelectionToUseField as SelectionToUseField_cdf7e044479f899a31f804427d568b36 } from "@payloadcms/plugin-import-export/rsc";
+import { FieldsToExport as FieldsToExport_cdf7e044479f899a31f804427d568b36 } from "@payloadcms/plugin-import-export/rsc";
+import { CollectionField as CollectionField_cdf7e044479f899a31f804427d568b36 } from "@payloadcms/plugin-import-export/rsc";
+import { ExportPreview as ExportPreview_cdf7e044479f899a31f804427d568b36 } from "@payloadcms/plugin-import-export/rsc";
+import { ExportSaveButton as ExportSaveButton_cdf7e044479f899a31f804427d568b36 } from "@payloadcms/plugin-import-export/rsc";
+import { ImportPreview as ImportPreview_cdf7e044479f899a31f804427d568b36 } from "@payloadcms/plugin-import-export/rsc";
+import { ImportSaveButton as ImportSaveButton_cdf7e044479f899a31f804427d568b36 } from "@payloadcms/plugin-import-export/rsc";
 import { FolderTypeField as FolderTypeField_2b8867833a34864a02ddf429b0728a40 } from "@payloadcms/next/client";
 import { default as default_a8430564fd2c4f0a506836a5de510638 } from "../../../payload/components/SimplifiedContentGeneratorHeaderButton";
-import { S3ClientUploadHandler as S3ClientUploadHandler_f97aa6c64367fa259c5bc0567239ef24 } from "@payloadcms/storage-s3/client";
+import { ImportExportProvider as ImportExportProvider_cdf7e044479f899a31f804427d568b36 } from "@payloadcms/plugin-import-export/rsc";
 import { default as default_4bf3fd4f8b9e4bf53a867035a745e24a } from "../../../payload/views/MapImportView";
 import { default as default_9c11b756bbfd4fdef7b9a95d9b38e373 } from "../../../payload/views/SimplifiedContentGeneratorView";
 import { CollectionCards as CollectionCards_f9c02e79a4aed9a3924487c0cd4cafb1 } from "@payloadcms/next/rsc";
+import { S3ClientUploadHandler as S3ClientUploadHandler_f97aa6c64367fa259c5bc0567239ef24 } from "@payloadcms/storage-s3/client";
 
 /** @type import('payload').ImportMap */
 export const importMap = {
@@ -53,6 +67,8 @@ export const importMap = {
 		FolderTableCell_f9c02e79a4aed9a3924487c0cd4cafb1,
 	"@payloadcms/next/rsc#FolderField":
 		FolderField_f9c02e79a4aed9a3924487c0cd4cafb1,
+	"./components/AdminOnlyExportListMenuItem#AdminOnlyExportListMenuItem":
+		AdminOnlyExportListMenuItem_ee5dd843cad526874c08628a3559c0f7,
 	"@payloadcms/richtext-lexical/rsc#RscEntryLexicalCell":
 		RscEntryLexicalCell_44fe37237e0ebf4470c9990d8cb7b07e,
 	"@payloadcms/richtext-lexical/rsc#RscEntryLexicalField":
@@ -133,15 +149,41 @@ export const importMap = {
 		LinkToDoc_aead06e4cbf6b2620c5c51c9ab283634,
 	"@payloadcms/plugin-search/client#ReindexButton":
 		ReindexButton_aead06e4cbf6b2620c5c51c9ab283634,
+	"@payloadcms/plugin-import-export/rsc#FormatField":
+		FormatField_cdf7e044479f899a31f804427d568b36,
+	"@payloadcms/plugin-import-export/rsc#LimitField":
+		LimitField_cdf7e044479f899a31f804427d568b36,
+	"@payloadcms/plugin-import-export/rsc#Page":
+		Page_cdf7e044479f899a31f804427d568b36,
+	"@payloadcms/plugin-import-export/rsc#SortBy":
+		SortBy_cdf7e044479f899a31f804427d568b36,
+	"@payloadcms/plugin-import-export/rsc#SortOrder":
+		SortOrder_cdf7e044479f899a31f804427d568b36,
+	"@payloadcms/plugin-import-export/rsc#SelectionToUseField":
+		SelectionToUseField_cdf7e044479f899a31f804427d568b36,
+	"@payloadcms/plugin-import-export/rsc#FieldsToExport":
+		FieldsToExport_cdf7e044479f899a31f804427d568b36,
+	"@payloadcms/plugin-import-export/rsc#CollectionField":
+		CollectionField_cdf7e044479f899a31f804427d568b36,
+	"@payloadcms/plugin-import-export/rsc#ExportPreview":
+		ExportPreview_cdf7e044479f899a31f804427d568b36,
+	"@payloadcms/plugin-import-export/rsc#ExportSaveButton":
+		ExportSaveButton_cdf7e044479f899a31f804427d568b36,
+	"@payloadcms/plugin-import-export/rsc#ImportPreview":
+		ImportPreview_cdf7e044479f899a31f804427d568b36,
+	"@payloadcms/plugin-import-export/rsc#ImportSaveButton":
+		ImportSaveButton_cdf7e044479f899a31f804427d568b36,
 	"@payloadcms/next/client#FolderTypeField":
 		FolderTypeField_2b8867833a34864a02ddf429b0728a40,
 	"./components/SimplifiedContentGeneratorHeaderButton#default":
 		default_a8430564fd2c4f0a506836a5de510638,
-	"@payloadcms/storage-s3/client#S3ClientUploadHandler":
-		S3ClientUploadHandler_f97aa6c64367fa259c5bc0567239ef24,
+	"@payloadcms/plugin-import-export/rsc#ImportExportProvider":
+		ImportExportProvider_cdf7e044479f899a31f804427d568b36,
 	"./views/MapImportView#default": default_4bf3fd4f8b9e4bf53a867035a745e24a,
 	"./views/SimplifiedContentGeneratorView#default":
 		default_9c11b756bbfd4fdef7b9a95d9b38e373,
 	"@payloadcms/next/rsc#CollectionCards":
 		CollectionCards_f9c02e79a4aed9a3924487c0cd4cafb1,
+	"@payloadcms/storage-s3/client#S3ClientUploadHandler":
+		S3ClientUploadHandler_f97aa6c64367fa259c5bc0567239ef24,
 };
