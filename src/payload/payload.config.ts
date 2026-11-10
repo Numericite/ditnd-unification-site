@@ -15,6 +15,7 @@ import { searchPlugin } from "@payloadcms/plugin-search";
 import { seoPlugin } from "@payloadcms/plugin-seo";
 import { beforeSyncPracticalGuide } from "./search";
 import { mdaRedirectsPlugin } from "./plugins/redirects";
+import { mdaImportExportPlugin } from "./plugins/importExport";
 
 import { Users } from "./collections/Users";
 import { Personas } from "./collections/Personas";
@@ -320,5 +321,7 @@ export default buildConfig({
 				region: process.env.S3_REGION || "",
 			},
 		}),
+		// En dernier : il doit voir les champs ajoutés par les autres plugins (SEO…).
+		mdaImportExportPlugin,
 	],
 });
