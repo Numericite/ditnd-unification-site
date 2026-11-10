@@ -1,3 +1,8 @@
+const GRAVITY_FORMS_MOCK_URL = "http://127.0.0.1:4011";
+
+const lastGravityFormsEntry = () =>
+	cy.request(`${GRAVITY_FORMS_MOCK_URL}/__last-entry`).its("body");
+
 describe("Contact particuliers form", () => {
 	beforeEach(() => {
 		cy.visit("/contact-particuliers");
@@ -41,19 +46,50 @@ describe("Contact particuliers form", () => {
 
 		cy.wait("@submit").its("response.statusCode").should("eq", 200);
 		cy.contains("Votre message a bien été envoyé").should("be.visible");
+
+		lastGravityFormsEntry().then((entry) => {
+			expect(entry).to.include({
+				form_id: 2,
+				"28": "Dupont",
+				"29": "Marie",
+				"3": "marie.dupont@example.com",
+				"15": "Diagnostic",
+				"16": "Usager concerné",
+				"24.1": "1",
+			});
+			expect(entry).not.to.have.any.keys("1", "6", "17", "18", "23.1");
+
+			cy.request(`${GRAVITY_FORMS_MOCK_URL}/__last-notified-entry`)
+				.its("body.entryId")
+				.should("eq", entry.id);
+		});
 	});
 
 	it("submits successfully with all optional fields filled too", () => {
 		cy.intercept("POST", "/api/trpc/contact.submitParticuliers*").as("submit");
 
 		cy.get('input[name="civility"][value="Madame"]').check({ force: true });
+		cy.get('select[name="departement"]').select("05 - Hautes-Alpes");
 		cy.get('select[name="sexe"]').select("Féminin");
 		cy.get('select[name="ageRange"]').select("De 26 à 50 ans");
 		fillRequired();
+		cy.get('select[name="classification"]').select(
+			"Parent d’un enfant concerné",
+		);
 		cy.get('form button[type="submit"]').click();
 
 		cy.wait("@submit").its("response.statusCode").should("eq", 200);
 		cy.contains("Votre message a bien été envoyé").should("be.visible");
+
+		lastGravityFormsEntry().then((entry) => {
+			expect(entry).to.include({
+				"1": "Madame",
+				"6": "05 - Hautes-alpes",
+				"16": "Parent d'un enfant",
+				"17": "Féminin",
+				"18": "De 26 à 50 ans",
+			});
+		});
 	});
 
 	it("keeps the honeypot field hidden from sighted/AT users", () => {
