@@ -474,7 +474,12 @@ export interface Course {
 	title: string;
 	description: string;
 	link: string;
-	type: "MOOC" | "Webinaire" | "Présentiel";
+	format: "pres" | "dist";
+	duration?: ("lt1j" | "1-3j" | "gt3j") | null;
+	/**
+	 * Non affiché sur le site pour l'instant.
+	 */
+	certifying?: ("yes" | "no") | null;
 	content?: {
 		root: {
 			type: string;
@@ -512,6 +517,10 @@ export interface Course {
 	 * Utilisé dans l'URL de la page. Laissez vide pour le générer à partir du titre. Le modifier change l'URL publique : pensez à ajouter une redirection.
 	 */
 	slug: string;
+	/**
+	 * Renseigné par l'import des formations.
+	 */
+	ditndId?: number | null;
 	conditions: (number | Condition)[];
 	persona: (number | Persona)[];
 	themes: (number | Theme)[];
@@ -1230,7 +1239,9 @@ export interface CoursesSelect<T extends boolean = true> {
 	title?: T;
 	description?: T;
 	link?: T;
-	type?: T;
+	format?: T;
+	duration?: T;
+	certifying?: T;
 	content?: T;
 	meta?:
 		| T
@@ -1244,6 +1255,7 @@ export interface CoursesSelect<T extends boolean = true> {
 	image?: T;
 	imageBanner?: T;
 	slug?: T;
+	ditndId?: T;
 	conditions?: T;
 	persona?: T;
 	themes?: T;

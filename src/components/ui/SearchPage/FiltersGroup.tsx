@@ -11,9 +11,9 @@ import {
 	withoutAllConditions,
 } from "~/utils/conditions-filter";
 
-type Props = {
-	filters: FiltersType[];
-	setFilters: Dispatch<SetStateAction<FiltersQuery>>;
+type Props<Q extends FiltersQuery> = {
+	filters: FiltersType<Q>[];
+	setFilters: Dispatch<SetStateAction<Q>>;
 };
 
 // « Tous TND » et les troubles pris un à un s'excluent mutuellement : cocher
@@ -22,7 +22,7 @@ const computeNextValues = (
 	current: string[],
 	slug: string,
 	checked: boolean,
-	collection: keyof FiltersQuery,
+	collection: string,
 ) => {
 	if (!checked) return current.filter((value) => value !== slug);
 
@@ -34,24 +34,28 @@ const computeNextValues = (
 		: withoutAllConditions(next);
 };
 
-export default function FiltersGroup({ filters, setFilters }: Props) {
+export default function FiltersGroup<Q extends FiltersQuery>({
+	filters,
+	setFilters,
+}: Props<Q>) {
 	const router = useRouter();
 
 	const handleOnChange = (
 		e: React.ChangeEvent<HTMLInputElement>,
-		collection: keyof FiltersQuery,
+		collection: keyof Q & string,
 	) => {
 		const slug = e.target.value;
 		const checked = e.target.checked;
 
-		setFilters((prev) => {
-			const current = prev[collection];
-			if (!current) return { ...prev };
-			return {
-				...prev,
-				[collection]: computeNextValues(current, slug, checked, collection),
-			};
-		});
+		setFilters((prev) => ({
+			...prev,
+			[collection]: computeNextValues(
+				prev[collection] as string[],
+				slug,
+				checked,
+				collection,
+			),
+		}));
 
 		const currentValues = deserialize(router.query[collection]);
 
@@ -86,6 +90,7 @@ export default function FiltersGroup({ filters, setFilters }: Props) {
 				<Filter
 					key={`filter${index}`}
 					label={filter.label}
+					collection={filter.collection}
 					value={filter.value}
 					handleOnChange={(e) => handleOnChange(e, filter.collection)}
 				/>

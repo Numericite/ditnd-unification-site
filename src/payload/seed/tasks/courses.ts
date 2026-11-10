@@ -1,5 +1,6 @@
 import type { Payload } from "payload";
 import type { DefaultTypedEditorState } from "@payloadcms/richtext-lexical";
+import type { CourseDuration, CourseFormat } from "~/utils/courses";
 import { CoursesContent } from "~/utils/wysiwyg-content-courses";
 
 const courses = [
@@ -11,7 +12,8 @@ const courses = [
 		themes: [1],
 		persona: [1],
 		conditions: [4],
-		type: "Webinaire" as "Webinaire" | "MOOC" | "Présentiel",
+		format: "dist" as CourseFormat,
+		duration: "lt1j" as CourseDuration,
 	},
 	{
 		title: "Développement et manifestations selon l'âge",
@@ -21,7 +23,8 @@ const courses = [
 		themes: [1],
 		persona: [1],
 		conditions: [4],
-		type: "Présentiel" as "Webinaire" | "MOOC" | "Présentiel",
+		format: "pres" as CourseFormat,
+		duration: "1-3j" as CourseDuration,
 	},
 	{
 		title: "Repérage précoce : signes à observer",
@@ -31,7 +34,8 @@ const courses = [
 		themes: [2],
 		persona: [1],
 		conditions: [1],
-		type: "MOOC" as "Webinaire" | "MOOC" | "Présentiel",
+		format: "dist" as CourseFormat,
+		duration: "gt3j" as CourseDuration,
 	},
 ];
 
@@ -44,7 +48,8 @@ async function createCourse(
 		themes: number[];
 		persona: number[];
 		conditions: number[];
-		type: "Webinaire" | "MOOC" | "Présentiel";
+		format: CourseFormat;
+		duration: CourseDuration;
 		content: DefaultTypedEditorState;
 	},
 ): Promise<void> {

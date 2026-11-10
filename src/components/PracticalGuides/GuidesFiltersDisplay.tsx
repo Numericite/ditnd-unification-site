@@ -12,16 +12,17 @@ export type FilterItem = {
 	label: string;
 };
 
-export interface FiltersQuery {
+// Filtres communs aux listes (fiches pratiques, formations). Une liste qui a
+// ses propres filtres étend ce type (voir CoursesFiltersQuery).
+export type FiltersQuery = {
 	conditions: string[];
 	themes: string[];
 	personas: string[];
-	type?: string[];
-}
+};
 
-export type FiltersType = {
+export type FiltersType<Q extends FiltersQuery = FiltersQuery> = {
 	label: string;
-	collection: keyof FiltersQuery;
+	collection: keyof Q & string;
 	value: FilterItem[];
 };
 

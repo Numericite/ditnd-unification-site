@@ -10,7 +10,7 @@ import { tss } from "tss-react/dsfr";
 type Props = {
 	title: string;
 	description?: string;
-	type?: "Webinaire" | "MOOC" | "Présentiel";
+	type?: string;
 	imageUrl?: string;
 	imageAlt?: string;
 	noImg?: boolean;
