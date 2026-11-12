@@ -217,19 +217,20 @@ export const linkConverter: JSXConverters<DefaultNodeTypes>["link"] = (
 		converters,
 	});
 
-	const glossaryTerm =
+	if (
 		node.fields.linkType === "internal" &&
-		node.fields.doc?.relationTo === "glossary" &&
-		typeof node.fields.doc.value === "object"
-			? (node.fields.doc.value as { description?: string | null })
-			: undefined;
+		node.fields.doc?.relationTo === "glossary"
+	) {
+		const { value } = node.fields.doc;
+		const description =
+			value && typeof value === "object"
+				? (value as { description?: string | null }).description
+				: undefined;
 
-	if (glossaryTerm?.description) {
-		return (
-			<GlossaryTerm description={glossaryTerm.description}>
-				{childrenJSX}
-			</GlossaryTerm>
-		);
+		// Unpopulated term (depth too low): plain text rather than a dead link.
+		if (!description) return <span>{childrenJSX}</span>;
+
+		return <GlossaryTerm description={description}>{childrenJSX}</GlossaryTerm>;
 	}
 
 	const href =
