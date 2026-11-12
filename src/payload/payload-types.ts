@@ -157,14 +157,12 @@ export interface Config {
 		home: Home;
 		footer: Footer;
 		about: About;
-		newsletter: Newsletter;
 		"simplified-content-generator": SimplifiedContentGenerator;
 	};
 	globalsSelect: {
 		home: HomeSelect<false> | HomeSelect<true>;
 		footer: FooterSelect<false> | FooterSelect<true>;
 		about: AboutSelect<false> | AboutSelect<true>;
-		newsletter: NewsletterSelect<false> | NewsletterSelect<true>;
 		"simplified-content-generator":
 			| SimplifiedContentGeneratorSelect<false>
 			| SimplifiedContentGeneratorSelect<true>;
@@ -1580,22 +1578,106 @@ export interface Home {
 		title: string;
 		description: string;
 	};
-	tiles: {
-		persona: {
-			title: string;
-			description: string;
-		};
-		condition: {
-			title: string;
-			description: string;
-		};
-	};
-	mostViewedGuides: {
+	/**
+	 * Glissez-déposez les sections pour changer leur ordre d'affichage sous l'en-tête. Décochez « Afficher la section » pour la masquer sans perdre son contenu.
+	 */
+	sections?:
+		| (
+				| HomeNewsCarouselSection
+				| HomePersonaTilesSection
+				| HomeMostViewedGuidesSection
+				| HomeNewsletterSection
+		  )[]
+		| null;
+	updatedAt?: string | null;
+	createdAt?: string | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "HomeNewsCarouselSection".
+ */
+export interface HomeNewsCarouselSection {
+	visible?: boolean | null;
+	id?: string | null;
+	blockName?: string | null;
+	blockType: "newsCarousel";
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "HomePersonaTilesSection".
+ */
+export interface HomePersonaTilesSection {
+	visible?: boolean | null;
+	persona: {
 		title: string;
 		description: string;
 	};
-	updatedAt?: string | null;
-	createdAt?: string | null;
+	condition: {
+		title: string;
+		description: string;
+	};
+	id?: string | null;
+	blockName?: string | null;
+	blockType: "personaTiles";
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "HomeMostViewedGuidesSection".
+ */
+export interface HomeMostViewedGuidesSection {
+	visible?: boolean | null;
+	title: string;
+	description: string;
+	id?: string | null;
+	blockName?: string | null;
+	blockType: "mostViewedGuides";
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "HomeNewsletterSection".
+ */
+export interface HomeNewsletterSection {
+	visible?: boolean | null;
+	/**
+	 * Laissez vide pour utiliser le libellé DSFR par défaut : « Abonnez-vous à notre lettre d'information ».
+	 */
+	title?: string | null;
+	description?: string | null;
+	/**
+	 * Affichée sous le champ email. Laissez vide pour utiliser la mention DSFR par défaut.
+	 */
+	consentHint?: string | null;
+	/**
+	 * Laissez vide pour utiliser le libellé DSFR par défaut : « Suivez-nous sur les réseaux sociaux ».
+	 */
+	socialTitle?: string | null;
+	/**
+	 * Si aucun réseau n'est renseigné, la colonne réseaux sociaux n'est pas affichée.
+	 */
+	socials?:
+		| {
+				type:
+					| "facebook"
+					| "github"
+					| "instagram"
+					| "linkedin"
+					| "mastodon"
+					| "tiktok"
+					| "twitch"
+					| "twitter-x"
+					| "vimeo"
+					| "youtube"
+					| "dailymotion"
+					| "telegram"
+					| "threads"
+					| "mail";
+				url: string;
+				id?: string | null;
+		  }[]
+		| null;
+	id?: string | null;
+	blockName?: string | null;
+	blockType: "newsletter";
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -1748,55 +1830,6 @@ export interface About {
 	createdAt?: string | null;
 }
 /**
- * Bloc affiché en bas de la page d'accueil. Décochez « Afficher le bloc » pour le retirer du site.
- *
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "newsletter".
- */
-export interface Newsletter {
-	id: number;
-	enabled?: boolean | null;
-	/**
-	 * Laissez vide pour utiliser le libellé DSFR par défaut : « Abonnez-vous à notre lettre d'information ».
-	 */
-	title?: string | null;
-	description?: string | null;
-	/**
-	 * Affichée sous le champ email. Laissez vide pour utiliser la mention DSFR par défaut.
-	 */
-	consentHint?: string | null;
-	/**
-	 * Laissez vide pour utiliser le libellé DSFR par défaut : « Suivez-nous sur les réseaux sociaux ».
-	 */
-	socialTitle?: string | null;
-	/**
-	 * Si aucun réseau n'est renseigné, la colonne réseaux sociaux n'est pas affichée.
-	 */
-	socials?:
-		| {
-				type:
-					| "facebook"
-					| "github"
-					| "instagram"
-					| "linkedin"
-					| "mastodon"
-					| "tiktok"
-					| "twitch"
-					| "twitter-x"
-					| "vimeo"
-					| "youtube"
-					| "dailymotion"
-					| "telegram"
-					| "threads"
-					| "mail";
-				url: string;
-				id?: string | null;
-		  }[]
-		| null;
-	updatedAt?: string | null;
-	createdAt?: string | null;
-}
-/**
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "simplified-content-generator".
  */
@@ -1846,31 +1879,78 @@ export interface HomeSelect<T extends boolean = true> {
 				title?: T;
 				description?: T;
 		  };
-	tiles?:
+	sections?:
 		| T
 		| {
-				persona?:
-					| T
-					| {
-							title?: T;
-							description?: T;
-					  };
-				condition?:
-					| T
-					| {
-							title?: T;
-							description?: T;
-					  };
+				newsCarousel?: T | HomeNewsCarouselSectionSelect<T>;
+				personaTiles?: T | HomePersonaTilesSectionSelect<T>;
+				mostViewedGuides?: T | HomeMostViewedGuidesSectionSelect<T>;
+				newsletter?: T | HomeNewsletterSectionSelect<T>;
 		  };
-	mostViewedGuides?:
+	updatedAt?: T;
+	createdAt?: T;
+	globalType?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "HomeNewsCarouselSection_select".
+ */
+export interface HomeNewsCarouselSectionSelect<T extends boolean = true> {
+	visible?: T;
+	id?: T;
+	blockName?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "HomePersonaTilesSection_select".
+ */
+export interface HomePersonaTilesSectionSelect<T extends boolean = true> {
+	visible?: T;
+	persona?:
 		| T
 		| {
 				title?: T;
 				description?: T;
 		  };
-	updatedAt?: T;
-	createdAt?: T;
-	globalType?: T;
+	condition?:
+		| T
+		| {
+				title?: T;
+				description?: T;
+		  };
+	id?: T;
+	blockName?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "HomeMostViewedGuidesSection_select".
+ */
+export interface HomeMostViewedGuidesSectionSelect<T extends boolean = true> {
+	visible?: T;
+	title?: T;
+	description?: T;
+	id?: T;
+	blockName?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "HomeNewsletterSection_select".
+ */
+export interface HomeNewsletterSectionSelect<T extends boolean = true> {
+	visible?: T;
+	title?: T;
+	description?: T;
+	consentHint?: T;
+	socialTitle?: T;
+	socials?:
+		| T
+		| {
+				type?: T;
+				url?: T;
+				id?: T;
+		  };
+	id?: T;
+	blockName?: T;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -1933,27 +2013,6 @@ export interface AboutSelect<T extends boolean = true> {
 				title?: T;
 				imageBanner?: T;
 				content?: T;
-		  };
-	updatedAt?: T;
-	createdAt?: T;
-	globalType?: T;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "newsletter_select".
- */
-export interface NewsletterSelect<T extends boolean = true> {
-	enabled?: T;
-	title?: T;
-	description?: T;
-	consentHint?: T;
-	socialTitle?: T;
-	socials?:
-		| T
-		| {
-				type?: T;
-				url?: T;
-				id?: T;
 		  };
 	updatedAt?: T;
 	createdAt?: T;

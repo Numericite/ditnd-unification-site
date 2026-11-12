@@ -42,6 +42,7 @@ import { default as default_22a653d96dc1a6313610d55237ed703e } from "../../../pa
 import { LinkToDoc as LinkToDoc_aead06e4cbf6b2620c5c51c9ab283634 } from "@payloadcms/plugin-search/client";
 import { ReindexButton as ReindexButton_aead06e4cbf6b2620c5c51c9ab283634 } from "@payloadcms/plugin-search/client";
 import { FolderTypeField as FolderTypeField_2b8867833a34864a02ddf429b0728a40 } from "@payloadcms/next/client";
+import { default as default_04f4ea49bc962e3ce08e0336db9b8887 } from "../../../payload/components/HomeSectionRowLabel";
 import { default as default_a8430564fd2c4f0a506836a5de510638 } from "../../../payload/components/SimplifiedContentGeneratorHeaderButton";
 import { default as default_4bf3fd4f8b9e4bf53a867035a745e24a } from "../../../payload/views/MapImportView";
 import { default as default_9c11b756bbfd4fdef7b9a95d9b38e373 } from "../../../payload/views/SimplifiedContentGeneratorView";
@@ -138,6 +139,8 @@ export const importMap = {
 		ReindexButton_aead06e4cbf6b2620c5c51c9ab283634,
 	"@payloadcms/next/client#FolderTypeField":
 		FolderTypeField_2b8867833a34864a02ddf429b0728a40,
+	"./components/HomeSectionRowLabel#default":
+		default_04f4ea49bc962e3ce08e0336db9b8887,
 	"./components/SimplifiedContentGeneratorHeaderButton#default":
 		default_a8430564fd2c4f0a506836a5de510638,
 	"./views/MapImportView#default": default_4bf3fd4f8b9e4bf53a867035a745e24a,

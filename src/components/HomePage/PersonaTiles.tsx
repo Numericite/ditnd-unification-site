@@ -6,7 +6,8 @@ import { PersonaGrid } from "../ui/HomePage/PersonaGrid";
 import Tag from "@codegouvfr/react-dsfr/Tag";
 import { useRouter } from "next/router";
 import { tss } from "tss-react/dsfr";
-import type { Home, Persona } from "~/payload/payload-types";
+import type { HomePersonaTilesSection, Persona } from "~/payload/payload-types";
+import { findHomeSection } from "~/utils/homeSections";
 import type { PictogramName } from "~/utils/pictograms";
 import Breadcrumb from "@codegouvfr/react-dsfr/Breadcrumb";
 
@@ -41,14 +42,16 @@ export type TagItem = {
 
 type SectionContent = { title: string; description?: string };
 
+const EMPTY_CONTENT: SectionContent = { title: "" };
+
 const getContentByDisplay = (
-	tiles: Home["tiles"],
+	section: HomePersonaTilesSection | undefined,
 ): Record<PersonaTypes, SectionContent> => ({
-	default: tiles.persona,
-	person: tiles.condition,
+	default: section?.persona ?? EMPTY_CONTENT,
+	person: section?.condition ?? EMPTY_CONTENT,
 	professional: { title: "Quel type de professionnel êtes-vous ?" },
-	afterProfessional: tiles.condition,
-	condition: { title: "" },
+	afterProfessional: section?.condition ?? EMPTY_CONTENT,
+	condition: EMPTY_CONTENT,
 });
 
 type Props = {
@@ -112,9 +115,9 @@ export const PersonaTiles = ({
 
 	const homeCMS = homeCMSStore.get();
 
-	const { title: subTitle, description } = getContentByDisplay(homeCMS.tiles)[
-		display
-	];
+	const { title: subTitle, description } = getContentByDisplay(
+		findHomeSection(homeCMS, "personaTiles"),
+	)[display];
 
 	// TODO: Réactiver la tuile "Un trouble que je ne sais pas identifier"
 	// const tdhTiles = [unknownTile, ...tdh];

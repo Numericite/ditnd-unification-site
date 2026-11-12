@@ -3,17 +3,20 @@ import { Follow, type FollowProps } from "@codegouvfr/react-dsfr/Follow";
 import { type FormEvent, useState } from "react";
 import Honeypot from "~/components/ui/Honeypot";
 import { trackEvent } from "~/components/Matomo/Matomo";
+import type { HomeNewsletterSection } from "~/payload/payload-types";
 import { api } from "~/utils/api";
 import { HONEYPOT_FIELD_NAME } from "~/utils/contactForm";
 import { newsletterSubscribeSchema } from "~/utils/newsletter";
-import { newsletterCMSStore } from "~/state/store";
 
 const NETWORK_ERROR =
 	"Une erreur est survenue, votre inscription n'a pas pu être enregistrée. Veuillez réessayer plus tard.";
 
-export default function NewsletterFollow() {
-	const newsletterCMS = newsletterCMSStore.get();
+type Props = {
+	content: HomeNewsletterSection;
+	className?: string;
+};
 
+export default function NewsletterFollow({ content, className }: Props) {
 	const subscribeMutation = api.newsletter.subscribe.useMutation();
 
 	const [email, setEmail] = useState("");
@@ -21,9 +24,7 @@ export default function NewsletterFollow() {
 	const [error, setError] = useState<string | undefined>(undefined);
 	const [success, setSuccess] = useState(false);
 
-	if (!newsletterCMS?.enabled) return null;
-
-	const socialButtons = (newsletterCMS.socials ?? []).map((social) => ({
+	const socialButtons = (content.socials ?? []).map((social) => ({
 		type: social.type as FollowProps.SocialType,
 		linkProps: { href: social.url },
 	}));
@@ -31,7 +32,7 @@ export default function NewsletterFollow() {
 	const social: FollowProps.Social | undefined =
 		socialButtons.length > 0
 			? {
-					title: newsletterCMS.socialTitle || undefined,
+					title: content.socialTitle || undefined,
 					buttons: socialButtons as [
 						FollowProps.SocialButton,
 						...FollowProps.SocialButton[],
@@ -66,17 +67,17 @@ export default function NewsletterFollow() {
 
 	return (
 		<Follow
-			className={fr.cx("fr-py-6w")}
+			className={`${fr.cx("fr-py-6w")}${className ? ` ${className}` : ""}`}
 			newsletter={{
-				title: newsletterCMS.title || undefined,
-				desc: newsletterCMS.description || undefined,
+				title: content.title || undefined,
+				desc: content.description || undefined,
 				buttonProps: {
 					type: "submit",
 					disabled: subscribeMutation.isPending,
 				},
 				form: {
 					success,
-					consentHint: newsletterCMS.consentHint || undefined,
+					consentHint: content.consentHint || undefined,
 					formComponent: ({ children }) => (
 						<form onSubmit={handleSubmit} noValidate>
 							{children}
