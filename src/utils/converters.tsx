@@ -217,6 +217,11 @@ export const linkConverter: JSXConverters<DefaultNodeTypes>["link"] = (
 ) => {
 	const { node, nodesToJSX, converters } = args;
 
+	const childrenJSX = nodesToJSX({
+		nodes: node.children ?? [],
+		converters,
+	});
+
 	const glossaryTerm =
 		node.fields.linkType === "internal" &&
 		node.fields.doc?.relationTo === "glossary" &&
@@ -227,7 +232,7 @@ export const linkConverter: JSXConverters<DefaultNodeTypes>["link"] = (
 	if (glossaryTerm?.description) {
 		return (
 			<GlossaryTerm description={glossaryTerm.description}>
-				{nodesToJSX({ nodes: node.children ?? [], converters })}
+				{childrenJSX}
 			</GlossaryTerm>
 		);
 	}
@@ -236,11 +241,6 @@ export const linkConverter: JSXConverters<DefaultNodeTypes>["link"] = (
 		node.fields.linkType === "internal" && node.fields.doc
 			? internalDocToHref(node.fields.doc)
 			: node.fields.url;
-
-	const childrenJSX = nodesToJSX({
-		nodes: node.children ?? [],
-		converters,
-	});
 
 	if (node.fields.newTab) {
 		const linkText = lexicalToText(node.children ?? []);
