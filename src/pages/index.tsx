@@ -19,6 +19,12 @@ import { createTRPCContext } from "~/server/api/trpc";
 import type { AugmentedPracticalGuide } from "~/server/api/routers/practical-guides";
 import NewsCarousel from "~/components/HomePage/NewsCarousel";
 import type { AugmentedNews } from "~/server/api/routers/news";
+import { getGlobalData } from "~/server/global-data";
+import {
+	findHomeSection,
+	type HomeSection,
+	isSectionVisible,
+} from "~/utils/homeSections";
 
 type Props = {
 	mostViewedGuides: AugmentedPracticalGuide[];
@@ -47,6 +53,91 @@ export default function Home({ mostViewedGuides, latestNews }: Props) {
 				</p>
 			</EmptyScreenZone>
 		);
+
+	const isDisplayed = (section: HomeSection) => {
+		if (!isSectionVisible(section)) return false;
+		if (section.blockType === "newsCarousel") return latestNews.length > 0;
+		if (section.blockType === "newsletter") return NEWSLETTER_ENABLED;
+		return true;
+	};
+
+	const displayedSections = (homeCMS.sections ?? []).filter(isDisplayed);
+
+	const renderSection = (section: HomeSection) => {
+		switch (section.blockType) {
+			case "newsCarousel":
+				return (
+					<div className={fr.cx("fr-container")}>
+						<div className={fr.cx("fr-py-4w")}>
+							<NewsCarousel news={latestNews} />
+						</div>
+					</div>
+				);
+			case "personaTiles":
+				return (
+					<div className={fr.cx("fr-container")}>
+						<div className={fr.cx("fr-py-6w")}>
+							{persons ? (
+								<PersonaTiles tiles={tiles} />
+							) : (
+								<div role="alert" aria-live="assertive">
+									Aucun persona trouvé
+								</div>
+							)}
+						</div>
+					</div>
+				);
+			case "mostViewedGuides":
+				return (
+					<div className={fr.cx("fr-container")}>
+						<div className={fr.cx("fr-py-4w")}>
+							<div className={fr.cx("fr-grid-row", "fr-grid-row--gutters")}>
+								<div
+									className={cx(
+										fr.cx("fr-col-12"),
+										classes.mostViewedContainer,
+									)}
+								>
+									<h2>{section.title}</h2>
+									<div className={cx(fr.cx("fr-text--sm"), classes.preLine)}>
+										{section.description}
+									</div>
+
+									{mostViewedGuides.length === 0 ? (
+										<div role="alert" aria-live="assertive">
+											Aucune fiche pratique trouvée
+										</div>
+									) : (
+										<MostViewedGuides guides={mostViewedGuides} />
+									)}
+
+									<a
+										href="/fiches-pratiques"
+										className={cx(
+											fr.cx(
+												"fr-link",
+												"fr-icon-arrow-right-line",
+												"fr-link--icon-right",
+											),
+											classes.viewMoreLink,
+										)}
+									>
+										Voir toutes les fiches par thématiques
+									</a>
+								</div>
+							</div>
+						</div>
+					</div>
+				);
+			case "newsletter":
+				return (
+					<NewsletterFollow
+						content={section}
+						className={classes.inheritBackground}
+					/>
+				);
+		}
+	};
 
 	return (
 		<>
@@ -109,68 +200,14 @@ export default function Home({ mostViewedGuides, latestNews }: Props) {
 						</div>
 					</div>
 				</div>
-				{latestNews.length > 0 && (
-					<div className={cx(classes.coloredContainer)}>
-						<div className={fr.cx("fr-container")}>
-							<div className={fr.cx("fr-py-4w")}>
-								<NewsCarousel news={latestNews} />
-							</div>
-						</div>
+				{displayedSections.map((section, index) => (
+					<div
+						key={section.blockType}
+						className={cx(index % 2 === 0 && classes.coloredContainer)}
+					>
+						{renderSection(section)}
 					</div>
-				)}
-				<div className={fr.cx("fr-container")}>
-					<div className={fr.cx("fr-py-6w")}>
-						{persons ? (
-							<PersonaTiles tiles={tiles} />
-						) : (
-							<div role="alert" aria-live="assertive">
-								Aucun persona trouvé
-							</div>
-						)}
-					</div>
-				</div>
-				<div className={cx(classes.coloredContainer)}>
-					<div className={fr.cx("fr-container")}>
-						<div className={fr.cx("fr-py-4w")}>
-							<div className={fr.cx("fr-grid-row", "fr-grid-row--gutters")}>
-								<div
-									className={cx(
-										fr.cx("fr-col-12"),
-										classes.mostViewedContainer,
-									)}
-								>
-									<h2>{homeCMS?.mostViewedGuides.title}</h2>
-									<div className={cx(fr.cx("fr-text--sm"), classes.preLine)}>
-										{homeCMS?.mostViewedGuides.description}
-									</div>
-
-									{mostViewedGuides?.length === 0 || !mostViewedGuides ? (
-										<div role="alert" aria-live="assertive">
-											Aucune fiche pratique trouvée
-										</div>
-									) : (
-										<MostViewedGuides guides={mostViewedGuides} />
-									)}
-
-									<a
-										href="/fiches-pratiques"
-										className={cx(
-											fr.cx(
-												"fr-link",
-												"fr-icon-arrow-right-line",
-												"fr-link--icon-right",
-											),
-											classes.viewMoreLink,
-										)}
-									>
-										Voir toutes les fiches par thématiques
-									</a>
-								</div>
-							</div>
-						</div>
-					</div>
-				</div>
-				{NEWSLETTER_ENABLED && <NewsletterFollow />}
+				))}
 			</PageContent>
 		</>
 	);
@@ -178,9 +215,15 @@ export default function Home({ mostViewedGuides, latestNews }: Props) {
 
 export const getServerSideProps: GetServerSideProps<Props> = async () => {
 	const caller = createCaller(await createTRPCContext());
+	const homeCMS = await getGlobalData()
+		.then((data) => data.homeCMS)
+		.catch(() => undefined);
+	const shows = (blockType: HomeSection["blockType"]) =>
+		!homeCMS || isSectionVisible(findHomeSection(homeCMS, blockType));
+
 	const [mostViewedGuides, latestNews] = await Promise.all([
-		caller.practicalGuide.getByViews(),
-		caller.news.getAll(),
+		shows("mostViewedGuides") ? caller.practicalGuide.getByViews() : [],
+		shows("newsCarousel") ? caller.news.getAll() : [],
 	]);
 
 	return {
@@ -208,6 +251,12 @@ const useStyles = tss.withName({ Home }).create({
 	},
 	coloredContainer: {
 		backgroundColor: fr.colors.decisions.background.alt.blueFrance.default,
+	},
+	// Overrides the DSFR Follow background so the section follows the alternation.
+	inheritBackground: {
+		"&&": {
+			backgroundColor: "inherit",
+		},
 	},
 	mostViewedContainer: {
 		display: "flex",
