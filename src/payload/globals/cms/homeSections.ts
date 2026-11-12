@@ -30,13 +30,9 @@ const visibleField = {
 	defaultValue: true,
 } as const;
 
-const section = (
-	slug: HomeSectionType,
-	interfaceName: string,
-	fields: Block["fields"],
-): Block => ({
+const section = (slug: HomeSectionType, fields: Block["fields"]): Block => ({
 	slug,
-	interfaceName,
+	interfaceName: `Home${slug.charAt(0).toUpperCase()}${slug.slice(1)}Section`,
 	labels: {
 		singular: HOME_SECTION_LABELS[slug],
 		plural: HOME_SECTION_LABELS[slug],
@@ -48,13 +44,9 @@ const section = (
 	fields: [visibleField, ...fields],
 });
 
-const newsCarouselSection = section(
-	"newsCarousel",
-	"HomeNewsCarouselSection",
-	[],
-);
+const newsCarouselSection = section("newsCarousel", []);
 
-const personaTilesSection = section("personaTiles", "HomePersonaTilesSection", [
+const personaTilesSection = section("personaTiles", [
 	{
 		name: "persona",
 		label: "Choix du profil",
@@ -69,13 +61,12 @@ const personaTilesSection = section("personaTiles", "HomePersonaTilesSection", [
 	},
 ]);
 
-const mostViewedGuidesSection = section(
-	"mostViewedGuides",
-	"HomeMostViewedGuidesSection",
-	[standardFields.title, standardFields.longDescription],
-);
+const mostViewedGuidesSection = section("mostViewedGuides", [
+	standardFields.title,
+	standardFields.longDescription,
+]);
 
-const newsletterSection = section("newsletter", "HomeNewsletterSection", [
+const newsletterSection = section("newsletter", [
 	{
 		name: "title",
 		label: "Titre",
