@@ -53,7 +53,6 @@ const hasAwsCreds = Boolean(
 import { CMSHome } from "./globals/cms/Home";
 import { CMSFooter } from "./globals/cms/Footer";
 import { CMSAbout } from "./globals/cms/About";
-import { CMSNewsletter } from "./globals/cms/Newsletter";
 import { PracticalGuideViews } from "./collections/PracticalGuidesViews";
 import { SimplifiedContentGenerator } from "./globals/SimplifiedContentGenerator";
 
@@ -162,13 +161,7 @@ export default buildConfig({
 		Themes,
 		Users,
 	],
-	globals: [
-		CMSHome,
-		CMSFooter,
-		CMSAbout,
-		CMSNewsletter,
-		SimplifiedContentGenerator,
-	],
+	globals: [CMSHome, CMSFooter, CMSAbout, SimplifiedContentGenerator],
 	editor: lexicalEditor(),
 	i18n: {
 		supportedLanguages: { en, fr },
