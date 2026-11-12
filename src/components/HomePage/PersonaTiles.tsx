@@ -45,12 +45,12 @@ type SectionContent = { title: string; description?: string };
 const EMPTY_CONTENT: SectionContent = { title: "" };
 
 const getContentByDisplay = (
-	tiles: HomePersonaTilesSection | undefined,
+	section: HomePersonaTilesSection | undefined,
 ): Record<PersonaTypes, SectionContent> => ({
-	default: tiles?.persona ?? EMPTY_CONTENT,
-	person: tiles?.condition ?? EMPTY_CONTENT,
+	default: section?.persona ?? EMPTY_CONTENT,
+	person: section?.condition ?? EMPTY_CONTENT,
 	professional: { title: "Quel type de professionnel êtes-vous ?" },
-	afterProfessional: tiles?.condition ?? EMPTY_CONTENT,
+	afterProfessional: section?.condition ?? EMPTY_CONTENT,
 	condition: EMPTY_CONTENT,
 });
 
