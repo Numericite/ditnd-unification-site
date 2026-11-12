@@ -20,18 +20,19 @@ import type { AugmentedPracticalGuide } from "~/server/api/routers/practical-gui
 import NewsCarousel from "~/components/HomePage/NewsCarousel";
 import type { AugmentedNews } from "~/server/api/routers/news";
 import { getGlobalData } from "~/server/global-data";
-import {
-	findHomeSection,
-	type HomeSection,
-	isSectionVisible,
-} from "~/utils/homeSections";
+import { type HomeSection, isSectionVisible } from "~/utils/homeSections";
 
 type Props = {
+	sections: HomeSection[];
 	mostViewedGuides: AugmentedPracticalGuide[];
 	latestNews: AugmentedNews[];
 };
 
-export default function Home({ mostViewedGuides, latestNews }: Props) {
+export default function Home({
+	sections,
+	mostViewedGuides,
+	latestNews,
+}: Props) {
 	const { classes, cx } = useStyles();
 
 	const [search, setSearch] = useState("");
@@ -53,15 +54,6 @@ export default function Home({ mostViewedGuides, latestNews }: Props) {
 				</p>
 			</EmptyScreenZone>
 		);
-
-	const isDisplayed = (section: HomeSection) => {
-		if (!isSectionVisible(section)) return false;
-		if (section.blockType === "newsCarousel") return latestNews.length > 0;
-		if (section.blockType === "newsletter") return NEWSLETTER_ENABLED;
-		return true;
-	};
-
-	const displayedSections = (homeCMS.sections ?? []).filter(isDisplayed);
 
 	const renderSection = (section: HomeSection) => {
 		switch (section.blockType) {
@@ -200,7 +192,7 @@ export default function Home({ mostViewedGuides, latestNews }: Props) {
 						</div>
 					</div>
 				</div>
-				{displayedSections.map((section, index) => (
+				{sections.map((section, index) => (
 					<div
 						key={section.blockType}
 						className={cx(index % 2 === 0 && classes.coloredContainer)}
@@ -218,16 +210,24 @@ export const getServerSideProps: GetServerSideProps<Props> = async () => {
 	const homeCMS = await getGlobalData()
 		.then((data) => data.homeCMS)
 		.catch(() => undefined);
-	const shows = (blockType: HomeSection["blockType"]) =>
-		!homeCMS || isSectionVisible(findHomeSection(homeCMS, blockType));
+	const visibleSections = (homeCMS?.sections ?? []).filter(isSectionVisible);
+	const isVisible = (blockType: HomeSection["blockType"]) =>
+		visibleSections.some((section) => section.blockType === blockType);
 
 	const [mostViewedGuides, latestNews] = await Promise.all([
-		shows("mostViewedGuides") ? caller.practicalGuide.getByViews() : [],
-		shows("newsCarousel") ? caller.news.getAll() : [],
+		isVisible("mostViewedGuides") ? caller.practicalGuide.getByViews() : [],
+		isVisible("newsCarousel") ? caller.news.getAll() : [],
 	]);
+
+	const sections = visibleSections.filter((section) => {
+		if (section.blockType === "newsCarousel") return latestNews.length > 0;
+		if (section.blockType === "newsletter") return NEWSLETTER_ENABLED;
+		return true;
+	});
 
 	return {
 		props: {
+			sections,
 			mostViewedGuides,
 			latestNews,
 		},
