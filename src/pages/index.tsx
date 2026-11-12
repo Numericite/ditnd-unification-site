@@ -55,7 +55,7 @@ export default function Home({
 			</EmptyScreenZone>
 		);
 
-	const renderSection = (section: HomeSection) => {
+	const renderSection = (section: HomeSection, colored: boolean) => {
 		switch (section.blockType) {
 			case "newsCarousel":
 				return (
@@ -125,7 +125,7 @@ export default function Home({
 				return (
 					<NewsletterFollow
 						content={section}
-						className={classes.inheritBackground}
+						className={colored ? undefined : classes.whiteFollow}
 					/>
 				);
 		}
@@ -197,7 +197,7 @@ export default function Home({
 						key={section.blockType}
 						className={cx(index % 2 === 0 && classes.coloredContainer)}
 					>
-						{renderSection(section)}
+						{renderSection(section, index % 2 === 0)}
 					</div>
 				))}
 			</PageContent>
@@ -252,10 +252,12 @@ const useStyles = tss.withName({ Home }).create({
 	coloredContainer: {
 		backgroundColor: fr.colors.decisions.background.alt.blueFrance.default,
 	},
-	// Overrides the DSFR Follow background so the section follows the alternation.
-	inheritBackground: {
+	// DSFR Follow is styled for a blue background, including its buttons' hover/active states.
+	whiteFollow: {
 		"&&": {
-			backgroundColor: "inherit",
+			backgroundColor: "var(--background-default-grey)",
+			"--hover": "var(--background-default-grey-hover)",
+			"--active": "var(--background-default-grey-active)",
 		},
 	},
 	mostViewedContainer: {
