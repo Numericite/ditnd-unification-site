@@ -6,7 +6,7 @@ import {
 	type HomeSectionType,
 } from "./homeSectionLabels";
 
-export const SOCIAL_NETWORK_OPTIONS = [
+const SOCIAL_NETWORK_OPTIONS = [
 	{ label: "Facebook", value: "facebook" },
 	{ label: "Github", value: "github" },
 	{ label: "Instagram", value: "instagram" },
