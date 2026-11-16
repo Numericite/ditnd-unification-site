@@ -11,12 +11,11 @@ import { EmptyScreenZone } from "../ui/EmptyScreenZone";
 import { ResultsCount } from "../ui/SearchPage/ResultsCount";
 import { DEFAULT_PAGE_SIZE, type PaginatedResult } from "~/utils/pagination";
 import type { AugmentedCourse } from "~/server/api/routers/courses";
+import type { FiltersQuery } from "../PracticalGuides/GuidesFiltersDisplay";
 
-export type CoursesFiltersQuery = {
-	conditions: string[];
-	themes: string[];
-	personas: string[];
-	type: string[];
+export type CoursesFiltersQuery = FiltersQuery & {
+	formats: string[];
+	durations: string[];
 };
 
 const parsePage = (value: string | string[] | undefined): number => {
@@ -32,7 +31,8 @@ const filtersAreEqual = (a: CoursesFiltersQuery, b: CoursesFiltersQuery) => {
 		sameArray(a.conditions, b.conditions) &&
 		sameArray(a.themes, b.themes) &&
 		sameArray(a.personas, b.personas) &&
-		sameArray(a.type, b.type)
+		sameArray(a.formats, b.formats) &&
+		sameArray(a.durations, b.durations)
 	);
 };
 
@@ -83,7 +83,8 @@ export const SearchCoursesDisplay = ({
 		normalizeQueryValue(router.query.conditions),
 		normalizeQueryValue(router.query.themes),
 		normalizeQueryValue(router.query.personas),
-		normalizeQueryValue(router.query.type),
+		normalizeQueryValue(router.query.formats),
+		normalizeQueryValue(router.query.durations),
 		normalizeQueryValue(router.query.search),
 	].join("|");
 

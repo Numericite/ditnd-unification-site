@@ -1,6 +1,7 @@
 import { fr } from "@codegouvfr/react-dsfr";
 import { SegmentedControl } from "@codegouvfr/react-dsfr/SegmentedControl";
 import { useState } from "react";
+import { trackEvent } from "~/components/Matomo/Matomo";
 
 export type ContentMode = "standard" | "simplified";
 
@@ -36,6 +37,10 @@ export default function ContentModeToggle({ mode, onChange }: Props) {
 		persistMode(next);
 		onChange(next);
 		setAnnouncement(announcementFor(next));
+		trackEvent(
+			"Fiche",
+			next === "simplified" ? "version_simplifiee" : "version_standard",
+		);
 	};
 
 	return (
@@ -60,6 +65,20 @@ export default function ContentModeToggle({ mode, onChange }: Props) {
 					},
 				]}
 			/>
+			{mode === "simplified" && (
+				<p
+					className={fr.cx(
+						"fr-text--sm",
+						"fr-mt-1w",
+						"fr-icon-info-line",
+						"fr-icon--sm",
+					)}
+				>
+					{" "}
+					Cette version simplifiée a été générée par une intelligence
+					artificielle souveraine, hébergée par l'État.
+				</p>
+			)}
 			<output
 				className={fr.cx("fr-sr-only")}
 				aria-live="polite"

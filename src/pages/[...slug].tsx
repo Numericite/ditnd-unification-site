@@ -1,6 +1,7 @@
 import type { GetServerSideProps } from "next";
 import Head from "next/head";
 import ErrorPage from "~/components/ui/ErrorPage/ErrorPage";
+import { legacyRedirect } from "~/server/redirects";
 
 export default function CatchAll() {
 	return (
@@ -14,7 +15,13 @@ export default function CatchAll() {
 	);
 }
 
-export const getServerSideProps: GetServerSideProps = async ({ res }) => {
+export const getServerSideProps: GetServerSideProps = async ({
+	res,
+	resolvedUrl,
+}) => {
+	const redirect = await legacyRedirect(resolvedUrl);
+	if (redirect) return redirect;
+
 	res.statusCode = 404;
 	return { props: {} };
 };

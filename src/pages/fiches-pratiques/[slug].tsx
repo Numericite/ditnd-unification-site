@@ -15,6 +15,7 @@ import type { Media } from "~/payload/payload-types";
 import type { GetServerSideProps } from "next";
 import { createCaller } from "~/server/api/root";
 import { createTRPCContext } from "~/server/api/trpc";
+import { legacyRedirect } from "~/server/redirects";
 import type { AugmentedPracticalGuide } from "~/server/api/routers/practical-guides";
 import ErrorPage from "~/components/ui/ErrorPage/ErrorPage";
 
@@ -180,6 +181,9 @@ export const getServerSideProps: GetServerSideProps<Props> = async (ctx) => {
 		const guide = await caller.practicalGuide.getBySlug({ slug });
 
 		if (!guide) {
+			const redirect = await legacyRedirect(ctx.resolvedUrl);
+			if (redirect) return redirect;
+
 			ctx.res.statusCode = 404;
 			return { props: { isNotFound: true } };
 		}
@@ -197,6 +201,9 @@ export const getServerSideProps: GetServerSideProps<Props> = async (ctx) => {
 			},
 		};
 	} catch {
+		const redirect = await legacyRedirect(ctx.resolvedUrl);
+		if (redirect) return redirect;
+
 		ctx.res.statusCode = 404;
 		return { props: { isNotFound: true } };
 	}

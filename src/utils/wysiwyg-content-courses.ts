@@ -58,7 +58,7 @@ const ul = (...items: Node[]): Node => ({
 });
 
 export const CoursesContent: DefaultTypedEditorState[] = [
-	// Course 1 : Comprendre le TSA chez l'enfant (Webinaire)
+	// Course 1 : Comprendre le TSA chez l'enfant (Distanciel)
 	{
 		root: {
 			type: "root",
@@ -457,7 +457,7 @@ export const CoursesContent: DefaultTypedEditorState[] = [
 		},
 	},
 
-	// Course 3 : Repérage précoce : signes à observer (MOOC)
+	// Course 3 : Repérage précoce : signes à observer (Distanciel)
 	{
 		root: {
 			type: "root",

@@ -19,7 +19,7 @@ export const WISH_LABELS: Record<Wish, string> = {
 
 export const contactProsCraSchema = z.object({
 	profile: z.enum(PROFILE_VALUES, {
-		errorMap: () => ({ message: "Veuillez sélectionner votre profil." }),
+		error: "Veuillez sélectionner votre profil.",
 	}),
 	firstName: z.string().trim().min(1, "Veuillez renseigner votre prénom."),
 	lastName: z
@@ -32,7 +32,7 @@ export const contactProsCraSchema = z.object({
 		.trim()
 		.min(1, "Veuillez renseigner votre fonction au sein du CRA."),
 	wish: z.enum(WISH_VALUES, {
-		errorMap: () => ({ message: "Veuillez sélectionner une option." }),
+		error: "Veuillez sélectionner une option.",
 	}),
 	message: z
 		.string()

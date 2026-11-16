@@ -1,5 +1,6 @@
 import { fr } from "@codegouvfr/react-dsfr";
 import { useState, useRef, useEffect } from "react";
+import { trackEvent } from "~/components/Matomo/Matomo";
 import { homeCMSStore, proStore, tdhStore } from "~/state/store";
 import { PersonaGrid } from "../ui/HomePage/PersonaGrid";
 import Tag from "@codegouvfr/react-dsfr/Tag";
@@ -121,6 +122,7 @@ export const PersonaTiles = ({
 
 	const handleClick = (tile: PersonaTile, prevDisplay: PersonaTypes) => {
 		pendingFocusToTag.current = true;
+		trackEvent("Parcours", "choix", tile.slug);
 		setTags((prev) => [
 			...prev,
 			{
@@ -145,6 +147,7 @@ export const PersonaTiles = ({
 			setDisplay("person");
 		},
 		afterProfessional: (tile) => {
+			trackEvent("Parcours", "choix", tile.slug);
 			router.push(`/parcours/${tile.slug}`);
 		},
 		condition: (tile) => {
@@ -153,6 +156,7 @@ export const PersonaTiles = ({
 				// (le slug "professional" était alors un niveau intermédiaire à retirer de l'URL).
 				// .filter((tag) => tag.slug !== "professional")
 				.map((tag) => tag.slug);
+			trackEvent("Parcours", "choix", tile.slug.toLowerCase());
 			router.push(`/parcours/${personaSlug}/${tile.slug.toLowerCase()}`);
 		},
 		default: () => {

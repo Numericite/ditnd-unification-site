@@ -13,7 +13,13 @@ const { getColorSchemeHtmlAttributes, augmentDocumentForDsfr } =
 export default function Document(props: DocumentProps) {
 	return (
 		<Html lang="fr" {...getColorSchemeHtmlAttributes(props)}>
-			<Head />
+			<Head>
+				{/* Validation Google Search Console du domaine maisondelautisme.gouv.fr (propriété du client) */}
+				<meta
+					name="google-site-verification"
+					content="z0blW2WIj3fZUk-59DjPEGfhYZx3uo-8gILKqLo3tGg"
+				/>
+			</Head>
 			<body>
 				<Main />
 				<NextScript />

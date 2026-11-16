@@ -1,5 +1,6 @@
 import type { AugmentedPracticalGuide } from "~/server/api/routers/practical-guides";
 import type { AugmentedCourse } from "~/server/api/routers/courses";
+import { courseFormatLabel } from "~/utils/courses";
 
 import CardDisplay from "./CardDisplay";
 
@@ -41,6 +42,7 @@ export default function CardsDisplayGroup({
 										course.image?.url ?? course.imageBanner?.url ?? undefined
 									}
 									imageAlt=""
+									type={courseFormatLabel(course.format)}
 									conditions={course.conditions}
 									themes={course.themes}
 									redirect={

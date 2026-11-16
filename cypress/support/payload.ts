@@ -10,6 +10,15 @@ export type PracticalGuide = {
 	simplifiedGenerationStatus?: "pending" | "ready" | "failed" | null;
 };
 
+export type Course = {
+	id: number;
+	title: string;
+	slug: string;
+	format: "pres" | "dist";
+	duration?: "lt1j" | "1-3j" | "gt3j" | null;
+	_status: "draft" | "published";
+};
+
 // Seeded by src/payload/seed/index.ts.
 const ADMIN = { email: "admin@test.test", password: "12345" };
 
@@ -21,6 +30,7 @@ declare global {
 				data?: Record<string, unknown>,
 			): Chainable<PracticalGuide>;
 			getPracticalGuide(id: number): Chainable<PracticalGuide>;
+			createCourse(data?: Record<string, unknown>): Chainable<Course>;
 			waitForSimplification(id: number): Chainable<PracticalGuide>;
 			visitAdmin(path: string): Chainable<void>;
 		}
@@ -65,6 +75,22 @@ Cypress.Commands.add("createPracticalGuide", (data = {}) => {
 		)
 		.its("body.doc");
 });
+
+Cypress.Commands.add("createCourse", (data = {}) =>
+	cy
+		.request("POST", "/api/courses?depth=0", {
+			description: "Formation créée par les tests E2E.",
+			link: "https://example.test/formation",
+			format: "dist",
+			conditions: [4],
+			persona: [1],
+			themes: [1],
+			...data,
+			title: (data.title as string | undefined) ?? uniqueTitle("Formation"),
+			_status: "published",
+		})
+		.its("body.doc"),
+);
 
 Cypress.Commands.add("getPracticalGuide", (id) =>
 	cy.request(`/api/practical-guides/${id}?depth=0`).its("body"),
