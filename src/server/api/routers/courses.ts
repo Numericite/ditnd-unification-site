@@ -23,6 +23,7 @@ import {
 	withoutAllConditions,
 } from "~/utils/conditions-filter";
 import { findDocsWithAllConditions } from "~/server/api/all-conditions";
+import { isCourseDuration, isCourseFormat } from "~/utils/courses";
 
 export interface AugmentedCourse extends Course {
 	themes: Theme[];
@@ -63,7 +64,8 @@ export const courseRouter = createTRPCRouter({
 				conditions: z.array(z.string()),
 				themes: z.array(z.string()),
 				personas: z.array(z.string()),
-				type: z.array(z.string()),
+				formats: z.array(z.string()),
+				durations: z.array(z.string()),
 				text: z.string(),
 				page: z.number().int().min(1).default(1),
 				limit: z
@@ -78,7 +80,16 @@ export const courseRouter = createTRPCRouter({
 			async ({ input, ctx }): Promise<PaginatedResult<AugmentedCourse>> => {
 				const whereConditions: Where[] = [{ _status: { equals: "published" } }];
 
-				const { conditions, themes, personas, type, text, page, limit } = input;
+				const {
+					conditions,
+					themes,
+					personas,
+					formats,
+					durations,
+					text,
+					page,
+					limit,
+				} = input;
 
 				if (conditions?.length) {
 					if (isAllConditionsSelected(conditions)) {
@@ -107,9 +118,24 @@ export const courseRouter = createTRPCRouter({
 					});
 				}
 
-				if (type?.length) {
+				// Format et durée sont des colonnes enum : une valeur inconnue venue
+				// de l'URL ferait échouer la requête SQL. On l'écarte, et sans valeur
+				// valide on renvoie zéro résultat, comme pour un slug inconnu.
+				if (formats?.length) {
+					const validFormats = formats.filter(isCourseFormat);
+					if (!validFormats.length)
+						return emptyPage<AugmentedCourse>(page, limit);
 					whereConditions.push({
-						type: { in: type },
+						format: { in: validFormats },
+					});
+				}
+
+				if (durations?.length) {
+					const validDurations = durations.filter(isCourseDuration);
+					if (!validDurations.length)
+						return emptyPage<AugmentedCourse>(page, limit);
+					whereConditions.push({
+						duration: { in: validDurations },
 					});
 				}
 

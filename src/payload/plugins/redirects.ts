@@ -7,8 +7,8 @@ import type { Field } from "payload";
  *
  * Workflow : la collection est pré-remplie (seed:redirects) avec les anciennes
  * URLs et une cible vide. Une cible vide = travail restant pour l'équipe
- * contenu ; l'URL est couverte entre-temps par les fallbacks de section du
- * middleware. Ne jamais supprimer une redirection remplie après le lancement.
+ * contenu ; l'URL est couverte entre-temps par les fallbacks de section
+ * (src/server/redirects.ts). Ne jamais supprimer une redirection remplie après le lancement.
  */
 
 /** Normalise une URL source : path seul, sans domaine, slash final ni query. */

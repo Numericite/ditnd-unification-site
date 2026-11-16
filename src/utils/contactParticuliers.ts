@@ -167,12 +167,10 @@ export const contactParticuliersSchema = z.object({
 		.max(254),
 	departement: z.string().trim().max(255).optional(),
 	objet: z.enum(OBJET_VALUES, {
-		errorMap: () => ({
-			message: "Veuillez sélectionner l'objet de votre demande.",
-		}),
+		error: "Veuillez sélectionner l'objet de votre demande.",
 	}),
 	classification: z.enum(CLASSIFICATION_VALUES, {
-		errorMap: () => ({ message: "Veuillez sélectionner une option." }),
+		error: "Veuillez sélectionner une option.",
 	}),
 	sexe: optionalEnum(SEXE_VALUES),
 	ageRange: optionalEnum(AGE_RANGE_VALUES),
@@ -186,9 +184,7 @@ export const contactParticuliersSchema = z.object({
 		}),
 	newsletter: z.boolean().optional(),
 	consent: z.literal(true, {
-		errorMap: () => ({
-			message: "Vous devez accepter pour soumettre le formulaire.",
-		}),
+		error: "Vous devez accepter pour soumettre le formulaire.",
 	}),
 	website: honeypotSchema,
 });

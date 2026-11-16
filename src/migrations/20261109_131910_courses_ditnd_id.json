@@ -609,23 +609,9 @@
           "primaryKey": false,
           "notNull": false
         },
-        "show_dates": {
-          "name": "show_dates",
-          "type": "boolean",
-          "primaryKey": false,
-          "notNull": false,
-          "default": true
-        },
         "image_banner_id": {
           "name": "image_banner_id",
           "type": "integer",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "section": {
-          "name": "section",
-          "type": "enum_pages_section",
-          "typeSchema": "public",
           "primaryKey": false,
           "notNull": false
         },
@@ -842,23 +828,9 @@
           "primaryKey": false,
           "notNull": false
         },
-        "version_show_dates": {
-          "name": "version_show_dates",
-          "type": "boolean",
-          "primaryKey": false,
-          "notNull": false,
-          "default": true
-        },
         "version_image_banner_id": {
           "name": "version_image_banner_id",
           "type": "integer",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "version_section": {
-          "name": "version_section",
-          "type": "enum__pages_v_version_section",
-          "typeSchema": "public",
           "primaryKey": false,
           "notNull": false
         },
@@ -2379,9 +2351,23 @@
           "primaryKey": false,
           "notNull": false
         },
-        "type": {
-          "name": "type",
-          "type": "enum_courses_type",
+        "format": {
+          "name": "format",
+          "type": "enum_courses_format",
+          "typeSchema": "public",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "duration": {
+          "name": "duration",
+          "type": "enum_courses_duration",
+          "typeSchema": "public",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "certifying": {
+          "name": "certifying",
+          "type": "enum_courses_certifying",
           "typeSchema": "public",
           "primaryKey": false,
           "notNull": false
@@ -2437,6 +2423,12 @@
         "slug": {
           "name": "slug",
           "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "ditnd_id": {
+          "name": "ditnd_id",
+          "type": "numeric",
           "primaryKey": false,
           "notNull": false
         },
@@ -2520,6 +2512,21 @@
             }
           ],
           "isUnique": true,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        },
+        "courses_ditnd_id_idx": {
+          "name": "courses_ditnd_id_idx",
+          "columns": [
+            {
+              "expression": "ditnd_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
           "concurrently": false,
           "method": "btree",
           "with": {}
@@ -2850,9 +2857,23 @@
           "primaryKey": false,
           "notNull": false
         },
-        "version_type": {
-          "name": "version_type",
-          "type": "enum__courses_v_version_type",
+        "version_format": {
+          "name": "version_format",
+          "type": "enum__courses_v_version_format",
+          "typeSchema": "public",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "version_duration": {
+          "name": "version_duration",
+          "type": "enum__courses_v_version_duration",
+          "typeSchema": "public",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "version_certifying": {
+          "name": "version_certifying",
+          "type": "enum__courses_v_version_certifying",
           "typeSchema": "public",
           "primaryKey": false,
           "notNull": false
@@ -2908,6 +2929,12 @@
         "version_slug": {
           "name": "version_slug",
           "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "version_ditnd_id": {
+          "name": "version_ditnd_id",
+          "type": "numeric",
           "primaryKey": false,
           "notNull": false
         },
@@ -3018,6 +3045,21 @@
           "columns": [
             {
               "expression": "version_slug",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        },
+        "_courses_v_version_version_ditnd_id_idx": {
+          "name": "_courses_v_version_version_ditnd_id_idx",
+          "columns": [
+            {
+              "expression": "version_ditnd_id",
               "isExpression": false,
               "asc": true,
               "nulls": "last"
@@ -8373,6 +8415,177 @@
       "checkConstraints": {},
       "isRLSEnabled": false
     },
+    "public.about": {
+      "name": "about",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "serial",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "maison_de_l_autisme_title": {
+          "name": "maison_de_l_autisme_title",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "maison_de_l_autisme_image_banner_id": {
+          "name": "maison_de_l_autisme_image_banner_id",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "maison_de_l_autisme_content": {
+          "name": "maison_de_l_autisme_content",
+          "type": "jsonb",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "gncra_title": {
+          "name": "gncra_title",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "gncra_image_banner_id": {
+          "name": "gncra_image_banner_id",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "gncra_content": {
+          "name": "gncra_content",
+          "type": "jsonb",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "cras_title": {
+          "name": "cras_title",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "cras_image_banner_id": {
+          "name": "cras_image_banner_id",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "cras_content": {
+          "name": "cras_content",
+          "type": "jsonb",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "updated_at": {
+          "name": "updated_at",
+          "type": "timestamp(3) with time zone",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp(3) with time zone",
+          "primaryKey": false,
+          "notNull": false
+        }
+      },
+      "indexes": {
+        "about_maison_de_l_autisme_maison_de_l_autisme_image_bann_idx": {
+          "name": "about_maison_de_l_autisme_maison_de_l_autisme_image_bann_idx",
+          "columns": [
+            {
+              "expression": "maison_de_l_autisme_image_banner_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        },
+        "about_gncra_gncra_image_banner_idx": {
+          "name": "about_gncra_gncra_image_banner_idx",
+          "columns": [
+            {
+              "expression": "gncra_image_banner_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        },
+        "about_cras_cras_image_banner_idx": {
+          "name": "about_cras_cras_image_banner_idx",
+          "columns": [
+            {
+              "expression": "cras_image_banner_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        }
+      },
+      "foreignKeys": {
+        "about_maison_de_l_autisme_image_banner_id_medias_id_fk": {
+          "name": "about_maison_de_l_autisme_image_banner_id_medias_id_fk",
+          "tableFrom": "about",
+          "tableTo": "medias",
+          "columnsFrom": [
+            "maison_de_l_autisme_image_banner_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "set null",
+          "onUpdate": "no action"
+        },
+        "about_gncra_image_banner_id_medias_id_fk": {
+          "name": "about_gncra_image_banner_id_medias_id_fk",
+          "tableFrom": "about",
+          "tableTo": "medias",
+          "columnsFrom": [
+            "gncra_image_banner_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "set null",
+          "onUpdate": "no action"
+        },
+        "about_cras_image_banner_id_medias_id_fk": {
+          "name": "about_cras_image_banner_id_medias_id_fk",
+          "tableFrom": "about",
+          "tableTo": "medias",
+          "columnsFrom": [
+            "cras_image_banner_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "set null",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
     "public.newsletter_socials": {
       "name": "newsletter_socials",
       "schema": "",
@@ -8569,26 +8782,12 @@
     }
   },
   "enums": {
-    "public.enum_pages_section": {
-      "name": "enum_pages_section",
-      "schema": "public",
-      "values": [
-        "a-propos"
-      ]
-    },
     "public.enum_pages_status": {
       "name": "enum_pages_status",
       "schema": "public",
       "values": [
         "draft",
         "published"
-      ]
-    },
-    "public.enum__pages_v_version_section": {
-      "name": "enum__pages_v_version_section",
-      "schema": "public",
-      "values": [
-        "a-propos"
       ]
     },
     "public.enum__pages_v_version_status": {
@@ -8633,13 +8832,29 @@
         "published"
       ]
     },
-    "public.enum_courses_type": {
-      "name": "enum_courses_type",
+    "public.enum_courses_format": {
+      "name": "enum_courses_format",
       "schema": "public",
       "values": [
-        "MOOC",
-        "Webinaire",
-        "Présentiel"
+        "pres",
+        "dist"
+      ]
+    },
+    "public.enum_courses_duration": {
+      "name": "enum_courses_duration",
+      "schema": "public",
+      "values": [
+        "lt1j",
+        "1-3j",
+        "gt3j"
+      ]
+    },
+    "public.enum_courses_certifying": {
+      "name": "enum_courses_certifying",
+      "schema": "public",
+      "values": [
+        "yes",
+        "no"
       ]
     },
     "public.enum_courses_status": {
@@ -8650,13 +8865,29 @@
         "published"
       ]
     },
-    "public.enum__courses_v_version_type": {
-      "name": "enum__courses_v_version_type",
+    "public.enum__courses_v_version_format": {
+      "name": "enum__courses_v_version_format",
       "schema": "public",
       "values": [
-        "MOOC",
-        "Webinaire",
-        "Présentiel"
+        "pres",
+        "dist"
+      ]
+    },
+    "public.enum__courses_v_version_duration": {
+      "name": "enum__courses_v_version_duration",
+      "schema": "public",
+      "values": [
+        "lt1j",
+        "1-3j",
+        "gt3j"
+      ]
+    },
+    "public.enum__courses_v_version_certifying": {
+      "name": "enum__courses_v_version_certifying",
+      "schema": "public",
+      "values": [
+        "yes",
+        "no"
       ]
     },
     "public.enum__courses_v_version_status": {
@@ -8792,6 +9023,6 @@
     "tables": {},
     "columns": {}
   },
-  "id": "aad36510-3315-4de8-9ebc-82db6d427945",
+  "id": "bd409a6b-2ffd-428c-9632-b17a52a90ccc",
   "prevId": "00000000-0000-0000-0000-000000000000"
 }
