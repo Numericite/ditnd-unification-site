@@ -76,6 +76,7 @@ describe("Contact particuliers form", () => {
 		cy.get('select[name="classification"]').select(
 			"Parent d’un enfant concerné",
 		);
+		cy.contains("label", "J'accepte de recevoir la newsletter").click();
 		cy.get('form button[type="submit"]').click();
 
 		cy.wait("@submit").its("response.statusCode").should("eq", 200);
@@ -88,6 +89,7 @@ describe("Contact particuliers form", () => {
 				"16": "Parent d'un enfant",
 				"17": "Féminin",
 				"18": "De 26 à 50 ans",
+				"23.1": "1",
 			});
 		});
 	});

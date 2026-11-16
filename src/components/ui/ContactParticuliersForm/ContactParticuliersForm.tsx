@@ -12,7 +12,6 @@ import { trackEvent } from "~/components/Matomo/Matomo";
 import Honeypot from "~/components/ui/Honeypot";
 import { api } from "~/utils/api";
 import { zodValidator } from "~/utils/contactForm";
-import { NEWSLETTER_ENABLED } from "~/utils/newsletter";
 import {
 	AGE_RANGE_VALUES,
 	type AgeRange,
@@ -416,24 +415,22 @@ export default function ContactParticuliersForm() {
 				)}
 			</form.Field>
 
-			{NEWSLETTER_ENABLED && (
-				<form.Field name="newsletter">
-					{(field) => (
-						<Checkbox
-							options={[
-								{
-									label: NEWSLETTER_LABEL,
-									nativeInputProps: {
-										name: field.name,
-										checked: field.state.value,
-										onChange: (e) => field.handleChange(e.target.checked),
-									},
+			<form.Field name="newsletter">
+				{(field) => (
+					<Checkbox
+						options={[
+							{
+								label: NEWSLETTER_LABEL,
+								nativeInputProps: {
+									name: field.name,
+									checked: field.state.value,
+									onChange: (e) => field.handleChange(e.target.checked),
 								},
-							]}
-						/>
-					)}
-				</form.Field>
-			)}
+							},
+						]}
+					/>
+				)}
+			</form.Field>
 
 			<form.Field name="website">
 				{(field) => (
