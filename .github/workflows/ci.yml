@@ -81,12 +81,17 @@ jobs:
       SMTP_FROM_ADDRESS: ci@maisondelautisme.test
       SMTP_FROM_NAME: CI
       CONTACT_PROS_CRA_RECIPIENT: contact@maisondelautisme.test
-      CONTACT_PARTICULIERS_RECIPIENT: contact@maisondelautisme.test
       NEXT_PUBLIC_NOINDEX: "true"
       # Albert is served by cypress/mocks/albert.mjs: publishing a practical
       # guide (embeddings, simplification) stays deterministic and offline.
       ALBERT_API_URL: http://127.0.0.1:4010
       ALBERT_API_KEY: e2e-mock
+      # The individuals contact form sends its Gravity Forms entries to
+      # cypress/mocks/gravity-forms.mjs instead of a real WordPress site.
+      GRAVITY_FORMS_API_URL: http://127.0.0.1:4011
+      GRAVITY_FORMS_CONSUMER_KEY: e2e-mock
+      GRAVITY_FORMS_CONSUMER_SECRET: e2e-mock
+      GRAVITY_FORMS_FORM_ID: "2"
       # The temporary preprod basic auth would answer 401 to every Cypress visit.
       BASIC_AUTH_DISABLED: "true"
     steps:
@@ -113,6 +118,9 @@ jobs:
 
       - name: Start Albert mock
         run: nohup node cypress/mocks/albert.mjs > albert-mock.log 2>&1 &
+
+      - name: Start Gravity Forms mock
+        run: nohup node cypress/mocks/gravity-forms.mjs > gravity-forms-mock.log 2>&1 &
 
       - name: Seed database
         run: yarn seed:dev
