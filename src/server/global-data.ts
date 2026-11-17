@@ -3,6 +3,8 @@ import payloadConfig from "~/payload/payload.config";
 import type { PersonaTile } from "~/components/HomePage/PersonaTiles";
 import type { TDH } from "~/state/store";
 import type { Home } from "~/payload/payload-types";
+import { REFERENCE_COLLECTIONS } from "~/utils/links";
+import { type NavItem, resolveMenu } from "~/utils/menu";
 
 export type GlobalData = {
 	persons: PersonaTile[];
@@ -10,17 +12,29 @@ export type GlobalData = {
 	conditions: TDH[];
 	footerTitle: string;
 	homeCMS: Home;
+	menu: NavItem[];
 };
 
 const TTL_MS = 60_000;
+
+// Seuls le slug, le statut et la rubrique (pages) servent à construire l'URL
+// d'un lien du menu.
+const menuLinkPopulate = Object.fromEntries(
+	REFERENCE_COLLECTIONS.map((collection) => [
+		collection,
+		collection === "pages"
+			? { slug: true, _status: true, section: true }
+			: { slug: true, _status: true },
+	]),
+);
 let cache: { data: GlobalData; expiresAt: number } | null = null;
 let inflight: Promise<GlobalData> | null = null;
 
 async function fetchGlobalData(): Promise<GlobalData> {
 	const payload = await getPayload({ config: payloadConfig });
 
-	const [personasResult, conditionsResult, footer, homeCMS] = await Promise.all(
-		[
+	const [personasResult, conditionsResult, footer, homeCMS, menu] =
+		await Promise.all([
 			payload.find({
 				collection: "personas",
 				limit: 0,
@@ -33,8 +47,14 @@ async function fetchGlobalData(): Promise<GlobalData> {
 			}),
 			payload.findGlobal({ slug: "footer" }),
 			payload.findGlobal({ slug: "home" }),
-		],
-	);
+			payload
+				.findGlobal({ slug: "menu", depth: 1, populate: menuLinkPopulate })
+				.then(resolveMenu)
+				.catch((err): NavItem[] => {
+					console.error("[global-data] menu failed:", err);
+					return [];
+				}),
+		]);
 
 	const persons: PersonaTile[] = personasResult.docs.map((persona) => ({
 		...persona,
@@ -56,6 +76,7 @@ async function fetchGlobalData(): Promise<GlobalData> {
 		conditions,
 		footerTitle: footer.title,
 		homeCMS: homeCMS as Home,
+		menu,
 	};
 }
 
