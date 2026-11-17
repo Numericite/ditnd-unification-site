@@ -56,6 +56,7 @@ import * as migration_20261109_131910_courses_ditnd_id from './20261109_131910_c
 import * as migration_20261112_133034_home_sections from './20261112_133034_home_sections';
 import * as migration_20261117_094713_home_contact_block from './20261117_094713_home_contact_block';
 import * as migration_20261117_100612_home_header_title_only from './20261117_100612_home_header_title_only';
+import * as migration_20261117_120000_about_pages_to_pages from './20261117_120000_about_pages_to_pages';
 
 export const migrations = [
   {
@@ -346,6 +347,11 @@ export const migrations = [
   {
     up: migration_20261117_100612_home_header_title_only.up,
     down: migration_20261117_100612_home_header_title_only.down,
-    name: '20261117_100612_home_header_title_only'
+    name: '20261117_100612_home_header_title_only',
+  },
+  {
+    up: migration_20261117_120000_about_pages_to_pages.up,
+    down: migration_20261117_120000_about_pages_to_pages.down,
+    name: '20261117_120000_about_pages_to_pages',
   },
 ];

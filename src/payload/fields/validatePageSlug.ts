@@ -1,6 +1,11 @@
 import type { TextFieldSingleValidation } from "payload";
 import { slugify } from "~/utils/tools";
 import { SECTION_FALLBACKS } from "~/utils/redirects";
+import {
+	PAGE_SECTION_RESERVED_SLUGS,
+	pagePath,
+	pageSection,
+} from "~/utils/pages";
 
 /**
  * Premiers segments d'URL déjà servis par le site. Les pages CMS étant servies
@@ -47,16 +52,20 @@ const hasTarget = (to: RedirectTarget | null | undefined): boolean => {
 
 export const validatePageSlug: TextFieldSingleValidation = async (
 	value,
-	{ req },
+	{ req, siblingData },
 ) => {
 	const slug = typeof value === "string" ? slugify(value) : "";
 	if (!slug) return true;
 
-	if (RESERVED_SLUGS.has(slug)) {
+	const section = pageSection((siblingData as { section?: string })?.section);
+	const reserved = section
+		? PAGE_SECTION_RESERVED_SLUGS[section.value].includes(slug)
+		: RESERVED_SLUGS.has(slug);
+	if (reserved) {
 		return "Adresse déjà utilisée par le site";
 	}
 
-	const path = `/${slug}`;
+	const path = pagePath({ slug, section: section?.value });
 	const fallback = SECTION_FALLBACKS.find(([prefix]) => prefix === path);
 	if (fallback) {
 		return `Adresse redirigée vers ${fallback[1]}`;

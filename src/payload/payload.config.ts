@@ -52,9 +52,9 @@ const hasAwsCreds = Boolean(
 );
 import { CMSHome } from "./globals/cms/Home";
 import { CMSFooter } from "./globals/cms/Footer";
-import { CMSAbout } from "./globals/cms/About";
 import { PracticalGuideViews } from "./collections/PracticalGuidesViews";
 import { SimplifiedContentGenerator } from "./globals/SimplifiedContentGenerator";
+import { documentPath } from "~/utils/pages";
 
 const filename = fileURLToPath(import.meta.url);
 const dirname = path.dirname(filename);
@@ -108,7 +108,7 @@ export default buildConfig({
 					const basePath =
 						data._status === "draft"
 							? `/draft/${data.slug}?collection=pages`
-							: `/${data.slug}`;
+							: documentPath("pages", data);
 					return `${basePath}${data._status !== "draft" ? `?v=${data.updatedAt}` : `&v=${data.updatedAt}`}`;
 				}
 
@@ -116,7 +116,7 @@ export default buildConfig({
 					const basePath =
 						data._status === "draft"
 							? `/draft/${data.slug}`
-							: `/fiches-pratiques/${data.slug}`;
+							: documentPath("practical-guides", data);
 					return `${basePath}?v=${data.updatedAt}`;
 				}
 			},
@@ -161,7 +161,7 @@ export default buildConfig({
 		Themes,
 		Users,
 	],
-	globals: [CMSHome, CMSFooter, CMSAbout, SimplifiedContentGenerator],
+	globals: [CMSHome, CMSFooter, SimplifiedContentGenerator],
 	editor: lexicalEditor(),
 	i18n: {
 		supportedLanguages: { en, fr },
@@ -283,16 +283,11 @@ export default buildConfig({
 				return "";
 			},
 			generateURL: ({ doc, collectionConfig }) => {
-				const slug = (doc as Record<string, unknown>)?.slug;
-				const basePath =
-					collectionConfig?.slug === "courses"
-						? "formations"
-						: collectionConfig?.slug === "pages"
-							? ""
-							: "fiches-pratiques";
-				return typeof slug === "string"
-					? `${process.env.NEXT_PUBLIC_SITE_URL || ""}/${basePath ? `${basePath}/` : ""}${slug}`
-					: "";
+				const path = documentPath(
+					collectionConfig?.slug,
+					(doc ?? {}) as { slug?: string | null; section?: string | null },
+				);
+				return path ? `${process.env.NEXT_PUBLIC_SITE_URL || ""}${path}` : "";
 			},
 		}),
 		s3Storage({
