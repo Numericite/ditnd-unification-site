@@ -8792,6 +8792,218 @@
           "primaryKey": false,
           "notNull": true
         },
+        "contact_phone_title": {
+          "name": "contact_phone_title",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false,
+          "default": "'Par téléphone'"
+        },
+        "contact_phone_number": {
+          "name": "contact_phone_number",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "'0 800 71 40 40'"
+        },
+        "contact_phone_label": {
+          "name": "contact_phone_label",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "contact_phone_schedule_note": {
+          "name": "contact_phone_schedule_note",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "contact_phone_schedule_lundi_closed": {
+          "name": "contact_phone_schedule_lundi_closed",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": false,
+          "default": false
+        },
+        "contact_phone_schedule_lundi_open_time": {
+          "name": "contact_phone_schedule_lundi_open_time",
+          "type": "timestamp(3) with time zone",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "contact_phone_schedule_lundi_close_time": {
+          "name": "contact_phone_schedule_lundi_close_time",
+          "type": "timestamp(3) with time zone",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "contact_phone_schedule_mardi_closed": {
+          "name": "contact_phone_schedule_mardi_closed",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": false,
+          "default": false
+        },
+        "contact_phone_schedule_mardi_open_time": {
+          "name": "contact_phone_schedule_mardi_open_time",
+          "type": "timestamp(3) with time zone",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "contact_phone_schedule_mardi_close_time": {
+          "name": "contact_phone_schedule_mardi_close_time",
+          "type": "timestamp(3) with time zone",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "contact_phone_schedule_mercredi_closed": {
+          "name": "contact_phone_schedule_mercredi_closed",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": false,
+          "default": false
+        },
+        "contact_phone_schedule_mercredi_open_time": {
+          "name": "contact_phone_schedule_mercredi_open_time",
+          "type": "timestamp(3) with time zone",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "contact_phone_schedule_mercredi_close_time": {
+          "name": "contact_phone_schedule_mercredi_close_time",
+          "type": "timestamp(3) with time zone",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "contact_phone_schedule_jeudi_closed": {
+          "name": "contact_phone_schedule_jeudi_closed",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": false,
+          "default": false
+        },
+        "contact_phone_schedule_jeudi_open_time": {
+          "name": "contact_phone_schedule_jeudi_open_time",
+          "type": "timestamp(3) with time zone",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "contact_phone_schedule_jeudi_close_time": {
+          "name": "contact_phone_schedule_jeudi_close_time",
+          "type": "timestamp(3) with time zone",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "contact_phone_schedule_vendredi_closed": {
+          "name": "contact_phone_schedule_vendredi_closed",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": false,
+          "default": false
+        },
+        "contact_phone_schedule_vendredi_open_time": {
+          "name": "contact_phone_schedule_vendredi_open_time",
+          "type": "timestamp(3) with time zone",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "contact_phone_schedule_vendredi_close_time": {
+          "name": "contact_phone_schedule_vendredi_close_time",
+          "type": "timestamp(3) with time zone",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "contact_phone_schedule_samedi_closed": {
+          "name": "contact_phone_schedule_samedi_closed",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": false,
+          "default": false
+        },
+        "contact_phone_schedule_samedi_open_time": {
+          "name": "contact_phone_schedule_samedi_open_time",
+          "type": "timestamp(3) with time zone",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "contact_phone_schedule_samedi_close_time": {
+          "name": "contact_phone_schedule_samedi_close_time",
+          "type": "timestamp(3) with time zone",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "contact_phone_schedule_dimanche_closed": {
+          "name": "contact_phone_schedule_dimanche_closed",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": false,
+          "default": false
+        },
+        "contact_phone_schedule_dimanche_open_time": {
+          "name": "contact_phone_schedule_dimanche_open_time",
+          "type": "timestamp(3) with time zone",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "contact_phone_schedule_dimanche_close_time": {
+          "name": "contact_phone_schedule_dimanche_close_time",
+          "type": "timestamp(3) with time zone",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "contact_contact_form_title": {
+          "name": "contact_contact_form_title",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false,
+          "default": "'Par écrit'"
+        },
+        "contact_contact_form_description": {
+          "name": "contact_contact_form_description",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "contact_contact_form_button_label": {
+          "name": "contact_contact_form_button_label",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false,
+          "default": "'Écrire au service'"
+        },
+        "contact_contact_form_url": {
+          "name": "contact_contact_form_url",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "contact_directory_title": {
+          "name": "contact_directory_title",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false,
+          "default": "'Annuaire'"
+        },
+        "contact_directory_description": {
+          "name": "contact_directory_description",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "contact_directory_button_label": {
+          "name": "contact_directory_button_label",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false,
+          "default": "'Consulter l''annuaire'"
+        },
+        "contact_directory_url": {
+          "name": "contact_directory_url",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false,
+          "default": "'https://annuaire.autismeinfoservice.fr/'"
+        },
         "updated_at": {
           "name": "updated_at",
           "type": "timestamp(3) with time zone",
@@ -9425,6 +9637,6 @@
     "tables": {},
     "columns": {}
   },
-  "id": "1f10173d-1590-4071-b57e-c40506e4229d",
+  "id": "b3175c9d-c277-448b-984b-fd8fd9ecb984",
   "prevId": "00000000-0000-0000-0000-000000000000"
 }
