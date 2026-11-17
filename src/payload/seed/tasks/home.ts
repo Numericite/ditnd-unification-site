@@ -11,8 +11,6 @@ export default async function homeTask(payload: BasePayload) {
 			header: {
 				title:
 					"Site national d'informations pour toutes les personnes concernées par l'autisme et ses troubles associés",
-				description:
-					"La Maison de l'autisme propose de l'information fiable, de l'écoute, des conseils et des temps d'échange autour de l'autisme et des troubles du neurodéveloppement.",
 			},
 			sections: [
 				{
