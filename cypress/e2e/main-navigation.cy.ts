@@ -1,5 +1,5 @@
 // Menu seedé (src/payload/seed/tasks/menu.ts) : Annuaire et À propos, après
-// les éléments fixes générés par MainNavigation.
+// le lien Accueil et les éléments fixes générés par MainNavigation.
 describe("Main navigation", () => {
 	beforeEach(() => {
 		cy.viewport(1440, 900);
@@ -7,12 +7,13 @@ describe("Main navigation", () => {
 		cy.waitForHydration();
 	});
 
-	it("shows the locked items first, then the menu items", () => {
+	it("shows the home link and the locked items first, then the menu items", () => {
 		cy.get("#menu .fr-nav__list > .fr-nav__item").then((items) => {
 			const labels = [...items].map((item) =>
 				item.querySelector(".fr-nav__btn, .fr-nav__link")?.textContent?.trim(),
 			);
 			expect(labels).to.deep.equal([
+				"Accueil",
 				"Je suis",
 				"Fiches pratiques",
 				"Formations",
@@ -20,6 +21,37 @@ describe("Main navigation", () => {
 				"À propos",
 			]);
 		});
+	});
+
+	it("shows the home link as an icon with an accessible name", () => {
+		cy.get("#menu .fr-nav__item").first().find("a").as("home");
+		cy.get("@home").should("have.attr", "href", "/");
+		cy.get("@home").should("not.have.attr", "aria-current");
+		cy.get("@home")
+			.find(".fr-icon-home-4-line")
+			.should("have.attr", "aria-hidden", "true");
+		// Masqué visuellement, mais lu par les lecteurs d'écran.
+		cy.get("@home")
+			.contains("Accueil")
+			.should("have.css", "position", "absolute");
+
+		cy.get("@home").click();
+		cy.location("pathname").should("eq", "/");
+		cy.get("#menu .fr-nav__item")
+			.first()
+			.find("a")
+			.should("have.attr", "aria-current", "page")
+			.find(".fr-icon-home-4-fill");
+	});
+
+	it("shows the home label next to the icon in the mobile menu", () => {
+		cy.viewport(375, 812);
+		cy.get(".fr-header__navbar .fr-btn--menu").click();
+		cy.get(".fr-header__menu .fr-nav__item")
+			.first()
+			.find("a")
+			.contains("Accueil")
+			.should("be.visible");
 	});
 
 	it("opens external links in a new tab", () => {
