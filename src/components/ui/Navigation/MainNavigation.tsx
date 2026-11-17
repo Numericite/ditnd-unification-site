@@ -4,13 +4,13 @@ import { useEffect, useRef, useState } from "react";
 import SubMenuCustom from "./SubMenuCustom";
 import Button from "@codegouvfr/react-dsfr/Button";
 import Header from "@codegouvfr/react-dsfr/Header";
-import { chatbotOpenStore, menuStore, personStore } from "~/state/store";
 import {
-	LOCKED_MENU_ITEMS,
-	type LockedMenuItem,
-	type NavLink,
-	isPathActive,
-} from "~/utils/menu";
+	chatbotOpenStore,
+	lockedMenuStore,
+	menuStore,
+	personStore,
+} from "~/state/store";
+import { type LockedMenuItem, type NavLink, isPathActive } from "~/utils/menu";
 import { personsAndProTiles } from "~/utils/pictograms";
 import { skipLinks } from "~/utils/tools";
 import SkipLinks from "@codegouvfr/react-dsfr/SkipLinks";
@@ -63,7 +63,7 @@ export default function MainNavigation() {
 	};
 
 	const userNavigationItems: MainNavigationProps.Item[] = [
-		...LOCKED_MENU_ITEMS.map((item): MainNavigationProps.Item => {
+		...lockedMenuStore.get().map((item): MainNavigationProps.Item => {
 			const isActive = item.activePaths.some((path) =>
 				isPathActive(currentPath, path),
 			);

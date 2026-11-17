@@ -4,7 +4,13 @@ import type { PersonaTile } from "~/components/HomePage/PersonaTiles";
 import type { TDH } from "~/state/store";
 import type { Home } from "~/payload/payload-types";
 import { REFERENCE_COLLECTIONS } from "~/utils/links";
-import { type NavItem, resolveMenu } from "~/utils/menu";
+import {
+	LOCKED_MENU_ITEMS,
+	type LockedMenuItem,
+	type NavItem,
+	resolveLockedItems,
+	resolveMenu,
+} from "~/utils/menu";
 
 export type GlobalData = {
 	persons: PersonaTile[];
@@ -13,6 +19,7 @@ export type GlobalData = {
 	footerTitle: string;
 	homeCMS: Home;
 	menu: NavItem[];
+	lockedMenu: LockedMenuItem[];
 };
 
 const TTL_MS = 60_000;
@@ -49,10 +56,13 @@ async function fetchGlobalData(): Promise<GlobalData> {
 			payload.findGlobal({ slug: "home" }),
 			payload
 				.findGlobal({ slug: "menu", depth: 1, populate: menuLinkPopulate })
-				.then(resolveMenu)
-				.catch((err): NavItem[] => {
+				.then((menu) => ({
+					items: resolveMenu(menu),
+					locked: resolveLockedItems(menu),
+				}))
+				.catch((err) => {
 					console.error("[global-data] menu failed:", err);
-					return [];
+					return { items: [] as NavItem[], locked: LOCKED_MENU_ITEMS };
 				}),
 		]);
 
@@ -76,7 +86,8 @@ async function fetchGlobalData(): Promise<GlobalData> {
 		conditions,
 		footerTitle: footer.title,
 		homeCMS: homeCMS as Home,
-		menu,
+		menu: menu.items,
+		lockedMenu: menu.locked,
 	};
 }
 

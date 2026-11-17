@@ -1583,6 +1583,20 @@ export interface PayloadMigrationsSelect<T extends boolean = true> {
  */
 export interface Menu {
 	id: number;
+	lockedItems: {
+		personas: {
+			title: string;
+			visible?: boolean | null;
+		};
+		practicalGuides: {
+			title: string;
+			visible?: boolean | null;
+		};
+		courses: {
+			title: string;
+			visible?: boolean | null;
+		};
+	};
 	items?:
 		| {
 				title: string;
@@ -1957,6 +1971,28 @@ export interface SimplifiedContentGenerator {
  * via the `definition` "menu_select".
  */
 export interface MenuSelect<T extends boolean = true> {
+	lockedItems?:
+		| T
+		| {
+				personas?:
+					| T
+					| {
+							title?: T;
+							visible?: T;
+					  };
+				practicalGuides?:
+					| T
+					| {
+							title?: T;
+							visible?: T;
+					  };
+				courses?:
+					| T
+					| {
+							title?: T;
+							visible?: T;
+					  };
+		  };
 	items?:
 		| T
 		| {

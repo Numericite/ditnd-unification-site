@@ -5,7 +5,11 @@ import type {
 	PersonaTypes,
 } from "~/components/HomePage/PersonaTiles";
 import type { Home } from "~/payload/payload-types";
-import type { NavItem } from "~/utils/menu";
+import {
+	LOCKED_MENU_ITEMS,
+	type LockedMenuItem,
+	type NavItem,
+} from "~/utils/menu";
 
 export type TDH = {
 	id?: number;
@@ -27,5 +31,7 @@ export const proStore = observable<PersonaTile[]>([]);
 export const footerTitleStore = observable<string>("");
 
 export const menuStore = observable<NavItem[]>([]);
+
+export const lockedMenuStore = observable<LockedMenuItem[]>(LOCKED_MENU_ITEMS);
 
 export const chatbotOpenStore = observable<boolean>(false);
