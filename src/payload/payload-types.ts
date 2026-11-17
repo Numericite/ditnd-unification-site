@@ -156,13 +156,11 @@ export interface Config {
 	globals: {
 		home: Home;
 		footer: Footer;
-		newsletter: Newsletter;
 		"simplified-content-generator": SimplifiedContentGenerator;
 	};
 	globalsSelect: {
 		home: HomeSelect<false> | HomeSelect<true>;
 		footer: FooterSelect<false> | FooterSelect<true>;
-		newsletter: NewsletterSelect<false> | NewsletterSelect<true>;
 		"simplified-content-generator":
 			| SimplifiedContentGeneratorSelect<false>
 			| SimplifiedContentGeneratorSelect<true>;
@@ -1583,24 +1581,179 @@ export interface Home {
 	id: number;
 	header: {
 		title: string;
-		description: string;
 	};
-	tiles: {
-		persona: {
-			title: string;
-			description: string;
-		};
-		condition: {
-			title: string;
-			description: string;
+	/**
+	 * Glissez-déposez les sections pour changer leur ordre d'affichage sous l'en-tête. Décochez « Afficher la section » pour la masquer sans perdre son contenu.
+	 */
+	sections?:
+		| (
+				| HomeContactSection
+				| HomeNewsCarouselSection
+				| HomePersonaTilesSection
+				| HomeMostViewedGuidesSection
+				| HomeNewsletterSection
+		  )[]
+		| null;
+	updatedAt?: string | null;
+	createdAt?: string | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "HomeContactSection".
+ */
+export interface HomeContactSection {
+	visible?: boolean | null;
+	phone: {
+		title?: string | null;
+		number: string;
+		/**
+		 * Ex : Service et appel gratuits
+		 */
+		label?: string | null;
+		/**
+		 * Ex : Appel gratuit depuis un fixe ou un mobile.
+		 */
+		scheduleNote?: string | null;
+		schedule?: {
+			lundi?: {
+				closed?: boolean | null;
+				openTime?: string | null;
+				closeTime?: string | null;
+			};
+			mardi?: {
+				closed?: boolean | null;
+				openTime?: string | null;
+				closeTime?: string | null;
+			};
+			mercredi?: {
+				closed?: boolean | null;
+				openTime?: string | null;
+				closeTime?: string | null;
+			};
+			jeudi?: {
+				closed?: boolean | null;
+				openTime?: string | null;
+				closeTime?: string | null;
+			};
+			vendredi?: {
+				closed?: boolean | null;
+				openTime?: string | null;
+				closeTime?: string | null;
+			};
+			samedi?: {
+				closed?: boolean | null;
+				openTime?: string | null;
+				closeTime?: string | null;
+			};
+			dimanche?: {
+				closed?: boolean | null;
+				openTime?: string | null;
+				closeTime?: string | null;
+			};
 		};
 	};
-	mostViewedGuides: {
+	contactForm?: {
+		title?: string | null;
+		description?: string | null;
+		buttonLabel?: string | null;
+		url?: string | null;
+	};
+	directory?: {
+		title?: string | null;
+		description?: string | null;
+		buttonLabel?: string | null;
+		url?: string | null;
+	};
+	id?: string | null;
+	blockName?: string | null;
+	blockType: "contact";
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "HomeNewsCarouselSection".
+ */
+export interface HomeNewsCarouselSection {
+	visible?: boolean | null;
+	id?: string | null;
+	blockName?: string | null;
+	blockType: "newsCarousel";
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "HomePersonaTilesSection".
+ */
+export interface HomePersonaTilesSection {
+	visible?: boolean | null;
+	persona: {
 		title: string;
 		description: string;
 	};
-	updatedAt?: string | null;
-	createdAt?: string | null;
+	condition: {
+		title: string;
+		description: string;
+	};
+	id?: string | null;
+	blockName?: string | null;
+	blockType: "personaTiles";
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "HomeMostViewedGuidesSection".
+ */
+export interface HomeMostViewedGuidesSection {
+	visible?: boolean | null;
+	title: string;
+	description: string;
+	id?: string | null;
+	blockName?: string | null;
+	blockType: "mostViewedGuides";
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "HomeNewsletterSection".
+ */
+export interface HomeNewsletterSection {
+	visible?: boolean | null;
+	/**
+	 * Laissez vide pour utiliser le libellé DSFR par défaut : « Abonnez-vous à notre lettre d'information ».
+	 */
+	title?: string | null;
+	description?: string | null;
+	/**
+	 * Affichée sous le champ email. Laissez vide pour utiliser la mention DSFR par défaut.
+	 */
+	consentHint?: string | null;
+	/**
+	 * Laissez vide pour utiliser le libellé DSFR par défaut : « Suivez-nous sur les réseaux sociaux ».
+	 */
+	socialTitle?: string | null;
+	/**
+	 * Si aucun réseau n'est renseigné, la colonne réseaux sociaux n'est pas affichée.
+	 */
+	socials?:
+		| {
+				type:
+					| "facebook"
+					| "github"
+					| "instagram"
+					| "linkedin"
+					| "mastodon"
+					| "tiktok"
+					| "twitch"
+					| "twitter-x"
+					| "vimeo"
+					| "youtube"
+					| "dailymotion"
+					| "telegram"
+					| "threads"
+					| "mail";
+				url: string;
+				id?: string | null;
+		  }[]
+		| null;
+	id?: string | null;
+	blockName?: string | null;
+	blockType: "newsletter";
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -1687,55 +1840,6 @@ export interface Footer {
 	createdAt?: string | null;
 }
 /**
- * Bloc affiché en bas de la page d'accueil. Décochez « Afficher le bloc » pour le retirer du site.
- *
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "newsletter".
- */
-export interface Newsletter {
-	id: number;
-	enabled?: boolean | null;
-	/**
-	 * Laissez vide pour utiliser le libellé DSFR par défaut : « Abonnez-vous à notre lettre d'information ».
-	 */
-	title?: string | null;
-	description?: string | null;
-	/**
-	 * Affichée sous le champ email. Laissez vide pour utiliser la mention DSFR par défaut.
-	 */
-	consentHint?: string | null;
-	/**
-	 * Laissez vide pour utiliser le libellé DSFR par défaut : « Suivez-nous sur les réseaux sociaux ».
-	 */
-	socialTitle?: string | null;
-	/**
-	 * Si aucun réseau n'est renseigné, la colonne réseaux sociaux n'est pas affichée.
-	 */
-	socials?:
-		| {
-				type:
-					| "facebook"
-					| "github"
-					| "instagram"
-					| "linkedin"
-					| "mastodon"
-					| "tiktok"
-					| "twitch"
-					| "twitter-x"
-					| "vimeo"
-					| "youtube"
-					| "dailymotion"
-					| "telegram"
-					| "threads"
-					| "mail";
-				url: string;
-				id?: string | null;
-		  }[]
-		| null;
-	updatedAt?: string | null;
-	createdAt?: string | null;
-}
-/**
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "simplified-content-generator".
  */
@@ -1783,33 +1887,166 @@ export interface HomeSelect<T extends boolean = true> {
 		| T
 		| {
 				title?: T;
-				description?: T;
 		  };
-	tiles?:
+	sections?:
 		| T
 		| {
-				persona?:
+				contact?: T | HomeContactSectionSelect<T>;
+				newsCarousel?: T | HomeNewsCarouselSectionSelect<T>;
+				personaTiles?: T | HomePersonaTilesSectionSelect<T>;
+				mostViewedGuides?: T | HomeMostViewedGuidesSectionSelect<T>;
+				newsletter?: T | HomeNewsletterSectionSelect<T>;
+		  };
+	updatedAt?: T;
+	createdAt?: T;
+	globalType?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "HomeContactSection_select".
+ */
+export interface HomeContactSectionSelect<T extends boolean = true> {
+	visible?: T;
+	phone?:
+		| T
+		| {
+				title?: T;
+				number?: T;
+				label?: T;
+				scheduleNote?: T;
+				schedule?:
 					| T
 					| {
-							title?: T;
-							description?: T;
-					  };
-				condition?:
-					| T
-					| {
-							title?: T;
-							description?: T;
+							lundi?:
+								| T
+								| {
+										closed?: T;
+										openTime?: T;
+										closeTime?: T;
+								  };
+							mardi?:
+								| T
+								| {
+										closed?: T;
+										openTime?: T;
+										closeTime?: T;
+								  };
+							mercredi?:
+								| T
+								| {
+										closed?: T;
+										openTime?: T;
+										closeTime?: T;
+								  };
+							jeudi?:
+								| T
+								| {
+										closed?: T;
+										openTime?: T;
+										closeTime?: T;
+								  };
+							vendredi?:
+								| T
+								| {
+										closed?: T;
+										openTime?: T;
+										closeTime?: T;
+								  };
+							samedi?:
+								| T
+								| {
+										closed?: T;
+										openTime?: T;
+										closeTime?: T;
+								  };
+							dimanche?:
+								| T
+								| {
+										closed?: T;
+										openTime?: T;
+										closeTime?: T;
+								  };
 					  };
 		  };
-	mostViewedGuides?:
+	contactForm?:
+		| T
+		| {
+				title?: T;
+				description?: T;
+				buttonLabel?: T;
+				url?: T;
+		  };
+	directory?:
+		| T
+		| {
+				title?: T;
+				description?: T;
+				buttonLabel?: T;
+				url?: T;
+		  };
+	id?: T;
+	blockName?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "HomeNewsCarouselSection_select".
+ */
+export interface HomeNewsCarouselSectionSelect<T extends boolean = true> {
+	visible?: T;
+	id?: T;
+	blockName?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "HomePersonaTilesSection_select".
+ */
+export interface HomePersonaTilesSectionSelect<T extends boolean = true> {
+	visible?: T;
+	persona?:
 		| T
 		| {
 				title?: T;
 				description?: T;
 		  };
-	updatedAt?: T;
-	createdAt?: T;
-	globalType?: T;
+	condition?:
+		| T
+		| {
+				title?: T;
+				description?: T;
+		  };
+	id?: T;
+	blockName?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "HomeMostViewedGuidesSection_select".
+ */
+export interface HomeMostViewedGuidesSectionSelect<T extends boolean = true> {
+	visible?: T;
+	title?: T;
+	description?: T;
+	id?: T;
+	blockName?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "HomeNewsletterSection_select".
+ */
+export interface HomeNewsletterSectionSelect<T extends boolean = true> {
+	visible?: T;
+	title?: T;
+	description?: T;
+	consentHint?: T;
+	socialTitle?: T;
+	socials?:
+		| T
+		| {
+				type?: T;
+				url?: T;
+				id?: T;
+		  };
+	id?: T;
+	blockName?: T;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -1842,27 +2079,6 @@ export interface FooterSelect<T extends boolean = true> {
 				title?: T;
 				imageBanner?: T;
 				content?: T;
-		  };
-	updatedAt?: T;
-	createdAt?: T;
-	globalType?: T;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "newsletter_select".
- */
-export interface NewsletterSelect<T extends boolean = true> {
-	enabled?: T;
-	title?: T;
-	description?: T;
-	consentHint?: T;
-	socialTitle?: T;
-	socials?:
-		| T
-		| {
-				type?: T;
-				url?: T;
-				id?: T;
 		  };
 	updatedAt?: T;
 	createdAt?: T;

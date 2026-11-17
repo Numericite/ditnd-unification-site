@@ -18,7 +18,7 @@ describe("Client-side navigation", () => {
 		cy.get('[class*="coloredContainer"]')
 			.should("have.css", "background-color")
 			.and("not.eq", TRANSPARENT);
-		cy.get('[class*="headerImageContainer"]').should(
+		cy.get('[class*="mostViewedContainer"]').should(
 			"have.css",
 			"display",
 			"flex",

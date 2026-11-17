@@ -133,6 +133,15 @@ export default function MainNavigation() {
 						href: "/",
 						title: "Accueil - Maison de l'autisme",
 					}}
+					operatorLogo={{
+						orientation: "horizontal",
+						imgUrl: "/tnd-logo.png",
+						alt: "Site national d'information sur l'autisme et ses troubles associés",
+					}}
+					classes={{
+						brandTop: classes.brandTop,
+						operator: classes.operatorLogo,
+					}}
 					id="fr-header-with-horizontal-operator-logo"
 					navigation={userNavigationItems}
 					quickAccessItems={[
@@ -143,7 +152,7 @@ export default function MainNavigation() {
 							size="large"
 							linkProps={{ href: "/contact-particuliers" }}
 						>
-							Contactez nos experts
+							Contactez-nous
 						</Button>,
 					]}
 					renderSearchInput={({ className, id, placeholder, type }) => (
@@ -179,6 +188,18 @@ const useStyles = tss.withName({ MainNavigation }).create({
 			position: "sticky",
 			top: "calc(-1 * var(--sticky-header-hidden-height, 0px))",
 			zIndex: 750,
+		},
+	},
+	brandTop: {
+		[fr.breakpoints.up("lg")]: { flexShrink: 0 },
+	},
+	operatorLogo: {
+		"& img": {
+			maxWidth: "11.25rem !important",
+		},
+		[fr.breakpoints.up("lg")]: {
+			flexShrink: 0,
+			"& img": { width: "11.25rem" },
 		},
 	},
 	mainAlert: {
