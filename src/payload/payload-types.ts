@@ -1576,7 +1576,6 @@ export interface Home {
 	id: number;
 	header: {
 		title: string;
-		description: string;
 	};
 	/**
 	 * Glissez-déposez les sections pour changer leur ordre d'affichage sous l'en-tête. Décochez « Afficher la section » pour la masquer sans perdre son contenu.
@@ -1949,7 +1948,6 @@ export interface HomeSelect<T extends boolean = true> {
 		| T
 		| {
 				title?: T;
-				description?: T;
 		  };
 	sections?:
 		| T

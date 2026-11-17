@@ -21,7 +21,7 @@ export const CMSHome: GlobalConfig = {
 				{
 					label: "En-tête",
 					name: "header",
-					fields: [standardFields.title, standardFields.longDescription],
+					fields: [standardFields.title],
 				},
 				{
 					label: "Sections",

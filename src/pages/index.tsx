@@ -2,14 +2,10 @@ import Head from "next/head";
 import { tss } from "tss-react/dsfr";
 import { fr } from "@codegouvfr/react-dsfr";
 import { PersonaTiles } from "~/components/HomePage/PersonaTiles";
-import SearchBar from "@codegouvfr/react-dsfr/SearchBar";
 import MostViewedGuides from "~/components/HomePage/MostViewedGuides";
-import { useState } from "react";
-import { useRouter } from "next/router";
 import { EmptyScreenZone } from "~/components/ui/EmptyScreenZone";
 import { homeCMSStore, personStore } from "~/state/store";
 import { personsAndProTiles } from "~/utils/pictograms";
-import Image from "next/image";
 import PageContent from "~/components/ui/PageContent";
 import NewsletterFollow from "~/components/ui/NewsletterFollow";
 import { ContactInfos } from "~/components/HomePage/ContactInfos";
@@ -35,10 +31,6 @@ export default function Home({
 	latestNews,
 }: Props) {
 	const { classes, cx } = useStyles();
-
-	const [search, setSearch] = useState("");
-
-	const router = useRouter();
 
 	const persons = personStore.get();
 
@@ -144,56 +136,8 @@ export default function Home({
 				/>
 			</Head>
 			<PageContent>
-				<div className={fr.cx("fr-container", "fr-my-8w")}>
-					<div className={fr.cx("fr-py-4w")}>
-						<div
-							className={cx(
-								fr.cx("fr-grid-row", "fr-grid-row--gutters"),
-								classes.headerRow,
-							)}
-						>
-							<div className={fr.cx("fr-col-12", "fr-col-md-6")}>
-								<h1>{homeCMS.header.title}</h1>
-								<p className={classes.preLine}>{homeCMS.header.description}</p>
-								<SearchBar
-									big
-									onButtonClick={() =>
-										router.push(`/recherche?search=${search}`)
-									}
-									renderInput={({ className, id, placeholder, type }) => (
-										<input
-											className={className}
-											id={id}
-											placeholder={placeholder}
-											type={type}
-											value={search}
-											onChange={(event) => {
-												if (event.currentTarget.value === "") setSearch("");
-												setSearch(event.currentTarget.value);
-											}}
-										/>
-									)}
-								/>
-							</div>
-							<div
-								className={cx(
-									fr.cx("fr-col-12", "fr-col-md-6"),
-									classes.headerImageContainer,
-								)}
-							>
-								<Image
-									alt=""
-									role="presentation"
-									width={400}
-									height={400}
-									fetchPriority="high"
-									priority
-									loading="eager"
-									src={"/HomePageIllustration.svg"}
-								/>
-							</div>
-						</div>
-					</div>
+				<div className={fr.cx("fr-container", "fr-py-6w")}>
+					<h1 className={fr.cx("fr-mb-0")}>{homeCMS.header.title}</h1>
 				</div>
 				{withBackgrounds(sections).map(({ section, top, bottom }) => (
 					<div
@@ -266,17 +210,6 @@ export const getServerSideProps: GetServerSideProps<Props> = async () => {
 };
 
 const useStyles = tss.withName({ Home }).create({
-	headerRow: {
-		alignContent: "center",
-		alignItems: "center",
-	},
-	headerImageContainer: {
-		display: "flex",
-		justifyContent: "center",
-		[fr.breakpoints.down("md")]: {
-			display: "none",
-		},
-	},
 	preLine: {
 		whiteSpace: "pre-line",
 	},
