@@ -4,7 +4,7 @@ import Tile from "@codegouvfr/react-dsfr/Tile";
 import Button from "@codegouvfr/react-dsfr/Button";
 import Badge from "@codegouvfr/react-dsfr/Badge";
 import { useEffect, useId, useRef, useState } from "react";
-import type { Home } from "~/payload/payload-types";
+import type { HomeContactSection } from "~/payload/payload-types";
 import { PhoneSchedulePanel } from "./PhoneScheduleModal";
 import {
 	addDays,
@@ -15,7 +15,7 @@ import {
 } from "~/utils/scheduleTime";
 import { useKeepInViewport } from "~/utils/useKeepInViewport";
 
-type Schedule = NonNullable<Home["contact"]["phone"]["schedule"]>;
+type Schedule = NonNullable<HomeContactSection["phone"]["schedule"]>;
 
 const DAY_KEYS: Readonly<Record<DayOfWeek, keyof Schedule>> = {
 	0: "dimanche",
@@ -101,7 +101,7 @@ function usePhoneStatus(schedule: Schedule | null | undefined): PhoneStatus {
 }
 
 type Props = {
-	contactCMS: Home["contact"] | undefined;
+	contactCMS: HomeContactSection | undefined;
 };
 
 export function ContactInfos({ contactCMS }: Props) {
@@ -165,158 +165,149 @@ export function ContactInfos({ contactCMS }: Props) {
 	const directoryLabel = directory?.buttonLabel ?? "Consulter l'annuaire";
 
 	return (
-		<div className={classes.sectionWrapper}>
-			<div className={fr.cx("fr-container")}>
-				<div className={fr.cx("fr-py-4w")}>
-					<h2 className={fr.cx("fr-sr-only")}>Nous contacter</h2>
-					<div className={fr.cx("fr-grid-row", "fr-grid-row--gutters")}>
-						<div
-							ref={phoneColumnRef}
-							className={cx(
-								fr.cx("fr-col-12", "fr-col-md-4"),
-								classes.phoneColumn,
-							)}
-						>
-							<Tile
-								title={phone?.title ?? "Par téléphone"}
-								start={
-									<span
-										className={cx(
-											fr.cx("fr-icon-phone-line"),
-											classes.tileIcon,
-										)}
-										aria-hidden="true"
-									/>
-								}
-								desc={
-									<>
-										<a
-											href={`tel:${phoneNumber.replace(/\s/g, "")}`}
-											className={classes.phoneNumber}
-										>
-											{phoneNumber}
-										</a>
-										<span className={classes.phoneLabel}>
-											{phone?.label ?? "Service et appel gratuits"}
-										</span>
-									</>
-								}
-								detail={
-									<span className={classes.detailRow}>
-										{isOpen !== null && (
-											<>
-												<span
-													aria-hidden="true"
-													className={cx(
-														classes.statusHalo,
-														isOpen ? classes.statusOpen : classes.statusClosed,
-													)}
-												>
-													<span className={classes.statusDot} />
-												</span>
-												<Badge
-													noIcon
-													small
-													severity={isOpen ? "success" : "error"}
-												>
-													{isOpen ? "OUVERT" : "FERMÉ"}
-												</Badge>
-												{isOpen ? todayLabel : closedLabel}
-											</>
-										)}
-										<button
-											ref={scheduleButtonRef}
-											type="button"
-											aria-label="Voir les horaires de la ligne"
-											aria-expanded={showSchedule}
-											aria-controls={showSchedule ? schedulePanelId : undefined}
-											onClick={() => setShowSchedule((v) => !v)}
-											className={cx(
-												fr.cx(
-													"fr-btn",
-													"fr-btn--sm",
-													"fr-icon-information-line",
-												),
-												"fr-btn--tertiary-no-outline",
-												classes.scheduleButton,
-											)}
-										/>
-									</span>
-								}
-								noIcon
-								classes={{
-									root: cx(classes.tileLeft, classes.tilePhoneDetail),
-								}}
-							/>
-							{showSchedule && (
-								<PhoneSchedulePanel
-									ref={schedulePanelRef}
-									id={schedulePanelId}
-									schedule={phone?.schedule}
-									scheduleNote={phone?.scheduleNote}
+		<div className={fr.cx("fr-container")}>
+			<div className={fr.cx("fr-py-4w")}>
+				<h2 className={fr.cx("fr-sr-only")}>Nous contacter</h2>
+				<div className={fr.cx("fr-grid-row", "fr-grid-row--gutters")}>
+					<div
+						ref={phoneColumnRef}
+						className={cx(
+							fr.cx("fr-col-12", "fr-col-md-4"),
+							classes.phoneColumn,
+						)}
+					>
+						<Tile
+							title={phone?.title ?? "Par téléphone"}
+							start={
+								<span
+									className={cx(fr.cx("fr-icon-phone-line"), classes.tileIcon)}
+									aria-hidden="true"
 								/>
-							)}
-						</div>
-						<div className={fr.cx("fr-col-12", "fr-col-md-4")}>
-							<Tile
-								title={contactForm?.title ?? "Par écrit"}
-								start={
-									<span
-										className={cx(fr.cx("fr-icon-mail-line"), classes.tileIcon)}
-										aria-hidden="true"
-									/>
-								}
-								desc={contactForm?.description ?? ""}
-								detail={
-									<Button
-										priority="secondary"
-										iconId="fr-icon-arrow-right-line"
-										iconPosition="right"
-										linkProps={{
-											href: contactForm?.url ?? "/contact-particuliers",
-										}}
+							}
+							desc={
+								<>
+									<a
+										href={`tel:${phoneNumber.replace(/\s/g, "")}`}
+										className={classes.phoneNumber}
 									>
-										{contactForm?.buttonLabel ?? "Écrire au service"}
-									</Button>
-								}
-								noIcon
-								classes={{ root: classes.tileLeft }}
-							/>
-						</div>
-						<div className={fr.cx("fr-col-12", "fr-col-md-4")}>
-							<Tile
-								title={directory?.title ?? "Annuaire"}
-								start={
-									<span
+										{phoneNumber}
+									</a>
+									<span className={classes.phoneLabel}>
+										{phone?.label ?? "Service et appel gratuits"}
+									</span>
+								</>
+							}
+							detail={
+								<span className={classes.detailRow}>
+									{isOpen !== null && (
+										<>
+											<span
+												aria-hidden="true"
+												className={cx(
+													classes.statusHalo,
+													isOpen ? classes.statusOpen : classes.statusClosed,
+												)}
+											>
+												<span className={classes.statusDot} />
+											</span>
+											<Badge
+												noIcon
+												small
+												severity={isOpen ? "success" : "error"}
+											>
+												{isOpen ? "OUVERT" : "FERMÉ"}
+											</Badge>
+											{isOpen ? todayLabel : closedLabel}
+										</>
+									)}
+									<button
+										ref={scheduleButtonRef}
+										type="button"
+										aria-label="Voir les horaires de la ligne"
+										aria-expanded={showSchedule}
+										aria-controls={showSchedule ? schedulePanelId : undefined}
+										onClick={() => setShowSchedule((v) => !v)}
 										className={cx(
-											fr.cx("fr-icon-map-pin-user-line"),
-											classes.tileIcon,
+											fr.cx("fr-btn", "fr-btn--sm", "fr-icon-information-line"),
+											"fr-btn--tertiary-no-outline",
+											classes.scheduleButton,
 										)}
-										aria-hidden="true"
 									/>
-								}
-								desc={directory?.description ?? ""}
-								detail={
-									<Button
-										priority="secondary"
-										iconId="fr-icon-external-link-line"
-										iconPosition="right"
-										linkProps={{
-											href:
-												directory?.url ??
-												"https://annuaire.autismeinfoservice.fr/",
-											target: "_blank",
-											rel: "noopener noreferrer",
-											title: `${directoryLabel} - nouvelle fenêtre`,
-										}}
-									>
-										{directoryLabel}
-									</Button>
-								}
-								noIcon
-								classes={{ root: classes.tileLeft }}
+								</span>
+							}
+							noIcon
+							classes={{
+								root: cx(classes.tileLeft, classes.tilePhoneDetail),
+							}}
+						/>
+						{showSchedule && (
+							<PhoneSchedulePanel
+								ref={schedulePanelRef}
+								id={schedulePanelId}
+								schedule={phone?.schedule}
+								scheduleNote={phone?.scheduleNote}
 							/>
-						</div>
+						)}
+					</div>
+					<div className={fr.cx("fr-col-12", "fr-col-md-4")}>
+						<Tile
+							title={contactForm?.title ?? "Par écrit"}
+							start={
+								<span
+									className={cx(fr.cx("fr-icon-mail-line"), classes.tileIcon)}
+									aria-hidden="true"
+								/>
+							}
+							desc={contactForm?.description ?? ""}
+							detail={
+								<Button
+									priority="secondary"
+									iconId="fr-icon-arrow-right-line"
+									iconPosition="right"
+									linkProps={{
+										href: contactForm?.url ?? "/contact-particuliers",
+									}}
+								>
+									{contactForm?.buttonLabel ?? "Écrire au service"}
+								</Button>
+							}
+							noIcon
+							classes={{ root: classes.tileLeft }}
+						/>
+					</div>
+					<div className={fr.cx("fr-col-12", "fr-col-md-4")}>
+						<Tile
+							title={directory?.title ?? "Annuaire"}
+							start={
+								<span
+									className={cx(
+										fr.cx("fr-icon-map-pin-user-line"),
+										classes.tileIcon,
+									)}
+									aria-hidden="true"
+								/>
+							}
+							desc={directory?.description ?? ""}
+							detail={
+								<Button
+									priority="secondary"
+									iconId="fr-icon-external-link-line"
+									iconPosition="right"
+									linkProps={{
+										href:
+											directory?.url ??
+											"https://annuaire.autismeinfoservice.fr/",
+										target: "_blank",
+										rel: "noopener noreferrer",
+										title: `${directoryLabel} - nouvelle fenêtre`,
+									}}
+								>
+									{directoryLabel}
+								</Button>
+							}
+							noIcon
+							classes={{ root: classes.tileLeft }}
+						/>
 					</div>
 				</div>
 			</div>
@@ -325,9 +316,6 @@ export function ContactInfos({ contactCMS }: Props) {
 }
 
 const useStyles = tss.withName({ ContactInfos }).create({
-	sectionWrapper: {
-		background: `linear-gradient(to bottom, transparent 50%, ${fr.colors.decisions.background.alt.blueFrance.default} 50%)`,
-	},
 	phoneNumber: {
 		display: "block",
 		fontSize: "1.75rem",

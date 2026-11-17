@@ -1,5 +1,6 @@
 import type { Block, BlocksField } from "payload";
 import { standardFields } from "~/payload/fields/standards";
+import { contactSectionFields } from "./homeContactSection";
 import {
 	HOME_SECTION_LABELS,
 	HOME_SECTION_TYPES,
@@ -43,6 +44,8 @@ const section = (slug: HomeSectionType, fields: Block["fields"]): Block => ({
 	},
 	fields: [visibleField, ...fields],
 });
+
+const contactSection = section("contact", contactSectionFields);
 
 const newsCarouselSection = section("newsCarousel", []);
 
@@ -141,6 +144,7 @@ export const homeSectionsField: BlocksField = {
 			"Glissez-déposez les sections pour changer leur ordre d'affichage sous l'en-tête. Décochez « Afficher la section » pour la masquer sans perdre son contenu.",
 	},
 	blocks: [
+		contactSection,
 		newsCarouselSection,
 		personaTilesSection,
 		mostViewedGuidesSection,

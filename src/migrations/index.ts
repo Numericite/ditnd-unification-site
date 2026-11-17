@@ -54,6 +54,7 @@ import * as migration_20261021_170000_medias_storage_fields from './20261021_170
 import * as migration_20261023_123734_courses_format_duration_certifying from './20261023_123734_courses_format_duration_certifying';
 import * as migration_20261109_131910_courses_ditnd_id from './20261109_131910_courses_ditnd_id';
 import * as migration_20261112_133034_home_sections from './20261112_133034_home_sections';
+import * as migration_20261117_094713_home_contact_block from './20261117_094713_home_contact_block';
 
 export const migrations = [
   {
@@ -299,7 +300,7 @@ export const migrations = [
   {
     up: migration_20261020_082631_home_contact_section.up,
     down: migration_20261020_082631_home_contact_section.down,
-    name: '20261020_082631_home_contact_section'
+    name: '20261020_082631_home_contact_section',
   },
   {
     up: migration_20261021_090000_resync_glossary_id_sequences.up,
@@ -334,6 +335,11 @@ export const migrations = [
   {
     up: migration_20261112_133034_home_sections.up,
     down: migration_20261112_133034_home_sections.down,
-    name: '20261112_133034_home_sections'
+    name: '20261112_133034_home_sections',
+  },
+  {
+    up: migration_20261117_094713_home_contact_block.up,
+    down: migration_20261117_094713_home_contact_block.down,
+    name: '20261117_094713_home_contact_block'
   },
 ];

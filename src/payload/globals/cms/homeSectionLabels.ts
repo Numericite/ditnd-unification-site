@@ -1,4 +1,5 @@
 export const HOME_SECTION_LABELS = {
+	contact: "Contact",
 	newsCarousel: "Actualités",
 	personaTiles: "Persona",
 	mostViewedGuides: "Fiches pratiques les plus lues",

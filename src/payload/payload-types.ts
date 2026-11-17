@@ -1578,74 +1578,12 @@ export interface Home {
 		title: string;
 		description: string;
 	};
-	contact: {
-		phone: {
-			title?: string | null;
-			number: string;
-			/**
-			 * Ex : Service et appel gratuits
-			 */
-			label?: string | null;
-			/**
-			 * Ex : Appel gratuit depuis un fixe ou un mobile.
-			 */
-			scheduleNote?: string | null;
-			schedule?: {
-				lundi?: {
-					closed?: boolean | null;
-					openTime?: string | null;
-					closeTime?: string | null;
-				};
-				mardi?: {
-					closed?: boolean | null;
-					openTime?: string | null;
-					closeTime?: string | null;
-				};
-				mercredi?: {
-					closed?: boolean | null;
-					openTime?: string | null;
-					closeTime?: string | null;
-				};
-				jeudi?: {
-					closed?: boolean | null;
-					openTime?: string | null;
-					closeTime?: string | null;
-				};
-				vendredi?: {
-					closed?: boolean | null;
-					openTime?: string | null;
-					closeTime?: string | null;
-				};
-				samedi?: {
-					closed?: boolean | null;
-					openTime?: string | null;
-					closeTime?: string | null;
-				};
-				dimanche?: {
-					closed?: boolean | null;
-					openTime?: string | null;
-					closeTime?: string | null;
-				};
-			};
-		};
-		contactForm?: {
-			title?: string | null;
-			description?: string | null;
-			buttonLabel?: string | null;
-			url?: string | null;
-		};
-		directory?: {
-			title?: string | null;
-			description?: string | null;
-			buttonLabel?: string | null;
-			url?: string | null;
-		};
-	};
 	/**
 	 * Glissez-déposez les sections pour changer leur ordre d'affichage sous l'en-tête. Décochez « Afficher la section » pour la masquer sans perdre son contenu.
 	 */
 	sections?:
 		| (
+				| HomeContactSection
 				| HomeNewsCarouselSection
 				| HomePersonaTilesSection
 				| HomeMostViewedGuidesSection
@@ -1654,6 +1592,77 @@ export interface Home {
 		| null;
 	updatedAt?: string | null;
 	createdAt?: string | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "HomeContactSection".
+ */
+export interface HomeContactSection {
+	visible?: boolean | null;
+	phone: {
+		title?: string | null;
+		number: string;
+		/**
+		 * Ex : Service et appel gratuits
+		 */
+		label?: string | null;
+		/**
+		 * Ex : Appel gratuit depuis un fixe ou un mobile.
+		 */
+		scheduleNote?: string | null;
+		schedule?: {
+			lundi?: {
+				closed?: boolean | null;
+				openTime?: string | null;
+				closeTime?: string | null;
+			};
+			mardi?: {
+				closed?: boolean | null;
+				openTime?: string | null;
+				closeTime?: string | null;
+			};
+			mercredi?: {
+				closed?: boolean | null;
+				openTime?: string | null;
+				closeTime?: string | null;
+			};
+			jeudi?: {
+				closed?: boolean | null;
+				openTime?: string | null;
+				closeTime?: string | null;
+			};
+			vendredi?: {
+				closed?: boolean | null;
+				openTime?: string | null;
+				closeTime?: string | null;
+			};
+			samedi?: {
+				closed?: boolean | null;
+				openTime?: string | null;
+				closeTime?: string | null;
+			};
+			dimanche?: {
+				closed?: boolean | null;
+				openTime?: string | null;
+				closeTime?: string | null;
+			};
+		};
+	};
+	contactForm?: {
+		title?: string | null;
+		description?: string | null;
+		buttonLabel?: string | null;
+		url?: string | null;
+	};
+	directory?: {
+		title?: string | null;
+		description?: string | null;
+		buttonLabel?: string | null;
+		url?: string | null;
+	};
+	id?: string | null;
+	blockName?: string | null;
+	blockType: "contact";
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -1942,90 +1951,10 @@ export interface HomeSelect<T extends boolean = true> {
 				title?: T;
 				description?: T;
 		  };
-	contact?:
-		| T
-		| {
-				phone?:
-					| T
-					| {
-							title?: T;
-							number?: T;
-							label?: T;
-							scheduleNote?: T;
-							schedule?:
-								| T
-								| {
-										lundi?:
-											| T
-											| {
-													closed?: T;
-													openTime?: T;
-													closeTime?: T;
-											  };
-										mardi?:
-											| T
-											| {
-													closed?: T;
-													openTime?: T;
-													closeTime?: T;
-											  };
-										mercredi?:
-											| T
-											| {
-													closed?: T;
-													openTime?: T;
-													closeTime?: T;
-											  };
-										jeudi?:
-											| T
-											| {
-													closed?: T;
-													openTime?: T;
-													closeTime?: T;
-											  };
-										vendredi?:
-											| T
-											| {
-													closed?: T;
-													openTime?: T;
-													closeTime?: T;
-											  };
-										samedi?:
-											| T
-											| {
-													closed?: T;
-													openTime?: T;
-													closeTime?: T;
-											  };
-										dimanche?:
-											| T
-											| {
-													closed?: T;
-													openTime?: T;
-													closeTime?: T;
-											  };
-								  };
-					  };
-				contactForm?:
-					| T
-					| {
-							title?: T;
-							description?: T;
-							buttonLabel?: T;
-							url?: T;
-					  };
-				directory?:
-					| T
-					| {
-							title?: T;
-							description?: T;
-							buttonLabel?: T;
-							url?: T;
-					  };
-		  };
 	sections?:
 		| T
 		| {
+				contact?: T | HomeContactSectionSelect<T>;
 				newsCarousel?: T | HomeNewsCarouselSectionSelect<T>;
 				personaTiles?: T | HomePersonaTilesSectionSelect<T>;
 				mostViewedGuides?: T | HomeMostViewedGuidesSectionSelect<T>;
@@ -2034,6 +1963,92 @@ export interface HomeSelect<T extends boolean = true> {
 	updatedAt?: T;
 	createdAt?: T;
 	globalType?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "HomeContactSection_select".
+ */
+export interface HomeContactSectionSelect<T extends boolean = true> {
+	visible?: T;
+	phone?:
+		| T
+		| {
+				title?: T;
+				number?: T;
+				label?: T;
+				scheduleNote?: T;
+				schedule?:
+					| T
+					| {
+							lundi?:
+								| T
+								| {
+										closed?: T;
+										openTime?: T;
+										closeTime?: T;
+								  };
+							mardi?:
+								| T
+								| {
+										closed?: T;
+										openTime?: T;
+										closeTime?: T;
+								  };
+							mercredi?:
+								| T
+								| {
+										closed?: T;
+										openTime?: T;
+										closeTime?: T;
+								  };
+							jeudi?:
+								| T
+								| {
+										closed?: T;
+										openTime?: T;
+										closeTime?: T;
+								  };
+							vendredi?:
+								| T
+								| {
+										closed?: T;
+										openTime?: T;
+										closeTime?: T;
+								  };
+							samedi?:
+								| T
+								| {
+										closed?: T;
+										openTime?: T;
+										closeTime?: T;
+								  };
+							dimanche?:
+								| T
+								| {
+										closed?: T;
+										openTime?: T;
+										closeTime?: T;
+								  };
+					  };
+		  };
+	contactForm?:
+		| T
+		| {
+				title?: T;
+				description?: T;
+				buttonLabel?: T;
+				url?: T;
+		  };
+	directory?:
+		| T
+		| {
+				title?: T;
+				description?: T;
+				buttonLabel?: T;
+				url?: T;
+		  };
+	id?: T;
+	blockName?: T;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema

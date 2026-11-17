@@ -58,6 +58,8 @@ export default function Home({
 
 	const renderSection = (section: HomeSection, colored: boolean) => {
 		switch (section.blockType) {
+			case "contact":
+				return <ContactInfos contactCMS={section} />;
 			case "newsCarousel":
 				return (
 					<div className={fr.cx("fr-container")}>
@@ -193,18 +195,45 @@ export default function Home({
 						</div>
 					</div>
 				</div>
-				<ContactInfos contactCMS={homeCMS.contact} />
-				{sections.map((section, index) => (
+				{withBackgrounds(sections).map(({ section, top, bottom }) => (
 					<div
 						key={section.blockType}
-						className={cx(index % 2 === 0 && classes.coloredContainer)}
+						className={cx(
+							top === bottom && top === "colored" && classes.coloredContainer,
+							top !== bottom &&
+								(top === "colored"
+									? classes.coloredTopHalf
+									: classes.coloredBottomHalf),
+						)}
 					>
-						{renderSection(section, index % 2 === 0)}
+						{renderSection(section, bottom === "colored")}
 					</div>
 				))}
 			</PageContent>
 		</>
 	);
+}
+
+type Background = "colored" | "plain";
+
+// The contact tiles straddle two backgrounds, so the contact section takes no
+// slot in the alternation: its top half matches the section above (the white
+// header when it comes first) and its bottom half the section below.
+function withBackgrounds(sections: HomeSection[]) {
+	const backgroundAt = (slot: number): Background =>
+		slot >= 0 && slot % 2 === 0 ? "colored" : "plain";
+	let slot = 0;
+	return sections.map((section) => {
+		if (section.blockType === "contact") {
+			return {
+				section,
+				top: backgroundAt(slot - 1),
+				bottom: backgroundAt(slot),
+			};
+		}
+		const background = backgroundAt(slot++);
+		return { section, top: background, bottom: background };
+	});
 }
 
 export const getServerSideProps: GetServerSideProps<Props> = async () => {
@@ -253,6 +282,12 @@ const useStyles = tss.withName({ Home }).create({
 	},
 	coloredContainer: {
 		backgroundColor: fr.colors.decisions.background.alt.blueFrance.default,
+	},
+	coloredTopHalf: {
+		background: `linear-gradient(to bottom, ${fr.colors.decisions.background.alt.blueFrance.default} 50%, transparent 50%)`,
+	},
+	coloredBottomHalf: {
+		background: `linear-gradient(to bottom, transparent 50%, ${fr.colors.decisions.background.alt.blueFrance.default} 50%)`,
 	},
 	// DSFR Follow is styled for a blue background, including its buttons' hover/active states.
 	whiteFollow: {
