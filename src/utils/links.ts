@@ -1,25 +1,25 @@
+import { documentPath } from "./pages";
+
 // URL publique d'un document référencé par une relation polymorphe (cibles de
-// redirection, liens du menu principal). Seules les collections dont l'URL se
-// déduit du slug sont prises en charge.
+// redirection, liens du menu principal).
 
 // Seule liste des collections pointables : le menu et les redirections la
-// réutilisent. Ajouter une collection ici avec son chemin public suffit.
-const REFERENCE_BASE_PATHS = {
-	pages: "",
-	"practical-guides": "/fiches-pratiques",
-	courses: "/formations",
-} as const;
+// réutilisent. Une collection ajoutée ici doit avoir son chemin dans
+// `documentPath`.
+const COLLECTIONS = ["pages", "practical-guides", "courses"] as const;
 
-export type ReferenceCollection = keyof typeof REFERENCE_BASE_PATHS;
+export type ReferenceCollection = (typeof COLLECTIONS)[number];
 
-export const REFERENCE_COLLECTIONS = Object.keys(
-	REFERENCE_BASE_PATHS,
-) as ReferenceCollection[];
+export const REFERENCE_COLLECTIONS: ReferenceCollection[] = [...COLLECTIONS];
 
 export type DocumentReference = {
 	relationTo: ReferenceCollection;
 	value:
-		| { slug?: string | null; _status?: string | null }
+		| {
+				slug?: string | null;
+				section?: string | null;
+				_status?: string | null;
+		  }
 		| number
 		| string
 		| null;
@@ -35,10 +35,7 @@ export const referenceHref = (
 	const value = reference?.value;
 	if (!reference || !value || typeof value !== "object") return null;
 	if (value._status && value._status !== "published") return null;
-	const basePath = REFERENCE_BASE_PATHS[reference.relationTo];
-	return basePath !== undefined && value.slug
-		? `${basePath}/${value.slug}`
-		: null;
+	return documentPath(reference.relationTo, value);
 };
 
 /**

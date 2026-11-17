@@ -17,11 +17,14 @@ export type GlobalData = {
 
 const TTL_MS = 60_000;
 
-// Seuls le slug et le statut servent à construire l'URL d'un lien du menu.
+// Seuls le slug, le statut et la rubrique (pages) servent à construire l'URL
+// d'un lien du menu.
 const menuLinkPopulate = Object.fromEntries(
 	REFERENCE_COLLECTIONS.map((collection) => [
 		collection,
-		{ slug: true, _status: true },
+		collection === "pages"
+			? { slug: true, _status: true, section: true }
+			: { slug: true, _status: true },
 	]),
 );
 let cache: { data: GlobalData; expiresAt: number } | null = null;
@@ -30,33 +33,28 @@ let inflight: Promise<GlobalData> | null = null;
 async function fetchGlobalData(): Promise<GlobalData> {
 	const payload = await getPayload({ config: payloadConfig });
 
-	const [
-		personasResult,
-		conditionsResult,
-		footer,
-		homeCMS,
-		menu,
-	] = await Promise.all([
-		payload.find({
-			collection: "personas",
-			limit: 0,
-			select: { updatedAt: false, createdAt: false },
-		}),
-		payload.find({
-			collection: "conditions",
-			limit: 0,
-			select: { updatedAt: false, createdAt: false },
-		}),
-		payload.findGlobal({ slug: "footer" }),
-		payload.findGlobal({ slug: "home" }),
-		payload
-			.findGlobal({ slug: "menu", depth: 1, populate: menuLinkPopulate })
-			.then(resolveMenu)
-			.catch((err): NavItem[] => {
-				console.error("[global-data] menu failed:", err);
-				return [];
+	const [personasResult, conditionsResult, footer, homeCMS, menu] =
+		await Promise.all([
+			payload.find({
+				collection: "personas",
+				limit: 0,
+				select: { updatedAt: false, createdAt: false },
 			}),
-	]);
+			payload.find({
+				collection: "conditions",
+				limit: 0,
+				select: { updatedAt: false, createdAt: false },
+			}),
+			payload.findGlobal({ slug: "footer" }),
+			payload.findGlobal({ slug: "home" }),
+			payload
+				.findGlobal({ slug: "menu", depth: 1, populate: menuLinkPopulate })
+				.then(resolveMenu)
+				.catch((err): NavItem[] => {
+					console.error("[global-data] menu failed:", err);
+					return [];
+				}),
+		]);
 
 	const persons: PersonaTile[] = personasResult.docs.map((persona) => ({
 		...persona,

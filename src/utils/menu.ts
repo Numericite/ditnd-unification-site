@@ -14,9 +14,9 @@ export const LOCKED_MENU_ITEMS: LockedMenuItem[] = [
 		activePaths: ["/fiches-pratiques"],
 	},
 	{
-		title: "Me former",
-		href: "/se-former",
-		activePaths: ["/se-former", "/formations"],
+		title: "Formations",
+		href: "/formations",
+		activePaths: ["/formations"],
 	},
 ];
 

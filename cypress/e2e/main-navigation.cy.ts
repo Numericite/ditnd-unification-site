@@ -15,7 +15,7 @@ describe("Main navigation", () => {
 			expect(labels).to.deep.equal([
 				"Je suis",
 				"Fiches pratiques",
-				"Me former",
+				"Formations",
 				"Annuaire",
 				"À propos",
 			]);

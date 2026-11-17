@@ -1,4 +1,4 @@
-const LOCKED = ["Je suis", "Fiches pratiques", "Me former"];
+const LOCKED = ["Je suis", "Fiches pratiques", "Formations"];
 
 describe("Admin — main menu", () => {
 	beforeEach(() => {
