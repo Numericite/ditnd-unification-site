@@ -1,10 +1,10 @@
 import { forwardRef, useId } from "react";
 import { fr } from "@codegouvfr/react-dsfr";
 import { tss } from "tss-react/dsfr";
-import type { Home } from "~/payload/payload-types";
+import type { HomeContactSection } from "~/payload/payload-types";
 import { type DayOfWeek, formatTime, getParisNow } from "~/utils/scheduleTime";
 
-type Schedule = Home["contact"]["phone"]["schedule"];
+type Schedule = HomeContactSection["phone"]["schedule"];
 
 const SCHEDULE_DAYS: ReadonlyArray<{
 	label: string;

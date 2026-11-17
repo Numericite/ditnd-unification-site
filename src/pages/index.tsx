@@ -20,13 +20,20 @@ import { createTRPCContext } from "~/server/api/trpc";
 import type { AugmentedPracticalGuide } from "~/server/api/routers/practical-guides";
 import NewsCarousel from "~/components/HomePage/NewsCarousel";
 import type { AugmentedNews } from "~/server/api/routers/news";
+import { getGlobalData } from "~/server/global-data";
+import { type HomeSection, isSectionVisible } from "~/utils/homeSections";
 
 type Props = {
+	sections: HomeSection[];
 	mostViewedGuides: AugmentedPracticalGuide[];
 	latestNews: AugmentedNews[];
 };
 
-export default function Home({ mostViewedGuides, latestNews }: Props) {
+export default function Home({
+	sections,
+	mostViewedGuides,
+	latestNews,
+}: Props) {
 	const { classes, cx } = useStyles();
 
 	const [search, setSearch] = useState("");
@@ -48,6 +55,84 @@ export default function Home({ mostViewedGuides, latestNews }: Props) {
 				</p>
 			</EmptyScreenZone>
 		);
+
+	const renderSection = (section: HomeSection, colored: boolean) => {
+		switch (section.blockType) {
+			case "contact":
+				return <ContactInfos contactCMS={section} />;
+			case "newsCarousel":
+				return (
+					<div className={fr.cx("fr-container")}>
+						<div className={fr.cx("fr-py-4w")}>
+							<NewsCarousel news={latestNews} />
+						</div>
+					</div>
+				);
+			case "personaTiles":
+				return (
+					<div className={fr.cx("fr-container")}>
+						<div className={fr.cx("fr-py-6w")}>
+							{persons ? (
+								<PersonaTiles tiles={tiles} />
+							) : (
+								<div role="alert" aria-live="assertive">
+									Aucun persona trouvé
+								</div>
+							)}
+						</div>
+					</div>
+				);
+			case "mostViewedGuides":
+				return (
+					<div className={fr.cx("fr-container")}>
+						<div className={fr.cx("fr-py-4w")}>
+							<div className={fr.cx("fr-grid-row", "fr-grid-row--gutters")}>
+								<div
+									className={cx(
+										fr.cx("fr-col-12"),
+										classes.mostViewedContainer,
+									)}
+								>
+									<h2>{section.title}</h2>
+									<div className={cx(fr.cx("fr-text--sm"), classes.preLine)}>
+										{section.description}
+									</div>
+
+									{mostViewedGuides.length === 0 ? (
+										<div role="alert" aria-live="assertive">
+											Aucune fiche pratique trouvée
+										</div>
+									) : (
+										<MostViewedGuides guides={mostViewedGuides} />
+									)}
+
+									<a
+										href="/fiches-pratiques"
+										className={cx(
+											fr.cx(
+												"fr-link",
+												"fr-icon-arrow-right-line",
+												"fr-link--icon-right",
+											),
+											classes.viewMoreLink,
+										)}
+									>
+										Voir toutes les fiches par thématiques
+									</a>
+								</div>
+							</div>
+						</div>
+					</div>
+				);
+			case "newsletter":
+				return (
+					<NewsletterFollow
+						content={section}
+						className={colored ? undefined : classes.whiteFollow}
+					/>
+				);
+		}
+	};
 
 	return (
 		<>
@@ -110,83 +195,70 @@ export default function Home({ mostViewedGuides, latestNews }: Props) {
 						</div>
 					</div>
 				</div>
-				<ContactInfos contactCMS={homeCMS?.contact} />
-				{latestNews.length > 0 && (
-					<div className={cx(classes.coloredContainer)}>
-						<div className={fr.cx("fr-container")}>
-							<div className={fr.cx("fr-py-4w")}>
-								<NewsCarousel news={latestNews} />
-							</div>
-						</div>
-					</div>
-				)}
-				<div className={fr.cx("fr-container")}>
-					<div className={fr.cx("fr-py-6w")}>
-						{persons ? (
-							<PersonaTiles tiles={tiles} />
-						) : (
-							<div role="alert" aria-live="assertive">
-								Aucun persona trouvé
-							</div>
+				{withBackgrounds(sections).map(({ section, top, bottom }) => (
+					<div
+						key={section.blockType}
+						className={cx(
+							top === bottom && top === "colored" && classes.coloredContainer,
+							top !== bottom &&
+								(top === "colored"
+									? classes.coloredTopHalf
+									: classes.coloredBottomHalf),
 						)}
+					>
+						{renderSection(section, bottom === "colored")}
 					</div>
-				</div>
-				<div className={cx(classes.coloredContainer)}>
-					<div className={fr.cx("fr-container")}>
-						<div className={fr.cx("fr-py-4w")}>
-							<div className={fr.cx("fr-grid-row", "fr-grid-row--gutters")}>
-								<div
-									className={cx(
-										fr.cx("fr-col-12"),
-										classes.mostViewedContainer,
-									)}
-								>
-									<h2>{homeCMS?.mostViewedGuides.title}</h2>
-									<div className={cx(fr.cx("fr-text--sm"), classes.preLine)}>
-										{homeCMS?.mostViewedGuides.description}
-									</div>
-
-									{mostViewedGuides?.length === 0 || !mostViewedGuides ? (
-										<div role="alert" aria-live="assertive">
-											Aucune fiche pratique trouvée
-										</div>
-									) : (
-										<MostViewedGuides guides={mostViewedGuides} />
-									)}
-
-									<a
-										href="/fiches-pratiques"
-										className={cx(
-											fr.cx(
-												"fr-link",
-												"fr-icon-arrow-right-line",
-												"fr-link--icon-right",
-											),
-											classes.viewMoreLink,
-										)}
-									>
-										Voir toutes les fiches par thématiques
-									</a>
-								</div>
-							</div>
-						</div>
-					</div>
-				</div>
-				{NEWSLETTER_ENABLED && <NewsletterFollow />}
+				))}
 			</PageContent>
 		</>
 	);
 }
 
+type Background = "colored" | "plain";
+
+// The contact tiles straddle two backgrounds, so the contact section takes no
+// slot in the alternation: its top half matches the section above (the white
+// header when it comes first) and its bottom half the section below.
+function withBackgrounds(sections: HomeSection[]) {
+	const backgroundAt = (slot: number): Background =>
+		slot >= 0 && slot % 2 === 0 ? "colored" : "plain";
+	let slot = 0;
+	return sections.map((section) => {
+		if (section.blockType === "contact") {
+			return {
+				section,
+				top: backgroundAt(slot - 1),
+				bottom: backgroundAt(slot),
+			};
+		}
+		const background = backgroundAt(slot++);
+		return { section, top: background, bottom: background };
+	});
+}
+
 export const getServerSideProps: GetServerSideProps<Props> = async () => {
 	const caller = createCaller(await createTRPCContext());
+	const homeCMS = await getGlobalData()
+		.then((data) => data.homeCMS)
+		.catch(() => undefined);
+	const visibleSections = (homeCMS?.sections ?? []).filter(isSectionVisible);
+	const isVisible = (blockType: HomeSection["blockType"]) =>
+		visibleSections.some((section) => section.blockType === blockType);
+
 	const [mostViewedGuides, latestNews] = await Promise.all([
-		caller.practicalGuide.getByViews(),
-		caller.news.getAll(),
+		isVisible("mostViewedGuides") ? caller.practicalGuide.getByViews() : [],
+		isVisible("newsCarousel") ? caller.news.getAll() : [],
 	]);
+
+	const sections = visibleSections.filter((section) => {
+		if (section.blockType === "newsCarousel") return latestNews.length > 0;
+		if (section.blockType === "newsletter") return NEWSLETTER_ENABLED;
+		return true;
+	});
 
 	return {
 		props: {
+			sections,
 			mostViewedGuides,
 			latestNews,
 		},
@@ -210,6 +282,20 @@ const useStyles = tss.withName({ Home }).create({
 	},
 	coloredContainer: {
 		backgroundColor: fr.colors.decisions.background.alt.blueFrance.default,
+	},
+	coloredTopHalf: {
+		background: `linear-gradient(to bottom, ${fr.colors.decisions.background.alt.blueFrance.default} 50%, transparent 50%)`,
+	},
+	coloredBottomHalf: {
+		background: `linear-gradient(to bottom, transparent 50%, ${fr.colors.decisions.background.alt.blueFrance.default} 50%)`,
+	},
+	// DSFR Follow is styled for a blue background, including its buttons' hover/active states.
+	whiteFollow: {
+		"&&": {
+			backgroundColor: "var(--background-default-grey)",
+			"--hover": "var(--background-default-grey-hover)",
+			"--active": "var(--background-default-grey-active)",
+		},
 	},
 	mostViewedContainer: {
 		display: "flex",
