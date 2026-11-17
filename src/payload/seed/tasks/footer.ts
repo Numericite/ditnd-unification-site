@@ -1,4 +1,5 @@
 import type { BasePayload } from "payload";
+import { DEFAULT_FOOTER_LINKS } from "~/utils/footer";
 import { legalsContent } from "~/utils/wysiwyg-content";
 
 export default async function footerTask(payload: BasePayload) {
@@ -23,6 +24,10 @@ export default async function footerTask(payload: BasePayload) {
 				title: "Adressez-nous vos questions sur l'autisme et les TND",
 				content: legalsContent.contactParticuliers,
 			},
+			bottomLinks: DEFAULT_FOOTER_LINKS.map(({ title, internalUrl }) => ({
+				title,
+				link: { type: "internal" as const, internalUrl },
+			})),
 		},
 	});
 

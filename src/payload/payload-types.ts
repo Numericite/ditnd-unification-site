@@ -1850,6 +1850,39 @@ export interface HomeNewsletterSection {
 export interface Footer {
 	id: number;
 	title: string;
+	/**
+	 * Les liens fixes sont imposés (obligations légales, accessibilité, DSFR). Les modifications apparaissent sur le site sous une minute.
+	 */
+	bottomLinks?:
+		| {
+				title: string;
+				link: {
+					type: "reference" | "internal" | "external";
+					reference?:
+						| ({
+								relationTo: "pages";
+								value: number | Page;
+						  } | null)
+						| ({
+								relationTo: "practical-guides";
+								value: number | PracticalGuide;
+						  } | null)
+						| ({
+								relationTo: "courses";
+								value: number | Course;
+						  } | null);
+					/**
+					 * Chemin d'une page du site, par exemple /a-propos/cra.
+					 */
+					internalUrl?: string | null;
+					/**
+					 * Adresse complète, par exemple https://exemple.fr. S'ouvre dans un nouvel onglet.
+					 */
+					externalUrl?: string | null;
+				};
+				id?: string | null;
+		  }[]
+		| null;
 	accessibility: {
 		title: string;
 		content: {
@@ -2202,6 +2235,20 @@ export interface HomeNewsletterSectionSelect<T extends boolean = true> {
  */
 export interface FooterSelect<T extends boolean = true> {
 	title?: T;
+	bottomLinks?:
+		| T
+		| {
+				title?: T;
+				link?:
+					| T
+					| {
+							type?: T;
+							reference?: T;
+							internalUrl?: T;
+							externalUrl?: T;
+					  };
+				id?: T;
+		  };
 	accessibility?:
 		| T
 		| {

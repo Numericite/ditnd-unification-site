@@ -27,8 +27,9 @@ const validateReference: RelationshipFieldSingleValidation = async (
 	return result;
 };
 
-// Cible d'un lien du menu principal. Un lien externe s'ouvre toujours dans un
-// nouvel onglet : ce n'est pas un choix laissé à l'éditeur.
+// Cible d'un lien du menu principal ou du bas de page. Un lien externe
+// s'ouvre toujours dans un nouvel onglet : ce n'est pas un choix laissé à
+// l'éditeur.
 export const menuLinkField: GroupField = {
 	name: "link",
 	type: "group",

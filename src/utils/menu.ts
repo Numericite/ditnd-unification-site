@@ -68,6 +68,14 @@ const resolveLink = (
 	return href ? { title, href, external: false } : null;
 };
 
+export const resolveLinks = (
+	items: { title: string; link?: MenuLink | null }[] | null | undefined,
+): NavLink[] =>
+	(items ?? []).flatMap((item) => {
+		const link = resolveLink(item.title, item.link);
+		return link ? [link] : [];
+	});
+
 export const resolveMenu = (menu: Pick<Menu, "items">): NavItem[] =>
 	(menu.items ?? []).flatMap((item): NavItem[] => {
 		if (item.kind === "submenu") {
