@@ -62,7 +62,25 @@ export default function MainNavigation() {
 			})),
 	};
 
+	const isHome = isPathActive(currentPath, "/");
+
 	const userNavigationItems: MainNavigationProps.Item[] = [
+		{
+			text: (
+				<>
+					<span
+						className={cx(
+							fr.cx(isHome ? "fr-icon-home-4-fill" : "fr-icon-home-4-line"),
+							classes.homeIcon,
+						)}
+						aria-hidden="true"
+					/>
+					<span className={classes.homeLabel}>Accueil</span>
+				</>
+			),
+			isActive: isHome,
+			linkProps: { href: "/", title: "Accueil" },
+		},
 		...lockedMenuStore.get().map((item): MainNavigationProps.Item => {
 			const isActive = item.activePaths.some((path) =>
 				isPathActive(currentPath, path),
@@ -180,6 +198,22 @@ export default function MainNavigation() {
 }
 
 const useStyles = tss.withName({ MainNavigation }).create({
+	homeIcon: {
+		[fr.breakpoints.down("lg")]: { marginRight: fr.spacing("1w") },
+	},
+	homeLabel: {
+		[fr.breakpoints.up("lg")]: {
+			position: "absolute",
+			width: 1,
+			height: 1,
+			padding: 0,
+			margin: -1,
+			overflow: "hidden",
+			clip: "rect(0, 0, 0, 0)",
+			whiteSpace: "nowrap",
+			border: 0,
+		},
+	},
 	stickyHeader: {
 		// Pinned with a negative top so only the navigation bar stays visible,
 		// the DSFR header body scrolls away above the viewport.
