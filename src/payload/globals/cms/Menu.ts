@@ -1,6 +1,7 @@
 import type { Field, GlobalConfig } from "payload";
 import { menuLinkField } from "~/payload/fields/menuLink";
 import { hideForNonAdmin, isAdmin } from "~/payload/hooks";
+import { LOCKED_MENU_ITEMS } from "~/utils/menu";
 
 const titleField: Field = {
 	name: "title",
@@ -10,6 +11,30 @@ const titleField: Field = {
 };
 
 const rowLabel = { RowLabel: "../payload/components/ArrayRowLabel" };
+
+// Édité par MenuLockedItems, en tête de la liste des éléments du menu.
+const lockedItemsField: Field = {
+	name: "lockedItems",
+	type: "group",
+	label: { fr: "Éléments fixes" },
+	admin: { hidden: true },
+	fields: LOCKED_MENU_ITEMS.map(
+		(item): Field => ({
+			name: item.key,
+			type: "group",
+			label: item.title,
+			fields: [
+				{ ...titleField, defaultValue: item.title },
+				{
+					name: "visible",
+					type: "checkbox",
+					label: { fr: "Afficher l'élément" },
+					defaultValue: true,
+				},
+			],
+		}),
+	),
+};
 
 export const CMSMenu: GlobalConfig = {
 	slug: "menu",
@@ -25,6 +50,7 @@ export const CMSMenu: GlobalConfig = {
 		update: isAdmin,
 	},
 	fields: [
+		lockedItemsField,
 		{
 			name: "items",
 			type: "array",

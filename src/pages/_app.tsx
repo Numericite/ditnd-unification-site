@@ -11,6 +11,7 @@ import {
 	footerTitleStore,
 	homeCMSStore,
 	menuStore,
+	lockedMenuStore,
 	personStore,
 	proStore,
 	tdhStore,
@@ -71,6 +72,7 @@ function seedStoresFromGlobalData(globalData: GlobalData) {
 	tdhStore.set(globalData.conditions);
 	footerTitleStore.set(globalData.footerTitle);
 	menuStore.set(globalData.menu);
+	lockedMenuStore.set(globalData.lockedMenu);
 }
 
 function App({ Component, pageProps }: AppPropsWithGlobal) {
