@@ -9,6 +9,7 @@ import {
 	LOCKED_MENU_ITEMS,
 	type LockedMenuItem,
 	type NavItem,
+	type NavLink,
 } from "~/utils/menu";
 
 export type TDH = {
@@ -29,6 +30,8 @@ export const personStore = observable<PersonaTile[]>([]);
 export const proStore = observable<PersonaTile[]>([]);
 
 export const footerTitleStore = observable<string>("");
+
+export const footerLinksStore = observable<NavLink[]>([]);
 
 export const menuStore = observable<NavItem[]>([]);
 

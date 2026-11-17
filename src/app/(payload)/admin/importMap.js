@@ -45,6 +45,7 @@ import { FolderTypeField as FolderTypeField_2b8867833a34864a02ddf429b0728a40 } f
 import { default as default_d0225f5cac4d7f00b1d12af8014e7e55 } from "../../../payload/components/ArrayRowLabel";
 import { default as default_9f91f2828d3e764e9d8cf7aa33ec6b80 } from "../../../payload/components/MenuLockedItems";
 import { default as default_04f4ea49bc962e3ce08e0336db9b8887 } from "../../../payload/components/HomeSectionRowLabel";
+import { default as default_145ffb0ac0d1dfae011ebb6307bf9504 } from "../../../payload/components/LockedRows";
 import { default as default_a8430564fd2c4f0a506836a5de510638 } from "../../../payload/components/SimplifiedContentGeneratorHeaderButton";
 import { default as default_4bf3fd4f8b9e4bf53a867035a745e24a } from "../../../payload/views/MapImportView";
 import { default as default_9c11b756bbfd4fdef7b9a95d9b38e373 } from "../../../payload/views/SimplifiedContentGeneratorView";
@@ -147,6 +148,8 @@ export const importMap = {
 		default_9f91f2828d3e764e9d8cf7aa33ec6b80,
 	"./components/HomeSectionRowLabel#default":
 		default_04f4ea49bc962e3ce08e0336db9b8887,
+	"../payload/components/LockedRows#default":
+		default_145ffb0ac0d1dfae011ebb6307bf9504,
 	"./components/SimplifiedContentGeneratorHeaderButton#default":
 		default_a8430564fd2c4f0a506836a5de510638,
 	"./views/MapImportView#default": default_4bf3fd4f8b9e4bf53a867035a745e24a,

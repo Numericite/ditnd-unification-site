@@ -8,6 +8,8 @@ import {
 	LOCKED_MENU_ITEMS,
 	type LockedMenuItem,
 	type NavItem,
+	type NavLink,
+	resolveLinks,
 	resolveLockedItems,
 	resolveMenu,
 } from "~/utils/menu";
@@ -17,6 +19,7 @@ export type GlobalData = {
 	professionals: PersonaTile[];
 	conditions: TDH[];
 	footerTitle: string;
+	footerLinks: NavLink[];
 	homeCMS: Home;
 	menu: NavItem[];
 	lockedMenu: LockedMenuItem[];
@@ -52,7 +55,11 @@ async function fetchGlobalData(): Promise<GlobalData> {
 				limit: 0,
 				select: { updatedAt: false, createdAt: false },
 			}),
-			payload.findGlobal({ slug: "footer" }),
+			payload.findGlobal({
+				slug: "footer",
+				depth: 1,
+				populate: menuLinkPopulate,
+			}),
 			payload.findGlobal({ slug: "home" }),
 			payload
 				.findGlobal({ slug: "menu", depth: 1, populate: menuLinkPopulate })
@@ -85,6 +92,7 @@ async function fetchGlobalData(): Promise<GlobalData> {
 		professionals,
 		conditions,
 		footerTitle: footer.title,
+		footerLinks: resolveLinks(footer.bottomLinks),
 		homeCMS: homeCMS as Home,
 		menu: menu.items,
 		lockedMenu: menu.locked,
