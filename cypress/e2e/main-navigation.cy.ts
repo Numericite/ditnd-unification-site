@@ -28,7 +28,7 @@ describe("Main navigation", () => {
 		cy.get("@home").should("have.attr", "href", "/");
 		cy.get("@home").should("not.have.attr", "aria-current");
 		cy.get("@home")
-			.find(".fr-icon-home-4-line")
+			.find(".ri-home-line")
 			.should("have.attr", "aria-hidden", "true");
 		// Masqué visuellement, mais lu par les lecteurs d'écran.
 		cy.get("@home")
@@ -41,7 +41,7 @@ describe("Main navigation", () => {
 			.first()
 			.find("a")
 			.should("have.attr", "aria-current", "page")
-			.find(".fr-icon-home-4-fill");
+			.find(".ri-home-line");
 	});
 
 	it("shows the home label next to the icon in the mobile menu", () => {

@@ -69,10 +69,7 @@ export default function MainNavigation() {
 			text: (
 				<>
 					<span
-						className={cx(
-							fr.cx(isHome ? "fr-icon-home-4-fill" : "fr-icon-home-4-line"),
-							classes.homeIcon,
-						)}
+						className={cx(fr.cx("ri-home-line"), classes.homeIcon)}
 						aria-hidden="true"
 					/>
 					<span className={classes.homeLabel}>Accueil</span>
