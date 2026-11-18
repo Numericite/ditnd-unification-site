@@ -1,7 +1,35 @@
-import type { CollectionConfig } from "payload";
+import type { CollectionBeforeDeleteHook, CollectionConfig } from "payload";
 import { standardFields } from "../fields/standards";
 import { hideForNonAdmin, isAdmin } from "../hooks";
 import { validateHexColor } from "~/utils/tools";
+
+// The FK is ON DELETE SET NULL on a NOT NULL column: rows must go before the condition.
+const removeJourneyConditionTexts: CollectionBeforeDeleteHook = async ({
+	id,
+	req,
+}) => {
+	const { docs: journeys } = await req.payload.find({
+		collection: "journeys",
+		where: { "conditionTexts.condition": { equals: id } },
+		depth: 0,
+		limit: 0,
+		pagination: false,
+		req,
+	});
+
+	for (const journey of journeys) {
+		await req.payload.update({
+			collection: "journeys",
+			id: journey.id,
+			data: {
+				conditionTexts: (journey.conditionTexts ?? []).filter(
+					(row) => row.condition !== id,
+				),
+			},
+			req,
+		});
+	}
+};
 
 export const Conditions: CollectionConfig = {
 	slug: "conditions",
@@ -20,6 +48,9 @@ export const Conditions: CollectionConfig = {
 		plural: "Troubles du neurodéveloppement",
 	},
 	orderable: true,
+	hooks: {
+		beforeDelete: [removeJourneyConditionTexts],
+	},
 	fields: [
 		{
 			name: "name",
