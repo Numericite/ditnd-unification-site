@@ -2,7 +2,12 @@ import { forwardRef, useId } from "react";
 import { fr } from "@codegouvfr/react-dsfr";
 import { tss } from "tss-react/dsfr";
 import type { HomeContactSection } from "~/payload/payload-types";
-import { type DayOfWeek, formatTime, getParisNow } from "~/utils/scheduleTime";
+import {
+	type DayOfWeek,
+	formatSlot,
+	getParisNow,
+	toMinuteSlots,
+} from "~/utils/scheduleTime";
 
 type Schedule = HomeContactSection["phone"]["schedule"];
 
@@ -54,6 +59,7 @@ export const PhoneSchedulePanel = forwardRef<HTMLElement, Props>(
 						{SCHEDULE_DAYS.map(({ label, key, dayOfWeek }) => {
 							const day = schedule?.[key];
 							const isToday = dayOfWeek === todayDayOfWeek;
+							const slots = toMinuteSlots(day?.slots);
 							const baseCell = isToday ? classes.todayCell : classes.cell;
 							const hoursCell = isToday
 								? classes.todayCell
@@ -69,11 +75,17 @@ export const PhoneSchedulePanel = forwardRef<HTMLElement, Props>(
 										{isToday ? `${label} (aujourd'hui)` : label}
 									</th>
 									<td className={cx(hoursCell, classes.cellRight)}>
-										{day?.closed
-											? "Fermé"
-											: day?.openTime && day?.closeTime
-												? `${formatTime(day.openTime)} – ${formatTime(day.closeTime)}`
-												: "–"}
+										{day?.closed ? (
+											"Fermé"
+										) : slots.length > 0 ? (
+											<ul className={classes.slots}>
+												{slots.map((slot) => (
+													<li key={slot.open}>{formatSlot(slot)}</li>
+												))}
+											</ul>
+										) : (
+											"–"
+										)}
 									</td>
 								</tr>
 							);
@@ -92,7 +104,10 @@ const useStyles = tss.withName({ PhoneSchedulePanel }).create({
 		top: "calc(100% - 32px)",
 		left: "50%",
 		transform: "translateX(-50%)",
-		width: "min(320px, calc(100vw - 2rem))",
+		// Grows with the longest day so its slots stay on one line
+		width: "max-content",
+		minWidth: "min(320px, calc(100vw - 2rem))",
+		maxWidth: "calc(100vw - 2rem)",
 		backgroundColor: fr.colors.decisions.background.default.grey.default,
 		boxShadow: "var(--lifted-shadow)",
 		padding: fr.spacing("2w"),
@@ -127,11 +142,20 @@ const useStyles = tss.withName({ PhoneSchedulePanel }).create({
 	},
 	dayCell: {
 		textAlign: "left",
+		verticalAlign: "top",
 		fontWeight: 400,
 		fontSize: "14px",
 	},
 	cellRight: {
 		textAlign: "right",
+		verticalAlign: "top",
+	},
+	slots: {
+		listStyle: "none",
+		margin: 0,
+		padding: 0,
+		"& li": { display: "inline", padding: 0, whiteSpace: "nowrap" },
+		"& li:not(:last-child)::after": { content: '", "', whiteSpace: "normal" },
 	},
 	note: {
 		fontSize: "0.875rem",

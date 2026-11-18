@@ -43,11 +43,30 @@ export const toMinutes = (value: StoredTime): number | null => {
 		: null;
 };
 
-export const formatTime = (value: StoredTime): string => {
-	const minutes = toMinutes(value);
-	if (minutes === null) return "";
+export const formatMinutes = (minutes: number): string => {
 	const m = minutes % 60;
 	return `${Math.floor(minutes / 60)}h${m ? String(m).padStart(2, "0") : ""}`;
 };
+
+export type TimeSlot = { openTime?: StoredTime; closeTime?: StoredTime };
+
+export type MinuteSlot = { open: number; close: number };
+
+// Complete slots only, in chronological order whatever the admin row order
+export const toMinuteSlots = (
+	slots: ReadonlyArray<TimeSlot> | null | undefined,
+): MinuteSlot[] =>
+	(slots ?? [])
+		.flatMap(({ openTime, closeTime }) => {
+			const open = toMinutes(openTime);
+			const close = toMinutes(closeTime);
+			return open !== null && close !== null && open < close
+				? [{ open, close }]
+				: [];
+		})
+		.sort((a, b) => a.open - b.open);
+
+export const formatSlot = ({ open, close }: MinuteSlot): string =>
+	`${formatMinutes(open)} – ${formatMinutes(close)}`;
 
 export const getParisNow = (): ParisMoment => toParisMoment(new Date());

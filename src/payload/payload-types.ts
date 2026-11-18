@@ -1709,38 +1709,94 @@ export interface HomeContactSection {
 		schedule?: {
 			lundi?: {
 				closed?: boolean | null;
-				openTime?: string | null;
-				closeTime?: string | null;
+				/**
+				 * Sans plage, le jour s'affiche « – » et le statut de la ligne est masqué.
+				 */
+				slots?:
+					| {
+							openTime?: string | null;
+							closeTime?: string | null;
+							id?: string | null;
+					  }[]
+					| null;
 			};
 			mardi?: {
 				closed?: boolean | null;
-				openTime?: string | null;
-				closeTime?: string | null;
+				/**
+				 * Sans plage, le jour s'affiche « – » et le statut de la ligne est masqué.
+				 */
+				slots?:
+					| {
+							openTime?: string | null;
+							closeTime?: string | null;
+							id?: string | null;
+					  }[]
+					| null;
 			};
 			mercredi?: {
 				closed?: boolean | null;
-				openTime?: string | null;
-				closeTime?: string | null;
+				/**
+				 * Sans plage, le jour s'affiche « – » et le statut de la ligne est masqué.
+				 */
+				slots?:
+					| {
+							openTime?: string | null;
+							closeTime?: string | null;
+							id?: string | null;
+					  }[]
+					| null;
 			};
 			jeudi?: {
 				closed?: boolean | null;
-				openTime?: string | null;
-				closeTime?: string | null;
+				/**
+				 * Sans plage, le jour s'affiche « – » et le statut de la ligne est masqué.
+				 */
+				slots?:
+					| {
+							openTime?: string | null;
+							closeTime?: string | null;
+							id?: string | null;
+					  }[]
+					| null;
 			};
 			vendredi?: {
 				closed?: boolean | null;
-				openTime?: string | null;
-				closeTime?: string | null;
+				/**
+				 * Sans plage, le jour s'affiche « – » et le statut de la ligne est masqué.
+				 */
+				slots?:
+					| {
+							openTime?: string | null;
+							closeTime?: string | null;
+							id?: string | null;
+					  }[]
+					| null;
 			};
 			samedi?: {
 				closed?: boolean | null;
-				openTime?: string | null;
-				closeTime?: string | null;
+				/**
+				 * Sans plage, le jour s'affiche « – » et le statut de la ligne est masqué.
+				 */
+				slots?:
+					| {
+							openTime?: string | null;
+							closeTime?: string | null;
+							id?: string | null;
+					  }[]
+					| null;
 			};
 			dimanche?: {
 				closed?: boolean | null;
-				openTime?: string | null;
-				closeTime?: string | null;
+				/**
+				 * Sans plage, le jour s'affiche « – » et le statut de la ligne est masqué.
+				 */
+				slots?:
+					| {
+							openTime?: string | null;
+							closeTime?: string | null;
+							id?: string | null;
+					  }[]
+					| null;
 			};
 		};
 	};
@@ -2125,50 +2181,85 @@ export interface HomeContactSectionSelect<T extends boolean = true> {
 								| T
 								| {
 										closed?: T;
-										openTime?: T;
-										closeTime?: T;
+										slots?:
+											| T
+											| {
+													openTime?: T;
+													closeTime?: T;
+													id?: T;
+											  };
 								  };
 							mardi?:
 								| T
 								| {
 										closed?: T;
-										openTime?: T;
-										closeTime?: T;
+										slots?:
+											| T
+											| {
+													openTime?: T;
+													closeTime?: T;
+													id?: T;
+											  };
 								  };
 							mercredi?:
 								| T
 								| {
 										closed?: T;
-										openTime?: T;
-										closeTime?: T;
+										slots?:
+											| T
+											| {
+													openTime?: T;
+													closeTime?: T;
+													id?: T;
+											  };
 								  };
 							jeudi?:
 								| T
 								| {
 										closed?: T;
-										openTime?: T;
-										closeTime?: T;
+										slots?:
+											| T
+											| {
+													openTime?: T;
+													closeTime?: T;
+													id?: T;
+											  };
 								  };
 							vendredi?:
 								| T
 								| {
 										closed?: T;
-										openTime?: T;
-										closeTime?: T;
+										slots?:
+											| T
+											| {
+													openTime?: T;
+													closeTime?: T;
+													id?: T;
+											  };
 								  };
 							samedi?:
 								| T
 								| {
 										closed?: T;
-										openTime?: T;
-										closeTime?: T;
+										slots?:
+											| T
+											| {
+													openTime?: T;
+													closeTime?: T;
+													id?: T;
+											  };
 								  };
 							dimanche?:
 								| T
 								| {
 										closed?: T;
-										openTime?: T;
-										closeTime?: T;
+										slots?:
+											| T
+											| {
+													openTime?: T;
+													closeTime?: T;
+													id?: T;
+											  };
 								  };
 					  };
 		  };
