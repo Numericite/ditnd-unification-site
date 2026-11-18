@@ -12,6 +12,7 @@ import {
 } from "@payloadcms/richtext-lexical/react";
 import { extractYouTubeId, ImageSizes, lexicalToText, slugify } from "./tools";
 import type { Condition, Media, Theme } from "~/payload/payload-types";
+import GlossaryTerm from "~/components/ui/CmsPage/GlossaryTerm";
 import type { AugmentedCourse } from "~/server/api/routers/courses";
 import CardDisplay from "~/components/ui/Cards/CardDisplay";
 import CardsCarousel from "~/components/ui/Cards/CardsCarousel";
@@ -211,15 +212,31 @@ export const linkConverter: JSXConverters<DefaultNodeTypes>["link"] = (
 ) => {
 	const { node, nodesToJSX, converters } = args;
 
-	const href =
-		node.fields.linkType === "internal" && node.fields.doc
-			? internalDocToHref(node.fields.doc)
-			: node.fields.url;
-
 	const childrenJSX = nodesToJSX({
 		nodes: node.children ?? [],
 		converters,
 	});
+
+	if (
+		node.fields.linkType === "internal" &&
+		node.fields.doc?.relationTo === "glossary"
+	) {
+		const { value } = node.fields.doc;
+		const description =
+			value && typeof value === "object"
+				? (value as { description?: string | null }).description
+				: undefined;
+
+		// Unpopulated term (depth too low): plain text rather than a dead link.
+		if (!description) return <span>{childrenJSX}</span>;
+
+		return <GlossaryTerm description={description}>{childrenJSX}</GlossaryTerm>;
+	}
+
+	const href =
+		node.fields.linkType === "internal" && node.fields.doc
+			? internalDocToHref(node.fields.doc)
+			: node.fields.url;
 
 	if (node.fields.newTab) {
 		const linkText = lexicalToText(node.children ?? []);
