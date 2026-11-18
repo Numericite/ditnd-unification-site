@@ -187,7 +187,6 @@ export default function MainNavigation() {
 					}}
 					allowEmptySearch={false}
 					serviceTitle="Maison de l'autisme"
-					serviceTagline="Site national d'informations sur l'autisme et les troubles du neurodéveloppement"
 				/>
 			</div>
 		</>
