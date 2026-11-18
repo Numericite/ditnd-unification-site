@@ -4,13 +4,22 @@ import type { BasePayload } from "payload";
 const time = (hhmm: string) =>
 	new Date(`2026-01-01T${hhmm}:00+01:00`).toISOString();
 
+const slot = (open: string, close: string) => ({
+	openTime: time(open),
+	closeTime: time(close),
+});
+
+const weekdaySlots = [slot("09:00", "13:00"), slot("14:00", "17:00")];
+
 export default async function homeTask(payload: BasePayload) {
 	await payload.updateGlobal({
 		slug: "home",
 		data: {
 			header: {
 				title:
-					"Site national d'informations pour toutes les personnes concernées par l'autisme et ses troubles associés",
+					"Site national d’informations\nsur l’autisme et ses troubles associés",
+				description:
+					"Informations et ressources validées par des experts, à destination des personnes concernées, leurs proches et les professionnels.",
 			},
 			sections: [
 				{
@@ -22,36 +31,15 @@ export default async function homeTask(payload: BasePayload) {
 						label: "Service et appel gratuits",
 						scheduleNote: "Appel gratuit depuis un fixe ou un mobile.",
 						schedule: {
-							lundi: {
-								closed: false,
-								openTime: time("09:00"),
-								closeTime: time("18:00"),
-							},
+							lundi: { closed: false, slots: weekdaySlots },
 							mardi: {
 								closed: false,
-								openTime: time("09:00"),
-								closeTime: time("18:00"),
+								slots: [...weekdaySlots, slot("18:00", "20:00")],
 							},
-							mercredi: {
-								closed: false,
-								openTime: time("09:00"),
-								closeTime: time("18:00"),
-							},
-							jeudi: {
-								closed: false,
-								openTime: time("09:00"),
-								closeTime: time("18:00"),
-							},
-							vendredi: {
-								closed: false,
-								openTime: time("09:00"),
-								closeTime: time("18:00"),
-							},
-							samedi: {
-								closed: false,
-								openTime: time("09:00"),
-								closeTime: time("12:00"),
-							},
+							mercredi: { closed: false, slots: weekdaySlots },
+							jeudi: { closed: false, slots: weekdaySlots },
+							vendredi: { closed: false, slots: weekdaySlots },
+							samedi: { closed: true },
 							dimanche: { closed: true },
 						},
 					},

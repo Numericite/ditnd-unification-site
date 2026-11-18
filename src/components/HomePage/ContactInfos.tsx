@@ -9,9 +9,10 @@ import { PhoneSchedulePanel } from "./PhoneScheduleModal";
 import {
 	addDays,
 	type DayOfWeek,
-	formatTime,
+	formatMinutes,
+	formatSlot,
 	getParisNow,
-	toMinutes,
+	toMinuteSlots,
 } from "~/utils/scheduleTime";
 import { useKeepInViewport } from "~/utils/useKeepInViewport";
 
@@ -45,9 +46,11 @@ function getNextOpenLabel(schedule: Schedule, today: DayOfWeek): string {
 	for (let i = 1; i <= 7; i++) {
 		const dayKey = DAY_KEYS[addDays(today, i)];
 		const nextEntry = schedule[dayKey];
-		if (!nextEntry || nextEntry.closed || !nextEntry.openTime) continue;
+		if (!nextEntry || nextEntry.closed) continue;
+		const [firstSlot] = toMinuteSlots(nextEntry.slots);
+		if (!firstSlot) continue;
 		const label = i === 1 ? "demain" : i === 7 ? `${dayKey} prochain` : dayKey;
-		return `Réouvre ${label} à ${formatTime(nextEntry.openTime)}`;
+		return `Réouvre ${label} à ${formatMinutes(firstSlot.open)}`;
 	}
 	return "";
 }
@@ -68,23 +71,24 @@ function getPhoneStatus(schedule: Schedule | null | undefined): PhoneStatus {
 		};
 	}
 
-	const openMin = toMinutes(entry.openTime);
-	const closeMin = toMinutes(entry.closeTime);
-	if (openMin === null || closeMin === null) return UNKNOWN_STATUS;
-	const isOpen = currentMinutes >= openMin && currentMinutes < closeMin;
+	const slots = toMinuteSlots(entry.slots);
+	if (slots.length === 0) return UNKNOWN_STATUS;
 
-	if (isOpen) {
+	const currentSlot = slots.find(
+		({ open, close }) => currentMinutes >= open && currentMinutes < close,
+	);
+	if (currentSlot) {
 		return {
 			isOpen: true,
-			todayLabel: `Aujourd'hui, ${formatTime(entry.openTime)} – ${formatTime(entry.closeTime)}`,
+			todayLabel: `Aujourd'hui, ${formatSlot(currentSlot)}`,
 			closedLabel: "",
 		};
 	}
 
-	const closedLabel =
-		currentMinutes < openMin
-			? `Ouvre aujourd'hui à ${formatTime(entry.openTime)}`
-			: getNextOpenLabel(schedule, today);
+	const nextSlot = slots.find(({ open }) => open > currentMinutes);
+	const closedLabel = nextSlot
+		? `${nextSlot === slots[0] ? "Ouvre" : "Réouvre"} aujourd'hui à ${formatMinutes(nextSlot.open)}`
+		: getNextOpenLabel(schedule, today);
 
 	return { isOpen: false, todayLabel: "", closedLabel };
 }

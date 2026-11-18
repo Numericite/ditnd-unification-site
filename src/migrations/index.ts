@@ -60,7 +60,10 @@ import * as migration_20261117_120000_about_pages_to_pages from './20261117_1200
 import * as migration_20261117_130000_menu_global from './20261117_130000_menu_global';
 import * as migration_20261117_135221_menu_locked_items from './20261117_135221_menu_locked_items';
 import * as migration_20261117_145900_footer_bottom_links from './20261117_145900_footer_bottom_links';
-import * as migration_20261117_161657_journey_condition_texts from './20261117_161657_journey_condition_texts';
+import * as migration_20261118_085536_home_header_description from './20261118_085536_home_header_description';
+import * as migration_20261118_092009_footer_personal_data from './20261118_092009_footer_personal_data';
+import * as migration_20261118_101942_contact_schedule_time_slots from './20261118_101942_contact_schedule_time_slots';
+import * as migration_20261118_144315_journey_condition_texts from './20261118_144315_journey_condition_texts';
 
 export const migrations = [
   {
@@ -374,8 +377,23 @@ export const migrations = [
     name: '20261117_145900_footer_bottom_links',
   },
   {
-    up: migration_20261117_161657_journey_condition_texts.up,
-    down: migration_20261117_161657_journey_condition_texts.down,
-    name: '20261117_161657_journey_condition_texts'
+    up: migration_20261118_085536_home_header_description.up,
+    down: migration_20261118_085536_home_header_description.down,
+    name: '20261118_085536_home_header_description',
+  },
+  {
+    up: migration_20261118_092009_footer_personal_data.up,
+    down: migration_20261118_092009_footer_personal_data.down,
+    name: '20261118_092009_footer_personal_data',
+  },
+  {
+    up: migration_20261118_101942_contact_schedule_time_slots.up,
+    down: migration_20261118_101942_contact_schedule_time_slots.down,
+    name: '20261118_101942_contact_schedule_time_slots',
+  },
+  {
+    up: migration_20261118_144315_journey_condition_texts.up,
+    down: migration_20261118_144315_journey_condition_texts.down,
+    name: '20261118_144315_journey_condition_texts'
   },
 ];

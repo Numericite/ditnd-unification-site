@@ -85,6 +85,11 @@ export const CMSFooter: GlobalConfig = {
 					fields: [standardFields.title, standardFields.wysiwyg],
 				},
 				{
+					label: "Données personnelles",
+					name: "personalData",
+					fields: [standardFields.title, standardFields.wysiwyg],
+				},
+				{
 					label: "Contact professionnels",
 					name: "contactProsCra",
 					fields: [

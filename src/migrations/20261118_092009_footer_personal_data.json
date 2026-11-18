@@ -4195,128 +4195,6 @@
       "checkConstraints": {},
       "isRLSEnabled": false
     },
-    "public.journeys_condition_texts": {
-      "name": "journeys_condition_texts",
-      "schema": "",
-      "columns": {
-        "_order": {
-          "name": "_order",
-          "type": "integer",
-          "primaryKey": false,
-          "notNull": true
-        },
-        "_parent_id": {
-          "name": "_parent_id",
-          "type": "integer",
-          "primaryKey": false,
-          "notNull": true
-        },
-        "id": {
-          "name": "id",
-          "type": "varchar",
-          "primaryKey": true,
-          "notNull": true
-        },
-        "condition_id": {
-          "name": "condition_id",
-          "type": "integer",
-          "primaryKey": false,
-          "notNull": true
-        },
-        "title": {
-          "name": "title",
-          "type": "varchar",
-          "primaryKey": false,
-          "notNull": true
-        },
-        "description": {
-          "name": "description",
-          "type": "varchar",
-          "primaryKey": false,
-          "notNull": true
-        }
-      },
-      "indexes": {
-        "journeys_condition_texts_order_idx": {
-          "name": "journeys_condition_texts_order_idx",
-          "columns": [
-            {
-              "expression": "_order",
-              "isExpression": false,
-              "asc": true,
-              "nulls": "last"
-            }
-          ],
-          "isUnique": false,
-          "concurrently": false,
-          "method": "btree",
-          "with": {}
-        },
-        "journeys_condition_texts_parent_id_idx": {
-          "name": "journeys_condition_texts_parent_id_idx",
-          "columns": [
-            {
-              "expression": "_parent_id",
-              "isExpression": false,
-              "asc": true,
-              "nulls": "last"
-            }
-          ],
-          "isUnique": false,
-          "concurrently": false,
-          "method": "btree",
-          "with": {}
-        },
-        "journeys_condition_texts_condition_idx": {
-          "name": "journeys_condition_texts_condition_idx",
-          "columns": [
-            {
-              "expression": "condition_id",
-              "isExpression": false,
-              "asc": true,
-              "nulls": "last"
-            }
-          ],
-          "isUnique": false,
-          "concurrently": false,
-          "method": "btree",
-          "with": {}
-        }
-      },
-      "foreignKeys": {
-        "journeys_condition_texts_condition_id_conditions_id_fk": {
-          "name": "journeys_condition_texts_condition_id_conditions_id_fk",
-          "tableFrom": "journeys_condition_texts",
-          "tableTo": "conditions",
-          "columnsFrom": [
-            "condition_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
-          "onDelete": "set null",
-          "onUpdate": "no action"
-        },
-        "journeys_condition_texts_parent_id_fk": {
-          "name": "journeys_condition_texts_parent_id_fk",
-          "tableFrom": "journeys_condition_texts",
-          "tableTo": "journeys",
-          "columnsFrom": [
-            "_parent_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
-          "onDelete": "cascade",
-          "onUpdate": "no action"
-        }
-      },
-      "compositePrimaryKeys": {},
-      "uniqueConstraints": {},
-      "policies": {},
-      "checkConstraints": {},
-      "isRLSEnabled": false
-    },
     "public.journeys_chapter": {
       "name": "journeys_chapter",
       "schema": "",
@@ -9742,6 +9620,12 @@
           "primaryKey": false,
           "notNull": true
         },
+        "header_description": {
+          "name": "header_description",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
         "updated_at": {
           "name": "updated_at",
           "type": "timestamp(3) with time zone",
@@ -9901,6 +9785,18 @@
         },
         "legal_notice_content": {
           "name": "legal_notice_content",
+          "type": "jsonb",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "personal_data_title": {
+          "name": "personal_data_title",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "personal_data_content": {
+          "name": "personal_data_content",
           "type": "jsonb",
           "primaryKey": false,
           "notNull": true
@@ -10554,6 +10450,6 @@
     "tables": {},
     "columns": {}
   },
-  "id": "abddfad7-7c19-4e64-8b90-48a2a438590c",
+  "id": "048a8b65-49f3-4c51-af35-36af800f2b07",
   "prevId": "00000000-0000-0000-0000-000000000000"
 }

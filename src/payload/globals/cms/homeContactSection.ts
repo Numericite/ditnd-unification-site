@@ -1,55 +1,107 @@
 import type { Field, TextFieldSingleValidation } from "payload";
 import { date as validateDate } from "payload/shared";
 import { validateHttpUrl } from "~/payload/fields/validateHttpUrl";
-import type { HomeContactSection } from "~/payload/payload-types";
 import { toMinutes } from "~/utils/scheduleTime";
 
-type DaySchedule = NonNullable<
-	NonNullable<HomeContactSection["phone"]["schedule"]>["lundi"]
->;
-type TimeKey = "openTime" | "closeTime";
+type TimeSlot = { openTime?: string | null; closeTime?: string | null };
 
-const timeField = (
-	name: TimeKey,
-	label: string,
-	// Sibling time this one must be strictly later than (e.g. closing > opening)
-	after?: TimeKey,
-): Field => ({
-	name,
-	type: "date",
-	label,
-	validate: (value, args) => {
-		// Payload types siblingData as unknown: these fields live in a day group
-		const siblings = (args.siblingData ?? {}) as Partial<DaySchedule>;
-		if (siblings.closed) return validateDate(value, args);
-		if (!value) {
-			// A day with no hours yet stays valid (status hidden on the site), so
-			// the global can be saved before the schedule is filled in
-			const other: TimeKey = name === "openTime" ? "closeTime" : "openTime";
-			return siblings[other]
-				? "Obligatoire si l'autre horaire est renseigné."
-				: validateDate(value, args);
-		}
-		if (after) {
-			// Compare times of day only: the picker may store different dates
-			const minutes = toMinutes(value);
-			const afterMinutes = toMinutes(siblings[after]);
-			if (minutes !== null && afterMinutes !== null && minutes <= afterMinutes)
-				return "L'heure de fermeture doit être après l'heure d'ouverture.";
-		}
-		return validateDate(value, args);
+// Other slots of the day come from the whole document: a slot's validation
+// only receives its own row as siblingData
+const daySlots = (
+	data: unknown,
+	path: (number | string)[],
+): TimeSlot[] | undefined => {
+	const slots = path
+		.slice(0, -2)
+		.reduce<unknown>(
+			(node, key) =>
+				node && typeof node === "object"
+					? (node as Record<string | number, unknown>)[key]
+					: undefined,
+			data,
+		);
+	return Array.isArray(slots) ? slots : undefined;
+};
+
+const timePicker = {
+	width: "50%",
+	date: {
+		pickerAppearance: "timeOnly",
+		displayFormat: "HH:mm",
+		timeFormat: "HH:mm",
+		timeIntervals: 15,
+	},
+} as const;
+
+const slotsField: Field = {
+	name: "slots",
+	type: "array",
+	label: "Plages horaires",
+	labels: {
+		singular: "une plage",
+		plural: "plages",
 	},
 	admin: {
-		width: "40%",
+		initCollapsed: true,
+		components: { RowLabel: "../payload/components/TimeSlotRowLabel" },
 		condition: (_data, siblingData) => !siblingData?.closed,
-		date: {
-			pickerAppearance: "timeOnly",
-			displayFormat: "HH:mm",
-			timeFormat: "HH:mm",
-			timeIntervals: 15,
-		},
+		description:
+			"Sans plage, le jour s'affiche « – » et le statut de la ligne est masqué.",
 	},
-});
+	fields: [
+		{
+			type: "row",
+			fields: [
+				{
+					name: "openTime",
+					type: "date",
+					label: "Heure d'ouverture",
+					validate: (value, args) => {
+						if (!value) return "Ce champ est obligatoire.";
+						// Only earlier rows are checked so an overlap is reported once
+						const index = Number(args.path.at(-2));
+						const open = toMinutes(value);
+						const close = toMinutes((args.siblingData as TimeSlot).closeTime);
+						const overlaps =
+							open !== null &&
+							close !== null &&
+							(daySlots(args.data, args.path) ?? [])
+								.slice(0, index)
+								.some((other) => {
+									const otherOpen = toMinutes(other.openTime);
+									const otherClose = toMinutes(other.closeTime);
+									return (
+										otherOpen !== null &&
+										otherClose !== null &&
+										open < otherClose &&
+										otherOpen < close
+									);
+								});
+						return overlaps
+							? "Cette plage chevauche une autre plage du même jour."
+							: validateDate(value, args);
+					},
+					admin: timePicker,
+				},
+				{
+					name: "closeTime",
+					type: "date",
+					label: "Heure de fermeture",
+					validate: (value, args) => {
+						if (!value) return "Ce champ est obligatoire.";
+						// Compare times of day only: the picker may store different dates
+						const close = toMinutes(value);
+						const open = toMinutes((args.siblingData as TimeSlot).openTime);
+						if (close !== null && open !== null && close <= open)
+							return "L'heure de fermeture doit être après l'heure d'ouverture.";
+						return validateDate(value, args);
+					},
+					admin: timePicker,
+				},
+			],
+		},
+	],
+};
 
 const dayGroup = (name: string, label: string): Field => ({
 	name,
@@ -57,22 +109,12 @@ const dayGroup = (name: string, label: string): Field => ({
 	label,
 	fields: [
 		{
-			type: "row",
-			fields: [
-				{
-					name: "closed",
-					type: "checkbox",
-					label: "Fermé",
-					defaultValue: false,
-					admin: {
-						width: "20%",
-						style: { alignSelf: "center" },
-					},
-				},
-				timeField("openTime", "Heure d'ouverture"),
-				timeField("closeTime", "Heure de fermeture", "openTime"),
-			],
+			name: "closed",
+			type: "checkbox",
+			label: "Fermé",
+			defaultValue: false,
 		},
+		slotsField,
 	],
 });
 

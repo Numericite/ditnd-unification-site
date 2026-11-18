@@ -1687,7 +1687,11 @@ export interface Menu {
 export interface Home {
 	id: number;
 	header: {
+		/**
+		 * Les retours à la ligne sont conservés.
+		 */
 		title: string;
+		description?: string | null;
 	};
 	/**
 	 * Glissez-déposez les sections pour changer leur ordre d'affichage sous l'en-tête. Décochez « Afficher la section » pour la masquer sans perdre son contenu.
@@ -1724,38 +1728,94 @@ export interface HomeContactSection {
 		schedule?: {
 			lundi?: {
 				closed?: boolean | null;
-				openTime?: string | null;
-				closeTime?: string | null;
+				/**
+				 * Sans plage, le jour s'affiche « – » et le statut de la ligne est masqué.
+				 */
+				slots?:
+					| {
+							openTime?: string | null;
+							closeTime?: string | null;
+							id?: string | null;
+					  }[]
+					| null;
 			};
 			mardi?: {
 				closed?: boolean | null;
-				openTime?: string | null;
-				closeTime?: string | null;
+				/**
+				 * Sans plage, le jour s'affiche « – » et le statut de la ligne est masqué.
+				 */
+				slots?:
+					| {
+							openTime?: string | null;
+							closeTime?: string | null;
+							id?: string | null;
+					  }[]
+					| null;
 			};
 			mercredi?: {
 				closed?: boolean | null;
-				openTime?: string | null;
-				closeTime?: string | null;
+				/**
+				 * Sans plage, le jour s'affiche « – » et le statut de la ligne est masqué.
+				 */
+				slots?:
+					| {
+							openTime?: string | null;
+							closeTime?: string | null;
+							id?: string | null;
+					  }[]
+					| null;
 			};
 			jeudi?: {
 				closed?: boolean | null;
-				openTime?: string | null;
-				closeTime?: string | null;
+				/**
+				 * Sans plage, le jour s'affiche « – » et le statut de la ligne est masqué.
+				 */
+				slots?:
+					| {
+							openTime?: string | null;
+							closeTime?: string | null;
+							id?: string | null;
+					  }[]
+					| null;
 			};
 			vendredi?: {
 				closed?: boolean | null;
-				openTime?: string | null;
-				closeTime?: string | null;
+				/**
+				 * Sans plage, le jour s'affiche « – » et le statut de la ligne est masqué.
+				 */
+				slots?:
+					| {
+							openTime?: string | null;
+							closeTime?: string | null;
+							id?: string | null;
+					  }[]
+					| null;
 			};
 			samedi?: {
 				closed?: boolean | null;
-				openTime?: string | null;
-				closeTime?: string | null;
+				/**
+				 * Sans plage, le jour s'affiche « – » et le statut de la ligne est masqué.
+				 */
+				slots?:
+					| {
+							openTime?: string | null;
+							closeTime?: string | null;
+							id?: string | null;
+					  }[]
+					| null;
 			};
 			dimanche?: {
 				closed?: boolean | null;
-				openTime?: string | null;
-				closeTime?: string | null;
+				/**
+				 * Sans plage, le jour s'affiche « – » et le statut de la ligne est masqué.
+				 */
+				slots?:
+					| {
+							openTime?: string | null;
+							closeTime?: string | null;
+							id?: string | null;
+					  }[]
+					| null;
 			};
 		};
 	};
@@ -1938,6 +1998,24 @@ export interface Footer {
 			[k: string]: unknown;
 		};
 	};
+	personalData: {
+		title: string;
+		content: {
+			root: {
+				type: string;
+				children: {
+					type: any;
+					version: number;
+					[k: string]: unknown;
+				}[];
+				direction: ("ltr" | "rtl") | null;
+				format: "left" | "start" | "center" | "right" | "end" | "justify" | "";
+				indent: number;
+				version: number;
+			};
+			[k: string]: unknown;
+		};
+	};
 	contactProsCra: {
 		title: string;
 		imageBanner?: (number | null) | Media;
@@ -2087,6 +2165,7 @@ export interface HomeSelect<T extends boolean = true> {
 		| T
 		| {
 				title?: T;
+				description?: T;
 		  };
 	sections?:
 		| T
@@ -2121,50 +2200,85 @@ export interface HomeContactSectionSelect<T extends boolean = true> {
 								| T
 								| {
 										closed?: T;
-										openTime?: T;
-										closeTime?: T;
+										slots?:
+											| T
+											| {
+													openTime?: T;
+													closeTime?: T;
+													id?: T;
+											  };
 								  };
 							mardi?:
 								| T
 								| {
 										closed?: T;
-										openTime?: T;
-										closeTime?: T;
+										slots?:
+											| T
+											| {
+													openTime?: T;
+													closeTime?: T;
+													id?: T;
+											  };
 								  };
 							mercredi?:
 								| T
 								| {
 										closed?: T;
-										openTime?: T;
-										closeTime?: T;
+										slots?:
+											| T
+											| {
+													openTime?: T;
+													closeTime?: T;
+													id?: T;
+											  };
 								  };
 							jeudi?:
 								| T
 								| {
 										closed?: T;
-										openTime?: T;
-										closeTime?: T;
+										slots?:
+											| T
+											| {
+													openTime?: T;
+													closeTime?: T;
+													id?: T;
+											  };
 								  };
 							vendredi?:
 								| T
 								| {
 										closed?: T;
-										openTime?: T;
-										closeTime?: T;
+										slots?:
+											| T
+											| {
+													openTime?: T;
+													closeTime?: T;
+													id?: T;
+											  };
 								  };
 							samedi?:
 								| T
 								| {
 										closed?: T;
-										openTime?: T;
-										closeTime?: T;
+										slots?:
+											| T
+											| {
+													openTime?: T;
+													closeTime?: T;
+													id?: T;
+											  };
 								  };
 							dimanche?:
 								| T
 								| {
 										closed?: T;
-										openTime?: T;
-										closeTime?: T;
+										slots?:
+											| T
+											| {
+													openTime?: T;
+													closeTime?: T;
+													id?: T;
+											  };
 								  };
 					  };
 		  };
@@ -2275,6 +2389,12 @@ export interface FooterSelect<T extends boolean = true> {
 				content?: T;
 		  };
 	legalNotice?:
+		| T
+		| {
+				title?: T;
+				content?: T;
+		  };
+	personalData?:
 		| T
 		| {
 				title?: T;
