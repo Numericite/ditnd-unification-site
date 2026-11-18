@@ -21,6 +21,7 @@ const STATIC_PATHS = [
 	"/contact-pros-cra",
 	"/accessibilite",
 	"/mentions-legales",
+	"/donnees-personnelles",
 	"/plan-du-site",
 ];
 

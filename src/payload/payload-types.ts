@@ -154,17 +154,15 @@ export interface Config {
 	};
 	fallbackLocale: null;
 	globals: {
+		menu: Menu;
 		home: Home;
 		footer: Footer;
-		about: About;
-		newsletter: Newsletter;
 		"simplified-content-generator": SimplifiedContentGenerator;
 	};
 	globalsSelect: {
+		menu: MenuSelect<false> | MenuSelect<true>;
 		home: HomeSelect<false> | HomeSelect<true>;
 		footer: FooterSelect<false> | FooterSelect<true>;
-		about: AboutSelect<false> | AboutSelect<true>;
-		newsletter: NewsletterSelect<false> | NewsletterSelect<true>;
 		"simplified-content-generator":
 			| SimplifiedContentGeneratorSelect<false>
 			| SimplifiedContentGeneratorSelect<true>;
@@ -336,7 +334,12 @@ export interface Page {
 	 * Facultative. Si renseignée, une mention « Mis à jour le » est affichée sur le site.
 	 */
 	lastUpdatedAt?: string | null;
+	showDates?: boolean | null;
 	imageBanner?: (number | null) | Media;
+	/**
+	 * Facultative. Une page rangée dans « À propos » est accessible sur /a-propos/{identifiant}. La modifier change l'URL publique : pensez à ajouter une redirection.
+	 */
+	section?: "a-propos" | null;
 	/**
 	 * Utilisé dans l'URL de la page. Laissez vide pour le générer à partir du titre. Le modifier change l'URL publique : pensez à ajouter une redirection.
 	 */
@@ -904,16 +907,16 @@ export interface Redirect {
 		type?: ("reference" | "custom") | null;
 		reference?:
 			| ({
+					relationTo: "pages";
+					value: number | Page;
+			  } | null)
+			| ({
 					relationTo: "practical-guides";
 					value: number | PracticalGuide;
 			  } | null)
 			| ({
 					relationTo: "courses";
 					value: number | Course;
-			  } | null)
-			| ({
-					relationTo: "pages";
-					value: number | Page;
 			  } | null);
 		url?: string | null;
 	};
@@ -1190,7 +1193,9 @@ export interface PagesSelect<T extends boolean = true> {
 		  };
 	publishedAt?: T;
 	lastUpdatedAt?: T;
+	showDates?: T;
 	imageBanner?: T;
+	section?: T;
 	slug?: T;
 	updatedAt?: T;
 	createdAt?: T;
@@ -1571,31 +1576,332 @@ export interface PayloadMigrationsSelect<T extends boolean = true> {
 	createdAt?: T;
 }
 /**
+ * Liens de la barre de navigation, affichés après les éléments fixes. Les modifications apparaissent sur le site sous une minute.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "menu".
+ */
+export interface Menu {
+	id: number;
+	lockedItems: {
+		personas: {
+			title: string;
+			visible?: boolean | null;
+		};
+		practicalGuides: {
+			title: string;
+			visible?: boolean | null;
+		};
+		courses: {
+			title: string;
+			visible?: boolean | null;
+		};
+	};
+	items?:
+		| {
+				title: string;
+				kind: "link" | "submenu";
+				link?: {
+					type: "reference" | "internal" | "external";
+					reference?:
+						| ({
+								relationTo: "pages";
+								value: number | Page;
+						  } | null)
+						| ({
+								relationTo: "practical-guides";
+								value: number | PracticalGuide;
+						  } | null)
+						| ({
+								relationTo: "courses";
+								value: number | Course;
+						  } | null);
+					/**
+					 * Chemin d'une page du site, par exemple /a-propos/cra.
+					 */
+					internalUrl?: string | null;
+					/**
+					 * Adresse complète, par exemple https://exemple.fr. S'ouvre dans un nouvel onglet.
+					 */
+					externalUrl?: string | null;
+				};
+				children?:
+					| {
+							title: string;
+							link: {
+								type: "reference" | "internal" | "external";
+								reference?:
+									| ({
+											relationTo: "pages";
+											value: number | Page;
+									  } | null)
+									| ({
+											relationTo: "practical-guides";
+											value: number | PracticalGuide;
+									  } | null)
+									| ({
+											relationTo: "courses";
+											value: number | Course;
+									  } | null);
+								/**
+								 * Chemin d'une page du site, par exemple /a-propos/cra.
+								 */
+								internalUrl?: string | null;
+								/**
+								 * Adresse complète, par exemple https://exemple.fr. S'ouvre dans un nouvel onglet.
+								 */
+								externalUrl?: string | null;
+							};
+							id?: string | null;
+					  }[]
+					| null;
+				id?: string | null;
+		  }[]
+		| null;
+	updatedAt?: string | null;
+	createdAt?: string | null;
+}
+/**
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "home".
  */
 export interface Home {
 	id: number;
 	header: {
+		/**
+		 * Les retours à la ligne sont conservés.
+		 */
 		title: string;
-		description: string;
+		description?: string | null;
 	};
-	tiles: {
-		persona: {
-			title: string;
-			description: string;
-		};
-		condition: {
-			title: string;
-			description: string;
-		};
-	};
-	mostViewedGuides: {
-		title: string;
-		description: string;
-	};
+	/**
+	 * Glissez-déposez les sections pour changer leur ordre d'affichage sous l'en-tête. Décochez « Afficher la section » pour la masquer sans perdre son contenu.
+	 */
+	sections?:
+		| (
+				| HomeContactSection
+				| HomeNewsCarouselSection
+				| HomePersonaTilesSection
+				| HomeMostViewedGuidesSection
+				| HomeNewsletterSection
+		  )[]
+		| null;
 	updatedAt?: string | null;
 	createdAt?: string | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "HomeContactSection".
+ */
+export interface HomeContactSection {
+	visible?: boolean | null;
+	phone: {
+		title?: string | null;
+		number: string;
+		/**
+		 * Ex : Service et appel gratuits
+		 */
+		label?: string | null;
+		/**
+		 * Ex : Appel gratuit depuis un fixe ou un mobile.
+		 */
+		scheduleNote?: string | null;
+		schedule?: {
+			lundi?: {
+				closed?: boolean | null;
+				/**
+				 * Sans plage, le jour s'affiche « – » et le statut de la ligne est masqué.
+				 */
+				slots?:
+					| {
+							openTime?: string | null;
+							closeTime?: string | null;
+							id?: string | null;
+					  }[]
+					| null;
+			};
+			mardi?: {
+				closed?: boolean | null;
+				/**
+				 * Sans plage, le jour s'affiche « – » et le statut de la ligne est masqué.
+				 */
+				slots?:
+					| {
+							openTime?: string | null;
+							closeTime?: string | null;
+							id?: string | null;
+					  }[]
+					| null;
+			};
+			mercredi?: {
+				closed?: boolean | null;
+				/**
+				 * Sans plage, le jour s'affiche « – » et le statut de la ligne est masqué.
+				 */
+				slots?:
+					| {
+							openTime?: string | null;
+							closeTime?: string | null;
+							id?: string | null;
+					  }[]
+					| null;
+			};
+			jeudi?: {
+				closed?: boolean | null;
+				/**
+				 * Sans plage, le jour s'affiche « – » et le statut de la ligne est masqué.
+				 */
+				slots?:
+					| {
+							openTime?: string | null;
+							closeTime?: string | null;
+							id?: string | null;
+					  }[]
+					| null;
+			};
+			vendredi?: {
+				closed?: boolean | null;
+				/**
+				 * Sans plage, le jour s'affiche « – » et le statut de la ligne est masqué.
+				 */
+				slots?:
+					| {
+							openTime?: string | null;
+							closeTime?: string | null;
+							id?: string | null;
+					  }[]
+					| null;
+			};
+			samedi?: {
+				closed?: boolean | null;
+				/**
+				 * Sans plage, le jour s'affiche « – » et le statut de la ligne est masqué.
+				 */
+				slots?:
+					| {
+							openTime?: string | null;
+							closeTime?: string | null;
+							id?: string | null;
+					  }[]
+					| null;
+			};
+			dimanche?: {
+				closed?: boolean | null;
+				/**
+				 * Sans plage, le jour s'affiche « – » et le statut de la ligne est masqué.
+				 */
+				slots?:
+					| {
+							openTime?: string | null;
+							closeTime?: string | null;
+							id?: string | null;
+					  }[]
+					| null;
+			};
+		};
+	};
+	contactForm?: {
+		title?: string | null;
+		description?: string | null;
+		buttonLabel?: string | null;
+		url?: string | null;
+	};
+	directory?: {
+		title?: string | null;
+		description?: string | null;
+		buttonLabel?: string | null;
+		url?: string | null;
+	};
+	id?: string | null;
+	blockName?: string | null;
+	blockType: "contact";
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "HomeNewsCarouselSection".
+ */
+export interface HomeNewsCarouselSection {
+	visible?: boolean | null;
+	id?: string | null;
+	blockName?: string | null;
+	blockType: "newsCarousel";
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "HomePersonaTilesSection".
+ */
+export interface HomePersonaTilesSection {
+	visible?: boolean | null;
+	persona: {
+		title: string;
+		description: string;
+	};
+	condition: {
+		title: string;
+		description: string;
+	};
+	id?: string | null;
+	blockName?: string | null;
+	blockType: "personaTiles";
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "HomeMostViewedGuidesSection".
+ */
+export interface HomeMostViewedGuidesSection {
+	visible?: boolean | null;
+	title: string;
+	description: string;
+	id?: string | null;
+	blockName?: string | null;
+	blockType: "mostViewedGuides";
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "HomeNewsletterSection".
+ */
+export interface HomeNewsletterSection {
+	visible?: boolean | null;
+	/**
+	 * Laissez vide pour utiliser le libellé DSFR par défaut : « Abonnez-vous à notre lettre d'information ».
+	 */
+	title?: string | null;
+	description?: string | null;
+	/**
+	 * Affichée sous le champ email. Laissez vide pour utiliser la mention DSFR par défaut.
+	 */
+	consentHint?: string | null;
+	/**
+	 * Laissez vide pour utiliser le libellé DSFR par défaut : « Suivez-nous sur les réseaux sociaux ».
+	 */
+	socialTitle?: string | null;
+	/**
+	 * Si aucun réseau n'est renseigné, la colonne réseaux sociaux n'est pas affichée.
+	 */
+	socials?:
+		| {
+				type:
+					| "facebook"
+					| "github"
+					| "instagram"
+					| "linkedin"
+					| "mastodon"
+					| "tiktok"
+					| "twitch"
+					| "twitter-x"
+					| "vimeo"
+					| "youtube"
+					| "dailymotion"
+					| "telegram"
+					| "threads"
+					| "mail";
+				url: string;
+				id?: string | null;
+		  }[]
+		| null;
+	id?: string | null;
+	blockName?: string | null;
+	blockType: "newsletter";
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -1604,6 +1910,39 @@ export interface Home {
 export interface Footer {
 	id: number;
 	title: string;
+	/**
+	 * Les liens fixes sont imposés (obligations légales, accessibilité, DSFR). Les modifications apparaissent sur le site sous une minute.
+	 */
+	bottomLinks?:
+		| {
+				title: string;
+				link: {
+					type: "reference" | "internal" | "external";
+					reference?:
+						| ({
+								relationTo: "pages";
+								value: number | Page;
+						  } | null)
+						| ({
+								relationTo: "practical-guides";
+								value: number | PracticalGuide;
+						  } | null)
+						| ({
+								relationTo: "courses";
+								value: number | Course;
+						  } | null);
+					/**
+					 * Chemin d'une page du site, par exemple /a-propos/cra.
+					 */
+					internalUrl?: string | null;
+					/**
+					 * Adresse complète, par exemple https://exemple.fr. S'ouvre dans un nouvel onglet.
+					 */
+					externalUrl?: string | null;
+				};
+				id?: string | null;
+		  }[]
+		| null;
 	accessibility: {
 		title: string;
 		content: {
@@ -1623,6 +1962,24 @@ export interface Footer {
 		};
 	};
 	legalNotice: {
+		title: string;
+		content: {
+			root: {
+				type: string;
+				children: {
+					type: any;
+					version: number;
+					[k: string]: unknown;
+				}[];
+				direction: ("ltr" | "rtl") | null;
+				format: "left" | "start" | "center" | "right" | "end" | "justify" | "";
+				indent: number;
+				version: number;
+			};
+			[k: string]: unknown;
+		};
+	};
+	personalData: {
 		title: string;
 		content: {
 			root: {
@@ -1683,121 +2040,6 @@ export interface Footer {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "about".
- */
-export interface About {
-	id: number;
-	maisonDeLAutisme: {
-		title: string;
-		imageBanner?: (number | null) | Media;
-		content: {
-			root: {
-				type: string;
-				children: {
-					type: any;
-					version: number;
-					[k: string]: unknown;
-				}[];
-				direction: ("ltr" | "rtl") | null;
-				format: "left" | "start" | "center" | "right" | "end" | "justify" | "";
-				indent: number;
-				version: number;
-			};
-			[k: string]: unknown;
-		};
-	};
-	gncra: {
-		title: string;
-		imageBanner?: (number | null) | Media;
-		content: {
-			root: {
-				type: string;
-				children: {
-					type: any;
-					version: number;
-					[k: string]: unknown;
-				}[];
-				direction: ("ltr" | "rtl") | null;
-				format: "left" | "start" | "center" | "right" | "end" | "justify" | "";
-				indent: number;
-				version: number;
-			};
-			[k: string]: unknown;
-		};
-	};
-	cras: {
-		title: string;
-		imageBanner?: (number | null) | Media;
-		content: {
-			root: {
-				type: string;
-				children: {
-					type: any;
-					version: number;
-					[k: string]: unknown;
-				}[];
-				direction: ("ltr" | "rtl") | null;
-				format: "left" | "start" | "center" | "right" | "end" | "justify" | "";
-				indent: number;
-				version: number;
-			};
-			[k: string]: unknown;
-		};
-	};
-	updatedAt?: string | null;
-	createdAt?: string | null;
-}
-/**
- * Bloc affiché en bas de la page d'accueil. Décochez « Afficher le bloc » pour le retirer du site.
- *
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "newsletter".
- */
-export interface Newsletter {
-	id: number;
-	enabled?: boolean | null;
-	/**
-	 * Laissez vide pour utiliser le libellé DSFR par défaut : « Abonnez-vous à notre lettre d'information ».
-	 */
-	title?: string | null;
-	description?: string | null;
-	/**
-	 * Affichée sous le champ email. Laissez vide pour utiliser la mention DSFR par défaut.
-	 */
-	consentHint?: string | null;
-	/**
-	 * Laissez vide pour utiliser le libellé DSFR par défaut : « Suivez-nous sur les réseaux sociaux ».
-	 */
-	socialTitle?: string | null;
-	/**
-	 * Si aucun réseau n'est renseigné, la colonne réseaux sociaux n'est pas affichée.
-	 */
-	socials?:
-		| {
-				type:
-					| "facebook"
-					| "github"
-					| "instagram"
-					| "linkedin"
-					| "mastodon"
-					| "tiktok"
-					| "twitch"
-					| "twitter-x"
-					| "vimeo"
-					| "youtube"
-					| "dailymotion"
-					| "telegram"
-					| "threads"
-					| "mail";
-				url: string;
-				id?: string | null;
-		  }[]
-		| null;
-	updatedAt?: string | null;
-	createdAt?: string | null;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "simplified-content-generator".
  */
 export interface SimplifiedContentGenerator {
@@ -1837,6 +2079,66 @@ export interface SimplifiedContentGenerator {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "menu_select".
+ */
+export interface MenuSelect<T extends boolean = true> {
+	lockedItems?:
+		| T
+		| {
+				personas?:
+					| T
+					| {
+							title?: T;
+							visible?: T;
+					  };
+				practicalGuides?:
+					| T
+					| {
+							title?: T;
+							visible?: T;
+					  };
+				courses?:
+					| T
+					| {
+							title?: T;
+							visible?: T;
+					  };
+		  };
+	items?:
+		| T
+		| {
+				title?: T;
+				kind?: T;
+				link?:
+					| T
+					| {
+							type?: T;
+							reference?: T;
+							internalUrl?: T;
+							externalUrl?: T;
+					  };
+				children?:
+					| T
+					| {
+							title?: T;
+							link?:
+								| T
+								| {
+										type?: T;
+										reference?: T;
+										internalUrl?: T;
+										externalUrl?: T;
+								  };
+							id?: T;
+					  };
+				id?: T;
+		  };
+	updatedAt?: T;
+	createdAt?: T;
+	globalType?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "home_select".
  */
 export interface HomeSelect<T extends boolean = true> {
@@ -1846,27 +2148,14 @@ export interface HomeSelect<T extends boolean = true> {
 				title?: T;
 				description?: T;
 		  };
-	tiles?:
+	sections?:
 		| T
 		| {
-				persona?:
-					| T
-					| {
-							title?: T;
-							description?: T;
-					  };
-				condition?:
-					| T
-					| {
-							title?: T;
-							description?: T;
-					  };
-		  };
-	mostViewedGuides?:
-		| T
-		| {
-				title?: T;
-				description?: T;
+				contact?: T | HomeContactSectionSelect<T>;
+				newsCarousel?: T | HomeNewsCarouselSectionSelect<T>;
+				personaTiles?: T | HomePersonaTilesSectionSelect<T>;
+				mostViewedGuides?: T | HomeMostViewedGuidesSectionSelect<T>;
+				newsletter?: T | HomeNewsletterSectionSelect<T>;
 		  };
 	updatedAt?: T;
 	createdAt?: T;
@@ -1874,10 +2163,206 @@ export interface HomeSelect<T extends boolean = true> {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "HomeContactSection_select".
+ */
+export interface HomeContactSectionSelect<T extends boolean = true> {
+	visible?: T;
+	phone?:
+		| T
+		| {
+				title?: T;
+				number?: T;
+				label?: T;
+				scheduleNote?: T;
+				schedule?:
+					| T
+					| {
+							lundi?:
+								| T
+								| {
+										closed?: T;
+										slots?:
+											| T
+											| {
+													openTime?: T;
+													closeTime?: T;
+													id?: T;
+											  };
+								  };
+							mardi?:
+								| T
+								| {
+										closed?: T;
+										slots?:
+											| T
+											| {
+													openTime?: T;
+													closeTime?: T;
+													id?: T;
+											  };
+								  };
+							mercredi?:
+								| T
+								| {
+										closed?: T;
+										slots?:
+											| T
+											| {
+													openTime?: T;
+													closeTime?: T;
+													id?: T;
+											  };
+								  };
+							jeudi?:
+								| T
+								| {
+										closed?: T;
+										slots?:
+											| T
+											| {
+													openTime?: T;
+													closeTime?: T;
+													id?: T;
+											  };
+								  };
+							vendredi?:
+								| T
+								| {
+										closed?: T;
+										slots?:
+											| T
+											| {
+													openTime?: T;
+													closeTime?: T;
+													id?: T;
+											  };
+								  };
+							samedi?:
+								| T
+								| {
+										closed?: T;
+										slots?:
+											| T
+											| {
+													openTime?: T;
+													closeTime?: T;
+													id?: T;
+											  };
+								  };
+							dimanche?:
+								| T
+								| {
+										closed?: T;
+										slots?:
+											| T
+											| {
+													openTime?: T;
+													closeTime?: T;
+													id?: T;
+											  };
+								  };
+					  };
+		  };
+	contactForm?:
+		| T
+		| {
+				title?: T;
+				description?: T;
+				buttonLabel?: T;
+				url?: T;
+		  };
+	directory?:
+		| T
+		| {
+				title?: T;
+				description?: T;
+				buttonLabel?: T;
+				url?: T;
+		  };
+	id?: T;
+	blockName?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "HomeNewsCarouselSection_select".
+ */
+export interface HomeNewsCarouselSectionSelect<T extends boolean = true> {
+	visible?: T;
+	id?: T;
+	blockName?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "HomePersonaTilesSection_select".
+ */
+export interface HomePersonaTilesSectionSelect<T extends boolean = true> {
+	visible?: T;
+	persona?:
+		| T
+		| {
+				title?: T;
+				description?: T;
+		  };
+	condition?:
+		| T
+		| {
+				title?: T;
+				description?: T;
+		  };
+	id?: T;
+	blockName?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "HomeMostViewedGuidesSection_select".
+ */
+export interface HomeMostViewedGuidesSectionSelect<T extends boolean = true> {
+	visible?: T;
+	title?: T;
+	description?: T;
+	id?: T;
+	blockName?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "HomeNewsletterSection_select".
+ */
+export interface HomeNewsletterSectionSelect<T extends boolean = true> {
+	visible?: T;
+	title?: T;
+	description?: T;
+	consentHint?: T;
+	socialTitle?: T;
+	socials?:
+		| T
+		| {
+				type?: T;
+				url?: T;
+				id?: T;
+		  };
+	id?: T;
+	blockName?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "footer_select".
  */
 export interface FooterSelect<T extends boolean = true> {
 	title?: T;
+	bottomLinks?:
+		| T
+		| {
+				title?: T;
+				link?:
+					| T
+					| {
+							type?: T;
+							reference?: T;
+							internalUrl?: T;
+							externalUrl?: T;
+					  };
+				id?: T;
+		  };
 	accessibility?:
 		| T
 		| {
@@ -1885,6 +2370,12 @@ export interface FooterSelect<T extends boolean = true> {
 				content?: T;
 		  };
 	legalNotice?:
+		| T
+		| {
+				title?: T;
+				content?: T;
+		  };
+	personalData?:
 		| T
 		| {
 				title?: T;
@@ -1903,57 +2394,6 @@ export interface FooterSelect<T extends boolean = true> {
 				title?: T;
 				imageBanner?: T;
 				content?: T;
-		  };
-	updatedAt?: T;
-	createdAt?: T;
-	globalType?: T;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "about_select".
- */
-export interface AboutSelect<T extends boolean = true> {
-	maisonDeLAutisme?:
-		| T
-		| {
-				title?: T;
-				imageBanner?: T;
-				content?: T;
-		  };
-	gncra?:
-		| T
-		| {
-				title?: T;
-				imageBanner?: T;
-				content?: T;
-		  };
-	cras?:
-		| T
-		| {
-				title?: T;
-				imageBanner?: T;
-				content?: T;
-		  };
-	updatedAt?: T;
-	createdAt?: T;
-	globalType?: T;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "newsletter_select".
- */
-export interface NewsletterSelect<T extends boolean = true> {
-	enabled?: T;
-	title?: T;
-	description?: T;
-	consentHint?: T;
-	socialTitle?: T;
-	socials?:
-		| T
-		| {
-				type?: T;
-				url?: T;
-				id?: T;
 		  };
 	updatedAt?: T;
 	createdAt?: T;
