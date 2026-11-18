@@ -1,31 +1,39 @@
 import type { CollectionBeforeDeleteHook, CollectionConfig } from "payload";
+import type { Journey } from "../payload-types";
 import { standardFields } from "../fields/standards";
 import { hideForNonAdmin, isAdmin } from "../hooks";
 import { validateHexColor } from "~/utils/tools";
 
-// The FK is ON DELETE SET NULL on a NOT NULL column: rows must go before the condition.
-const removeJourneyConditionTexts: CollectionBeforeDeleteHook = async ({
+// FK is ON DELETE SET NULL on a NOT NULL column, so rows must go first. db.updateOne rather
+// than payload.update, which would revalidate the whole journey and could block on an unrelated field.
+const beforeDeleteCondition: CollectionBeforeDeleteHook = async ({
 	id,
 	req,
 }) => {
+	const conditionId = Number(id);
+
 	const { docs: journeys } = await req.payload.find({
 		collection: "journeys",
-		where: { "conditionTexts.condition": { equals: id } },
+		where: { "conditionTexts.condition": { equals: conditionId } },
 		depth: 0,
 		limit: 0,
 		pagination: false,
+		select: { conditionTexts: true },
 		req,
 	});
 
 	for (const journey of journeys) {
-		await req.payload.update({
+		const data: Pick<Journey, "conditionTexts"> = {
+			conditionTexts: (journey.conditionTexts ?? []).filter(
+				(row) => row.condition !== conditionId,
+			),
+		};
+
+		await req.payload.db.updateOne({
 			collection: "journeys",
 			id: journey.id,
-			data: {
-				conditionTexts: (journey.conditionTexts ?? []).filter(
-					(row) => row.condition !== id,
-				),
-			},
+			data,
+			returning: false,
 			req,
 		});
 	}
@@ -49,7 +57,7 @@ export const Conditions: CollectionConfig = {
 	},
 	orderable: true,
 	hooks: {
-		beforeDelete: [removeJourneyConditionTexts],
+		beforeDelete: [beforeDeleteCondition],
 	},
 	fields: [
 		{
