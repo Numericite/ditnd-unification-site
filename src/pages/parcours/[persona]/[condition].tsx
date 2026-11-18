@@ -106,7 +106,7 @@ export default function JourneyPage(props: Props) {
 								style={{ alignContent: "center" }}
 							>
 								<h1>{pageTitle}</h1>
-								<p>{conditionDescription}</p>
+								<p className={classes.description}>{conditionDescription}</p>
 							</div>
 							<div
 								className={cx(
@@ -208,6 +208,9 @@ const useStyles = tss.withName("JourneyConditionPage").create({
 		".fr-summary__link:before": {
 			visibility: "hidden",
 		},
+	},
+	description: {
+		whiteSpace: "pre-line",
 	},
 	imageColumn: {
 		display: "flex",
