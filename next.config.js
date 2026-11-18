@@ -31,6 +31,11 @@ const config = {
 				destination: "/a-propos/cra",
 				permanent: true,
 			},
+			{
+				source: "/gestion-des-cookies",
+				destination: "/donnees-personnelles",
+				permanent: true,
+			},
 			// Sitemaps Yoast de l'ancien site WordPress.
 			...["/sitemap_index.xml", "/page-sitemap.xml", "/wp-sitemap.xml"].map(
 				(source) => ({ source, destination: "/sitemap.xml", statusCode: 301 }),

@@ -16,6 +16,10 @@ export default async function footerTask(payload: BasePayload) {
 				title: "Mentions légales",
 				content: legalsContent.legalNotice,
 			},
+			personalData: {
+				title: "Données personnelles et cookies",
+				content: legalsContent.personalData,
+			},
 			contactProsCra: {
 				title: "Formulaire de contact réservé aux professionnels des CRA",
 				content: legalsContent.contactProsCra,
