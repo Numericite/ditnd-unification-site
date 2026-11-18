@@ -76,7 +76,7 @@ export const CMSMenu: GlobalConfig = {
 					label: { fr: "Type d'élément" },
 					options: [
 						{ label: "Lien", value: "link" },
-						{ label: "Sous-menu", value: "submenu" },
+						{ label: "Menu", value: "submenu" },
 					],
 					admin: { layout: "horizontal" },
 				},
@@ -89,10 +89,11 @@ export const CMSMenu: GlobalConfig = {
 				{
 					name: "children",
 					type: "array",
-					label: { fr: "Liens du sous-menu" },
+					label: { fr: "Sous-menus" },
 					labels: {
-						singular: { fr: "Lien" },
-						plural: { fr: "Liens" },
+						// Payload renders the add button as "Ajouter {singular}"
+						singular: { fr: "un sous-menu" },
+						plural: { fr: "sous-menus" },
 					},
 					minRows: 1,
 					admin: {

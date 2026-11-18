@@ -1668,6 +1668,9 @@ export interface Menu {
 export interface Home {
 	id: number;
 	header: {
+		/**
+		 * Les retours à la ligne sont conservés.
+		 */
 		title: string;
 		description?: string | null;
 	};
