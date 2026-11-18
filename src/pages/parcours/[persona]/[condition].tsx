@@ -171,12 +171,11 @@ export const getServerSideProps: GetServerSideProps<Props> = async (ctx) => {
 			return { props: { isNotFound: true } };
 		}
 
-		// A deleted condition leaves its row with a null relation: never matches.
 		const customText = conditionData
 			? journey.conditionTexts?.find((row) => {
 					const id =
 						typeof row.condition === "object"
-							? row.condition?.id
+							? row.condition.id
 							: row.condition;
 					return id === conditionData.id;
 				})
