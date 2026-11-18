@@ -21,7 +21,20 @@ export const CMSHome: GlobalConfig = {
 				{
 					label: "En-tête",
 					name: "header",
-					fields: [standardFields.title],
+					fields: [
+						{
+							...standardFields.title,
+							type: "textarea",
+							admin: {
+								description: "Les retours à la ligne sont conservés.",
+							},
+						},
+						{
+							name: "description",
+							label: "Description",
+							type: "textarea",
+						},
+					],
 				},
 				{
 					label: "Sections",

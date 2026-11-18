@@ -136,8 +136,20 @@ export default function Home({
 				/>
 			</Head>
 			<PageContent>
-				<div className={fr.cx("fr-container", "fr-py-6w")}>
-					<h1 className={fr.cx("fr-mb-0")}>{homeCMS.header.title}</h1>
+				<div className={cx(fr.cx("fr-container", "fr-py-6w"), classes.hero)}>
+					<h1 className={cx(fr.cx("fr-mb-0"), classes.preLine)}>
+						{homeCMS.header.title}
+					</h1>
+					{homeCMS.header.description && (
+						<p
+							className={cx(
+								fr.cx("fr-text--lead", "fr-mt-3w", "fr-mb-0"),
+								classes.preLine,
+							)}
+						>
+							{homeCMS.header.description}
+						</p>
+					)}
 				</div>
 				{withBackgrounds(sections).map(({ section, top, bottom }) => (
 					<div
@@ -212,6 +224,9 @@ export const getServerSideProps: GetServerSideProps<Props> = async () => {
 const useStyles = tss.withName({ Home }).create({
 	preLine: {
 		whiteSpace: "pre-line",
+	},
+	hero: {
+		textAlign: "center",
 	},
 	coloredContainer: {
 		backgroundColor: fr.colors.decisions.background.alt.blueFrance.default,

@@ -10,7 +10,9 @@ export default async function homeTask(payload: BasePayload) {
 		data: {
 			header: {
 				title:
-					"Site national d'informations pour toutes les personnes concernées par l'autisme et ses troubles associés",
+					"Site national d’informations\nsur l’autisme et ses troubles associés",
+				description:
+					"Informations et ressources validées par des experts, à destination des personnes concernées, leurs proches et les professionnels.",
 			},
 			sections: [
 				{
