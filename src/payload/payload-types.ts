@@ -593,6 +593,17 @@ export interface Journey {
 	image?: (number | null) | Media;
 	practicalGuideDescription?: string | null;
 	courseDescription?: string | null;
+	/**
+	 * Titre et description affichés en tête de la page parcours pour un trouble donné. Sans ligne pour un trouble, le titre et la description sont générés automatiquement.
+	 */
+	conditionTexts?:
+		| {
+				condition: number | Condition;
+				title: string;
+				description: string;
+				id?: string | null;
+		  }[]
+		| null;
 	chapter: {
 		"chapter-name": string;
 		"practical-guides": (number | PracticalGuide)[];
@@ -1300,6 +1311,14 @@ export interface JourneysSelect<T extends boolean = true> {
 	image?: T;
 	practicalGuideDescription?: T;
 	courseDescription?: T;
+	conditionTexts?:
+		| T
+		| {
+				condition?: T;
+				title?: T;
+				description?: T;
+				id?: T;
+		  };
 	chapter?:
 		| T
 		| {

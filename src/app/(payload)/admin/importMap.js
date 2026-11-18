@@ -34,6 +34,7 @@ import { MetaImageComponent as MetaImageComponent_a8a977ebc872c5d5ea7ee689724c08
 import { PreviewComponent as PreviewComponent_a8a977ebc872c5d5ea7ee689724c0860 } from "@payloadcms/plugin-seo/client";
 import { default as default_4ea1f3fd4d8a7a71bd05e2762be80ffe } from "../../../payload/components/DescriptionTextarea";
 import { default as default_2cd990c14ce67b94249409473d13dbfb } from "../../../payload/components/CoursesImport";
+import { default as default_d179f71e6ae03555cd1275367f62d8ff } from "../../../payload/components/ConditionTextRowLabel";
 import { default as default_cd31b5ee51188f80370eaec27fcfca00 } from "../../../payload/components/MapCategoryExcelExport";
 import { default as default_1dc9df847c6c8ec54f552b6626b54e17 } from "../../../payload/components/MetadataField";
 import { default as default_ab9295f833f2f5fee5779f5535e576a4 } from "../../../payload/components/MapMarkersImportLink";
@@ -127,6 +128,8 @@ export const importMap = {
 		default_4ea1f3fd4d8a7a71bd05e2762be80ffe,
 	"../payload/components/CoursesImport#default":
 		default_2cd990c14ce67b94249409473d13dbfb,
+	"../payload/components/ConditionTextRowLabel#default":
+		default_d179f71e6ae03555cd1275367f62d8ff,
 	"../payload/components/MapCategoryExcelExport#default":
 		default_cd31b5ee51188f80370eaec27fcfca00,
 	"../payload/components/MetadataField#default":
