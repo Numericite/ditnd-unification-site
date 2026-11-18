@@ -25,6 +25,7 @@ type Props =
 			persona: string;
 			condition: string;
 			conditionDescription: string;
+			customTitle: string | null;
 	  };
 
 export default function JourneyPage(props: Props) {
@@ -42,7 +43,8 @@ export default function JourneyPage(props: Props) {
 		);
 	}
 
-	const { journey, persona, condition, conditionDescription } = props;
+	const { journey, persona, condition, conditionDescription, customTitle } =
+		props;
 
 	const isProPersona = isProfessionalPersona(persona);
 
@@ -54,7 +56,7 @@ export default function JourneyPage(props: Props) {
 	const journeyIntro =
 		journey.persona.journeyIntro ??
 		`Je suis un ${journey.persona.name.toLowerCase()} interessé par le`;
-	const pageTitle = `${journeyIntro} ${conditionLabel}`;
+	const pageTitle = customTitle ?? `${journeyIntro} ${conditionLabel}`;
 
 	const breadcrumbSegments = isProPersona
 		? [
@@ -169,12 +171,25 @@ export const getServerSideProps: GetServerSideProps<Props> = async (ctx) => {
 			return { props: { isNotFound: true } };
 		}
 
+		// A deleted condition leaves its row with a null relation: never matches.
+		const customText = conditionData
+			? journey.conditionTexts?.find((row) => {
+					const id =
+						typeof row.condition === "object"
+							? row.condition?.id
+							: row.condition;
+					return id === conditionData.id;
+				})
+			: undefined;
+
 		return {
 			props: {
 				journey,
 				persona,
 				condition,
-				conditionDescription: conditionData?.fullDescription ?? "",
+				conditionDescription:
+					customText?.description ?? conditionData?.fullDescription ?? "",
+				customTitle: customText?.title ?? null,
 			},
 		};
 	} catch {
