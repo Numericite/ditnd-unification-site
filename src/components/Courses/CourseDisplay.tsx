@@ -261,6 +261,9 @@ const useStyles = tss.withName({ CourseDisplay }).create(() => ({
 		lineHeight: "1.5rem",
 		fontWeight: 700,
 		color: fr.colors.decisions.text.default.grey.default,
+		"& + &": {
+			marginTop: fr.spacing("1w"),
+		},
 	},
 	tagsList: {
 		paddingInlineStart: "0rem!important",
