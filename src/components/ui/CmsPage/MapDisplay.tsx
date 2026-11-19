@@ -486,6 +486,17 @@ export default function MapDisplay({ map, height }: Props) {
 		? categoryById.get(selectedMarker.categoryId)
 		: null;
 
+	const popupAddress = selectedMarker
+		? [
+				selectedMarker.address,
+				[selectedMarker.postalCode, selectedMarker.city]
+					.filter(Boolean)
+					.join(" "),
+			]
+				.filter(Boolean)
+				.join(", ")
+		: "";
+
 	return (
 		<figure className={`${fr.cx("fr-my-3v")} ${classes.figure}`}>
 			{map.title ? (
@@ -693,14 +704,9 @@ export default function MapDisplay({ map, height }: Props) {
 														<strong className={classes.popupName}>
 															{selectedMarker.name}
 														</strong>
-														{selectedMarker.city ? (
+														{popupAddress ? (
 															<span className={classes.popupCity}>
-																{[
-																	selectedMarker.postalCode,
-																	selectedMarker.city,
-																]
-																	.filter(Boolean)
-																	.join(" ")}
+																{popupAddress}
 															</span>
 														) : null}
 													</div>
