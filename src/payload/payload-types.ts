@@ -513,7 +513,10 @@ export interface Course {
 	 */
 	simplifiedTitle?: string | null;
 	description: string;
-	link: string;
+	/**
+	 * Facultatif. Laissez vide quand la formation est proposée par plusieurs organismes : leurs liens vont dans le contenu.
+	 */
+	link?: string | null;
 	format: "pres" | "dist";
 	duration?: ("lt1j" | "1-3j" | "gt3j") | null;
 	/**
