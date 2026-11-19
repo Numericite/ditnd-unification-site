@@ -1035,7 +1035,7 @@ const useStyles = tss.withName({ MapDisplay }).create(() => ({
 	cardAddress: {
 		display: "flex",
 		flexDirection: "column",
-		fontSize: fr.spacing("3v"),
+		fontSize: "0.875rem",
 		lineHeight: 1.45,
 	},
 	cardAddressLine: {
@@ -1047,7 +1047,7 @@ const useStyles = tss.withName({ MapDisplay }).create(() => ({
 	},
 	cardLine: {
 		margin: 0,
-		fontSize: fr.spacing("3v"),
+		fontSize: "0.875rem",
 		lineHeight: 1.45,
 		color: fr.colors.decisions.text.default.grey.default,
 	},
@@ -1163,14 +1163,14 @@ const useStyles = tss.withName({ MapDisplay }).create(() => ({
 		lineHeight: 1.3,
 	},
 	popupCity: {
-		fontSize: fr.spacing("3v"),
+		fontSize: "0.875rem",
 		color: fr.colors.decisions.text.mention.grey.default,
 		lineHeight: 1.4,
 	},
 	popupLine: {
 		margin: 0,
 		marginTop: fr.spacing("2v"),
-		fontSize: fr.spacing("3v"),
+		fontSize: "0.875rem",
 		lineHeight: 1.45,
 		color: fr.colors.decisions.text.default.grey.default,
 	},
