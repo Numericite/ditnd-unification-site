@@ -54,7 +54,7 @@ describe("Sticky header", () => {
 		cy.visit(PAGE);
 		cy.contains("div", "Ligne nationale d'écoute")
 			.contains("a", "Écrire au service")
-			.should("have.attr", "href", "/contact-particuliers");
+			.should("have.attr", "href", "/contact/particuliers");
 	});
 
 	it("keeps sticky page elements clear of the pinned navigation bar", () => {

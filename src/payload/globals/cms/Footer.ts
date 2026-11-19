@@ -7,14 +7,6 @@ import {
 	FOOTER_LOCKED_LINKS_BEFORE,
 } from "~/utils/footer";
 
-const imageBannerField = {
-	name: "imageBanner",
-	type: "upload",
-	relationTo: "medias",
-	required: false,
-	label: { fr: "Image de la bannière" },
-} as const;
-
 export const CMSFooter: GlobalConfig = {
 	slug: "footer",
 	label: "Footer",
@@ -88,24 +80,6 @@ export const CMSFooter: GlobalConfig = {
 					label: "Données personnelles",
 					name: "personalData",
 					fields: [standardFields.title, standardFields.wysiwyg],
-				},
-				{
-					label: "Contact professionnels",
-					name: "contactProsCra",
-					fields: [
-						standardFields.title,
-						imageBannerField,
-						standardFields.wysiwyg,
-					],
-				},
-				{
-					label: "Contact particuliers",
-					name: "contactParticuliers",
-					fields: [
-						standardFields.title,
-						imageBannerField,
-						standardFields.wysiwyg,
-					],
 				},
 			],
 		},

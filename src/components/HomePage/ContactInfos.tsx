@@ -269,7 +269,7 @@ export function ContactInfos({ contactCMS }: Props) {
 									iconId="fr-icon-arrow-right-line"
 									iconPosition="right"
 									linkProps={{
-										href: contactForm?.url ?? "/contact-particuliers",
+										href: contactForm?.url ?? "/contact/particuliers",
 									}}
 								>
 									{contactForm?.buttonLabel ?? "Écrire au service"}

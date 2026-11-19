@@ -137,7 +137,7 @@ export default function MainNavigation() {
 				<span aria-hidden="true" className={classes.separator}>
 					·
 				</span>
-				<a href="/contact-particuliers" className={classes.alertLink}>
+				<a href="/contact/particuliers" className={classes.alertLink}>
 					Écrire au service
 				</a>
 			</div>
@@ -171,7 +171,7 @@ export default function MainNavigation() {
 							iconId={"fr-icon-mail-line"}
 							priority="secondary"
 							size="large"
-							linkProps={{ href: "/contact-particuliers" }}
+							linkProps={{ href: "/contact/particuliers" }}
 						>
 							Contactez-nous
 						</Button>,

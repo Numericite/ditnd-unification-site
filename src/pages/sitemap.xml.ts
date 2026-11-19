@@ -14,8 +14,6 @@ const STATIC_PATHS = [
 	"/fiches-pratiques",
 	"/formations",
 	"/glossaire",
-	"/contact-particuliers",
-	"/contact-pros-cra",
 	"/accessibilite",
 	"/mentions-legales",
 	"/donnees-personnelles",

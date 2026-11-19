@@ -7,6 +7,7 @@ import SeoMeta from "~/components/ui/SeoMeta";
 import type { Media } from "~/payload/payload-types";
 import type { AugmentedPage } from "~/server/api/routers/pages";
 import { pagePath, sectionOf, sectionPath } from "~/utils/pages";
+import PageModule from "./PageModule";
 
 type Props = {
 	page: AugmentedPage;
@@ -63,8 +64,10 @@ export default function PageView({ page, draft = false }: Props) {
 						content={page.content}
 						imageBanner={page.imageBanner}
 						{...dates}
-						showShareSocials={!draft}
-					/>
+						showShareSocials={!draft && !page.module}
+					>
+						<PageModule name={page.module} />
+					</CmsPageLayout>
 				</PageContent>
 			</div>
 		</>

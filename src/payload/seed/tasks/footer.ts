@@ -20,14 +20,6 @@ export default async function footerTask(payload: BasePayload) {
 				title: "Données personnelles et cookies",
 				content: legalsContent.personalData,
 			},
-			contactProsCra: {
-				title: "Formulaire de contact réservé aux professionnels des CRA",
-				content: legalsContent.contactProsCra,
-			},
-			contactParticuliers: {
-				title: "Adressez-nous vos questions sur l'autisme et les TND",
-				content: legalsContent.contactParticuliers,
-			},
 			bottomLinks: DEFAULT_FOOTER_LINKS.map(({ title, internalUrl }) => ({
 				title,
 				link: { type: "internal" as const, internalUrl },

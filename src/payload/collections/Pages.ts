@@ -103,6 +103,25 @@ export const Pages: CollectionConfig = {
 					"Facultative. Une page rangée dans une rubrique est accessible sur /{rubrique}/{identifiant}, et la rubrique apparaît dans son fil d'Ariane. La modifier change l'URL publique : pensez à ajouter une redirection.",
 			},
 		},
+		{
+			name: "module",
+			type: "select",
+			label: { fr: "Module intégré" },
+			options: [
+				{
+					label: "Formulaire de contact des particuliers",
+					value: "contact-particuliers",
+				},
+				{
+					label: "Formulaire de contact des professionnels des CRA",
+					value: "contact-pros-cra",
+				},
+			],
+			admin: {
+				position: "sidebar",
+				description: "Facultatif. Affiché sous le contenu de la page.",
+			},
+		},
 		slugField("pages", { editable: true, validate: validatePageSlug }),
 	],
 };

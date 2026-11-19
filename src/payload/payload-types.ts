@@ -343,6 +343,10 @@ export interface Page {
 	 */
 	section?: (number | null) | PageSection;
 	/**
+	 * Facultatif. Affiché sous le contenu de la page.
+	 */
+	module?: ("contact-particuliers" | "contact-pros-cra") | null;
+	/**
 	 * Utilisé dans l'URL de la page. Laissez vide pour le générer à partir du titre. Le modifier change l'URL publique : pensez à ajouter une redirection.
 	 */
 	slug: string;
@@ -1251,6 +1255,7 @@ export interface PagesSelect<T extends boolean = true> {
 	showDates?: T;
 	imageBanner?: T;
 	section?: T;
+	module?: T;
 	slug?: T;
 	updatedAt?: T;
 	createdAt?: T;
@@ -2074,44 +2079,6 @@ export interface Footer {
 			[k: string]: unknown;
 		};
 	};
-	contactProsCra: {
-		title: string;
-		imageBanner?: (number | null) | Media;
-		content: {
-			root: {
-				type: string;
-				children: {
-					type: any;
-					version: number;
-					[k: string]: unknown;
-				}[];
-				direction: ("ltr" | "rtl") | null;
-				format: "left" | "start" | "center" | "right" | "end" | "justify" | "";
-				indent: number;
-				version: number;
-			};
-			[k: string]: unknown;
-		};
-	};
-	contactParticuliers: {
-		title: string;
-		imageBanner?: (number | null) | Media;
-		content: {
-			root: {
-				type: string;
-				children: {
-					type: any;
-					version: number;
-					[k: string]: unknown;
-				}[];
-				direction: ("ltr" | "rtl") | null;
-				format: "left" | "start" | "center" | "right" | "end" | "justify" | "";
-				indent: number;
-				version: number;
-			};
-			[k: string]: unknown;
-		};
-	};
 	updatedAt?: string | null;
 	createdAt?: string | null;
 }
@@ -2456,20 +2423,6 @@ export interface FooterSelect<T extends boolean = true> {
 		| T
 		| {
 				title?: T;
-				content?: T;
-		  };
-	contactProsCra?:
-		| T
-		| {
-				title?: T;
-				imageBanner?: T;
-				content?: T;
-		  };
-	contactParticuliers?:
-		| T
-		| {
-				title?: T;
-				imageBanner?: T;
 				content?: T;
 		  };
 	updatedAt?: T;
