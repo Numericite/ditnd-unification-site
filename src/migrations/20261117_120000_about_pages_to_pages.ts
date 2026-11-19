@@ -1,6 +1,8 @@
 import { type MigrateUpArgs, type MigrateDownArgs, sql } from '@payloadcms/db-postgres'
 
 // Le global « about » devient 3 pages de la rubrique « À propos » (URL conservées).
+// En SQL plutôt qu'avec l'API Payload : celle-ci lit les colonnes de la config
+// actuelle, qui n'existent pas encore à ce point de l'historique.
 // IF NOT EXISTS : une base de dev poussée peut déjà avoir les colonnes.
 const ABOUT_PAGES = [
   {
@@ -45,34 +47,40 @@ export async function up({ db, payload, req }: MigrateUpArgs): Promise<void> {
   if (about) {
     for (const { tab, slug, description } of ABOUT_PAGES) {
       const title = about[`${tab}_title`] as string
-      const existing = await payload.find({
-        collection: 'pages',
-        where: { slug: { equals: slug } },
-        limit: 1,
-        depth: 0,
-        req,
-      })
-      if (existing.docs.length) {
+      const existing = await db.execute(sql`SELECT 1 FROM "pages" WHERE "slug" = ${slug} LIMIT 1`)
+      if (existing.rows.length) {
         throw new Error(
           `Page « ${slug} » déjà existante : renommez-la avant de relancer la migration (onglet « ${title} »)`,
         )
       }
 
-      await payload.create({
-        collection: 'pages',
-        data: {
-          title,
-          slug,
-          section: 'a-propos',
-          content: about[`${tab}_content`] as never,
-          imageBanner: (about[`${tab}_image_banner_id`] as number | null) ?? null,
-          showDates: false,
-          publishedAt: about.created_at ? new Date(about.created_at as string).toISOString() : undefined,
-          meta: { description: `${title} : ${description}` },
-          _status: 'published',
-        },
-        req,
-      })
+      const content = JSON.stringify(about[`${tab}_content`])
+      const imageBanner = (about[`${tab}_image_banner_id`] as number | null) ?? null
+      const publishedAt = (about.created_at as string | null) ?? null
+      const metaDescription = `${title} : ${description}`
+
+      const inserted = await db.execute(sql`
+        INSERT INTO "pages" (
+          "title", "slug", "section", "content", "image_banner_id", "show_dates",
+          "published_at", "meta_description", "_status"
+        ) VALUES (
+          ${title}, ${slug}, 'a-propos', ${content}::jsonb, ${imageBanner}, false,
+          ${publishedAt}::timestamptz, ${metaDescription}, 'published'
+        ) RETURNING "id"`)
+      const pageId = inserted.rows[0]?.id as number
+
+      await db.execute(sql`
+        INSERT INTO "_pages_v" (
+          "parent_id", "version_title", "version_slug", "version_section", "version_content",
+          "version_image_banner_id", "version_show_dates", "version_published_at",
+          "version_meta_description", "version__status", "version_updated_at",
+          "version_created_at", "latest"
+        ) VALUES (
+          ${pageId}, ${title}, ${slug}, 'a-propos', ${content}::jsonb,
+          ${imageBanner}, false, ${publishedAt}::timestamptz,
+          ${metaDescription}, 'published', now(),
+          now(), true
+        )`)
     }
   }
 
@@ -103,16 +111,13 @@ export async function down({ db, payload, req }: MigrateDownArgs): Promise<void>
   CREATE INDEX "about_gncra_gncra_image_banner_idx" ON "about" USING btree ("gncra_image_banner_id");
   CREATE INDEX "about_cras_cras_image_banner_idx" ON "about" USING btree ("cras_image_banner_id");`)
 
-  const pages = []
+  type AboutPage = { id: number; title: string; imageBanner: number | null; content: unknown; publishedAt: string | null }
+  const pages: (AboutPage | undefined)[] = []
   for (const { slug } of ABOUT_PAGES) {
-    const { docs } = await payload.find({
-      collection: 'pages',
-      where: { slug: { equals: slug }, section: { equals: 'a-propos' } },
-      limit: 1,
-      depth: 0,
-      req,
-    })
-    pages.push(docs[0])
+    const { rows } = await db.execute(sql`
+      SELECT "id", "title", "image_banner_id" AS "imageBanner", "content", "published_at" AS "publishedAt"
+      FROM "pages" WHERE "slug" = ${slug} AND "section" = 'a-propos' LIMIT 1`)
+    pages.push(rows[0] as AboutPage | undefined)
   }
 
   const [mda, gncra, cras] = pages
@@ -135,7 +140,9 @@ export async function down({ db, payload, req }: MigrateDownArgs): Promise<void>
   }
 
   for (const page of pages) {
-    if (page) await payload.delete({ collection: 'pages', id: page.id, req })
+    if (!page) continue
+    await db.execute(sql`DELETE FROM "_pages_v" WHERE "parent_id" = ${page.id}`)
+    await db.execute(sql`DELETE FROM "pages" WHERE "id" = ${page.id}`)
   }
 
   await db.execute(sql`
