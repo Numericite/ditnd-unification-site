@@ -1,6 +1,7 @@
 import type { GetServerSideProps } from "next";
 import { getPayload } from "payload";
 import config from "@payload-config";
+import { pagePath, sectionPath } from "~/utils/pages";
 
 /**
  * Sitemap dynamique généré depuis Payload. Soumis à la Search Console au
@@ -12,11 +13,7 @@ const STATIC_PATHS = [
 	"/",
 	"/fiches-pratiques",
 	"/formations",
-	"/a-propos",
-	"/a-propos/maison-de-l-autisme",
-	"/a-propos/cra",
-	"/a-propos/gncra",
-	"/a-propos/glossaire",
+	"/glossaire",
 	"/contact-particuliers",
 	"/contact-pros-cra",
 	"/accessibilite",
@@ -41,40 +38,58 @@ export const getServerSideProps: GetServerSideProps = async ({ res }) => {
 
 	const payload = await getPayload({ config });
 
-	const [guides, courses, personas, conditions] = await Promise.all([
-		payload.find({
-			collection: "practical-guides",
-			where: { _status: { equals: "published" } },
-			limit: 1000,
-			pagination: false,
-			select: { slug: true },
-		}),
-		payload.find({
-			collection: "courses",
-			where: { _status: { equals: "published" } },
-			limit: 1000,
-			pagination: false,
-			select: { slug: true },
-		}),
-		payload.find({
-			collection: "personas",
-			limit: 100,
-			pagination: false,
-			select: { slug: true },
-		}),
-		payload.find({
-			collection: "conditions",
-			limit: 100,
-			pagination: false,
-			select: { slug: true },
-		}),
-	]);
+	const [guides, courses, personas, conditions, pages, sections] =
+		await Promise.all([
+			payload.find({
+				collection: "practical-guides",
+				where: { _status: { equals: "published" } },
+				limit: 1000,
+				pagination: false,
+				select: { slug: true },
+			}),
+			payload.find({
+				collection: "courses",
+				where: { _status: { equals: "published" } },
+				limit: 1000,
+				pagination: false,
+				select: { slug: true },
+			}),
+			payload.find({
+				collection: "personas",
+				limit: 100,
+				pagination: false,
+				select: { slug: true },
+			}),
+			payload.find({
+				collection: "conditions",
+				limit: 100,
+				pagination: false,
+				select: { slug: true },
+			}),
+			payload.find({
+				collection: "pages",
+				where: { _status: { equals: "published" } },
+				limit: 1000,
+				pagination: false,
+				depth: 1,
+				select: { slug: true, section: true },
+				populate: { "page-sections": { slug: true } },
+			}),
+			payload.find({
+				collection: "page-sections",
+				limit: 100,
+				pagination: false,
+				select: { slug: true },
+			}),
+		]);
 
 	const slugsOf = (docs: Array<{ slug?: string | null }>) =>
 		docs.map((doc) => doc.slug).filter((slug): slug is string => Boolean(slug));
 
 	const paths = [
 		...STATIC_PATHS,
+		...slugsOf(sections.docs).map(sectionPath),
+		...pages.docs.map(pagePath),
 		...slugsOf(guides.docs).map((slug) => `/fiches-pratiques/${slug}`),
 		...slugsOf(courses.docs).map((slug) => `/formations/${slug}`),
 		...slugsOf(personas.docs).flatMap((persona) => [

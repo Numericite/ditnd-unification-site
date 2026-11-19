@@ -78,9 +78,7 @@ export default function GlossairePage({ terms }: Props) {
 	}, [filteredTerms]);
 
 	const buildHref = (letter: string | null) =>
-		letter
-			? `/a-propos/glossaire?lettre=${letter.toLowerCase()}`
-			: "/a-propos/glossaire";
+		letter ? `/glossaire?lettre=${letter.toLowerCase()}` : "/glossaire";
 
 	const setLetter = (letter: string | null, replace = false) => {
 		const href = buildHref(letter);
@@ -127,7 +125,7 @@ export default function GlossairePage({ terms }: Props) {
 				<Breadcrumb
 					currentPageLabel="Glossaire"
 					homeLinkProps={{ href: "/" }}
-					segments={[{ label: "À propos", linkProps: { href: "/a-propos" } }]}
+					segments={[]}
 				/>
 				<PageContent>
 					<h1>Glossaire</h1>

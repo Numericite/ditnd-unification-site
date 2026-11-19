@@ -3,7 +3,7 @@ import payloadConfig from "~/payload/payload.config";
 import type { PersonaTile } from "~/components/HomePage/PersonaTiles";
 import type { TDH } from "~/state/store";
 import type { Home } from "~/payload/payload-types";
-import { REFERENCE_COLLECTIONS } from "~/utils/links";
+import { REFERENCE_POPULATE } from "~/utils/links";
 import {
 	LOCKED_MENU_ITEMS,
 	type LockedMenuItem,
@@ -27,16 +27,6 @@ export type GlobalData = {
 
 const TTL_MS = 60_000;
 
-// Seuls le slug, le statut et la rubrique (pages) servent à construire l'URL
-// d'un lien du menu.
-const menuLinkPopulate = Object.fromEntries(
-	REFERENCE_COLLECTIONS.map((collection) => [
-		collection,
-		collection === "pages"
-			? { slug: true, _status: true, section: true }
-			: { slug: true, _status: true },
-	]),
-);
 let cache: { data: GlobalData; expiresAt: number } | null = null;
 let inflight: Promise<GlobalData> | null = null;
 
@@ -57,12 +47,12 @@ async function fetchGlobalData(): Promise<GlobalData> {
 			}),
 			payload.findGlobal({
 				slug: "footer",
-				depth: 1,
-				populate: menuLinkPopulate,
+				depth: 2,
+				populate: REFERENCE_POPULATE,
 			}),
 			payload.findGlobal({ slug: "home" }),
 			payload
-				.findGlobal({ slug: "menu", depth: 1, populate: menuLinkPopulate })
+				.findGlobal({ slug: "menu", depth: 2, populate: REFERENCE_POPULATE })
 				.then((menu) => ({
 					items: resolveMenu(menu),
 					locked: resolveLockedItems(menu),
