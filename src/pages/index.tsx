@@ -136,20 +136,43 @@ export default function Home({
 				/>
 			</Head>
 			<PageContent>
-				<div className={cx(fr.cx("fr-container", "fr-py-6w"), classes.hero)}>
-					<h1 className={cx(fr.cx("fr-mt-4v", "fr-mb-0"), classes.preLine)}>
-						{homeCMS.header.title}
-					</h1>
-					{homeCMS.header.description && (
-						<p
-							className={cx(
-								fr.cx("fr-text--lead", "fr-mt-3w", "fr-mb-0"),
-								classes.preLine,
-							)}
-						>
-							{homeCMS.header.description}
-						</p>
-					)}
+				<div className={classes.coloredContainer}>
+					<div className={cx(fr.cx("fr-container", "fr-py-5w"), classes.hero)}>
+						<div className={classes.heroTitleRow}>
+							<img
+								className={classes.heroLogo}
+								src="/filiere-tnd-logo.png"
+								alt=""
+								width={165}
+								height={173}
+							/>
+							<h1 className={cx(fr.cx("fr-mb-0"), classes.heroTitle)}>
+								{homeCMS.header.title.split(/\r?\n/).map((line, index) => (
+									<span
+										key={line}
+										className={
+											index === 0
+												? classes.heroTitleLight
+												: classes.heroTitleBold
+										}
+									>
+										{line}
+									</span>
+								))}
+							</h1>
+						</div>
+						{homeCMS.header.description && (
+							<p
+								className={cx(
+									fr.cx("fr-text--lg", "fr-mt-3w", "fr-mb-0"),
+									classes.preLine,
+									classes.heroDescription,
+								)}
+							>
+								{homeCMS.header.description}
+							</p>
+						)}
+					</div>
 				</div>
 				{withBackgrounds(sections).map(({ section, top, bottom }) => (
 					<div
@@ -173,11 +196,11 @@ export default function Home({
 type Background = "colored" | "plain";
 
 // The contact tiles straddle two backgrounds, so the contact section takes no
-// slot in the alternation: its top half matches the section above (the white
+// slot in the alternation: its top half matches the section above (the colored
 // header when it comes first) and its bottom half the section below.
 function withBackgrounds(sections: HomeSection[]) {
 	const backgroundAt = (slot: number): Background =>
-		slot >= 0 && slot % 2 === 0 ? "colored" : "plain";
+		slot % 2 === 0 ? "plain" : "colored";
 	let slot = 0;
 	return sections.map((section) => {
 		if (section.blockType === "contact") {
@@ -227,6 +250,47 @@ const useStyles = tss.withName({ Home }).create({
 	},
 	hero: {
 		textAlign: "center",
+	},
+	heroTitleRow: {
+		display: "flex",
+		alignItems: "center",
+		justifyContent: "center",
+		gap: fr.spacing("2w"),
+		[fr.breakpoints.down("md")]: {
+			flexDirection: "column",
+		},
+	},
+	heroLogo: {
+		flexShrink: 0,
+		width: "5rem",
+		height: "auto",
+		[fr.breakpoints.down("md")]: {
+			width: "3.5rem",
+		},
+	},
+	heroTitle: {
+		textAlign: "left",
+		textTransform: "uppercase",
+		fontSize: "1.625rem",
+		lineHeight: 1.3,
+		[fr.breakpoints.down("md")]: {
+			fontSize: "1.125rem",
+			textAlign: "center",
+		},
+	},
+	heroDescription: {
+		[fr.breakpoints.down("md")]: {
+			fontSize: "1rem !important",
+			lineHeight: "1.5rem !important",
+		},
+	},
+	heroTitleLight: {
+		display: "block",
+		fontWeight: 400,
+	},
+	heroTitleBold: {
+		display: "block",
+		fontWeight: 800,
 	},
 	coloredContainer: {
 		backgroundColor: fr.colors.decisions.background.alt.blueFrance.default,
