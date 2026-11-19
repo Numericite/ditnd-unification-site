@@ -1,6 +1,7 @@
 import type { PayloadRequest, TextFieldSingleValidation } from "payload";
 import { slugify } from "~/utils/tools";
 import { SECTION_FALLBACKS } from "~/utils/redirects";
+import { PAGE_REDIRECTS } from "~/utils/page-redirects";
 import {
 	type SectionRef,
 	pagePath,
@@ -52,8 +53,9 @@ const hasTarget = (to: RedirectTarget | null | undefined): boolean => {
 };
 
 /**
- * Une page ou une rubrique est servie avant les redirections : sur un chemin
- * déjà redirigé, elle masquerait la redirection.
+ * Sur un chemin déjà redirigé, une page ou une rubrique serait inaccessible
+ * (next.config.js redirige avant tout routage) ou masquerait la redirection
+ * (les autres ne sont résolues qu'en cas de 404).
  */
 export const redirectConflict = async (
 	req: PayloadRequest,
@@ -61,6 +63,9 @@ export const redirectConflict = async (
 ): Promise<string | null> => {
 	const fallback = SECTION_FALLBACKS.find(([prefix]) => prefix === path);
 	if (fallback) return `Adresse redirigée vers ${fallback[1]}`;
+
+	const moved = PAGE_REDIRECTS.find(({ source }) => source === path);
+	if (moved) return `Adresse redirigée vers ${moved.destination}`;
 
 	const { docs } = await req.payload.find({
 		collection: "redirects",

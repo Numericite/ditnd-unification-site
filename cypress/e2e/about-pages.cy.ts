@@ -67,6 +67,25 @@ describe("About pages served from the pages collection", () => {
 			create("glossaire").its("status").should("eq", 400);
 		});
 
+		it("refuses a page slug whose address is redirected by the site", () => {
+			aboutSectionId().then((section) => {
+				cy.request({
+					method: "POST",
+					url: "/api/pages?depth=0",
+					body: {
+						title: uniqueTitle("Glossaire"),
+						content: richText(paragraph("Contenu de la page.")),
+						slug: "glossaire",
+						section,
+						_status: "published",
+					},
+					failOnStatusCode: false,
+				})
+					.its("status")
+					.should("eq", 400);
+			});
+		});
+
 		it("refuses a section slug that would hide a legacy redirect", () => {
 			cy.request({
 				method: "POST",
