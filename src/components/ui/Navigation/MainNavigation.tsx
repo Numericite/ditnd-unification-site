@@ -26,8 +26,9 @@ export default function MainNavigation() {
 	const [headerSearch, setHeaderSearch] = useState(initialHeaderSearch);
 	const searchInputRef = useRef<HTMLInputElement>(null);
 	const headerRef = useRef<HTMLDivElement>(null);
+	const alertRef = useRef<HTMLDivElement>(null);
 
-	useStickyHeaderOffset(headerRef);
+	useStickyHeaderOffset(headerRef, alertRef);
 
 	useEffect(() => {
 		const search =
@@ -123,16 +124,22 @@ export default function MainNavigation() {
 	return (
 		<>
 			<SkipLinks links={skipLinks} />
-			<div className={cx(classes.mainAlert, fr.cx("fr-p-2v"))}>
+			<div ref={alertRef} className={cx(classes.mainAlert, fr.cx("fr-p-2v"))}>
 				<span
 					className={cx("ri-phone-line", classes.icon)}
 					aria-hidden="true"
 				/>
 				Ligne nationale d'écoute :{" "}
-				<a href="tel:+33800714040" className={classes.phoneLink}>
+				<a href="tel:+33800714040" className={classes.alertLink}>
 					0 800 71 40 40
 				</a>{" "}
 				<span className={classes.mention}>— appel gratuit et anonyme</span>
+				<span aria-hidden="true" className={classes.separator}>
+					·
+				</span>
+				<a href="/contact-particuliers" className={classes.alertLink}>
+					Écrire au service
+				</a>
 			</div>
 			<div id="menu" ref={headerRef} className={cx(classes.stickyHeader)}>
 				<Header
@@ -211,11 +218,11 @@ const useStyles = tss.withName({ MainNavigation }).create({
 		},
 	},
 	stickyHeader: {
-		// Pinned with a negative top so only the navigation bar stays visible,
-		// the DSFR header body scrolls away above the viewport.
+		// Pinned so that only the navigation bar stays visible under the banner:
+		// the DSFR header body scrolls away behind it.
 		[fr.breakpoints.up("lg")]: {
 			position: "sticky",
-			top: "calc(-1 * var(--sticky-header-hidden-height, 0px))",
+			top: "calc(var(--sticky-alert-height, 0px) - var(--sticky-header-hidden-height, 0px))",
 			zIndex: 750,
 		},
 	},
@@ -234,6 +241,11 @@ const useStyles = tss.withName({ MainNavigation }).create({
 	mainAlert: {
 		...fr.typography[18].style,
 		marginBottom: 0,
+		[fr.breakpoints.up("lg")]: {
+			position: "sticky",
+			top: 0,
+			zIndex: 751,
+		},
 		backgroundColor: fr.colors.decisions.background.alt.blueFrance.default,
 		color: fr.colors.decisions.background.flat.blueFrance.default,
 		textAlign: "center",
@@ -248,8 +260,11 @@ const useStyles = tss.withName({ MainNavigation }).create({
 			"--icon-size": "1.125rem",
 		},
 	},
-	phoneLink: {
+	alertLink: {
 		color: "inherit",
+	},
+	separator: {
+		margin: `0 ${fr.spacing("1w")}`,
 	},
 	mention: {
 		color: fr.colors.decisions.text.mention.grey.default,
