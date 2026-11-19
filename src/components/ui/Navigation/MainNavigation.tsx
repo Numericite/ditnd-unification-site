@@ -169,12 +169,12 @@ export default function MainNavigation() {
 							Contactez-nous
 						</Button>,
 					]}
-					renderSearchInput={({ className, id, placeholder, type }) => (
+					renderSearchInput={({ className, id, type }) => (
 						<input
 							ref={searchInputRef}
 							className={className}
 							id={id}
-							placeholder={placeholder}
+							placeholder="Rechercher sur tout le site"
 							type={type}
 							value={headerSearch}
 							onChange={(e) => setHeaderSearch(e.currentTarget.value)}

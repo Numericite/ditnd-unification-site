@@ -486,6 +486,17 @@ export default function MapDisplay({ map, height }: Props) {
 		? categoryById.get(selectedMarker.categoryId)
 		: null;
 
+	const popupAddress = selectedMarker
+		? [
+				selectedMarker.address,
+				[selectedMarker.postalCode, selectedMarker.city]
+					.filter(Boolean)
+					.join(" "),
+			]
+				.filter(Boolean)
+				.join(", ")
+		: "";
+
 	return (
 		<figure className={`${fr.cx("fr-my-3v")} ${classes.figure}`}>
 			{map.title ? (
@@ -693,14 +704,9 @@ export default function MapDisplay({ map, height }: Props) {
 														<strong className={classes.popupName}>
 															{selectedMarker.name}
 														</strong>
-														{selectedMarker.city ? (
+														{popupAddress ? (
 															<span className={classes.popupCity}>
-																{[
-																	selectedMarker.postalCode,
-																	selectedMarker.city,
-																]
-																	.filter(Boolean)
-																	.join(" ")}
+																{popupAddress}
 															</span>
 														) : null}
 													</div>
@@ -736,6 +742,18 @@ export default function MapDisplay({ map, height }: Props) {
 															title={`Appeler : ${selectedMarker.name}`}
 														>
 															{selectedMarker.phone}
+														</Link>
+													</p>
+												) : null}
+
+												{selectedMarker.email ? (
+													<p className={classes.popupLine}>
+														<Link
+															href={`mailto:${selectedMarker.email}`}
+															className={cx(fr.cx("fr-link"), classes.email)}
+															title={`Envoyer un e-mail : ${selectedMarker.name}`}
+														>
+															{selectedMarker.email}
 														</Link>
 													</p>
 												) : null}
@@ -832,6 +850,18 @@ export default function MapDisplay({ map, height }: Props) {
 													title={`Appeler : ${marker.name}`}
 												>
 													{marker.phone}
+												</Link>
+											) : null}
+											{marker.email ? (
+												<Link
+													href={`mailto:${marker.email}`}
+													className={cx(
+														fr.cx("fr-link", "fr-link--sm"),
+														classes.email,
+													)}
+													title={`Envoyer un e-mail : ${marker.name}`}
+												>
+													{marker.email}
 												</Link>
 											) : null}
 											{marker.website ? (
@@ -1005,7 +1035,7 @@ const useStyles = tss.withName({ MapDisplay }).create(() => ({
 	cardAddress: {
 		display: "flex",
 		flexDirection: "column",
-		fontSize: fr.spacing("3v"),
+		fontSize: "0.875rem",
 		lineHeight: 1.45,
 	},
 	cardAddressLine: {
@@ -1017,13 +1047,17 @@ const useStyles = tss.withName({ MapDisplay }).create(() => ({
 	},
 	cardLine: {
 		margin: 0,
-		fontSize: fr.spacing("3v"),
+		fontSize: "0.875rem",
 		lineHeight: 1.45,
 		color: fr.colors.decisions.text.default.grey.default,
 	},
 	cardFieldLabel: {
 		fontWeight: 600,
 		color: fr.colors.decisions.text.label.grey.default,
+	},
+	// Long addresses have no break opportunity and would overflow narrow cards
+	email: {
+		overflowWrap: "anywhere",
 	},
 	cardActions: {
 		display: "flex",
@@ -1129,14 +1163,14 @@ const useStyles = tss.withName({ MapDisplay }).create(() => ({
 		lineHeight: 1.3,
 	},
 	popupCity: {
-		fontSize: fr.spacing("3v"),
+		fontSize: "0.875rem",
 		color: fr.colors.decisions.text.mention.grey.default,
 		lineHeight: 1.4,
 	},
 	popupLine: {
 		margin: 0,
 		marginTop: fr.spacing("2v"),
-		fontSize: fr.spacing("3v"),
+		fontSize: "0.875rem",
 		lineHeight: 1.45,
 		color: fr.colors.decisions.text.default.grey.default,
 	},
