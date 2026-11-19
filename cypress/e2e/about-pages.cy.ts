@@ -64,6 +64,23 @@ describe("About pages served from the pages collection", () => {
 			});
 		});
 
+		it("refuses to rename the slug of a section serving coded pages", () => {
+			aboutSectionId().then((section) => {
+				const update = (body: object) =>
+					cy.request({
+						method: "PATCH",
+						url: `/api/page-sections/${section}?depth=0`,
+						body,
+						failOnStatusCode: false,
+					});
+
+				update({ slug: "a-propos-renomme" }).its("status").should("eq", 400);
+				// The slug follows the label until edited: a new label must not move it.
+				update({ title: "À propos du site" }).its("status").should("eq", 400);
+				update({ title: "À propos" }).its("status").should("eq", 200);
+			});
+		});
+
 		it("refuses to delete a section that still has pages", () => {
 			aboutSectionId().then((section) => {
 				cy.request({

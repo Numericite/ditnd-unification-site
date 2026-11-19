@@ -367,7 +367,7 @@ export interface PageSection {
 	 */
 	description?: string | null;
 	/**
-	 * Utilisé dans l'URL de la rubrique et de toutes ses pages. Le modifier change l'URL de chacune de ces pages : pensez à ajouter une redirection pour chacune.
+	 * Utilisé dans l'URL de la rubrique et de toutes ses pages. Le modifier change l'URL de chacune de ces pages : pensez à ajouter une redirection pour chacune. Non modifiable pour « À propos », qui contient aussi des pages codées (Glossaire).
 	 */
 	slug: string;
 	updatedAt: string;
