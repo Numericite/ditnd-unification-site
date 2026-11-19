@@ -64,6 +64,7 @@ import * as migration_20261118_085536_home_header_description from './20261118_0
 import * as migration_20261118_092009_footer_personal_data from './20261118_092009_footer_personal_data';
 import * as migration_20261118_101942_contact_schedule_time_slots from './20261118_101942_contact_schedule_time_slots';
 import * as migration_20261118_144315_journey_condition_texts from './20261118_144315_journey_condition_texts';
+import * as migration_20261119_124621_courses_short_title from './20261119_124621_courses_short_title';
 
 export const migrations = [
   {
@@ -394,6 +395,11 @@ export const migrations = [
   {
     up: migration_20261118_144315_journey_condition_texts.up,
     down: migration_20261118_144315_journey_condition_texts.down,
-    name: '20261118_144315_journey_condition_texts'
+    name: '20261118_144315_journey_condition_texts',
+  },
+  {
+    up: migration_20261119_124621_courses_short_title.up,
+    down: migration_20261119_124621_courses_short_title.down,
+    name: '20261119_124621_courses_short_title'
   },
 ];

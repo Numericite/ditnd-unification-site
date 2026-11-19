@@ -521,7 +521,7 @@ const relationCard = (
 
 		return (
 			<CardDisplay
-				title={course.title}
+				title={course.simplifiedTitle || course.title}
 				description={horizontal ? (course.description ?? undefined) : undefined}
 				imageUrl={course.image?.url ?? course.imageBanner?.url ?? undefined}
 				imageAlt=""
