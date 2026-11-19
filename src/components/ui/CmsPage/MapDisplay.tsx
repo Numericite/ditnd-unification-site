@@ -740,6 +740,18 @@ export default function MapDisplay({ map, height }: Props) {
 													</p>
 												) : null}
 
+												{selectedMarker.email ? (
+													<p className={classes.popupLine}>
+														<Link
+															href={`mailto:${selectedMarker.email}`}
+															className={cx(fr.cx("fr-link"), classes.email)}
+															title={`Envoyer un e-mail : ${selectedMarker.name}`}
+														>
+															{selectedMarker.email}
+														</Link>
+													</p>
+												) : null}
+
 												{selectedMarker.website ? (
 													<p className={classes.popupLine}>
 														<Link
@@ -832,6 +844,18 @@ export default function MapDisplay({ map, height }: Props) {
 													title={`Appeler : ${marker.name}`}
 												>
 													{marker.phone}
+												</Link>
+											) : null}
+											{marker.email ? (
+												<Link
+													href={`mailto:${marker.email}`}
+													className={cx(
+														fr.cx("fr-link", "fr-link--sm"),
+														classes.email,
+													)}
+													title={`Envoyer un e-mail : ${marker.name}`}
+												>
+													{marker.email}
 												</Link>
 											) : null}
 											{marker.website ? (
@@ -1024,6 +1048,10 @@ const useStyles = tss.withName({ MapDisplay }).create(() => ({
 	cardFieldLabel: {
 		fontWeight: 600,
 		color: fr.colors.decisions.text.label.grey.default,
+	},
+	// Long addresses have no break opportunity and would overflow narrow cards
+	email: {
+		overflowWrap: "anywhere",
 	},
 	cardActions: {
 		display: "flex",
