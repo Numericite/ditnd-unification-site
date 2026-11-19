@@ -21,7 +21,7 @@ const sectionWithLinks = async (payload: Payload, section: PageSection) => {
 		limit: 0,
 		depth: 0,
 		draft: false,
-		sort: "createdAt",
+		sort: ["createdAt", "id"],
 		select: { title: true, slug: true },
 		where: {
 			section: { equals: section.id },
