@@ -1,5 +1,6 @@
 import { redirectsPlugin } from "@payloadcms/plugin-redirects";
 import type { Field } from "payload";
+import { normalizePath, REFERENCE_COLLECTIONS } from "~/utils/links";
 
 /**
  * Redirections 301 de l'ancien site WordPress (et futurs renommages de slugs).
@@ -7,25 +8,15 @@ import type { Field } from "payload";
  *
  * Workflow : la collection est pré-remplie (seed:redirects) avec les anciennes
  * URLs et une cible vide. Une cible vide = travail restant pour l'équipe
- * contenu ; l'URL est couverte entre-temps par les fallbacks de section du
- * middleware. Ne jamais supprimer une redirection remplie après le lancement.
+ * contenu ; l'URL est couverte entre-temps par les fallbacks de section
+ * (src/server/redirects.ts). Ne jamais supprimer une redirection remplie après le lancement.
  */
-
-/** Normalise une URL source : path seul, sans domaine, slash final ni query. */
-export const normalizeFromPath = (raw: string): string => {
-	let from = raw.trim();
-	from = from.replace(/^https?:\/\/[^/]+/i, "");
-	from = from.split(/[?#]/)[0] ?? "";
-	if (!from.startsWith("/")) from = `/${from}`;
-	if (from.length > 1) from = from.replace(/\/+$/, "");
-	return from.toLowerCase();
-};
 
 export const mdaRedirectsPlugin = redirectsPlugin({
 	// Collections pointables en cible "référence interne" : les seules dont
 	// l'URL publique se résout depuis le seul slug. Pour toute autre page
 	// (parcours, pages statiques…), utiliser une cible "URL personnalisée".
-	collections: ["practical-guides", "courses", "pages"],
+	collections: REFERENCE_COLLECTIONS,
 	overrides: {
 		admin: {
 			group: { fr: "Autre", en: "Other" },
@@ -74,14 +65,14 @@ export const mdaRedirectsPlugin = redirectsPlugin({
 				({ data }) => {
 					if (!data) return data;
 					if (typeof data.from === "string" && data.from.length > 0) {
-						data.from = normalizeFromPath(data.from);
+						data.from = normalizePath(data.from);
 					}
 					// Anti-boucle : une redirection vers sa propre source est refusée.
 					if (
 						data.to?.type === "custom" &&
 						typeof data.to.url === "string" &&
 						data.to.url.length > 0 &&
-						normalizeFromPath(data.to.url) === data.from
+						normalizePath(data.to.url) === data.from
 					) {
 						throw new Error(
 							`Redirection en boucle : la cible "${data.to.url}" correspond à la source "${data.from}".`,

@@ -64,3 +64,46 @@ describe("Practical guides listing filters", () => {
 			.and("not.contain", `${keyword} autisme seul`);
 	});
 });
+
+describe("Courses listing filters", () => {
+	beforeEach(() => {
+		cy.loginAsAdmin();
+	});
+
+	const checkbox = (group: string, label: string) =>
+		filterGroup(group).contains("label", label).siblings("input");
+
+	it("filters the courses by format and duration", () => {
+		const keyword = uniqueTitle("Filtre format");
+		const onSite = `${keyword} présentiel courte`;
+		const remote = `${keyword} distanciel longue`;
+		cy.createCourse({ title: onSite, format: "pres", duration: "lt1j" });
+		cy.createCourse({ title: remote, format: "dist", duration: "gt3j" });
+
+		cy.visit(`/formations?search=${encodeURIComponent(keyword)}`);
+		cy.waitForHydration();
+		cy.get("#results").should("contain", onSite).and("contain", remote);
+		cy.get("#results")
+			.contains(".fr-card", onSite)
+			.should("contain", "Présentiel");
+
+		filterGroup("Format").contains("label", "Présentiel").click();
+		cy.location("search").should("include", "formats=pres");
+		checkbox("Format", "Présentiel").should("be.checked");
+		checkbox("Format", "Distanciel").should("not.be.checked");
+		cy.get("#results").should("contain", onSite).and("not.contain", remote);
+
+		filterGroup("Durée").contains("label", "Supérieur à 3j").click();
+		cy.location("search").should("include", "durations=gt3j");
+		cy.get("#results").should("contain", "Aucune formation trouvée");
+
+		filterGroup("Format").contains("label", "Présentiel").click();
+		cy.location("search").should("not.include", "formats=");
+		cy.get("#results").should("contain", remote).and("not.contain", onSite);
+	});
+
+	it("shows no course for a format value that does not exist", () => {
+		cy.visit("/formations?formats=inconnu");
+		cy.get("#results").should("contain", "Aucune formation trouvée");
+	});
+});

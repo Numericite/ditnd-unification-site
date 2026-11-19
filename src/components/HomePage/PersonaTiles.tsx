@@ -1,11 +1,13 @@
 import { fr } from "@codegouvfr/react-dsfr";
 import { useState, useRef, useEffect } from "react";
+import { trackEvent } from "~/components/Matomo/Matomo";
 import { homeCMSStore, proStore, tdhStore } from "~/state/store";
 import { PersonaGrid } from "../ui/HomePage/PersonaGrid";
 import Tag from "@codegouvfr/react-dsfr/Tag";
 import { useRouter } from "next/router";
 import { tss } from "tss-react/dsfr";
-import type { Home, Persona } from "~/payload/payload-types";
+import type { HomePersonaTilesSection, Persona } from "~/payload/payload-types";
+import { findHomeSection } from "~/utils/homeSections";
 import type { PictogramName } from "~/utils/pictograms";
 import Breadcrumb from "@codegouvfr/react-dsfr/Breadcrumb";
 
@@ -40,14 +42,16 @@ export type TagItem = {
 
 type SectionContent = { title: string; description?: string };
 
+const EMPTY_CONTENT: SectionContent = { title: "" };
+
 const getContentByDisplay = (
-	tiles: Home["tiles"],
+	section: HomePersonaTilesSection | undefined,
 ): Record<PersonaTypes, SectionContent> => ({
-	default: tiles.persona,
-	person: tiles.condition,
+	default: section?.persona ?? EMPTY_CONTENT,
+	person: section?.condition ?? EMPTY_CONTENT,
 	professional: { title: "Quel type de professionnel êtes-vous ?" },
-	afterProfessional: tiles.condition,
-	condition: { title: "" },
+	afterProfessional: section?.condition ?? EMPTY_CONTENT,
+	condition: EMPTY_CONTENT,
 });
 
 type Props = {
@@ -111,9 +115,9 @@ export const PersonaTiles = ({
 
 	const homeCMS = homeCMSStore.get();
 
-	const { title: subTitle, description } = getContentByDisplay(homeCMS.tiles)[
-		display
-	];
+	const { title: subTitle, description } = getContentByDisplay(
+		findHomeSection(homeCMS, "personaTiles"),
+	)[display];
 
 	// TODO: Réactiver la tuile "Un trouble que je ne sais pas identifier"
 	// const tdhTiles = [unknownTile, ...tdh];
@@ -121,6 +125,7 @@ export const PersonaTiles = ({
 
 	const handleClick = (tile: PersonaTile, prevDisplay: PersonaTypes) => {
 		pendingFocusToTag.current = true;
+		trackEvent("Parcours", "choix", tile.slug);
 		setTags((prev) => [
 			...prev,
 			{
@@ -145,6 +150,7 @@ export const PersonaTiles = ({
 			setDisplay("person");
 		},
 		afterProfessional: (tile) => {
+			trackEvent("Parcours", "choix", tile.slug);
 			router.push(`/parcours/${tile.slug}`);
 		},
 		condition: (tile) => {
@@ -153,6 +159,7 @@ export const PersonaTiles = ({
 				// (le slug "professional" était alors un niveau intermédiaire à retirer de l'URL).
 				// .filter((tag) => tag.slug !== "professional")
 				.map((tag) => tag.slug);
+			trackEvent("Parcours", "choix", tile.slug.toLowerCase());
 			router.push(`/parcours/${personaSlug}/${tile.slug.toLowerCase()}`);
 		},
 		default: () => {

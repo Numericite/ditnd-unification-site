@@ -1,7 +1,7 @@
 import Breadcrumb from "@codegouvfr/react-dsfr/Breadcrumb";
 import Head from "next/head";
 import PracticalGuidesDisplay from "~/components/PracticalGuides/PracticalGuidesDisplay";
-import CmsPageLayout from "~/components/ui/CmsPage/CmsPageLayout";
+import PageView from "~/components/Pages/PageView";
 import { fr } from "@codegouvfr/react-dsfr";
 import PageContent from "~/components/ui/PageContent";
 import type { GetServerSideProps } from "next";
@@ -58,31 +58,7 @@ export default function DraftPage(props: Props) {
 		);
 	}
 
-	const { page } = props;
-	return (
-		<>
-			<Head>
-				<title>{page.title} (brouillon) - Maison de l'autisme</title>
-				<meta name="robots" content="noindex" />
-			</Head>
-			<div className={fr.cx("fr-container")}>
-				<Breadcrumb
-					currentPageLabel={page.title}
-					homeLinkProps={{ href: "/" }}
-					segments={[]}
-				/>
-				<PageContent>
-					<CmsPageLayout
-						title={page.title}
-						content={page.content}
-						imageBanner={page.imageBanner ?? undefined}
-						createdAt={page.publishedAt ?? page.createdAt}
-						lastUpdatedAt={page.lastUpdatedAt}
-					/>
-				</PageContent>
-			</div>
-		</>
-	);
+	return <PageView page={props.page} draft />;
 }
 
 async function getAuthenticatedPayloadUser(

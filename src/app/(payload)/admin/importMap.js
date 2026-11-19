@@ -33,6 +33,8 @@ import { MetaDescriptionComponent as MetaDescriptionComponent_a8a977ebc872c5d5ea
 import { MetaImageComponent as MetaImageComponent_a8a977ebc872c5d5ea7ee689724c0860 } from "@payloadcms/plugin-seo/client";
 import { PreviewComponent as PreviewComponent_a8a977ebc872c5d5ea7ee689724c0860 } from "@payloadcms/plugin-seo/client";
 import { default as default_4ea1f3fd4d8a7a71bd05e2762be80ffe } from "../../../payload/components/DescriptionTextarea";
+import { default as default_2cd990c14ce67b94249409473d13dbfb } from "../../../payload/components/CoursesImport";
+import { default as default_d179f71e6ae03555cd1275367f62d8ff } from "../../../payload/components/ConditionTextRowLabel";
 import { default as default_cd31b5ee51188f80370eaec27fcfca00 } from "../../../payload/components/MapCategoryExcelExport";
 import { default as default_1dc9df847c6c8ec54f552b6626b54e17 } from "../../../payload/components/MetadataField";
 import { default as default_ab9295f833f2f5fee5779f5535e576a4 } from "../../../payload/components/MapMarkersImportLink";
@@ -41,11 +43,16 @@ import { default as default_22a653d96dc1a6313610d55237ed703e } from "../../../pa
 import { LinkToDoc as LinkToDoc_aead06e4cbf6b2620c5c51c9ab283634 } from "@payloadcms/plugin-search/client";
 import { ReindexButton as ReindexButton_aead06e4cbf6b2620c5c51c9ab283634 } from "@payloadcms/plugin-search/client";
 import { FolderTypeField as FolderTypeField_2b8867833a34864a02ddf429b0728a40 } from "@payloadcms/next/client";
+import { default as default_d0225f5cac4d7f00b1d12af8014e7e55 } from "../../../payload/components/ArrayRowLabel";
+import { default as default_9f91f2828d3e764e9d8cf7aa33ec6b80 } from "../../../payload/components/MenuLockedItems";
+import { default as default_a624b72dfce61d05efeb2ac2441b3267 } from "../../../payload/components/TimeSlotRowLabel";
+import { default as default_04f4ea49bc962e3ce08e0336db9b8887 } from "../../../payload/components/HomeSectionRowLabel";
+import { default as default_145ffb0ac0d1dfae011ebb6307bf9504 } from "../../../payload/components/LockedRows";
 import { default as default_a8430564fd2c4f0a506836a5de510638 } from "../../../payload/components/SimplifiedContentGeneratorHeaderButton";
-import { S3ClientUploadHandler as S3ClientUploadHandler_f97aa6c64367fa259c5bc0567239ef24 } from "@payloadcms/storage-s3/client";
 import { default as default_4bf3fd4f8b9e4bf53a867035a745e24a } from "../../../payload/views/MapImportView";
 import { default as default_9c11b756bbfd4fdef7b9a95d9b38e373 } from "../../../payload/views/SimplifiedContentGeneratorView";
 import { CollectionCards as CollectionCards_f9c02e79a4aed9a3924487c0cd4cafb1 } from "@payloadcms/next/rsc";
+import { S3ClientUploadHandler as S3ClientUploadHandler_f97aa6c64367fa259c5bc0567239ef24 } from "@payloadcms/storage-s3/client";
 
 /** @type import('payload').ImportMap */
 export const importMap = {
@@ -119,6 +126,10 @@ export const importMap = {
 		PreviewComponent_a8a977ebc872c5d5ea7ee689724c0860,
 	"../payload/components/DescriptionTextarea#default":
 		default_4ea1f3fd4d8a7a71bd05e2762be80ffe,
+	"../payload/components/CoursesImport#default":
+		default_2cd990c14ce67b94249409473d13dbfb,
+	"../payload/components/ConditionTextRowLabel#default":
+		default_d179f71e6ae03555cd1275367f62d8ff,
 	"../payload/components/MapCategoryExcelExport#default":
 		default_cd31b5ee51188f80370eaec27fcfca00,
 	"../payload/components/MetadataField#default":
@@ -135,13 +146,23 @@ export const importMap = {
 		ReindexButton_aead06e4cbf6b2620c5c51c9ab283634,
 	"@payloadcms/next/client#FolderTypeField":
 		FolderTypeField_2b8867833a34864a02ddf429b0728a40,
+	"../payload/components/ArrayRowLabel#default":
+		default_d0225f5cac4d7f00b1d12af8014e7e55,
+	"../payload/components/MenuLockedItems#default":
+		default_9f91f2828d3e764e9d8cf7aa33ec6b80,
+	"../payload/components/TimeSlotRowLabel#default":
+		default_a624b72dfce61d05efeb2ac2441b3267,
+	"./components/HomeSectionRowLabel#default":
+		default_04f4ea49bc962e3ce08e0336db9b8887,
+	"../payload/components/LockedRows#default":
+		default_145ffb0ac0d1dfae011ebb6307bf9504,
 	"./components/SimplifiedContentGeneratorHeaderButton#default":
 		default_a8430564fd2c4f0a506836a5de510638,
-	"@payloadcms/storage-s3/client#S3ClientUploadHandler":
-		S3ClientUploadHandler_f97aa6c64367fa259c5bc0567239ef24,
 	"./views/MapImportView#default": default_4bf3fd4f8b9e4bf53a867035a745e24a,
 	"./views/SimplifiedContentGeneratorView#default":
 		default_9c11b756bbfd4fdef7b9a95d9b38e373,
 	"@payloadcms/next/rsc#CollectionCards":
 		CollectionCards_f9c02e79a4aed9a3924487c0cd4cafb1,
+	"@payloadcms/storage-s3/client#S3ClientUploadHandler":
+		S3ClientUploadHandler_f97aa6c64367fa259c5bc0567239ef24,
 };

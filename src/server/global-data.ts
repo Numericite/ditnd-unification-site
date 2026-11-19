@@ -2,25 +2,48 @@ import { getPayload } from "payload";
 import payloadConfig from "~/payload/payload.config";
 import type { PersonaTile } from "~/components/HomePage/PersonaTiles";
 import type { TDH } from "~/state/store";
-import type { Home, Newsletter } from "~/payload/payload-types";
+import type { Home } from "~/payload/payload-types";
+import { REFERENCE_COLLECTIONS } from "~/utils/links";
+import {
+	LOCKED_MENU_ITEMS,
+	type LockedMenuItem,
+	type NavItem,
+	type NavLink,
+	resolveLinks,
+	resolveLockedItems,
+	resolveMenu,
+} from "~/utils/menu";
 
 export type GlobalData = {
 	persons: PersonaTile[];
 	professionals: PersonaTile[];
 	conditions: TDH[];
 	footerTitle: string;
+	footerLinks: NavLink[];
 	homeCMS: Home;
-	newsletterCMS: Newsletter;
+	menu: NavItem[];
+	lockedMenu: LockedMenuItem[];
 };
 
 const TTL_MS = 60_000;
+
+// Seuls le slug, le statut et la rubrique (pages) servent à construire l'URL
+// d'un lien du menu.
+const menuLinkPopulate = Object.fromEntries(
+	REFERENCE_COLLECTIONS.map((collection) => [
+		collection,
+		collection === "pages"
+			? { slug: true, _status: true, section: true }
+			: { slug: true, _status: true },
+	]),
+);
 let cache: { data: GlobalData; expiresAt: number } | null = null;
 let inflight: Promise<GlobalData> | null = null;
 
 async function fetchGlobalData(): Promise<GlobalData> {
 	const payload = await getPayload({ config: payloadConfig });
 
-	const [personasResult, conditionsResult, footer, homeCMS, newsletterCMS] =
+	const [personasResult, conditionsResult, footer, homeCMS, menu] =
 		await Promise.all([
 			payload.find({
 				collection: "personas",
@@ -32,9 +55,22 @@ async function fetchGlobalData(): Promise<GlobalData> {
 				limit: 0,
 				select: { updatedAt: false, createdAt: false },
 			}),
-			payload.findGlobal({ slug: "footer" }),
+			payload.findGlobal({
+				slug: "footer",
+				depth: 1,
+				populate: menuLinkPopulate,
+			}),
 			payload.findGlobal({ slug: "home" }),
-			payload.findGlobal({ slug: "newsletter" }),
+			payload
+				.findGlobal({ slug: "menu", depth: 1, populate: menuLinkPopulate })
+				.then((menu) => ({
+					items: resolveMenu(menu),
+					locked: resolveLockedItems(menu),
+				}))
+				.catch((err) => {
+					console.error("[global-data] menu failed:", err);
+					return { items: [] as NavItem[], locked: LOCKED_MENU_ITEMS };
+				}),
 		]);
 
 	const persons: PersonaTile[] = personasResult.docs.map((persona) => ({
@@ -56,8 +92,10 @@ async function fetchGlobalData(): Promise<GlobalData> {
 		professionals,
 		conditions,
 		footerTitle: footer.title,
+		footerLinks: resolveLinks(footer.bottomLinks),
 		homeCMS: homeCMS as Home,
-		newsletterCMS: newsletterCMS as Newsletter,
+		menu: menu.items,
+		lockedMenu: menu.locked,
 	};
 }
 
