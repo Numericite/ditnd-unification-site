@@ -479,7 +479,14 @@ export interface Condition {
  */
 export interface Course {
 	id: number;
+	/**
+	 * Titre complet affiché en haut de la page de la formation et dans le fil d'Ariane. Sert aussi de titre SEO si aucun n'est renseigné.
+	 */
 	title: string;
+	/**
+	 * Titre affiché sur les cartes des formations (page « Formations », recherche, recommandations…). Par défaut identique au titre : laissez vide ou inchangé pour qu'il suive le titre.
+	 */
+	simplifiedTitle?: string | null;
 	description: string;
 	link: string;
 	format: "pres" | "dist";
@@ -1260,6 +1267,7 @@ export interface PracticalGuidesSelect<T extends boolean = true> {
  */
 export interface CoursesSelect<T extends boolean = true> {
 	title?: T;
+	simplifiedTitle?: T;
 	description?: T;
 	link?: T;
 	format?: T;
