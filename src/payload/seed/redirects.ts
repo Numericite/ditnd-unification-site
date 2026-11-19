@@ -1,5 +1,5 @@
 import config from "@payload-config";
-import { getPayload, type Payload } from "payload";
+import { getPayload, type Payload, type Where } from "payload";
 import fs from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
@@ -12,8 +12,9 @@ import { normalizePath } from "~/utils/links";
  * du tableau de suivi « Agenda refonte pages MDA.xlsx »).
  *
  * Cible du CSV :
- *  - `/fiches-pratiques/{slug}`, `/formations/{slug}` ou `/{slug}` d'une page
- *    CMS : référence au document (survit aux renommages de slug) ;
+ *  - `/fiches-pratiques/{slug}`, `/formations/{slug}`, ou `/{slug}` et
+ *    `/{rubrique}/{slug}` d'une page CMS : référence au document (survit aux
+ *    renommages de slug et de rubrique) ;
  *  - tout autre chemin ou URL absolue : URL personnalisée ;
  *  - vide : entrée créée sans cible, à compléter dans l'admin.
  *
@@ -77,18 +78,32 @@ const parseCsv = (raw: string): Entry[] =>
 
 const referenceLookup = (
 	to: string,
-): { collection: ReferenceCollection; slug: string } | null => {
-	const match =
-		to.match(/^\/(fiches-pratiques|formations)\/([^/]+)$/) ??
-		to.match(/^\/()([^/]+)$/);
-	if (!match) return null;
-	const collection: ReferenceCollection =
-		match[1] === "fiches-pratiques"
-			? "practical-guides"
-			: match[1] === "formations"
-				? "courses"
-				: "pages";
-	return { collection, slug: match[2] as string };
+): { collection: ReferenceCollection; where: Where } | null => {
+	const collectionMatch = to.match(
+		/^\/(fiches-pratiques|formations)\/([^/]+)$/,
+	);
+	if (collectionMatch) {
+		return {
+			collection:
+				collectionMatch[1] === "fiches-pratiques"
+					? "practical-guides"
+					: "courses",
+			where: { slug: { equals: collectionMatch[2] } },
+		};
+	}
+
+	const pageMatch = to.match(/^\/(?:([^/]+)\/)?([^/]+)$/);
+	if (!pageMatch) return null;
+	const [, section, slug] = pageMatch;
+	return {
+		collection: "pages",
+		where: {
+			slug: { equals: slug },
+			...(section
+				? { "section.slug": { equals: section } }
+				: { section: { exists: false } }),
+		},
+	};
 };
 
 const resolveTarget = async (
@@ -102,14 +117,14 @@ const resolveTarget = async (
 
 	const { docs } = await payload.find({
 		collection: lookup.collection,
-		where: { slug: { equals: lookup.slug } },
+		where: lookup.where,
 		limit: 1,
 		depth: 0,
 		overrideAccess: true,
 	});
 	const doc = docs[0] as { id: number; _status?: string | null } | undefined;
 	if (!doc) {
-		// Une page statique (/a-propos, /contact-pros-cra…) n'est pas une page CMS.
+		// Une page statique (/glossaire, /contact-pros-cra…) n'est pas une page CMS.
 		if (lookup.collection === "pages") return { type: "custom", url: to };
 		warnings.push(`cible introuvable : ${to}`);
 		return null;
