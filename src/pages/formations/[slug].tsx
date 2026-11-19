@@ -9,6 +9,7 @@ import { legacyRedirect } from "~/server/redirects";
 import type { AugmentedCourse } from "~/server/api/routers/courses";
 import type { Media } from "~/payload/payload-types";
 import SeoMeta from "~/components/ui/SeoMeta";
+import JsonLd, { ORGANIZATION_ID, SITE_URL } from "~/components/ui/JsonLd";
 import PageContent from "~/components/ui/PageContent";
 import CourseDisplay from "~/components/Courses/CourseDisplay";
 import ErrorPage from "~/components/ui/ErrorPage/ErrorPage";
@@ -50,8 +51,21 @@ export default function CoursePage(props: Props) {
 		course.image?.url ||
 		undefined;
 
+	const courseJsonLd = {
+		"@context": "https://schema.org",
+		"@type": "Course",
+		name: course.title,
+		...(metaDescription && { description: metaDescription }),
+		url: `${SITE_URL}/formations/${course.slug}`,
+		sameAs: course.link,
+		inLanguage: "fr-FR",
+		learningResourceType: course.type,
+		provider: { "@id": ORGANIZATION_ID },
+	};
+
 	return (
 		<>
+			<JsonLd id="course" data={courseJsonLd} />
 			<SeoMeta
 				title={metaTitle}
 				description={metaDescription}

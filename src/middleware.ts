@@ -64,5 +64,5 @@ export const config = {
 	// Périmètre de la basic auth. Les redirections de l'ancien site sont
 	// résolues dans les pages (src/server/redirects.ts).
 	matcher:
-		"/((?!api|_next/static|_next/image|favicon.ico|sitemap.xml|robots.txt|placeholder.16x9.png).*)",
+		"/((?!api|_next/static|_next/image|favicon.ico|sitemap.xml|robots.txt|llms.txt|placeholder.16x9.png).*)",
 };
