@@ -354,7 +354,7 @@ export const customImageSizeConverter: JSXConverter<SerializedBlockNode> = ({
 }) => {
 	const value = node.fields;
 
-	if (!value?.image) return null;
+	if (typeof value?.image !== "object" || !value.image?.url) return null;
 
 	const image = value.image;
 	const size = value.size;
@@ -521,7 +521,7 @@ const relationCard = (
 
 		return (
 			<CardDisplay
-				title={course.title}
+				title={course.simplifiedTitle || course.title}
 				description={horizontal ? (course.description ?? undefined) : undefined}
 				imageUrl={course.image?.url ?? course.imageBanner?.url ?? undefined}
 				imageAlt=""

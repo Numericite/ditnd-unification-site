@@ -415,6 +415,11 @@ export interface PracticalGuide {
 	 * Facultative. Si renseignée, une mention « Mis à jour le » est affichée sur le site à côté de « Publié le ».
 	 */
 	lastUpdatedAt?: string | null;
+	/**
+	 * Détermine l'ordre de la section « Fiches pratiques les plus lues » de l'accueil. Augmente de 1 à chaque lecture de la fiche.
+	 */
+	viewCount?: number | null;
+	viewCountSnapshot?: number | null;
 	image?: (number | null) | Media;
 	imageBanner?: (number | null) | Media;
 	/**
@@ -474,7 +479,14 @@ export interface Condition {
  */
 export interface Course {
 	id: number;
+	/**
+	 * Titre complet affiché en haut de la page de la formation et dans le fil d'Ariane. Sert aussi de titre SEO si aucun n'est renseigné.
+	 */
 	title: string;
+	/**
+	 * Titre affiché sur les cartes des formations (page « Formations », recherche, recommandations…). Par défaut identique au titre : laissez vide ou inchangé pour qu'il suive le titre.
+	 */
+	simplifiedTitle?: string | null;
 	description: string;
 	link: string;
 	format: "pres" | "dist";
@@ -593,6 +605,17 @@ export interface Journey {
 	image?: (number | null) | Media;
 	practicalGuideDescription?: string | null;
 	courseDescription?: string | null;
+	/**
+	 * Titre et description affichés en tête de la page parcours pour un trouble donné. Sans ligne pour un trouble, le titre et la description sont générés automatiquement.
+	 */
+	conditionTexts?:
+		| {
+				condition: number | Condition;
+				title: string;
+				description: string;
+				id?: string | null;
+		  }[]
+		| null;
 	chapter: {
 		"chapter-name": string;
 		"practical-guides": (number | PracticalGuide)[];
@@ -1220,6 +1243,8 @@ export interface PracticalGuidesSelect<T extends boolean = true> {
 		  };
 	publishedAt?: T;
 	lastUpdatedAt?: T;
+	viewCount?: T;
+	viewCountSnapshot?: T;
 	image?: T;
 	imageBanner?: T;
 	slug?: T;
@@ -1242,6 +1267,7 @@ export interface PracticalGuidesSelect<T extends boolean = true> {
  */
 export interface CoursesSelect<T extends boolean = true> {
 	title?: T;
+	simplifiedTitle?: T;
 	description?: T;
 	link?: T;
 	format?: T;
@@ -1300,6 +1326,14 @@ export interface JourneysSelect<T extends boolean = true> {
 	image?: T;
 	practicalGuideDescription?: T;
 	courseDescription?: T;
+	conditionTexts?:
+		| T
+		| {
+				condition?: T;
+				title?: T;
+				description?: T;
+				id?: T;
+		  };
 	chapter?:
 		| T
 		| {

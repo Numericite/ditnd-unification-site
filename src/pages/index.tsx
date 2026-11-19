@@ -137,7 +137,7 @@ export default function Home({
 			</Head>
 			<PageContent>
 				<div className={cx(fr.cx("fr-container", "fr-py-6w"), classes.hero)}>
-					<h1 className={cx(fr.cx("fr-mb-0"), classes.preLine)}>
+					<h1 className={cx(fr.cx("fr-mt-4v", "fr-mb-0"), classes.preLine)}>
 						{homeCMS.header.title}
 					</h1>
 					{homeCMS.header.description && (

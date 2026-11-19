@@ -38,6 +38,7 @@ export default function CardsDisplayGroup({
 							>
 								<CardDisplay
 									{...course}
+									title={course.simplifiedTitle || course.title}
 									imageUrl={
 										course.image?.url ?? course.imageBanner?.url ?? undefined
 									}

@@ -20,7 +20,7 @@ const givePageRoomToScroll = () =>
 	});
 
 describe("Sticky header", () => {
-	it("pins only the navigation bar on desktop", () => {
+	it("pins the helpline banner and the navigation bar on desktop", () => {
 		cy.viewport(1440, 900);
 		cy.visit(PAGE);
 		cy.get("#menu .fr-nav").should("be.visible");
@@ -33,12 +33,28 @@ describe("Sticky header", () => {
 		givePageRoomToScroll();
 		cy.scrollTo(0, 800);
 
-		cy.get("#menu .fr-header__menu").should(($nav) => {
-			expect($nav[0].getBoundingClientRect().top).to.be.closeTo(0, 2);
+		cy.contains("div", "Ligne nationale d'écoute").then(($banner) => {
+			const banner = $banner[0].getBoundingClientRect();
+			expect(banner.top).to.be.closeTo(0, 2);
+			cy.get("#menu .fr-header__menu").should(($nav) => {
+				expect($nav[0].getBoundingClientRect().top).to.be.closeTo(
+					banner.bottom,
+					2,
+				);
+			});
+			cy.get("#menu .fr-header__body").should(($body) => {
+				expect($body[0].getBoundingClientRect().bottom).to.be.at.most(
+					banner.bottom + 1,
+				);
+			});
 		});
-		cy.get("#menu .fr-header__body").should(($body) => {
-			expect($body[0].getBoundingClientRect().bottom).to.be.at.most(1);
-		});
+	});
+
+	it("links the helpline banner to the contact form", () => {
+		cy.visit(PAGE);
+		cy.contains("div", "Ligne nationale d'écoute")
+			.contains("a", "Écrire au service")
+			.should("have.attr", "href", "/contact-particuliers");
 	});
 
 	it("keeps sticky page elements clear of the pinned navigation bar", () => {
