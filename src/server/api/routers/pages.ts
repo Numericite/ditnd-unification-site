@@ -15,27 +15,33 @@ export interface AugmentedPage extends Omit<Page, "imageBanner" | "section"> {
 	};
 }
 
-const sectionWithLinks = async (payload: Payload, section: PageSection) => {
+const publishedPageLinks = async (
+	payload: Payload,
+	section: PageSection | null,
+) => {
 	const pages = await payload.find({
 		collection: "pages",
 		limit: 0,
 		depth: 0,
 		draft: false,
-		sort: ["createdAt", "id"],
+		sort: section ? ["createdAt", "id"] : "title",
 		select: { title: true, slug: true },
 		where: {
-			section: { equals: section.id },
+			section: section ? { equals: section.id } : { exists: false },
 			_status: { equals: "published" },
 		},
 	});
 
-	const links = pages.docs.map((page) => ({
+	return pages.docs.map((page) => ({
 		title: page.title,
 		href: pagePath({ slug: page.slug, section }),
 	}));
-
-	return { section, links };
 };
+
+const sectionWithLinks = async (payload: Payload, section: PageSection) => ({
+	section,
+	links: await publishedPageLinks(payload, section),
+});
 
 export const pagesRouter = createTRPCRouter({
 	getBySlug: publicProcedure
@@ -116,4 +122,7 @@ export const pagesRouter = createTRPCRouter({
 			docs.map((section) => sectionWithLinks(ctx.payload, section)),
 		);
 	}),
+	listRootPages: publicProcedure.query(({ ctx }) =>
+		publishedPageLinks(ctx.payload, null),
+	),
 });
