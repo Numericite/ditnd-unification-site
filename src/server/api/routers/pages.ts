@@ -1,10 +1,13 @@
 import { TRPCError } from "@trpc/server";
+import type { Payload } from "payload";
 import { z } from "zod";
 import { createTRPCRouter, publicProcedure } from "~/server/api/trpc";
-import type { Media, Page } from "~/payload/payload-types";
+import type { Media, Page, PageSection } from "~/payload/payload-types";
+import { SECTION_CODED_PAGES, pagePath } from "~/utils/pages";
 
-export interface AugmentedPage extends Omit<Page, "imageBanner"> {
+export interface AugmentedPage extends Omit<Page, "imageBanner" | "section"> {
 	imageBanner: Media | null;
+	section?: PageSection | null;
 	meta?: {
 		title?: string | null;
 		description?: string | null;
@@ -12,11 +15,38 @@ export interface AugmentedPage extends Omit<Page, "imageBanner"> {
 	};
 }
 
+// Pages publiées de la rubrique (par date de création), puis ses pages codées.
+const sectionWithLinks = async (payload: Payload, section: PageSection) => {
+	const pages = await payload.find({
+		collection: "pages",
+		limit: 0,
+		depth: 0,
+		draft: false,
+		sort: "createdAt",
+		select: { title: true, slug: true },
+		where: {
+			section: { equals: section.id },
+			_status: { equals: "published" },
+		},
+	});
+
+	const links = [
+		...pages.docs,
+		...(SECTION_CODED_PAGES[section.slug] ?? []),
+	].map((page) => ({
+		title: page.title,
+		href: pagePath({ slug: page.slug, section }),
+	}));
+
+	return { section, links };
+};
+
 export const pagesRouter = createTRPCRouter({
 	getBySlug: publicProcedure
 		.input(
 			z.object({
 				slug: z.string(),
+				// Identifiant de la rubrique, null pour une page à la racine.
 				section: z.string().nullable().default(null),
 			}),
 		)
@@ -29,9 +59,9 @@ export const pagesRouter = createTRPCRouter({
 				where: {
 					slug: { equals: input.slug },
 					_status: { equals: "published" },
-					section: input.section
-						? { equals: input.section }
-						: { exists: false },
+					...(input.section
+						? { "section.slug": { equals: input.section } }
+						: { section: { exists: false } }),
 				},
 			});
 
@@ -60,4 +90,34 @@ export const pagesRouter = createTRPCRouter({
 				},
 			} as AugmentedPage;
 		}),
+	getSection: publicProcedure
+		.input(z.object({ slug: z.string() }))
+		.query(async ({ input, ctx }) => {
+			const { docs } = await ctx.payload.find({
+				collection: "page-sections",
+				limit: 1,
+				depth: 0,
+				where: { slug: { equals: input.slug } },
+			});
+			const section = docs[0];
+			if (!section) {
+				throw new TRPCError({
+					code: "NOT_FOUND",
+					message: `No section found for slug: ${input.slug}`,
+				});
+			}
+
+			return sectionWithLinks(ctx.payload, section);
+		}),
+	listSections: publicProcedure.query(async ({ ctx }) => {
+		const { docs } = await ctx.payload.find({
+			collection: "page-sections",
+			limit: 0,
+			depth: 0,
+			sort: "title",
+		});
+		return Promise.all(
+			docs.map((section) => sectionWithLinks(ctx.payload, section)),
+		);
+	}),
 });

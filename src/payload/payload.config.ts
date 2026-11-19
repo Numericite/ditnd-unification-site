@@ -31,6 +31,7 @@ import { MapMarkers } from "./collections/MapMarkers";
 import { Maps } from "./collections/Maps";
 import { News } from "./collections/News";
 import { Pages } from "./collections/Pages";
+import { PageSections } from "./collections/PageSections";
 import { en } from "@payloadcms/translations/languages/en";
 import { fr } from "@payloadcms/translations/languages/fr";
 
@@ -55,7 +56,11 @@ import { CMSFooter } from "./globals/cms/Footer";
 import { CMSMenu } from "./globals/cms/Menu";
 import { PracticalGuideViews } from "./collections/PracticalGuidesViews";
 import { SimplifiedContentGenerator } from "./globals/SimplifiedContentGenerator";
-import { documentPath } from "~/utils/pages";
+import {
+	type SectionRef,
+	documentPath,
+	withPopulatedSection,
+} from "~/utils/pages";
 
 const filename = fileURLToPath(import.meta.url);
 const dirname = path.dirname(filename);
@@ -102,14 +107,14 @@ export default buildConfig({
 			},
 		},
 		livePreview: {
-			url: ({ data, collectionConfig }) => {
+			url: async ({ data, collectionConfig, req }) => {
 				if (!data) return;
 
 				if (collectionConfig?.slug === "pages") {
 					const basePath =
 						data._status === "draft"
 							? `/draft/${data.slug}?collection=pages`
-							: documentPath("pages", data);
+							: documentPath("pages", await withPopulatedSection(req, data));
 					return `${basePath}${data._status !== "draft" ? `?v=${data.updatedAt}` : `&v=${data.updatedAt}`}`;
 				}
 
@@ -147,6 +152,7 @@ export default buildConfig({
 	collections: [
 		Medias,
 		Pages,
+		PageSections,
 		PracticalGuides,
 		Courses,
 		News,
@@ -283,10 +289,13 @@ export default buildConfig({
 
 				return "";
 			},
-			generateURL: ({ doc, collectionConfig }) => {
+			generateURL: async ({ doc, collectionConfig, req }) => {
 				const path = documentPath(
 					collectionConfig?.slug,
-					(doc ?? {}) as { slug?: string | null; section?: string | null },
+					await withPopulatedSection(
+						req,
+						(doc ?? {}) as { slug?: string | null; section?: SectionRef },
+					),
 				);
 				return path ? `${process.env.NEXT_PUBLIC_SITE_URL || ""}${path}` : "";
 			},

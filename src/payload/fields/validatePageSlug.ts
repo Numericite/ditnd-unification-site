@@ -2,9 +2,11 @@ import type { TextFieldSingleValidation } from "payload";
 import { slugify } from "~/utils/tools";
 import { SECTION_FALLBACKS } from "~/utils/redirects";
 import {
-	PAGE_SECTION_RESERVED_SLUGS,
+	SECTION_CODED_PAGES,
+	type SectionRef,
 	pagePath,
-	pageSection,
+	sectionOf,
+	withPopulatedSection,
 } from "~/utils/pages";
 
 /**
@@ -13,7 +15,7 @@ import {
  * l'un de ces slugs serait inaccessible.
  * À tenir à jour en cas d'ajout d'une route dans src/pages ou src/app.
  */
-const RESERVED_SLUGS = new Set([
+export const RESERVED_SLUGS = new Set([
 	// src/pages
 	"a-propos",
 	"accessibilite",
@@ -57,15 +59,27 @@ export const validatePageSlug: TextFieldSingleValidation = async (
 	const slug = typeof value === "string" ? slugify(value) : "";
 	if (!slug) return true;
 
-	const section = pageSection((siblingData as { section?: string })?.section);
-	const reserved = section
-		? PAGE_SECTION_RESERVED_SLUGS[section.value].includes(slug)
-		: RESERVED_SLUGS.has(slug);
-	if (reserved) {
-		return "Adresse déjà utilisée par le site";
+	const { section: populated } = await withPopulatedSection(req, {
+		section: (siblingData as { section?: SectionRef })?.section,
+	});
+	const section = sectionOf(populated);
+	if (section) {
+		const coded = SECTION_CODED_PAGES[section.slug] ?? [];
+		if (coded.some((page) => page.slug === slug)) {
+			return "Adresse déjà utilisée par le site";
+		}
+	} else {
+		if (RESERVED_SLUGS.has(slug)) return "Adresse déjà utilisée par le site";
+		const { totalDocs } = await req.payload.count({
+			collection: "page-sections",
+			where: { slug: { equals: slug } },
+			overrideAccess: true,
+			req,
+		});
+		if (totalDocs > 0) return "Adresse déjà utilisée par une rubrique";
 	}
 
-	const path = pagePath({ slug, section: section?.value });
+	const path = pagePath({ slug, section: populated });
 	const fallback = SECTION_FALLBACKS.find(([prefix]) => prefix === path);
 	if (fallback) {
 		return `Adresse redirigée vers ${fallback[1]}`;

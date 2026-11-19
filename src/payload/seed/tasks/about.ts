@@ -143,12 +143,22 @@ const aboutPages = [
 ];
 
 export default async function aboutTask(payload: BasePayload) {
+	const section = await payload.create({
+		collection: "page-sections",
+		data: {
+			title: "À propos",
+			slug: "a-propos",
+			description:
+				"À propos de la Maison de l'autisme : découvrez la Maison de l'autisme, le GNCRA et les Centres Ressources Autisme.",
+		},
+	});
+
 	for (const { description, ...page } of aboutPages) {
 		await payload.create({
 			collection: "pages",
 			data: {
 				...page,
-				section: "a-propos",
+				section: section.id,
 				showDates: false,
 				meta: { description },
 				_status: "published",

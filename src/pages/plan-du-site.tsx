@@ -5,8 +5,15 @@ import { tss } from "tss-react/dsfr";
 import PageContent from "~/components/ui/PageContent";
 import { personStore, tdhStore } from "~/state/store";
 import { personsAndProTiles } from "~/utils/pictograms";
+import type { GetServerSideProps } from "next";
+import { createCaller } from "~/server/api/root";
+import { createTRPCContext } from "~/server/api/trpc";
 
-export default function PlanDuSite() {
+type Props = {
+	sections: Awaited<ReturnType<typeof getSections>>;
+};
+
+export default function PlanDuSite({ sections }: Props) {
 	const { classes, cx } = useStyles();
 
 	const personas = personsAndProTiles(personStore.get());
@@ -98,34 +105,20 @@ export default function PlanDuSite() {
 							</ul>
 						</section>
 
-						<section className={cx(classes.section)}>
-							<h2>À propos</h2>
-							<ul className={cx(classes.sitemapList)}>
-								<li>
-									<a
-										className={fr.cx("fr-link")}
-										href="/a-propos/maison-de-l-autisme"
-									>
-										Maison de l'autisme
-									</a>
-								</li>
-								<li>
-									<a className={fr.cx("fr-link")} href="/a-propos/gncra">
-										GNCRA
-									</a>
-								</li>
-								<li>
-									<a className={fr.cx("fr-link")} href="/a-propos/cra">
-										CRA
-									</a>
-								</li>
-								<li>
-									<a className={fr.cx("fr-link")} href="/a-propos/glossaire">
-										Glossaire
-									</a>
-								</li>
-							</ul>
-						</section>
+						{sections.map(({ section, links }) => (
+							<section key={section.id} className={cx(classes.section)}>
+								<h2>{section.title}</h2>
+								<ul className={cx(classes.sitemapList)}>
+									{links.map((link) => (
+										<li key={link.href}>
+											<a className={fr.cx("fr-link")} href={link.href}>
+												{link.title}
+											</a>
+										</li>
+									))}
+								</ul>
+							</section>
+						))}
 
 						<section className={cx(classes.section)}>
 							<h2>Informations et obligations légales</h2>
@@ -163,6 +156,15 @@ export default function PlanDuSite() {
 		</>
 	);
 }
+
+const getSections = async () => {
+	const caller = createCaller(await createTRPCContext());
+	return caller.page.listSections();
+};
+
+export const getServerSideProps: GetServerSideProps<Props> = async () => ({
+	props: { sections: await getSections() },
+});
 
 const useStyles = tss.withName({ PlanDuSite }).create({
 	section: {
