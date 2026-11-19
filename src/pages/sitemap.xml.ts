@@ -13,7 +13,7 @@ const STATIC_PATHS = [
 	"/",
 	"/fiches-pratiques",
 	"/formations",
-	"/a-propos/glossaire",
+	"/glossaire",
 	"/contact-particuliers",
 	"/contact-pros-cra",
 	"/accessibilite",

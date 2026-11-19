@@ -2,7 +2,6 @@ import type { PayloadRequest, TextFieldSingleValidation } from "payload";
 import { slugify } from "~/utils/tools";
 import { SECTION_FALLBACKS } from "~/utils/redirects";
 import {
-	SECTION_CODED_PAGES,
 	type SectionRef,
 	pagePath,
 	sectionOf,
@@ -17,7 +16,6 @@ import {
  */
 export const RESERVED_SLUGS = new Set([
 	// src/pages
-	"a-propos",
 	"accessibilite",
 	"contact-particuliers",
 	"contact-pros-cra",
@@ -25,6 +23,7 @@ export const RESERVED_SLUGS = new Set([
 	"draft",
 	"fiches-pratiques",
 	"formations",
+	"glossaire",
 	"index",
 	"mentions-legales",
 	"newsletter-confirmee",
@@ -89,13 +88,7 @@ export const validatePageSlug: TextFieldSingleValidation = async (
 	const { section: populated } = await withPopulatedSection(req, {
 		section: (siblingData as { section?: SectionRef })?.section,
 	});
-	const section = sectionOf(populated);
-	if (section) {
-		const coded = SECTION_CODED_PAGES[section.slug] ?? [];
-		if (coded.some((page) => page.slug === slug)) {
-			return "Adresse déjà utilisée par le site";
-		}
-	} else {
+	if (!sectionOf(populated)) {
 		if (RESERVED_SLUGS.has(slug)) return "Adresse déjà utilisée par le site";
 		const { totalDocs } = await req.payload.count({
 			collection: "page-sections",

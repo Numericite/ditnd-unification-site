@@ -1,16 +1,5 @@
 import type { PayloadRequest } from "payload";
 
-/**
- * Pages codées servies sous une rubrique : leur identifiant y est réservé et
- * elles sont listées sur la page de la rubrique, après les pages CMS.
- */
-export const SECTION_CODED_PAGES: Record<
-	string,
-	{ slug: string; title: string }[]
-> = {
-	"a-propos": [{ slug: "glossaire", title: "Glossaire" }],
-};
-
 /** Rubrique d'une page : peuplée, simple id, ou absente. */
 export type SectionRef =
 	| number

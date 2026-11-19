@@ -3,7 +3,7 @@ import type { Payload } from "payload";
 import { z } from "zod";
 import { createTRPCRouter, publicProcedure } from "~/server/api/trpc";
 import type { Media, Page, PageSection } from "~/payload/payload-types";
-import { SECTION_CODED_PAGES, pagePath } from "~/utils/pages";
+import { pagePath } from "~/utils/pages";
 
 export interface AugmentedPage extends Omit<Page, "imageBanner" | "section"> {
 	imageBanner: Media | null;
@@ -15,7 +15,6 @@ export interface AugmentedPage extends Omit<Page, "imageBanner" | "section"> {
 	};
 }
 
-// Pages publiées de la rubrique (par date de création), puis ses pages codées.
 const sectionWithLinks = async (payload: Payload, section: PageSection) => {
 	const pages = await payload.find({
 		collection: "pages",
@@ -30,10 +29,7 @@ const sectionWithLinks = async (payload: Payload, section: PageSection) => {
 		},
 	});
 
-	const links = [
-		...pages.docs,
-		...(SECTION_CODED_PAGES[section.slug] ?? []),
-	].map((page) => ({
+	const links = pages.docs.map((page) => ({
 		title: page.title,
 		href: pagePath({ slug: page.slug, section }),
 	}));

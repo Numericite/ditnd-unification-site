@@ -23,7 +23,7 @@ export const defaultMenuItems: NonNullable<Menu["items"]> = [
 			internal("Maison de l'autisme", "/a-propos/maison-de-l-autisme"),
 			internal("GNCRA", "/a-propos/gncra"),
 			internal("CRA", "/a-propos/cra"),
-			internal("Glossaire", "/a-propos/glossaire"),
+			internal("Glossaire", "/glossaire"),
 		],
 	},
 ];

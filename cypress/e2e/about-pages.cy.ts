@@ -22,7 +22,16 @@ describe("About pages served from the pages collection", () => {
 		cy.visit("/a-propos");
 		cy.get("main h1").should("contain.text", "À propos");
 		cy.get('main nav a[href="/a-propos/gncra"]').should("exist");
-		cy.get('main nav a[href="/a-propos/glossaire"]').should("exist");
+		cy.get('main nav a[href="/a-propos/glossaire"]').should("not.exist");
+	});
+
+	it("serves the glossary at the site root", () => {
+		cy.request({ url: "/a-propos/glossaire?lettre=a", followRedirect: false })
+			.its("redirectedToUrl")
+			.should("match", /\/glossaire\?lettre=a$/);
+		cy.visit("/glossaire");
+		cy.get("main h1").should("contain.text", "Glossaire");
+		cy.get(".fr-breadcrumb").contains("a", "À propos").should("not.exist");
 	});
 
 	it("does not serve a section page at the site root", () => {
@@ -41,44 +50,21 @@ describe("About pages served from the pages collection", () => {
 				.request("/api/page-sections?where[slug][equals]=a-propos&depth=0")
 				.its("body.docs.0.id");
 
-		it("refuses a slug already used by a static page of the section", () => {
-			aboutSectionId().then((section) => {
-				const create = (slug: string) =>
-					cy.request({
-						method: "POST",
-						url: "/api/pages?depth=0",
-						body: {
-							title: uniqueTitle("Glossaire"),
-							content: richText(paragraph("Contenu de la page.")),
-							slug,
-							section,
-							_status: "published",
-						},
-						failOnStatusCode: false,
-					});
+		it("refuses a root page slug used by the glossary", () => {
+			const create = (slug: string) =>
+				cy.request({
+					method: "POST",
+					url: "/api/pages?depth=0",
+					body: {
+						title: uniqueTitle("Glossaire"),
+						content: richText(paragraph("Contenu de la page.")),
+						slug,
+						_status: "published",
+					},
+					failOnStatusCode: false,
+				});
 
-				create("glossaire").its("status").should("eq", 400);
-				create(uniqueTitle("glossaire").toLowerCase().replace(/\W+/g, "-"))
-					.its("status")
-					.should("eq", 201);
-			});
-		});
-
-		it("refuses to rename the slug of a section serving coded pages", () => {
-			aboutSectionId().then((section) => {
-				const update = (body: object) =>
-					cy.request({
-						method: "PATCH",
-						url: `/api/page-sections/${section}?depth=0`,
-						body,
-						failOnStatusCode: false,
-					});
-
-				update({ slug: "a-propos-renomme" }).its("status").should("eq", 400);
-				// The slug follows the label until edited: a new label must not move it.
-				update({ title: "À propos du site" }).its("status").should("eq", 400);
-				update({ title: "À propos" }).its("status").should("eq", 200);
-			});
+			create("glossaire").its("status").should("eq", 400);
 		});
 
 		it("refuses a section slug that would hide a legacy redirect", () => {

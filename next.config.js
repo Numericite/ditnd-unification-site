@@ -32,6 +32,11 @@ const config = {
 				permanent: true,
 			},
 			{
+				source: "/a-propos/glossaire",
+				destination: "/glossaire",
+				permanent: true,
+			},
+			{
 				source: "/gestion-des-cookies",
 				destination: "/donnees-personnelles",
 				permanent: true,
