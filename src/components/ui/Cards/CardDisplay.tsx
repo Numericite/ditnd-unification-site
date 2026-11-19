@@ -65,18 +65,21 @@ export default function CardDisplay({
 				) : null
 			}
 			border
-			{...(horizontal ? { horizontal: true } : { horizontal: false })}
+			{...(horizontal
+				? { horizontal: true, ratio: "33/66" as const }
+				: { horizontal: false })}
 			desc={description ? shortenDescription(description) : undefined}
 			enlargeLink
 			linkProps={linkProps}
 			{...imgProps}
-			size="medium"
+			size={horizontal ? "small" : "medium"}
 			start={
 				<div className={cx(classes.tags)}>
 					<ul className={cx(fr.cx("fr-tags-group"), classes.tags)}>
 						{conditions.map((condition) => (
 							<li key={condition.id}>
 								<Tag
+									small={horizontal}
 									style={{
 										color: condition.textColor,
 										backgroundColor: condition.backgroundColor,
@@ -88,7 +91,7 @@ export default function CardDisplay({
 						))}
 						{themes.map((theme, index) => (
 							<li key={index}>
-								<Tag>
+								<Tag small={horizontal}>
 									<strong>{theme.name}</strong>
 								</Tag>
 							</li>
