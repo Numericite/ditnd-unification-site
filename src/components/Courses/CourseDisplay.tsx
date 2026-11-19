@@ -3,6 +3,7 @@ import Breadcrumb from "@codegouvfr/react-dsfr/Breadcrumb";
 import Button from "@codegouvfr/react-dsfr/Button";
 import Tag from "@codegouvfr/react-dsfr/Tag";
 import type { DefaultTypedEditorState } from "@payloadcms/richtext-lexical";
+import Image from "next/image";
 import { tss } from "tss-react/dsfr";
 import WysiwygContent from "~/components/ui/CmsPage/WysiwygContent";
 import PageContent from "~/components/ui/PageContent";
@@ -127,6 +128,23 @@ export default function CourseDisplay({ course }: Props) {
 				</div>
 			</div>
 
+			{course.imageBanner?.url && (
+				<div className={classes.bannerBand}>
+					<div className={fr.cx("fr-container")}>
+						<Image
+							className={cx(fr.cx("fr-responsive-img"), classes.banner)}
+							fetchPriority="high"
+							priority
+							alt=""
+							role="presentation"
+							src={course.imageBanner.url}
+							width={1200}
+							height={240}
+						/>
+					</div>
+				</div>
+			)}
+
 			<div className={cx(fr.cx("fr-container"), classes.body)}>
 				{sidebarSections.length > 0 && (
 					<aside className={classes.sidebar}>{sidebarSections}</aside>
@@ -159,6 +177,19 @@ const useStyles = tss.withName({ CourseDisplay }).create(() => ({
 		backgroundColor: fr.colors.decisions.background.alt.blueFrance.default,
 		paddingTop: fr.spacing("2w"),
 		paddingBottom: fr.spacing("6w"),
+	},
+	bannerBand: {
+		background: `linear-gradient(to bottom, ${fr.colors.decisions.background.alt.blueFrance.default} 50%, transparent 50%)`,
+	},
+	banner: {
+		display: "block",
+		width: "100%",
+		height: "240px",
+		objectFit: "cover",
+		[fr.breakpoints.down("md")]: {
+			height: "auto",
+			aspectRatio: "10 / 3",
+		},
 	},
 	breadcrumb: {
 		margin: `0 0 ${fr.spacing("2w")}`,
@@ -208,11 +239,12 @@ const useStyles = tss.withName({ CourseDisplay }).create(() => ({
 	},
 	infoItem: {
 		display: "flex",
-		alignItems: "center",
+		alignItems: "flex-start",
 		gap: fr.spacing("3v"),
 	},
 	infoIcon: {
 		flexShrink: 0,
+		marginTop: fr.spacing("3v"),
 		color: fr.colors.decisions.text.actionHigh.blueFrance.default,
 	},
 	infoLabel: {
