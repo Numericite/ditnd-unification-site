@@ -130,7 +130,7 @@ export const deserialize = (value?: string | string[]) => {
 };
 
 export const buildCourseRedirect = (course: AugmentedCourse) =>
-	course.slug ? `/formations/${course.slug}` : course.link;
+	course.slug ? `/formations/${course.slug}` : (course.link ?? "/formations");
 
 export function courseQuery(
 	course: AugmentedCourse,

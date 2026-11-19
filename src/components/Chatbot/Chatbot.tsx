@@ -362,11 +362,11 @@ const ChatBot = () => {
 													Consultez les formations
 												</p>
 												<ul className={cx(classes.resourcesList)}>
-													{response.courses.map(({ id, title, link }) => (
+													{response.courses.map(({ id, title, link, slug }) => (
 														<li key={id}>
 															<a
 																className={cx(classes.sourceCard)}
-																href={link}
+																href={link || `/formations/${slug}`}
 																target="_blank"
 																rel="noopener noreferrer"
 																aria-label={`${title}, nouvelle fenêtre`}
