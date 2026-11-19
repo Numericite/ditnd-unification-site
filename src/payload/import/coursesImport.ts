@@ -38,7 +38,7 @@ type FieldKey = keyof Pick<
 const FIELDS: { key: FieldKey; label: string; required: boolean }[] = [
 	{ key: "title", label: "Titre", required: true },
 	{ key: "description", label: "Description", required: true },
-	{ key: "link", label: "Lien de la formation", required: true },
+	{ key: "link", label: "Lien de la formation", required: false },
 	{ key: "format", label: "Format", required: true },
 	{ key: "duration", label: "Durée", required: false },
 	{ key: "certifying", label: "Certifiant", required: false },

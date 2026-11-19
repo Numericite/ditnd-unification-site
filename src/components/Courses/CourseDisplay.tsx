@@ -110,20 +110,22 @@ export default function CourseDisplay({ course }: Props) {
 							{course.lastUpdatedAt &&
 								` - Mis à jour le ${new Date(course.lastUpdatedAt).toLocaleDateString("fr-FR")}`}
 						</p>
-						<Button
-							size="large"
-							iconId="fr-icon-external-link-line"
-							iconPosition="right"
-							linkProps={{
-								href: course.link,
-								target: "_blank",
-								rel: "noopener noreferrer",
-								title: `Accéder à ${course.title}, nouvelle fenêtre`,
-								"aria-label": `Accéder à la formation ${course.title}, nouvelle fenêtre`,
-							}}
-						>
-							Accéder à la formation
-						</Button>
+						{course.link && (
+							<Button
+								size="large"
+								iconId="fr-icon-external-link-line"
+								iconPosition="right"
+								linkProps={{
+									href: course.link,
+									target: "_blank",
+									rel: "noopener noreferrer",
+									title: `Accéder à ${course.title}, nouvelle fenêtre`,
+									"aria-label": `Accéder à la formation ${course.title}, nouvelle fenêtre`,
+								}}
+							>
+								Accéder à la formation
+							</Button>
+						)}
 					</PageContent>
 				</div>
 			</div>

@@ -232,8 +232,12 @@ export const Courses: CollectionConfig = {
 						{
 							name: "link",
 							type: "text",
-							required: true,
+							required: false,
 							label: { fr: "Lien de la formation" },
+							admin: {
+								description:
+									"Facultatif. Laissez vide quand la formation est proposée par plusieurs organismes : leurs liens vont dans le contenu.",
+							},
 						},
 						{
 							type: "row",
