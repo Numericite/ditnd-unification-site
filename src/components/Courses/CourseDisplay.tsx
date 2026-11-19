@@ -154,6 +154,10 @@ const useStyles = tss.withName({ CourseDisplay }).create(() => ({
 		width: "100%",
 		height: "240px",
 		objectFit: "cover",
+		[fr.breakpoints.down("md")]: {
+			height: "auto",
+			aspectRatio: "10 / 3",
+		},
 	},
 	sidebarSticky: {
 		position: "sticky",
