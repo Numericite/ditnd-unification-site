@@ -129,6 +129,9 @@ export const deserialize = (value?: string | string[]) => {
 	return sanitizeArray(typeof value === "string" ? value.split(",") : []);
 };
 
+export const buildCourseRedirect = (course: AugmentedCourse) =>
+	course.slug ? `/formations/${course.slug}` : course.link;
+
 export function courseQuery(
 	course: AugmentedCourse,
 	condition: string,
