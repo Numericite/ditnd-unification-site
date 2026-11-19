@@ -6,14 +6,14 @@ from,to,legacyTitle
 /accueil-se-former-tnd/cnia,/formations/certificat-national-d-intervention-en-autisme-cnia,Certificat national d'intervention en autisme (CNIA)
 /accueil-se-former-tnd/etp-autisme,/fiches-pratiques/etp-tsa,Éducation thérapeutique du patient adaptée au trouble du spectre de l'autisme
 /accueil-se-former-tnd/formations-des-cra,/formations,Formations dispensées par les CRA
-/accueil-se-former-tnd/formations-du-gncra,/a-propos/gncra,Formations dispensées par le GNCRA
-/accueil/centre-ressources-autisme-cra,/a-propos/cra,Qu'est-ce qu'un centre de ressources autisme (CRA)
+/accueil-se-former-tnd/formations-du-gncra,/filiere-tnd/gncra,Formations dispensées par le GNCRA
+/accueil/centre-ressources-autisme-cra,/filiere-tnd/cra,Qu'est-ce qu'un centre de ressources autisme (CRA)
 /accueil/charte-graphique-filiere-tdah,,Charte graphique filière TND TDAH
 /accueil/chef-projet-documentaire,,Chef de projet diffusion des connaissances et ingénierie documentaire
 /accueil/contact-pros-cra,/contact-pros-cra,Formulaire de contact pour les professionnels des CRA
-/accueil/espace-presse,/espace-presse,Espace presse
-/accueil/gncra,/a-propos/gncra,Groupement national des centres ressources autisme (GNCRA)
-/accueil/gncra/charte-graphique-filiere-tsa,/a-propos/cra,Charte graphique filière TSA (trouble du spectre de l'autisme)
+/accueil/espace-presse,/contact/espace-presse,Espace presse
+/accueil/gncra,/filiere-tnd/gncra,Groupement national des centres ressources autisme (GNCRA)
+/accueil/gncra/charte-graphique-filiere-tsa,/filiere-tnd/cra,Charte graphique filière TSA (trouble du spectre de l'autisme)
 /accueil/incollables-autisme,/fiches-pratiques/trouble-spectre-autisme-tnd,Les Incollables de l'autisme
 /accueil/stagiaire-qualite,,Stagiaire qualité
 /aides-autisme,/fiches-pratiques/guide-aides-autisme-tnd-pc,Guide des aides pour les personnes autistes et leurs proches
@@ -31,7 +31,7 @@ from,to,legacyTitle
 /fiches-pratiques-autisme/autisme-et-tdah,/fiches-pratiques/tdah-tnd,Autisme et TDAH : quand les troubles coexistent
 /fiches-pratiques-autisme/carnet-de-sante-reperage-tnd,/fiches-pratiques/carnet-sante-autisme-tnd,Carnet de santé avec repérage précoce des TND
 /fiches-pratiques-autisme/college-autisme-tnd,/fiches-pratiques/college-tnd-proche,"Aller au collège quand on est un jeune avec autisme, TDAH, troubles dys, Tourette..."
-/fiches-pratiques-autisme/communication-autisme,,Méthodes pédagogiques et communicationnelles dans l'autisme
+/fiches-pratiques-autisme/communication-autisme,/fiches-pratiques/communication-personne-autiste,Méthodes pédagogiques et communicationnelles dans l'autisme
 /fiches-pratiques-autisme/dispositif-scolarisation-tnd,/fiches-pratiques/dispositifs-scolarisation-autisme,"Dispositifs de scolarisation (Ulis, UEMA, UEEA, autorégulation, EMS) pour les enfants avec un TND"
 /fiches-pratiques-autisme/dossier-mdph-autisme,/fiches-pratiques/dossier-mdph-autisme-tnd,Dossier MDPH en cas de trouble du neurodéveloppement
 /fiches-pratiques-autisme/douleur-personne-autiste-tnd,/fiches-pratiques/douleur-autisme,"Douleur chez la personne autiste (Repérer, comprendre et accompagner)"
@@ -71,5 +71,5 @@ from,to,legacyTitle
 /glossaire-autisme,/glossaire,Glossaire des termes utilisés dans l'autisme
 /guide-parcours-diagnostic-autisme,/fiches-pratiques/reperage-precoce-tnd-proche,Guide des parcours de diagnostic d'autisme
 /politique-de-confidentialite,/donnees-personnelles,Politique de confidentialité de la Maison numérique de l’autisme
-/presentation-maison-de-l-autisme,/a-propos/maison-de-l-autisme,Qu'est-ce que la Maison de l'autisme ?
+/presentation-maison-de-l-autisme,/filiere-tnd/maison-de-l-autisme,Qu'est-ce que la Maison de l'autisme ?
 /reperage-diagnostic-autisme,/fiches-pratiques/reperage-precoce-tnd-proche,Repérage page d'entrée
