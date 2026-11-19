@@ -69,6 +69,7 @@ export interface Config {
 	collections: {
 		medias: Media;
 		pages: Page;
+		"page-sections": PageSection;
 		"practical-guides": PracticalGuide;
 		courses: Course;
 		news: News;
@@ -115,6 +116,7 @@ export interface Config {
 	collectionsSelect: {
 		medias: MediasSelect<false> | MediasSelect<true>;
 		pages: PagesSelect<false> | PagesSelect<true>;
+		"page-sections": PageSectionsSelect<false> | PageSectionsSelect<true>;
 		"practical-guides":
 			| PracticalGuidesSelect<false>
 			| PracticalGuidesSelect<true>;
@@ -337,9 +339,9 @@ export interface Page {
 	showDates?: boolean | null;
 	imageBanner?: (number | null) | Media;
 	/**
-	 * Facultative. Une page rangée dans « À propos » est accessible sur /a-propos/{identifiant}. La modifier change l'URL publique : pensez à ajouter une redirection.
+	 * Facultative. Une page rangée dans une rubrique est accessible sur /{rubrique}/{identifiant}, et la rubrique apparaît dans son fil d'Ariane. La modifier change l'URL publique : pensez à ajouter une redirection.
 	 */
-	section?: "a-propos" | null;
+	section?: (number | null) | PageSection;
 	/**
 	 * Utilisé dans l'URL de la page. Laissez vide pour le générer à partir du titre. Le modifier change l'URL publique : pensez à ajouter une redirection.
 	 */
@@ -347,6 +349,29 @@ export interface Page {
 	updatedAt: string;
 	createdAt: string;
 	_status?: ("draft" | "published") | null;
+}
+/**
+ * Regroupent des pages sous une même adresse (/{rubrique}/{page}) et dans le fil d'Ariane. La page /{rubrique} liste automatiquement les pages publiées de la rubrique.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "page-sections".
+ */
+export interface PageSection {
+	id: number;
+	/**
+	 * Affiché en titre de la page de la rubrique, dans le fil d'Ariane et dans le plan du site.
+	 */
+	title: string;
+	/**
+	 * Facultative. Utilisée comme description SEO de la page de la rubrique.
+	 */
+	description?: string | null;
+	/**
+	 * Utilisé dans l'URL de la rubrique et de toutes ses pages. Le modifier change l'URL de chacune de ces pages : pensez à ajouter une redirection pour chacune.
+	 */
+	slug: string;
+	updatedAt: string;
+	createdAt: string;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -1006,6 +1031,10 @@ export interface PayloadLockedDocument {
 				value: number | Page;
 		  } | null)
 		| ({
+				relationTo: "page-sections";
+				value: number | PageSection;
+		  } | null)
+		| ({
 				relationTo: "practical-guides";
 				value: number | PracticalGuide;
 		  } | null)
@@ -1223,6 +1252,17 @@ export interface PagesSelect<T extends boolean = true> {
 	updatedAt?: T;
 	createdAt?: T;
 	_status?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "page-sections_select".
+ */
+export interface PageSectionsSelect<T extends boolean = true> {
+	title?: T;
+	description?: T;
+	slug?: T;
+	updatedAt?: T;
+	createdAt?: T;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema

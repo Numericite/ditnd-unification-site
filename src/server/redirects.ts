@@ -2,7 +2,11 @@ import configPromise from "@payload-config";
 import type { Redirect as NextRedirect } from "next";
 import { getPayload } from "payload";
 import type { Redirect } from "~/payload/payload-types";
-import { normalizePath, referenceHref } from "~/utils/links";
+import {
+	REFERENCE_POPULATE,
+	normalizePath,
+	referenceHref,
+} from "~/utils/links";
 import { SECTION_FALLBACKS } from "~/utils/redirects";
 
 /**
@@ -44,7 +48,8 @@ export const findLegacyRedirect = async (
 	const { docs } = await payload.find({
 		collection: "redirects",
 		where: { from: { equals: from } },
-		depth: 1,
+		depth: 2,
+		populate: REFERENCE_POPULATE,
 		limit: 1,
 		overrideAccess: true,
 	});

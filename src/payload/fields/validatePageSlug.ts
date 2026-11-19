@@ -1,10 +1,12 @@
-import type { TextFieldSingleValidation } from "payload";
+import type { PayloadRequest, TextFieldSingleValidation } from "payload";
 import { slugify } from "~/utils/tools";
 import { SECTION_FALLBACKS } from "~/utils/redirects";
+import { PAGE_REDIRECTS } from "~/utils/page-redirects";
 import {
-	PAGE_SECTION_RESERVED_SLUGS,
+	type SectionRef,
 	pagePath,
-	pageSection,
+	sectionOf,
+	withPopulatedSection,
 } from "~/utils/pages";
 
 /**
@@ -13,9 +15,8 @@ import {
  * l'un de ces slugs serait inaccessible.
  * À tenir à jour en cas d'ajout d'une route dans src/pages ou src/app.
  */
-const RESERVED_SLUGS = new Set([
+export const RESERVED_SLUGS = new Set([
 	// src/pages
-	"a-propos",
 	"accessibilite",
 	"contact-particuliers",
 	"contact-pros-cra",
@@ -23,6 +24,7 @@ const RESERVED_SLUGS = new Set([
 	"draft",
 	"fiches-pratiques",
 	"formations",
+	"glossaire",
 	"index",
 	"mentions-legales",
 	"newsletter-confirmee",
@@ -50,26 +52,20 @@ const hasTarget = (to: RedirectTarget | null | undefined): boolean => {
 	return Boolean(to.reference);
 };
 
-export const validatePageSlug: TextFieldSingleValidation = async (
-	value,
-	{ req, siblingData },
-) => {
-	const slug = typeof value === "string" ? slugify(value) : "";
-	if (!slug) return true;
-
-	const section = pageSection((siblingData as { section?: string })?.section);
-	const reserved = section
-		? PAGE_SECTION_RESERVED_SLUGS[section.value].includes(slug)
-		: RESERVED_SLUGS.has(slug);
-	if (reserved) {
-		return "Adresse déjà utilisée par le site";
-	}
-
-	const path = pagePath({ slug, section: section?.value });
+/**
+ * Sur un chemin déjà redirigé, une page ou une rubrique serait inaccessible
+ * (next.config.js redirige avant tout routage) ou masquerait la redirection
+ * (les autres ne sont résolues qu'en cas de 404).
+ */
+export const redirectConflict = async (
+	req: PayloadRequest,
+	path: string,
+): Promise<string | null> => {
 	const fallback = SECTION_FALLBACKS.find(([prefix]) => prefix === path);
-	if (fallback) {
-		return `Adresse redirigée vers ${fallback[1]}`;
-	}
+	if (fallback) return `Adresse redirigée vers ${fallback[1]}`;
+
+	const moved = PAGE_REDIRECTS.find(({ source }) => source === path);
+	if (moved) return `Adresse redirigée vers ${moved.destination}`;
 
 	const { docs } = await req.payload.find({
 		collection: "redirects",
@@ -84,5 +80,32 @@ export const validatePageSlug: TextFieldSingleValidation = async (
 		return "Une redirection existe pour cette adresse";
 	}
 
-	return true;
+	return null;
+};
+
+export const validatePageSlug: TextFieldSingleValidation = async (
+	value,
+	{ req, siblingData },
+) => {
+	const slug = typeof value === "string" ? slugify(value) : "";
+	if (!slug) return true;
+
+	const { section: populated } = await withPopulatedSection(req, {
+		section: (siblingData as { section?: SectionRef })?.section,
+	});
+	if (!sectionOf(populated)) {
+		if (RESERVED_SLUGS.has(slug)) return "Adresse déjà utilisée par le site";
+		const { totalDocs } = await req.payload.count({
+			collection: "page-sections",
+			where: { slug: { equals: slug } },
+			overrideAccess: true,
+			req,
+		});
+		if (totalDocs > 0) return "Adresse déjà utilisée par une rubrique";
+	}
+
+	return (
+		(await redirectConflict(req, pagePath({ slug, section: populated }))) ??
+		true
+	);
 };

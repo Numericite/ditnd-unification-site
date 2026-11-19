@@ -6,7 +6,7 @@ import PageContent from "~/components/ui/PageContent";
 import SeoMeta from "~/components/ui/SeoMeta";
 import type { Media } from "~/payload/payload-types";
 import type { AugmentedPage } from "~/server/api/routers/pages";
-import { pagePath, pageSection } from "~/utils/pages";
+import { pagePath, sectionOf, sectionPath } from "~/utils/pages";
 
 type Props = {
 	page: AugmentedPage;
@@ -14,7 +14,7 @@ type Props = {
 };
 
 export default function PageView({ page, draft = false }: Props) {
-	const section = pageSection(page.section);
+	const section = sectionOf(page.section);
 	const dates = page.showDates
 		? {
 				createdAt: page.publishedAt ?? page.createdAt,
@@ -50,8 +50,8 @@ export default function PageView({ page, draft = false }: Props) {
 						section
 							? [
 									{
-										label: section.label,
-										linkProps: { href: `/${section.value}` },
+										label: section.title,
+										linkProps: { href: sectionPath(section.slug) },
 									},
 								]
 							: []

@@ -19,20 +19,24 @@ describe("Admin — rich text editor", () => {
 
 	it("keeps accordion content typed before switching tabs", () => {
 		const addedLine = "Ligne ajoutée avant de changer d'onglet.";
-		cy.request("POST", "/api/pages?depth=0", {
-			title: uniqueTitle("Page"),
-			section: "a-propos",
-			_status: "published",
-			content: richText(
-				paragraph("Présentation de la maison."),
-				accordion("single", [
-					{
-						title: "Accordéon persistant",
-						children: [paragraph("Ligne initiale.")],
-					},
-				]),
-			),
-		})
+		cy.request("/api/page-sections?where[slug][equals]=a-propos&depth=0")
+			.its("body.docs.0.id")
+			.then((section) =>
+				cy.request("POST", "/api/pages?depth=0", {
+					title: uniqueTitle("Page"),
+					section,
+					_status: "published",
+					content: richText(
+						paragraph("Présentation de la maison."),
+						accordion("single", [
+							{
+								title: "Accordéon persistant",
+								children: [paragraph("Ligne initiale.")],
+							},
+						]),
+					),
+				}),
+			)
 			.its("body.doc")
 			.as("page");
 

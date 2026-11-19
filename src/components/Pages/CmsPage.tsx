@@ -2,9 +2,10 @@ import Head from "next/head";
 import ErrorPage from "~/components/ui/ErrorPage/ErrorPage";
 import type { PageProps } from "~/server/pages";
 import PageView from "./PageView";
+import SectionView from "./SectionView";
 
 export default function CmsPage(props: PageProps) {
-	if (props.isNotFound || !props.page) {
+	if (props.isNotFound) {
 		return (
 			<>
 				<Head>
@@ -14,6 +15,10 @@ export default function CmsPage(props: PageProps) {
 				<ErrorPage />
 			</>
 		);
+	}
+
+	if (props.kind === "section") {
+		return <SectionView section={props.section} links={props.links} />;
 	}
 
 	return <PageView page={props.page} />;

@@ -2,7 +2,6 @@ import type { CollectionConfig } from "payload";
 import { standardFields } from "../fields/standards";
 import { slugField } from "../fields/slug";
 import { validatePageSlug } from "../fields/validatePageSlug";
-import { PAGE_SECTIONS } from "~/utils/pages";
 
 export const Pages: CollectionConfig = {
 	slug: "pages",
@@ -95,13 +94,13 @@ export const Pages: CollectionConfig = {
 		},
 		{
 			name: "section",
-			type: "select",
+			type: "relationship",
+			relationTo: "page-sections",
 			label: { fr: "Rubrique" },
-			options: [...PAGE_SECTIONS],
 			admin: {
 				position: "sidebar",
 				description:
-					"Facultative. Une page rangée dans « À propos » est accessible sur /a-propos/{identifiant}. La modifier change l'URL publique : pensez à ajouter une redirection.",
+					"Facultative. Une page rangée dans une rubrique est accessible sur /{rubrique}/{identifiant}, et la rubrique apparaît dans son fil d'Ariane. La modifier change l'URL publique : pensez à ajouter une redirection.",
 			},
 		},
 		slugField("pages", { editable: true, validate: validatePageSlug }),

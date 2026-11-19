@@ -18,6 +18,22 @@ describe("About pages served from the pages collection", () => {
 		);
 	});
 
+	it("lists the section pages on the section page", () => {
+		cy.visit("/a-propos");
+		cy.get("main h1").should("contain.text", "À propos");
+		cy.get('main nav a[href="/a-propos/gncra"]').should("exist");
+		cy.get('main nav a[href="/a-propos/glossaire"]').should("not.exist");
+	});
+
+	it("serves the glossary at the site root", () => {
+		cy.request({ url: "/a-propos/glossaire?lettre=a", followRedirect: false })
+			.its("redirectedToUrl")
+			.should("match", /\/glossaire\?lettre=a$/);
+		cy.visit("/glossaire");
+		cy.get("main h1").should("contain.text", "Glossaire");
+		cy.get(".fr-breadcrumb").contains("a", "À propos").should("not.exist");
+	});
+
 	it("does not serve a section page at the site root", () => {
 		cy.request({ url: "/gncra", failOnStatusCode: false })
 			.its("status")
@@ -29,7 +45,12 @@ describe("About pages served from the pages collection", () => {
 			cy.loginAsAdmin();
 		});
 
-		it("refuses a slug already used by a static page of the section", () => {
+		const aboutSectionId = () =>
+			cy
+				.request("/api/page-sections?where[slug][equals]=a-propos&depth=0")
+				.its("body.docs.0.id");
+
+		it("refuses a root page slug used by the glossary", () => {
 			const create = (slug: string) =>
 				cy.request({
 					method: "POST",
@@ -38,16 +59,54 @@ describe("About pages served from the pages collection", () => {
 						title: uniqueTitle("Glossaire"),
 						content: richText(paragraph("Contenu de la page.")),
 						slug,
-						section: "a-propos",
 						_status: "published",
 					},
 					failOnStatusCode: false,
 				});
 
 			create("glossaire").its("status").should("eq", 400);
-			create(uniqueTitle("glossaire").toLowerCase().replace(/\W+/g, "-"))
+		});
+
+		it("refuses a page slug whose address is redirected by the site", () => {
+			aboutSectionId().then((section) => {
+				cy.request({
+					method: "POST",
+					url: "/api/pages?depth=0",
+					body: {
+						title: uniqueTitle("Glossaire"),
+						content: richText(paragraph("Contenu de la page.")),
+						slug: "glossaire",
+						section,
+						_status: "published",
+					},
+					failOnStatusCode: false,
+				})
+					.its("status")
+					.should("eq", 400);
+			});
+		});
+
+		it("refuses a section slug that would hide a legacy redirect", () => {
+			cy.request({
+				method: "POST",
+				url: "/api/page-sections?depth=0",
+				body: { title: "Accueil" },
+				failOnStatusCode: false,
+			})
 				.its("status")
-				.should("eq", 201);
+				.should("eq", 400);
+		});
+
+		it("refuses to delete a section that still has pages", () => {
+			aboutSectionId().then((section) => {
+				cy.request({
+					method: "DELETE",
+					url: `/api/page-sections/${section}`,
+					failOnStatusCode: false,
+				})
+					.its("status")
+					.should("eq", 400);
+			});
 		});
 
 		it("shows the publication date only when the option is checked", () => {

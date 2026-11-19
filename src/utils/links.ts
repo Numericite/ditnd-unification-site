@@ -1,4 +1,4 @@
-import { documentPath } from "./pages";
+import { type SectionRef, documentPath } from "./pages";
 
 // URL publique d'un document référencé par une relation polymorphe (cibles de
 // redirection, liens du menu principal).
@@ -12,12 +12,26 @@ export type ReferenceCollection = (typeof COLLECTIONS)[number];
 
 export const REFERENCE_COLLECTIONS: ReferenceCollection[] = [...COLLECTIONS];
 
+// Champs utiles pour construire l'URL d'un document référencé. Demande une
+// requête à depth 2 : la rubrique d'une page est elle-même une relation.
+export const REFERENCE_POPULATE = {
+	...Object.fromEntries(
+		REFERENCE_COLLECTIONS.map((collection) => [
+			collection,
+			collection === "pages"
+				? { slug: true, _status: true, section: true }
+				: { slug: true, _status: true },
+		]),
+	),
+	"page-sections": { slug: true },
+};
+
 export type DocumentReference = {
 	relationTo: ReferenceCollection;
 	value:
 		| {
 				slug?: string | null;
-				section?: string | null;
+				section?: SectionRef;
 				_status?: string | null;
 		  }
 		| number
