@@ -1,7 +1,7 @@
 import type { TextFieldSingleValidation } from "payload";
 import { slugify } from "~/utils/tools";
-import { SECTION_CODED_PAGES } from "~/utils/pages";
-import { RESERVED_SLUGS } from "./validatePageSlug";
+import { SECTION_CODED_PAGES, sectionPath } from "~/utils/pages";
+import { RESERVED_SLUGS, redirectConflict } from "./validatePageSlug";
 
 // Une rubrique est servie sur `/{slug}`, comme une page à la racine : les deux
 // ne doivent pas se marcher dessus.
@@ -40,5 +40,5 @@ export const validateSectionSlug: TextFieldSingleValidation = async (
 	});
 	if (totalDocs > 0) return "Adresse déjà utilisée par une page";
 
-	return true;
+	return (await redirectConflict(req, sectionPath(slug))) ?? true;
 };

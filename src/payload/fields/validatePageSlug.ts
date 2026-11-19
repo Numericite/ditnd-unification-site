@@ -1,4 +1,4 @@
-import type { TextFieldSingleValidation } from "payload";
+import type { PayloadRequest, TextFieldSingleValidation } from "payload";
 import { slugify } from "~/utils/tools";
 import { SECTION_FALLBACKS } from "~/utils/redirects";
 import {
@@ -52,6 +52,33 @@ const hasTarget = (to: RedirectTarget | null | undefined): boolean => {
 	return Boolean(to.reference);
 };
 
+/**
+ * Une page ou une rubrique est servie avant les redirections : sur un chemin
+ * déjà redirigé, elle masquerait la redirection.
+ */
+export const redirectConflict = async (
+	req: PayloadRequest,
+	path: string,
+): Promise<string | null> => {
+	const fallback = SECTION_FALLBACKS.find(([prefix]) => prefix === path);
+	if (fallback) return `Adresse redirigée vers ${fallback[1]}`;
+
+	const { docs } = await req.payload.find({
+		collection: "redirects",
+		where: { from: { equals: path } },
+		depth: 0,
+		limit: 1,
+		overrideAccess: true,
+		req,
+	});
+	const redirect = docs[0] as { to?: RedirectTarget } | undefined;
+	if (redirect && hasTarget(redirect.to)) {
+		return "Une redirection existe pour cette adresse";
+	}
+
+	return null;
+};
+
 export const validatePageSlug: TextFieldSingleValidation = async (
 	value,
 	{ req, siblingData },
@@ -79,24 +106,8 @@ export const validatePageSlug: TextFieldSingleValidation = async (
 		if (totalDocs > 0) return "Adresse déjà utilisée par une rubrique";
 	}
 
-	const path = pagePath({ slug, section: populated });
-	const fallback = SECTION_FALLBACKS.find(([prefix]) => prefix === path);
-	if (fallback) {
-		return `Adresse redirigée vers ${fallback[1]}`;
-	}
-
-	const { docs } = await req.payload.find({
-		collection: "redirects",
-		where: { from: { equals: path } },
-		depth: 0,
-		limit: 1,
-		overrideAccess: true,
-		req,
-	});
-	const redirect = docs[0] as { to?: RedirectTarget } | undefined;
-	if (redirect && hasTarget(redirect.to)) {
-		return "Une redirection existe pour cette adresse";
-	}
-
-	return true;
+	return (
+		(await redirectConflict(req, pagePath({ slug, section: populated }))) ??
+		true
+	);
 };

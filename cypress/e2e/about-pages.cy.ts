@@ -81,6 +81,17 @@ describe("About pages served from the pages collection", () => {
 			});
 		});
 
+		it("refuses a section slug that would hide a legacy redirect", () => {
+			cy.request({
+				method: "POST",
+				url: "/api/page-sections?depth=0",
+				body: { title: "Accueil" },
+				failOnStatusCode: false,
+			})
+				.its("status")
+				.should("eq", 400);
+		});
+
 		it("refuses to delete a section that still has pages", () => {
 			aboutSectionId().then((section) => {
 				cy.request({
