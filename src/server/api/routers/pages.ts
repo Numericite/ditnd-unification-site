@@ -15,6 +15,60 @@ export interface AugmentedPage extends Omit<Page, "imageBanner" | "section"> {
 	};
 }
 
+/** Page proposée par la recherche globale ou le chatbot. */
+export type PageCard = {
+	id: number;
+	title: string;
+	description: string | null;
+	imageUrl: string | null;
+	href: string;
+};
+
+/** Pages publiées, sous forme de cartes, dans l'ordre des identifiants. */
+export const findPublishedPageCards = async (
+	payload: Payload,
+	ids: (number | string)[],
+): Promise<PageCard[]> => {
+	if (ids.length === 0) return [];
+
+	const { docs } = await payload.find({
+		collection: "pages",
+		limit: 0,
+		depth: 1,
+		draft: false,
+		select: {
+			title: true,
+			slug: true,
+			section: true,
+			imageBanner: true,
+			meta: true,
+		},
+		populate: { "page-sections": { slug: true } },
+		where: {
+			id: { in: ids.map(String) },
+			_status: { equals: "published" },
+		},
+	});
+
+	const order = new Map(ids.map((id, index) => [String(id), index]));
+	return docs
+		.sort(
+			(a, b) =>
+				(order.get(String(a.id)) ?? Number.MAX_SAFE_INTEGER) -
+				(order.get(String(b.id)) ?? Number.MAX_SAFE_INTEGER),
+		)
+		.map((page) => ({
+			id: page.id,
+			title: page.title,
+			description: page.meta?.description ?? null,
+			imageUrl:
+				typeof page.imageBanner === "object"
+					? (page.imageBanner?.url ?? null)
+					: null,
+			href: pagePath(page),
+		}));
+};
+
 const publishedPageLinks = async (
 	payload: Payload,
 	section: PageSection | null,

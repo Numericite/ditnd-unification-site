@@ -69,6 +69,7 @@ import * as migration_20261119_142533_page_sections_collection from './20261119_
 import * as migration_20261119_164644_glossary_url from './20261119_164644_glossary_url';
 import * as migration_20261119_174744_contact_pages from './20261119_174744_contact_pages';
 import * as migration_20261120_100101_courses_page from './20261120_100101_courses_page';
+import * as migration_20261120_104559_pages_search_vectors from './20261120_104559_pages_search_vectors';
 
 export const migrations = [
   {
@@ -424,6 +425,11 @@ export const migrations = [
   {
     up: migration_20261120_100101_courses_page.up,
     down: migration_20261120_100101_courses_page.down,
-    name: '20261120_100101_courses_page'
+    name: '20261120_100101_courses_page',
+  },
+  {
+    up: migration_20261120_104559_pages_search_vectors.up,
+    down: migration_20261120_104559_pages_search_vectors.down,
+    name: '20261120_104559_pages_search_vectors'
   },
 ];
