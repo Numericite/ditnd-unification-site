@@ -1,6 +1,6 @@
 describe("Contact particuliers form", () => {
 	beforeEach(() => {
-		cy.visit("/contact-particuliers");
+		cy.visit("/contact/particuliers");
 	});
 
 	function fillRequired() {

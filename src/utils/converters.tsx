@@ -10,7 +10,13 @@ import {
 	type JSXConverter,
 	type JSXConverters,
 } from "@payloadcms/richtext-lexical/react";
-import { extractYouTubeId, ImageSizes, lexicalToText, slugify } from "./tools";
+import {
+	buildCourseRedirect,
+	extractYouTubeId,
+	ImageSizes,
+	lexicalToText,
+	slugify,
+} from "./tools";
 import type { Condition, Media, Theme } from "~/payload/payload-types";
 import type { AugmentedCourse } from "~/server/api/routers/courses";
 import CardDisplay from "~/components/ui/Cards/CardDisplay";
@@ -354,7 +360,7 @@ export const customImageSizeConverter: JSXConverter<SerializedBlockNode> = ({
 }) => {
 	const value = node.fields;
 
-	if (!value?.image) return null;
+	if (typeof value?.image !== "object" || !value.image?.url) return null;
 
 	const image = value.image;
 	const size = value.size;
@@ -521,16 +527,15 @@ const relationCard = (
 
 		return (
 			<CardDisplay
-				title={course.title}
+				title={course.simplifiedTitle || course.title}
 				description={horizontal ? (course.description ?? undefined) : undefined}
 				imageUrl={course.image?.url ?? course.imageBanner?.url ?? undefined}
 				imageAlt=""
 				conditions={populated<Condition>(course.conditions)}
 				themes={populated<Theme>(course.themes)}
-				redirect={course.slug ? `/formations/${course.slug}` : course.link}
+				redirect={buildCourseRedirect(course)}
 				titleAs={titleAs}
 				horizontal={horizontal}
-				kind="courses"
 			/>
 		);
 	}

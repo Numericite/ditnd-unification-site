@@ -8,6 +8,7 @@ export const Pages: CollectionConfig = {
 	admin: {
 		useAsTitle: "title",
 		group: { fr: "Contenus" },
+		defaultColumns: ["title", "section", "_status", "updatedAt"],
 	},
 	labels: {
 		singular: "Page",
@@ -73,6 +74,15 @@ export const Pages: CollectionConfig = {
 			},
 		},
 		{
+			name: "showDates",
+			type: "checkbox",
+			defaultValue: true,
+			label: { fr: "Afficher les dates de publication et de mise à jour" },
+			admin: {
+				position: "sidebar",
+			},
+		},
+		{
 			name: "imageBanner",
 			type: "upload",
 			relationTo: "medias",
@@ -80,6 +90,36 @@ export const Pages: CollectionConfig = {
 			label: { fr: "Bannière" },
 			admin: {
 				position: "sidebar",
+			},
+		},
+		{
+			name: "section",
+			type: "relationship",
+			relationTo: "page-sections",
+			label: { fr: "Rubrique" },
+			admin: {
+				position: "sidebar",
+				description:
+					"Facultative. Une page rangée dans une rubrique est accessible sur /{rubrique}/{identifiant}, et la rubrique apparaît dans son fil d'Ariane. La modifier change l'URL publique : pensez à ajouter une redirection.",
+			},
+		},
+		{
+			name: "module",
+			type: "select",
+			label: { fr: "Module intégré" },
+			options: [
+				{
+					label: "Formulaire de contact des particuliers",
+					value: "contact-particuliers",
+				},
+				{
+					label: "Formulaire de contact des professionnels des CRA",
+					value: "contact-pros-cra",
+				},
+			],
+			admin: {
+				position: "sidebar",
+				description: "Facultatif. Affiché sous le contenu de la page.",
 			},
 		},
 		slugField("pages", { editable: true, validate: validatePageSlug }),

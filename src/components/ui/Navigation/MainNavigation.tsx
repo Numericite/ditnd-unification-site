@@ -4,7 +4,14 @@ import { useEffect, useRef, useState } from "react";
 import SubMenuCustom from "./SubMenuCustom";
 import Button from "@codegouvfr/react-dsfr/Button";
 import Header from "@codegouvfr/react-dsfr/Header";
-import { chatbotOpenStore, personStore } from "~/state/store";
+import {
+	chatbotOpenStore,
+	contactPathStore,
+	lockedMenuStore,
+	menuStore,
+	personStore,
+} from "~/state/store";
+import { type LockedMenuItem, type NavLink, isPathActive } from "~/utils/menu";
 import { personsAndProTiles } from "~/utils/pictograms";
 import { skipLinks } from "~/utils/tools";
 import SkipLinks from "@codegouvfr/react-dsfr/SkipLinks";
@@ -20,8 +27,9 @@ export default function MainNavigation() {
 	const [headerSearch, setHeaderSearch] = useState(initialHeaderSearch);
 	const searchInputRef = useRef<HTMLInputElement>(null);
 	const headerRef = useRef<HTMLDivElement>(null);
+	const alertRef = useRef<HTMLDivElement>(null);
 
-	useStickyHeaderOffset(headerRef);
+	useStickyHeaderOffset(headerRef, alertRef);
 
 	useEffect(() => {
 		const search =
@@ -30,64 +38,71 @@ export default function MainNavigation() {
 	}, [router.query.search]);
 
 	const personas = personsAndProTiles(personStore.get());
+	const currentPath = router.asPath;
+	const toNavigationLink = (link: NavLink) => ({
+		text: link.title,
+		isActive: !link.external && isPathActive(currentPath, link.href),
+		linkProps: link.external
+			? {
+					href: link.href,
+					target: "_blank",
+					rel: "noopener noreferrer",
+					title: `${link.title}, nouvelle fenêtre`,
+				}
+			: { href: link.href },
+	});
+
+	const lockedSubmenus: Record<
+		NonNullable<LockedMenuItem["submenu"]>,
+		() => MainNavigationProps.Item.Link[]
+	> = {
+		personas: () =>
+			personas.map((persona) => ({
+				text: <SubMenuCustom key={persona.slug} persona={{ ...persona }} />,
+				isActive: isPathActive(currentPath, `/parcours/${persona.slug}`),
+				linkProps: { href: `/parcours/${persona.slug}` },
+			})),
+	};
+
+	const isHome = isPathActive(currentPath, "/");
 
 	const userNavigationItems: MainNavigationProps.Item[] = [
 		{
-			text: "Je suis",
-			isActive: router.pathname.startsWith("/parcours"),
-			menuLinks: personas.map((persona) => ({
-				text: <SubMenuCustom key={persona.slug} persona={{ ...persona }} />,
-				isActive: router.asPath.startsWith(`/parcours/${persona.slug}`),
-				linkProps: {
-					href: `/parcours/${persona.slug}`,
-				},
-			})),
+			text: (
+				<>
+					<span
+						className={cx(fr.cx("ri-home-line"), classes.homeIcon)}
+						aria-hidden="true"
+					/>
+					<span className={classes.homeLabel}>Accueil</span>
+				</>
+			),
+			isActive: isHome,
+			linkProps: { href: "/", title: "Accueil" },
 		},
-		{
-			text: "Fiches pratiques",
-			linkProps: { href: "/fiches-pratiques" },
-			isActive: router.pathname.startsWith("/fiches-pratiques"),
-		},
-		{
-			text: "Se former",
-			linkProps: { href: "/se-former" },
-			isActive:
-				router.pathname === "/se-former" ||
-				router.pathname.startsWith("/formations"),
-		},
-		{
-			text: "Annuaire",
-			linkProps: {
-				href: "https://annuaire.autismeinfoservice.fr/",
-				target: "_blank",
-			},
-		},
-		{
-			text: "À propos",
-			isActive: router.pathname.startsWith("/a-propos"),
-			menuLinks: [
-				{
-					text: "Maison de l'autisme",
-					isActive: router.pathname === "/a-propos/maison-de-l-autisme",
-					linkProps: { href: "/a-propos/maison-de-l-autisme" },
-				},
-				{
-					text: "GNCRA",
-					isActive: router.pathname === "/a-propos/gncra",
-					linkProps: { href: "/a-propos/gncra" },
-				},
-				{
-					text: "CRA",
-					isActive: router.pathname === "/a-propos/cra",
-					linkProps: { href: "/a-propos/cra" },
-				},
-				{
-					text: "Glossaire",
-					isActive: router.pathname === "/a-propos/glossaire",
-					linkProps: { href: "/a-propos/glossaire" },
-				},
-			],
-		},
+		...lockedMenuStore.get().map((item): MainNavigationProps.Item => {
+			const isActive = item.activePaths.some((path) =>
+				isPathActive(currentPath, path),
+			);
+			return item.submenu
+				? {
+						text: item.title,
+						isActive,
+						menuLinks: lockedSubmenus[item.submenu](),
+					}
+				: { text: item.title, isActive, linkProps: { href: item.href } };
+		}),
+		...menuStore.get().map((item): MainNavigationProps.Item => {
+			if ("children" in item) {
+				const menuLinks = item.children.map(toNavigationLink);
+				return {
+					text: item.title,
+					isActive: menuLinks.some((link) => link.isActive),
+					menuLinks,
+				};
+			}
+			return toNavigationLink(item);
+		}),
 	];
 
 	useEffect(() => {
@@ -110,16 +125,22 @@ export default function MainNavigation() {
 	return (
 		<>
 			<SkipLinks links={skipLinks} />
-			<div className={cx(classes.mainAlert, fr.cx("fr-p-2v"))}>
+			<div ref={alertRef} className={cx(classes.mainAlert, fr.cx("fr-p-2v"))}>
 				<span
 					className={cx("ri-phone-line", classes.icon)}
 					aria-hidden="true"
 				/>
 				Ligne nationale d'écoute :{" "}
-				<a href="tel:+33800714040" className={classes.phoneLink}>
+				<a href="tel:+33800714040" className={classes.alertLink}>
 					0 800 71 40 40
 				</a>{" "}
 				<span className={classes.mention}>— appel gratuit et anonyme</span>
+				<span aria-hidden="true" className={classes.separator}>
+					·
+				</span>
+				<a href={contactPathStore.get()} className={classes.alertLink}>
+					Écrire au service
+				</a>
 			</div>
 			<div id="menu" ref={headerRef} className={cx(classes.stickyHeader)}>
 				<Header
@@ -134,6 +155,15 @@ export default function MainNavigation() {
 						href: "/",
 						title: "Accueil - Maison de l'autisme",
 					}}
+					operatorLogo={{
+						orientation: "horizontal",
+						imgUrl: "/tnd-logo.png",
+						alt: "Site national d'information sur l'autisme et ses troubles associés",
+					}}
+					classes={{
+						brandTop: classes.brandTop,
+						operator: classes.operatorLogo,
+					}}
 					id="fr-header-with-horizontal-operator-logo"
 					navigation={userNavigationItems}
 					quickAccessItems={[
@@ -142,17 +172,17 @@ export default function MainNavigation() {
 							iconId={"fr-icon-mail-line"}
 							priority="secondary"
 							size="large"
-							linkProps={{ href: "/contact-particuliers" }}
+							linkProps={{ href: contactPathStore.get() }}
 						>
-							Contactez nos experts
+							Contactez-nous
 						</Button>,
 					]}
-					renderSearchInput={({ className, id, placeholder, type }) => (
+					renderSearchInput={({ className, id, type }) => (
 						<input
 							ref={searchInputRef}
 							className={className}
 							id={id}
-							placeholder={placeholder}
+							placeholder="Rechercher sur tout le site"
 							type={type}
 							value={headerSearch}
 							onChange={(e) => setHeaderSearch(e.currentTarget.value)}
@@ -165,7 +195,6 @@ export default function MainNavigation() {
 					}}
 					allowEmptySearch={false}
 					serviceTitle="Maison de l'autisme"
-					serviceTagline="Site national d'informations sur l'autisme et les troubles du neurodéveloppement"
 				/>
 			</div>
 		</>
@@ -173,18 +202,51 @@ export default function MainNavigation() {
 }
 
 const useStyles = tss.withName({ MainNavigation }).create({
+	homeIcon: {
+		[fr.breakpoints.down("lg")]: { marginRight: fr.spacing("1w") },
+	},
+	homeLabel: {
+		[fr.breakpoints.up("lg")]: {
+			position: "absolute",
+			width: 1,
+			height: 1,
+			padding: 0,
+			margin: -1,
+			overflow: "hidden",
+			clip: "rect(0, 0, 0, 0)",
+			whiteSpace: "nowrap",
+			border: 0,
+		},
+	},
 	stickyHeader: {
-		// Pinned with a negative top so only the navigation bar stays visible,
-		// the DSFR header body scrolls away above the viewport.
+		// Pinned so that only the navigation bar stays visible under the banner:
+		// the DSFR header body scrolls away behind it.
 		[fr.breakpoints.up("lg")]: {
 			position: "sticky",
-			top: "calc(-1 * var(--sticky-header-hidden-height, 0px))",
+			top: "calc(var(--sticky-alert-height, 0px) - var(--sticky-header-hidden-height, 0px))",
 			zIndex: 750,
+		},
+	},
+	brandTop: {
+		[fr.breakpoints.up("lg")]: { flexShrink: 0 },
+	},
+	operatorLogo: {
+		"& img": {
+			maxWidth: "11.25rem !important",
+		},
+		[fr.breakpoints.up("lg")]: {
+			flexShrink: 0,
+			"& img": { width: "11.25rem" },
 		},
 	},
 	mainAlert: {
 		...fr.typography[18].style,
 		marginBottom: 0,
+		[fr.breakpoints.up("lg")]: {
+			position: "sticky",
+			top: 0,
+			zIndex: 751,
+		},
 		backgroundColor: fr.colors.decisions.background.alt.blueFrance.default,
 		color: fr.colors.decisions.background.flat.blueFrance.default,
 		textAlign: "center",
@@ -199,8 +261,11 @@ const useStyles = tss.withName({ MainNavigation }).create({
 			"--icon-size": "1.125rem",
 		},
 	},
-	phoneLink: {
+	alertLink: {
 		color: "inherit",
+	},
+	separator: {
+		margin: `0 ${fr.spacing("1w")}`,
 	},
 	mention: {
 		color: fr.colors.decisions.text.mention.grey.default,

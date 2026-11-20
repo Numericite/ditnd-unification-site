@@ -23,7 +23,7 @@ export const {
 				"Permet la mesure d'audience du site via Matomo, avec suivi individuel du parcours de navigation.",
 		},
 	},
-	personalDataPolicyLinkProps: { href: "/gestion-des-cookies" },
+	personalDataPolicyLinkProps: { href: "/donnees-personnelles" },
 });
 
 type Finality = "youtube" | "cartographie" | "matomo";

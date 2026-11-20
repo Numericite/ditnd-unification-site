@@ -71,6 +71,7 @@ Stack : [Next.js](https://nextjs.org), [Payload CMS](https://payloadcms.com), [t
 | `yarn seed:glossary`     | Reseed only the glossary (deletes & recreates entries) |
 | `yarn seed:cartography`  | Reseed only the cartography (upsert by slug)           |
 | `yarn seed:courses-page` | Seed the /se-former page, only if it has no content    |
+| `yarn seed:menu`         | Seed the main menu, only if it has no items            |
 
 ## Code quality
 

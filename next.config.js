@@ -1,4 +1,5 @@
 import { withPayload } from "@payloadcms/next/withPayload";
+import { PAGE_REDIRECTS } from "./src/utils/page-redirects.js";
 /**
  * Run `build` or `dev` with `SKIP_ENV_VALIDATION` to skip env validation. This is especially useful
  * for Docker builds.
@@ -26,11 +27,7 @@ const config = {
 	},
 	async redirects() {
 		return [
-			{
-				source: "/a-propos/cras",
-				destination: "/a-propos/cra",
-				permanent: true,
-			},
+			...PAGE_REDIRECTS.map((redirect) => ({ ...redirect, permanent: true })),
 			// Sitemaps Yoast de l'ancien site WordPress.
 			...["/sitemap_index.xml", "/page-sitemap.xml", "/wp-sitemap.xml"].map(
 				(source) => ({ source, destination: "/sitemap.xml", statusCode: 301 }),

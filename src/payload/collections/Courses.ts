@@ -155,6 +155,7 @@ const afterDeleteCourse: CollectionAfterDeleteHook = async ({ id, req }) => {
 
 export const courseCardSelect = {
 	title: true,
+	simplifiedTitle: true,
 	description: true,
 	slug: true,
 	link: true,
@@ -201,13 +202,42 @@ export const Courses: CollectionConfig = {
 							type: "text",
 							required: true,
 							label: { fr: "Titre" },
+							admin: {
+								description:
+									"Titre complet affiché en haut de la page de la formation et dans le fil d'Ariane. Sert aussi de titre SEO si aucun n'est renseigné.",
+							},
+						},
+						{
+							name: "simplifiedTitle",
+							type: "text",
+							required: false,
+							label: { fr: "Titre court" },
+							admin: {
+								description:
+									"Titre affiché sur les cartes des formations (page « Formations », recherche, recommandations…). Par défaut identique au titre : laissez vide ou inchangé pour qu'il suive le titre.",
+							},
+							hooks: {
+								beforeChange: [
+									// Follows `title` until the editor sets a different value.
+									({ value, siblingData, originalDoc }) => {
+										const input = typeof value === "string" ? value.trim() : "";
+										if (!input || input === originalDoc?.title)
+											return siblingData?.title ?? (input || null);
+										return input;
+									},
+								],
+							},
 						},
 						standardFields.longDescription,
 						{
 							name: "link",
 							type: "text",
-							required: true,
+							required: false,
 							label: { fr: "Lien de la formation" },
+							admin: {
+								description:
+									"Facultatif. Laissez vide quand la formation est proposée par plusieurs organismes : leurs liens vont dans le contenu.",
+							},
 						},
 						{
 							type: "row",

@@ -71,6 +71,12 @@ const useStyles = tss.withName({ WysiwygContent }).create(() => ({
 				},
 			},
 		},
+		".payload-richtext > .fr-table :is(th, td)": {
+			whiteSpace: "nowrap",
+			img: {
+				maxWidth: "12.5rem !important",
+			},
+		},
 		a: {
 			color: fr.colors.decisions.background.actionHigh.blueFrance.default,
 		},

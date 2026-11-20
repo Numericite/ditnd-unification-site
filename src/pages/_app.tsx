@@ -8,9 +8,12 @@ import { useEffect } from "react";
 import { createEmotionSsrAdvancedApproach } from "tss-react/next/pagesDir";
 import { api } from "~/utils/api";
 import {
+	footerLinksStore,
 	footerTitleStore,
 	homeCMSStore,
-	newsletterCMSStore,
+	menuStore,
+	lockedMenuStore,
+	contactPathStore,
 	personStore,
 	proStore,
 	tdhStore,
@@ -26,6 +29,7 @@ import MainNavigation from "~/components/ui/Navigation/MainNavigation";
 import SeoMeta from "~/components/ui/SeoMeta";
 import { fr } from "@codegouvfr/react-dsfr";
 import type { GlobalData } from "~/server/global-data";
+import type { NavLink } from "~/utils/menu";
 import {
 	ConsentBannerAndConsentManagement,
 	FooterConsentManagementItem,
@@ -70,7 +74,10 @@ function seedStoresFromGlobalData(globalData: GlobalData) {
 	proStore.set(globalData.professionals);
 	tdhStore.set(globalData.conditions);
 	footerTitleStore.set(globalData.footerTitle);
-	newsletterCMSStore.set(globalData.newsletterCMS);
+	footerLinksStore.set(globalData.footerLinks);
+	menuStore.set(globalData.menu);
+	lockedMenuStore.set(globalData.lockedMenu);
+	contactPathStore.set(globalData.contactPath);
 }
 
 function App({ Component, pageProps }: AppPropsWithGlobal) {
@@ -98,6 +105,8 @@ function App({ Component, pageProps }: AppPropsWithGlobal) {
 
 	const footerTitle =
 		pageProps.globalData?.footerTitle ?? footerTitleStore.get();
+	const footerLinks: NavLink[] =
+		pageProps.globalData?.footerLinks ?? footerLinksStore.get();
 
 	return (
 		<>
@@ -137,14 +146,17 @@ function App({ Component, pageProps }: AppPropsWithGlobal) {
 					bottomItems={[
 						<FooterConsentManagementItem key="consent-management" />,
 						<FooterPersonalDataPolicyItem key="personal-data-policy" />,
-						{
-							text: "Contact particuliers",
-							linkProps: { href: "/contact-particuliers" },
-						},
-						{
-							text: "Contact professionnels",
-							linkProps: { href: "/contact-pros-cra" },
-						},
+						...footerLinks.map((link) => ({
+							text: link.title,
+							linkProps: link.external
+								? {
+										href: link.href,
+										target: "_blank",
+										rel: "noopener noreferrer",
+										title: `${link.title}, nouvelle fenêtre`,
+									}
+								: { href: link.href },
+						})),
 						headerFooterDisplayItem,
 					]}
 				/>

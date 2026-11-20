@@ -10965,6 +10965,58 @@ export const PracticalGuidesContent: DefaultTypedEditorState[] = [
 	},
 ];
 
+const textNode = (text: string) => ({
+	mode: "normal" as const,
+	text,
+	type: "text" as const,
+	style: "",
+	detail: 0,
+	format: 0,
+	version: 1,
+});
+
+const block = <T extends object>(node: T, text: string) => ({
+	...node,
+	format: "" as const,
+	indent: 0,
+	version: 1,
+	children: [textNode(text)],
+	direction: null,
+});
+
+function personalDataContent(): DefaultTypedEditorState {
+	const paragraph = (text: string) =>
+		block({ type: "paragraph" as const, textStyle: "", textFormat: 0 }, text);
+	const heading = (text: string) =>
+		block({ type: "heading" as const, tag: "h2" as const }, text);
+	return {
+		root: {
+			type: "root",
+			format: "",
+			indent: 0,
+			version: 1,
+			children: [
+				paragraph(
+					"Ce site utilise des cookies déposés par des services tiers pour certaines fonctionnalités. Vous pouvez choisir, pour chacune d'elles, d'autoriser ou de refuser le dépôt de ces cookies.",
+				),
+				heading("Vidéos YouTube"),
+				paragraph(
+					"Certaines pages du site intègrent des vidéos hébergées sur YouTube. Si vous n'autorisez pas ces cookies, la vidéo est remplacée par un message vous proposant de l'autoriser au cas par cas.",
+				),
+				heading("Cartographie"),
+				paragraph(
+					"Certaines pages du site intègrent des cartes interactives (fonds de carte IGN et données géographiques). Si vous n'autorisez pas ces cookies, la carte est remplacée par un message vous proposant de l'autoriser.",
+				),
+				heading("Mesure d'audience (Matomo)"),
+				paragraph(
+					"Ce site utilise Matomo pour mesurer sa fréquentation. Si vous n'autorisez pas ces cookies, votre navigation n'est pas suivie par cet outil.",
+				),
+			],
+			direction: null,
+		},
+	};
+}
+
 export const legalsContent = {
 	accessibility: {
 		root: {
@@ -11202,4 +11254,5 @@ export const legalsContent = {
 			direction: null,
 		},
 	},
+	personalData: personalDataContent(),
 } satisfies Record<string, DefaultTypedEditorState>;

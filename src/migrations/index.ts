@@ -46,13 +46,29 @@ import * as migration_20261014_140133_courses_align_practical_guides from './202
 import * as migration_20261014_163243_payload_3_90_security from './20261014_163243_payload_3_90_security';
 import * as migration_20261015_081200_news from './20261015_081200_news';
 import * as migration_20261015_100000_map_categories_link_field from './20261015_100000_map_categories_link_field';
+import * as migration_20261020_082631_home_contact_section from './20261020_082631_home_contact_section';
 import * as migration_20261021_090000_resync_glossary_id_sequences from './20261021_090000_resync_glossary_id_sequences';
 import * as migration_20261021_122314_pages from './20261021_122314_pages';
 import * as migration_20261021_150000_redirects_pages from './20261021_150000_redirects_pages';
 import * as migration_20261021_170000_medias_storage_fields from './20261021_170000_medias_storage_fields';
 import * as migration_20261023_123734_courses_format_duration_certifying from './20261023_123734_courses_format_duration_certifying';
 import * as migration_20261109_131910_courses_ditnd_id from './20261109_131910_courses_ditnd_id';
-import * as migration_20261116_100000_courses_page from './20261116_100000_courses_page';
+import * as migration_20261112_133034_home_sections from './20261112_133034_home_sections';
+import * as migration_20261117_094713_home_contact_block from './20261117_094713_home_contact_block';
+import * as migration_20261117_100612_home_header_title_only from './20261117_100612_home_header_title_only';
+import * as migration_20261117_120000_about_pages_to_pages from './20261117_120000_about_pages_to_pages';
+import * as migration_20261117_130000_menu_global from './20261117_130000_menu_global';
+import * as migration_20261117_135221_menu_locked_items from './20261117_135221_menu_locked_items';
+import * as migration_20261117_145900_footer_bottom_links from './20261117_145900_footer_bottom_links';
+import * as migration_20261118_085536_home_header_description from './20261118_085536_home_header_description';
+import * as migration_20261118_092009_footer_personal_data from './20261118_092009_footer_personal_data';
+import * as migration_20261118_101942_contact_schedule_time_slots from './20261118_101942_contact_schedule_time_slots';
+import * as migration_20261118_144315_journey_condition_texts from './20261118_144315_journey_condition_texts';
+import * as migration_20261119_124621_courses_short_title from './20261119_124621_courses_short_title';
+import * as migration_20261119_142533_page_sections_collection from './20261119_142533_page_sections_collection';
+import * as migration_20261119_164644_glossary_url from './20261119_164644_glossary_url';
+import * as migration_20261119_174744_contact_pages from './20261119_174744_contact_pages';
+import * as migration_20261120_091524_courses_page from './20261120_091524_courses_page';
 
 export const migrations = [
   {
@@ -296,6 +312,11 @@ export const migrations = [
     name: '20261015_100000_map_categories_link_field',
   },
   {
+    up: migration_20261020_082631_home_contact_section.up,
+    down: migration_20261020_082631_home_contact_section.down,
+    name: '20261020_082631_home_contact_section',
+  },
+  {
     up: migration_20261021_090000_resync_glossary_id_sequences.up,
     down: migration_20261021_090000_resync_glossary_id_sequences.down,
     name: '20261021_090000_resync_glossary_id_sequences',
@@ -326,8 +347,83 @@ export const migrations = [
     name: '20261109_131910_courses_ditnd_id',
   },
   {
-    up: migration_20261116_100000_courses_page.up,
-    down: migration_20261116_100000_courses_page.down,
-    name: '20261116_100000_courses_page',
+    up: migration_20261112_133034_home_sections.up,
+    down: migration_20261112_133034_home_sections.down,
+    name: '20261112_133034_home_sections',
+  },
+  {
+    up: migration_20261117_094713_home_contact_block.up,
+    down: migration_20261117_094713_home_contact_block.down,
+    name: '20261117_094713_home_contact_block',
+  },
+  {
+    up: migration_20261117_100612_home_header_title_only.up,
+    down: migration_20261117_100612_home_header_title_only.down,
+    name: '20261117_100612_home_header_title_only',
+  },
+  {
+    up: migration_20261117_120000_about_pages_to_pages.up,
+    down: migration_20261117_120000_about_pages_to_pages.down,
+    name: '20261117_120000_about_pages_to_pages',
+  },
+  {
+    up: migration_20261117_130000_menu_global.up,
+    down: migration_20261117_130000_menu_global.down,
+    name: '20261117_130000_menu_global',
+  },
+  {
+    up: migration_20261117_135221_menu_locked_items.up,
+    down: migration_20261117_135221_menu_locked_items.down,
+    name: '20261117_135221_menu_locked_items',
+  },
+  {
+    up: migration_20261117_145900_footer_bottom_links.up,
+    down: migration_20261117_145900_footer_bottom_links.down,
+    name: '20261117_145900_footer_bottom_links',
+  },
+  {
+    up: migration_20261118_085536_home_header_description.up,
+    down: migration_20261118_085536_home_header_description.down,
+    name: '20261118_085536_home_header_description',
+  },
+  {
+    up: migration_20261118_092009_footer_personal_data.up,
+    down: migration_20261118_092009_footer_personal_data.down,
+    name: '20261118_092009_footer_personal_data',
+  },
+  {
+    up: migration_20261118_101942_contact_schedule_time_slots.up,
+    down: migration_20261118_101942_contact_schedule_time_slots.down,
+    name: '20261118_101942_contact_schedule_time_slots',
+  },
+  {
+    up: migration_20261118_144315_journey_condition_texts.up,
+    down: migration_20261118_144315_journey_condition_texts.down,
+    name: '20261118_144315_journey_condition_texts',
+  },
+  {
+    up: migration_20261119_124621_courses_short_title.up,
+    down: migration_20261119_124621_courses_short_title.down,
+    name: '20261119_124621_courses_short_title',
+  },
+  {
+    up: migration_20261119_142533_page_sections_collection.up,
+    down: migration_20261119_142533_page_sections_collection.down,
+    name: '20261119_142533_page_sections_collection',
+  },
+  {
+    up: migration_20261119_164644_glossary_url.up,
+    down: migration_20261119_164644_glossary_url.down,
+    name: '20261119_164644_glossary_url',
+  },
+  {
+    up: migration_20261119_174744_contact_pages.up,
+    down: migration_20261119_174744_contact_pages.down,
+    name: '20261119_174744_contact_pages',
+  },
+  {
+    up: migration_20261120_091524_courses_page.up,
+    down: migration_20261120_091524_courses_page.down,
+    name: '20261120_091524_courses_page'
   },
 ];

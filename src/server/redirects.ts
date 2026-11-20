@@ -2,7 +2,11 @@ import configPromise from "@payload-config";
 import type { Redirect as NextRedirect } from "next";
 import { getPayload } from "payload";
 import type { Redirect } from "~/payload/payload-types";
-import { normalizeFromPath } from "~/payload/plugins/redirects";
+import {
+	REFERENCE_POPULATE,
+	normalizePath,
+	referenceHref,
+} from "~/utils/links";
 import { SECTION_FALLBACKS } from "~/utils/redirects";
 
 /**
@@ -18,23 +22,10 @@ import { SECTION_FALLBACKS } from "~/utils/redirects";
  * retiré par Next (308 natif) en amont.
  */
 
-const REFERENCE_BASE_PATHS: Record<string, string> = {
-	"practical-guides": "/fiches-pratiques",
-	courses: "/formations",
-	pages: "",
-};
-
 const resolveTarget = (to: Redirect["to"] | undefined): string | null => {
 	if (!to) return null;
 	if (to.type === "custom") return to.url?.trim() || null;
-	const ref = to.reference;
-	if (!ref || typeof ref.value !== "object" || !ref.value) return null;
-	// Un document dépublié ne doit pas devenir une cible (redirection vers un 404).
-	if (ref.value._status && ref.value._status !== "published") return null;
-	const basePath = REFERENCE_BASE_PATHS[ref.relationTo];
-	return basePath !== undefined && ref.value.slug
-		? `${basePath}/${ref.value.slug}`
-		: null;
+	return referenceHref(to.reference);
 };
 
 const withQuery = (target: string, resolvedUrl: string): string => {
@@ -52,12 +43,13 @@ const withQuery = (target: string, resolvedUrl: string): string => {
 export const findLegacyRedirect = async (
 	resolvedUrl: string,
 ): Promise<string | null> => {
-	const from = normalizeFromPath(resolvedUrl);
+	const from = normalizePath(resolvedUrl);
 	const payload = await getPayload({ config: configPromise });
 	const { docs } = await payload.find({
 		collection: "redirects",
 		where: { from: { equals: from } },
-		depth: 1,
+		depth: 2,
+		populate: REFERENCE_POPULATE,
 		limit: 1,
 		overrideAccess: true,
 	});
@@ -69,7 +61,7 @@ export const findLegacyRedirect = async (
 		)?.[1] ??
 		null;
 	if (!target) return null;
-	if (!target.startsWith("http") && normalizeFromPath(target) === from) {
+	if (!target.startsWith("http") && normalizePath(target) === from) {
 		return null;
 	}
 	return withQuery(target, resolvedUrl);
