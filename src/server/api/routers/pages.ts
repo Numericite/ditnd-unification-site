@@ -4,6 +4,7 @@ import { z } from "zod";
 import { createTRPCRouter, publicProcedure } from "~/server/api/trpc";
 import type { Media, Page, PageSection } from "~/payload/payload-types";
 import { pagePath } from "~/utils/pages";
+import { firstParagraphText } from "~/utils/tools";
 
 export interface AugmentedPage extends Omit<Page, "imageBanner" | "section"> {
 	imageBanner: Media | null;
@@ -42,6 +43,7 @@ export const findPublishedPageCards = async (
 			section: true,
 			imageBanner: true,
 			meta: true,
+			content: true,
 		},
 		populate: { "page-sections": { slug: true } },
 		where: {
@@ -60,7 +62,8 @@ export const findPublishedPageCards = async (
 		.map((page) => ({
 			id: page.id,
 			title: page.title,
-			description: page.meta?.description ?? null,
+			description:
+				page.meta?.description || firstParagraphText(page.content) || null,
 			imageUrl:
 				typeof page.imageBanner === "object"
 					? (page.imageBanner?.url ?? null)
