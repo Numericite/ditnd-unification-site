@@ -231,7 +231,8 @@ export const getServerSideProps: GetServerSideProps<Props> = async () => {
 
 	const sections = visibleSections.filter((section) => {
 		if (section.blockType === "newsCarousel") return latestNews.length > 0;
-		if (section.blockType === "newsletter") return NEWSLETTER_ENABLED;
+		if (section.blockType === "newsletter")
+			return NEWSLETTER_ENABLED || (section.socials ?? []).length > 0;
 		return true;
 	});
 
