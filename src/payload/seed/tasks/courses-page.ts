@@ -18,7 +18,7 @@ export default async function coursesPageTask(
 					description:
 						"Des formations proposées par des organismes, évaluées par les membres de notre commission puis référencées. Filtrez par trouble, thématique, public et format (formation en ligne, webinaire, présentiel).",
 					link: {
-						label: "Voir le catalogue des formations",
+						label: "Voir les formations",
 						url: "/formations",
 					},
 				},
