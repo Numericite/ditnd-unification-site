@@ -6,6 +6,7 @@ import Button from "@codegouvfr/react-dsfr/Button";
 import Header from "@codegouvfr/react-dsfr/Header";
 import {
 	chatbotOpenStore,
+	contactPathStore,
 	lockedMenuStore,
 	menuStore,
 	personStore,
@@ -137,7 +138,7 @@ export default function MainNavigation() {
 				<span aria-hidden="true" className={classes.separator}>
 					·
 				</span>
-				<a href="/contact-particuliers" className={classes.alertLink}>
+				<a href={contactPathStore.get()} className={classes.alertLink}>
 					Écrire au service
 				</a>
 			</div>
@@ -171,7 +172,7 @@ export default function MainNavigation() {
 							iconId={"fr-icon-mail-line"}
 							priority="secondary"
 							size="large"
-							linkProps={{ href: "/contact-particuliers" }}
+							linkProps={{ href: contactPathStore.get() }}
 						>
 							Contactez-nous
 						</Button>,

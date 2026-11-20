@@ -9,6 +9,6 @@ export const FOOTER_LOCKED_LINKS_BEFORE = [
 export const FOOTER_LOCKED_LINKS_AFTER = ["Paramètres d'affichage"];
 
 export const DEFAULT_FOOTER_LINKS = [
-	{ title: "Contact particuliers", internalUrl: "/contact-particuliers" },
-	{ title: "Contact professionnels", internalUrl: "/contact-pros-cra" },
+	{ title: "Contact particuliers", internalUrl: "/contact/particuliers" },
+	{ title: "Contact professionnels", internalUrl: "/contact/professionnels" },
 ];

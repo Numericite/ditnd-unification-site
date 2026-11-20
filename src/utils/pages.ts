@@ -14,6 +14,9 @@ export const sectionOf = (section: SectionRef) =>
 
 export const sectionPath = (slug: string) => `/${slug}`;
 
+/** Adresse de la page de contact tant que global-data ne l'a pas résolue. */
+export const DEFAULT_CONTACT_PATH = "/contact/particuliers";
+
 /** La rubrique doit être peuplée : un simple id donnerait l'URL racine. */
 export const pagePath = ({
 	slug,

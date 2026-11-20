@@ -124,7 +124,7 @@ const resolveTarget = async (
 	});
 	const doc = docs[0] as { id: number; _status?: string | null } | undefined;
 	if (!doc) {
-		// Une page statique (/glossaire, /contact-pros-cra…) n'est pas une page CMS.
+		// Une page statique (/glossaire, /accessibilite…) n'est pas une page CMS.
 		if (lookup.collection === "pages") return { type: "custom", url: to };
 		warnings.push(`cible introuvable : ${to}`);
 		return null;

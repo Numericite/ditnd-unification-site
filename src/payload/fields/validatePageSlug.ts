@@ -18,8 +18,6 @@ import {
 export const RESERVED_SLUGS = new Set([
 	// src/pages
 	"accessibilite",
-	"contact-particuliers",
-	"contact-pros-cra",
 	"donnees-personnelles",
 	"draft",
 	"fiches-pratiques",

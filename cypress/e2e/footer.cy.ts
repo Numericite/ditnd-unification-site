@@ -19,7 +19,7 @@ describe("Footer", () => {
 		cy.contains("#footer a", "Contact particuliers").should(
 			"have.attr",
 			"href",
-			"/contact-particuliers",
+			"/contact/particuliers",
 		);
 	});
 

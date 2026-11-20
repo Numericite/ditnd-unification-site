@@ -165,16 +165,6 @@ export default function PlanDuSite({ sections, rootPages }: Props) {
 										Données personnelles
 									</a>
 								</li>
-								<li>
-									<a className={fr.cx("fr-link")} href="/contact-particuliers">
-										Contact particuliers
-									</a>
-								</li>
-								<li>
-									<a className={fr.cx("fr-link")} href="/contact-pros-cra">
-										Contact professionnels
-									</a>
-								</li>
 							</ul>
 						</section>
 					</nav>
