@@ -16,7 +16,7 @@ describe("Main navigation", () => {
 				"Accueil",
 				"Je suis",
 				"Fiches pratiques",
-				"Se former",
+				"Me former",
 				"Annuaire",
 				"À propos",
 			]);

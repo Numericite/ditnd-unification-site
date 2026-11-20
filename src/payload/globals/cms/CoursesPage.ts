@@ -19,10 +19,12 @@ const missingWithSibling =
 			: true;
 
 const linkField = ({
+	name = "link",
 	label,
 	required,
 	description,
 }: {
+	name?: string;
 	label: string;
 	required: boolean;
 	description?: string;
@@ -48,7 +50,7 @@ const linkField = ({
 	};
 
 	return {
-		name: "link",
+		name,
 		type: "group",
 		label: { fr: label },
 		admin: { description },
@@ -132,6 +134,35 @@ export const CMSCoursesPage: GlobalConfig = {
 		{
 			type: "tabs",
 			tabs: [
+				{
+					label: "En-tête",
+					name: "header",
+					description: "Haut de la page : titre, présentation et image.",
+					fields: [
+						standardFields.title,
+						standardFields.longDescription,
+						{
+							...standardFields.image,
+							required: false,
+							admin: {
+								description:
+									"Facultative : sans image, le texte occupe toute la largeur.",
+							},
+						},
+						linkField({
+							name: "primaryLink",
+							label: "Bouton principal",
+							required: true,
+						}),
+						linkField({
+							name: "secondaryLink",
+							label: "Bouton secondaire",
+							required: false,
+							description:
+								"Facultatif : le bouton n'est affiché que si le texte et l'URL sont renseignés.",
+						}),
+					],
+				},
 				{
 					label: "Plateformes de formation",
 					name: "platforms",

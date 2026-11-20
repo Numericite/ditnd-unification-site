@@ -13,6 +13,11 @@ export const coursesPageMedias = {
 		filename: "131f787cc905d2e0684f1aff25430598ca15605c.jpg",
 		mimeType: "image/jpeg",
 	},
+	header: {
+		alt: "Un père et son enfant souriants à table devant un ordinateur portable",
+		filename: "47162c1600b9778b87a7e362a0e0eeddcbecac96.jpg",
+		mimeType: "image/jpeg",
+	},
 };
 
 const medias = [
@@ -53,6 +58,7 @@ const medias = [
 	},
 	coursesPageMedias.featured,
 	coursesPageMedias.left,
+	coursesPageMedias.header,
 ];
 
 export async function createMedia(

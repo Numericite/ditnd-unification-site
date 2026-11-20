@@ -8797,7 +8797,7 @@
           "type": "varchar",
           "primaryKey": false,
           "notNull": true,
-          "default": "'Se former'"
+          "default": "'Me former'"
         },
         "locked_items_courses_visible": {
           "name": "locked_items_courses_visible",
@@ -10984,6 +10984,48 @@
           "primaryKey": true,
           "notNull": true
         },
+        "header_title": {
+          "name": "header_title",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "header_description": {
+          "name": "header_description",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "header_image_id": {
+          "name": "header_image_id",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "header_primary_link_label": {
+          "name": "header_primary_link_label",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "header_primary_link_url": {
+          "name": "header_primary_link_url",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "header_secondary_link_label": {
+          "name": "header_secondary_link_label",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "header_secondary_link_url": {
+          "name": "header_secondary_link_url",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
         "platforms_title": {
           "name": "platforms_title",
           "type": "varchar",
@@ -11142,6 +11184,21 @@
         }
       },
       "indexes": {
+        "courses_page_header_header_image_idx": {
+          "name": "courses_page_header_header_image_idx",
+          "columns": [
+            {
+              "expression": "header_image_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        },
         "courses_page_platforms_featured_platforms_featured_image_idx": {
           "name": "courses_page_platforms_featured_platforms_featured_image_idx",
           "columns": [
@@ -11189,6 +11246,19 @@
         }
       },
       "foreignKeys": {
+        "courses_page_header_image_id_medias_id_fk": {
+          "name": "courses_page_header_image_id_medias_id_fk",
+          "tableFrom": "courses_page",
+          "tableTo": "medias",
+          "columnsFrom": [
+            "header_image_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "set null",
+          "onUpdate": "no action"
+        },
         "courses_page_platforms_featured_image_id_medias_id_fk": {
           "name": "courses_page_platforms_featured_image_id_medias_id_fk",
           "tableFrom": "courses_page",
@@ -11572,6 +11642,6 @@
     "tables": {},
     "columns": {}
   },
-  "id": "1eb9c8ac-e322-4b02-817c-5ae6edd7f6bc",
+  "id": "52be05db-06c4-4e38-b64e-dab79ea014a4",
   "prevId": "00000000-0000-0000-0000-000000000000"
 }

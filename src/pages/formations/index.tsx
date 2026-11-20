@@ -54,7 +54,7 @@ export default function Courses({
 					homeLinkProps={{
 						href: "/",
 					}}
-					segments={[{ label: "Se former", linkProps: { href: "/se-former" } }]}
+					segments={[{ label: "Me former", linkProps: { href: "/se-former" } }]}
 				/>
 				<PageContent>
 					<h1 className={fr.cx("fr-mb-4w")}>Formations</h1>

@@ -102,7 +102,7 @@ export default function PlanDuSite({ sections, rootPages }: Props) {
 								</li>
 								<li>
 									<a className={fr.cx("fr-link")} href="/se-former">
-										Se former
+										Me former
 									</a>
 								</li>
 								<li>

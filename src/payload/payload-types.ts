@@ -2090,6 +2090,31 @@ export interface Footer {
  */
 export interface CoursesPage {
 	id: number;
+	header: {
+		title: string;
+		description: string;
+		/**
+		 * Facultative : sans image, le texte occupe toute la largeur.
+		 */
+		image?: (number | null) | Media;
+		primaryLink: {
+			label: string;
+			/**
+			 * Lien interne (ex : /formations) ou externe (ex : https://...)
+			 */
+			url: string;
+		};
+		/**
+		 * Facultatif : le bouton n'est affiché que si le texte et l'URL sont renseignés.
+		 */
+		secondaryLink?: {
+			label?: string | null;
+			/**
+			 * Lien interne (ex : /formations) ou externe (ex : https://...)
+			 */
+			url?: string | null;
+		};
+	};
 	platforms: {
 		title: string;
 		description: string;
@@ -2528,6 +2553,25 @@ export interface FooterSelect<T extends boolean = true> {
  * via the `definition` "courses-page_select".
  */
 export interface CoursesPageSelect<T extends boolean = true> {
+	header?:
+		| T
+		| {
+				title?: T;
+				description?: T;
+				image?: T;
+				primaryLink?:
+					| T
+					| {
+							label?: T;
+							url?: T;
+					  };
+				secondaryLink?:
+					| T
+					| {
+							label?: T;
+							url?: T;
+					  };
+		  };
 	platforms?:
 		| T
 		| {

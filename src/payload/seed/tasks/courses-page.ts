@@ -2,11 +2,23 @@ import type { BasePayload } from "payload";
 
 export default async function coursesPageTask(
 	payload: BasePayload,
-	images: { featured: number; left: number } = { featured: 8, left: 9 },
+	images: { featured: number; left: number; header: number } = {
+		featured: 8,
+		left: 9,
+		header: 10,
+	},
 ) {
 	await payload.updateGlobal({
 		slug: "courses-page",
 		data: {
+			header: {
+				title: "Se former sur l'autisme et les troubles du neurodéveloppement",
+				description:
+					"Des formations fiables, répondant aux recommandations de bonnes pratiques professionnelles, sélectionnées par une commission d'experts, pour les personnes concernées, les proches et les professionnels.",
+				image: images.header,
+				primaryLink: { label: "Les formations", url: "/formations" },
+				secondaryLink: { label: "Critères de sélection", url: "/formations" },
+			},
 			platforms: {
 				title: "Les plateformes de formation",
 				description:

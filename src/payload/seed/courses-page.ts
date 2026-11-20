@@ -11,14 +11,15 @@ const run = async () => {
 	});
 
 	if (existing.platforms?.title) {
-		console.log("Page Se former : contenu déjà présent, rien à faire.");
+		console.log("Page Me former : contenu déjà présent, rien à faire.");
 		return;
 	}
 
 	const featured = await createMedia(payload, coursesPageMedias.featured);
 	const left = await createMedia(payload, coursesPageMedias.left);
-	await coursesPageTask(payload, { featured, left });
-	console.log("Page Se former : contenu par défaut créé.");
+	const header = await createMedia(payload, coursesPageMedias.header);
+	await coursesPageTask(payload, { featured, left, header });
+	console.log("Page Me former : contenu par défaut créé.");
 };
 
 try {
