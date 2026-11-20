@@ -25,6 +25,7 @@ describe("Admin — main menu", () => {
 		cy.get('[id^="items-row-"]')
 			.first()
 			.find(".array-field__row-header")
+			.first()
 			.should("have.text", "Me former");
 	});
 
