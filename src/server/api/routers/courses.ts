@@ -152,6 +152,7 @@ export const courseRouter = createTRPCRouter({
 						).drizzle.execute(sql`
 						SELECT doc_id
 						FROM courses_search_vectors
+						WHERE doc_id IN (SELECT id::text FROM courses WHERE _status = 'published')
 						ORDER BY embedding <=> ${JSON.stringify(queryEmbedding)}::vector
 						LIMIT ${VECTOR_SEARCH_CAP}
 					`);

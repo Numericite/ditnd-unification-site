@@ -150,6 +150,7 @@ export const aiRouter = createTRPCRouter({
 				ctx.payload.db.drizzle.execute(sql`
 						SELECT doc_id, text, embedding <=> ${embeddingJson}::vector as similarity_score
 						FROM courses_search_vectors
+						WHERE doc_id IN (SELECT id::text FROM courses WHERE _status = 'published')
 						ORDER BY embedding <=> ${embeddingJson}::vector
 						LIMIT ${ANN_CANDIDATES_PER_SOURCE}
 					`),
