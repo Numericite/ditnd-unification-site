@@ -1,7 +1,6 @@
 import { fr } from "@codegouvfr/react-dsfr";
 import Head from "next/head";
 import Breadcrumb from "@codegouvfr/react-dsfr/Breadcrumb";
-import { CallOut } from "@codegouvfr/react-dsfr/CallOut";
 import SearchBar from "@codegouvfr/react-dsfr/SearchBar";
 import Tabs from "@codegouvfr/react-dsfr/Tabs";
 import { useRouter } from "next/router";
@@ -133,25 +132,24 @@ export default function Recherche({ initialQuery, initialData }: Props) {
 									)}
 								>
 									{data?.glossary && (
-										<div className={fr.cx("fr-col-12")}>
-											<CallOut
-												className={fr.cx("fr-mb-0")}
-												title={data.glossary.name}
-												buttonProps={
-													data.glossary.link
-														? {
-																children: "Consulter la source",
-																linkProps: {
-																	href: data.glossary.link,
-																	target: "_blank",
-																	rel: "noopener noreferrer",
-																},
-															}
-														: undefined
-												}
-											>
-												{data.glossary.description}
-											</CallOut>
+										<div className={fr.cx("fr-col-12", "fr-mb-3w")}>
+											<div className={fr.cx("fr-highlight", "fr-ml-0")}>
+												<p className={fr.cx("fr-text--sm", "fr-mb-1v")}>
+													<strong>{data.glossary.name}</strong> :{" "}
+													{data.glossary.description}
+												</p>
+												{data.glossary.link && (
+													<a
+														href={data.glossary.link}
+														target="_blank"
+														rel="noopener noreferrer"
+														className={fr.cx("fr-link", "fr-link--sm")}
+														title={`Consulter la source : ${data.glossary.name}, nouvelle fenêtre`}
+													>
+														Consulter la source
+													</a>
+												)}
+											</div>
 										</div>
 									)}
 									{totalCount === 0 ? (
