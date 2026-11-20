@@ -1,9 +1,5 @@
 import { type MigrateUpArgs, type MigrateDownArgs, sql } from '@payloadcms/db-postgres'
 
-// Remplace 20261116_100000_courses_page, renommée pour passer après les
-// migrations de staging. Une base qui a joué l'ancienne a déjà la table, sans
-// l'en-tête : d'où IF NOT EXISTS, et les colonnes de l'en-tête ajoutées à part
-// puis remplies avant de devenir NOT NULL.
 const HEADER_TITLE = "Se former sur l'autisme et les troubles du neurodéveloppement"
 const HEADER_DESCRIPTION =
   "Des formations fiables, répondant aux recommandations de bonnes pratiques professionnelles, sélectionnées par une commission d'experts, pour les personnes concernées, les proches et les professionnels."
@@ -99,8 +95,6 @@ export async function up({ db }: MigrateUpArgs): Promise<void> {
   CREATE INDEX IF NOT EXISTS "courses_page_platforms_left_platforms_left_image_idx" ON "courses_page" USING btree ("platforms_left_image_id");
   CREATE INDEX IF NOT EXISTS "courses_page_platforms_right_platforms_right_image_idx" ON "courses_page" USING btree ("platforms_right_image_id");
 
-  -- L'entrée fixe du menu « Formations » (ou « Se former », libellé d'une
-  -- version précédente de cette branche) devient « Me former », sauf libellé personnalisé
   ALTER TABLE "menu" ALTER COLUMN "locked_items_courses_title" SET DEFAULT 'Me former';
   UPDATE "menu" SET "locked_items_courses_title" = 'Me former' WHERE "locked_items_courses_title" IN ('Formations', 'Se former');`)
 }
