@@ -13,6 +13,7 @@ import {
 	resolveLockedItems,
 	resolveMenu,
 } from "~/utils/menu";
+import { DEFAULT_CONTACT_PATH, pagePath } from "~/utils/pages";
 
 export type GlobalData = {
 	persons: PersonaTile[];
@@ -23,6 +24,7 @@ export type GlobalData = {
 	homeCMS: Home;
 	menu: NavItem[];
 	lockedMenu: LockedMenuItem[];
+	contactPath: string;
 };
 
 const TTL_MS = 60_000;
@@ -33,7 +35,7 @@ let inflight: Promise<GlobalData> | null = null;
 async function fetchGlobalData(): Promise<GlobalData> {
 	const payload = await getPayload({ config: payloadConfig });
 
-	const [personasResult, conditionsResult, footer, homeCMS, menu] =
+	const [personasResult, conditionsResult, footer, homeCMS, menu, contactPath] =
 		await Promise.all([
 			payload.find({
 				collection: "personas",
@@ -61,6 +63,27 @@ async function fetchGlobalData(): Promise<GlobalData> {
 					console.error("[global-data] menu failed:", err);
 					return { items: [] as NavItem[], locked: LOCKED_MENU_ITEMS };
 				}),
+			payload
+				.find({
+					collection: "pages",
+					where: {
+						module: { equals: "contact-particuliers" },
+						_status: { equals: "published" },
+					},
+					draft: false,
+					sort: "createdAt",
+					limit: 1,
+					depth: 1,
+					select: { slug: true, section: true },
+					populate: { "page-sections": { slug: true } },
+				})
+				.then(({ docs }) =>
+					docs[0] ? pagePath(docs[0]) : DEFAULT_CONTACT_PATH,
+				)
+				.catch((err) => {
+					console.error("[global-data] contact page failed:", err);
+					return DEFAULT_CONTACT_PATH;
+				}),
 		]);
 
 	const persons: PersonaTile[] = personasResult.docs.map((persona) => ({
@@ -86,6 +109,7 @@ async function fetchGlobalData(): Promise<GlobalData> {
 		homeCMS: homeCMS as Home,
 		menu: menu.items,
 		lockedMenu: menu.locked,
+		contactPath,
 	};
 }
 

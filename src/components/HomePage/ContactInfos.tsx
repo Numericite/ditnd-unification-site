@@ -14,6 +14,7 @@ import {
 	getParisNow,
 	toMinuteSlots,
 } from "~/utils/scheduleTime";
+import { contactPathStore } from "~/state/store";
 import { useKeepInViewport } from "~/utils/useKeepInViewport";
 
 type Schedule = NonNullable<HomeContactSection["phone"]["schedule"]>;
@@ -269,7 +270,7 @@ export function ContactInfos({ contactCMS }: Props) {
 									iconId="fr-icon-arrow-right-line"
 									iconPosition="right"
 									linkProps={{
-										href: contactForm?.url ?? "/contact/particuliers",
+										href: contactForm?.url ?? contactPathStore.get(),
 									}}
 								>
 									{contactForm?.buttonLabel ?? "Écrire au service"}

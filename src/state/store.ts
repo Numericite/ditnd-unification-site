@@ -11,6 +11,7 @@ import {
 	type NavItem,
 	type NavLink,
 } from "~/utils/menu";
+import { DEFAULT_CONTACT_PATH } from "~/utils/pages";
 
 export type TDH = {
 	id?: number;
@@ -36,5 +37,7 @@ export const footerLinksStore = observable<NavLink[]>([]);
 export const menuStore = observable<NavItem[]>([]);
 
 export const lockedMenuStore = observable<LockedMenuItem[]>(LOCKED_MENU_ITEMS);
+
+export const contactPathStore = observable<string>(DEFAULT_CONTACT_PATH);
 
 export const chatbotOpenStore = observable<boolean>(false);
