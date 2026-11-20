@@ -20,6 +20,7 @@ import {
 } from "~/state/store";
 import { tss } from "tss-react/dsfr";
 import ChatBot from "~/components/Chatbot/Chatbot";
+import { CHATBOT_ENABLED } from "~/utils/chatbot";
 import Matomo from "~/components/Matomo/Matomo";
 import "~/utils/styles/keyframes.css";
 import "~/utils/styles/contrast.css";
@@ -126,7 +127,7 @@ function App({ Component, pageProps }: AppPropsWithGlobal) {
 
 				<div className={cx(classes.chatBotsWrapper)}>
 					<BackToTop />
-					<ChatBot />
+					{CHATBOT_ENABLED && <ChatBot />}
 				</div>
 
 				<Footer
