@@ -10,6 +10,7 @@ import homeTask from "./tasks/home";
 import footerTask from "./tasks/footer";
 import menuTask from "./tasks/menu";
 import aboutTask from "./tasks/about";
+import contactTask from "./tasks/contact";
 import { seedPersonas } from "./tasks/personas";
 import { seedNews } from "./tasks/news";
 import { seedGlossary } from "./tasks/glossary";
@@ -48,6 +49,7 @@ const seedData = async () => {
 		await seedThemes(payload);
 		await seedMedia(payload);
 		await aboutTask(payload);
+		await contactTask(payload);
 		await seedConditions(payload);
 		await seedPersonas(payload);
 		await seedNews(payload);

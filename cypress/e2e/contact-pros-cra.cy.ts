@@ -1,6 +1,6 @@
 describe("Contact pros CRA form", () => {
 	beforeEach(() => {
-		cy.visit("/contact-pros-cra");
+		cy.visit("/contact/professionnels");
 	});
 
 	it("displays the form", () => {

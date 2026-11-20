@@ -13,6 +13,7 @@ import {
 	homeCMSStore,
 	menuStore,
 	lockedMenuStore,
+	contactPathStore,
 	personStore,
 	proStore,
 	tdhStore,
@@ -76,6 +77,7 @@ function seedStoresFromGlobalData(globalData: GlobalData) {
 	footerLinksStore.set(globalData.footerLinks);
 	menuStore.set(globalData.menu);
 	lockedMenuStore.set(globalData.lockedMenu);
+	contactPathStore.set(globalData.contactPath);
 }
 
 function App({ Component, pageProps }: AppPropsWithGlobal) {
