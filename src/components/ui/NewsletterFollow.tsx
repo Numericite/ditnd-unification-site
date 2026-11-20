@@ -6,7 +6,10 @@ import { trackEvent } from "~/components/Matomo/Matomo";
 import type { HomeNewsletterSection } from "~/payload/payload-types";
 import { api } from "~/utils/api";
 import { HONEYPOT_FIELD_NAME } from "~/utils/contactForm";
-import { newsletterSubscribeSchema } from "~/utils/newsletter";
+import {
+	NEWSLETTER_ENABLED,
+	newsletterSubscribeSchema,
+} from "~/utils/newsletter";
 
 const NETWORK_ERROR =
 	"Une erreur est survenue, votre inscription n'a pas pu être enregistrée. Veuillez réessayer plus tard.";
@@ -65,10 +68,8 @@ export default function NewsletterFollow({ content, className }: Props) {
 		}
 	};
 
-	return (
-		<Follow
-			className={`${fr.cx("fr-py-6w")}${className ? ` ${className}` : ""}`}
-			newsletter={{
+	const newsletter: FollowProps.Newsletter | undefined = NEWSLETTER_ENABLED
+		? {
 				title: content.title || undefined,
 				desc: content.description || undefined,
 				buttonProps: {
@@ -99,8 +100,21 @@ export default function NewsletterFollow({ content, className }: Props) {
 						},
 					},
 				},
-			}}
-			social={social}
+			}
+		: undefined;
+
+	const followContent = newsletter
+		? { newsletter, social }
+		: social
+			? { social }
+			: undefined;
+
+	if (!followContent) return null;
+
+	return (
+		<Follow
+			className={`${fr.cx("fr-py-6w")}${className ? ` ${className}` : ""}`}
+			{...followContent}
 		/>
 	);
 }
