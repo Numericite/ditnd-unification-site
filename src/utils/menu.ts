@@ -2,7 +2,7 @@ import type { Menu } from "~/payload/payload-types";
 import { normalizePath, referenceHref } from "./links";
 
 export type LockedMenuItem = {
-	key: "personas" | "practicalGuides" | "courses";
+	key: "personas" | "practicalGuides";
 	title: string;
 	activePaths: string[];
 } & ({ href: string; submenu?: never } | { submenu: "personas"; href?: never });
@@ -21,12 +21,6 @@ export const LOCKED_MENU_ITEMS: LockedMenuItem[] = [
 		title: "Fiches pratiques",
 		href: "/fiches-pratiques",
 		activePaths: ["/fiches-pratiques"],
-	},
-	{
-		key: "courses",
-		title: "Me former",
-		href: "/se-former",
-		activePaths: ["/se-former", "/formations"],
 	},
 ];
 

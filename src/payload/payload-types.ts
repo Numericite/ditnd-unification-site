@@ -1676,10 +1676,6 @@ export interface Menu {
 			title: string;
 			visible?: boolean | null;
 		};
-		courses: {
-			title: string;
-			visible?: boolean | null;
-		};
 	};
 	items?:
 		| {
@@ -2255,12 +2251,6 @@ export interface MenuSelect<T extends boolean = true> {
 							visible?: T;
 					  };
 				practicalGuides?:
-					| T
-					| {
-							title?: T;
-							visible?: T;
-					  };
-				courses?:
 					| T
 					| {
 							title?: T;
