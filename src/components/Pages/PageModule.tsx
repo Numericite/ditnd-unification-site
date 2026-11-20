@@ -14,7 +14,7 @@ export default function PageModule({ name }: { name: Page["module"] }) {
 	if (!Module) return null;
 
 	return (
-		<div className={fr.cx("fr-mt-6w")}>
+		<div className={fr.cx("fr-mt-6w", "fr-mb-10v")}>
 			<Module />
 		</div>
 	);
