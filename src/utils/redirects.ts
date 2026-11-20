@@ -4,6 +4,6 @@
 // Shared by src/server/redirects.ts and the page slug validation.
 export const SECTION_FALLBACKS: Array<[prefix: string, target: string]> = [
 	["/fiches-pratiques-autisme", "/fiches-pratiques"],
-	["/accueil-se-former-tnd", "/formations"],
+	["/accueil-se-former-tnd", "/se-former"],
 	["/accueil", "/filiere-tnd"],
 ];

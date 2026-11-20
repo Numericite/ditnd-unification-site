@@ -101,8 +101,13 @@ export default function PlanDuSite({ sections, rootPages }: Props) {
 									</a>
 								</li>
 								<li>
+									<a className={fr.cx("fr-link")} href="/se-former">
+										Me former
+									</a>
+								</li>
+								<li>
 									<a className={fr.cx("fr-link")} href="/formations">
-										Formations
+										Catalogue des formations
 									</a>
 								</li>
 								<li>

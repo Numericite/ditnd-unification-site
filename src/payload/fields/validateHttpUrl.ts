@@ -48,3 +48,19 @@ export const validateRequiredHttpUrl: TextFieldSingleValidation = (
 	if (textResult !== true) return textResult;
 	return validateHttpUrl(value, options);
 };
+
+export const validateHttpOrInternalUrl: TextFieldSingleValidation = (
+	value,
+	options,
+) => {
+	const textResult = text(value, options);
+	if (textResult !== true) return textResult;
+	if (!value) return true;
+	if (value.startsWith("/")) {
+		return (
+			INTERNAL_PATH.test(value) ||
+			"Le lien interne n'est pas valide (ex : /formations)."
+		);
+	}
+	return validateHttpUrl(value, options);
+};

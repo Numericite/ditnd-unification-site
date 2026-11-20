@@ -21,6 +21,7 @@
 		"smoke:redirects": "node scripts/smoke-test-redirects.mjs",
 		"seed:glossary": "PAYLOAD_CONFIG_PATH=./src/payload/payload.config.ts payload run ./src/payload/seed/glossary.ts",
 		"seed:cartography": "PAYLOAD_CONFIG_PATH=./src/payload/payload.config.ts payload run ./src/payload/seed/cartography.ts",
+		"seed:courses-page": "PAYLOAD_CONFIG_PATH=./src/payload/payload.config.ts payload run ./src/payload/seed/courses-page.ts",
 		"reindex:courses": "PAYLOAD_CONFIG_PATH=./src/payload/payload.config.ts payload run ./src/payload/seed/reindex-courses.ts",
 		"seed:menu": "PAYLOAD_CONFIG_PATH=./src/payload/payload.config.ts payload run ./src/payload/seed/menu.ts",
 		"test-chatbot:ab": "payload run tests/chabot/eval.ts -- --ab",

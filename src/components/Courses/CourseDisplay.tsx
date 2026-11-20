@@ -97,6 +97,7 @@ export default function CourseDisplay({ course }: Props) {
 						currentPageLabel={course.title}
 						homeLinkProps={{ href: "/" }}
 						segments={[
+							{ label: "Me former", linkProps: { href: "/se-former" } },
 							{
 								label: "Formations",
 								linkProps: { href: "/formations" },

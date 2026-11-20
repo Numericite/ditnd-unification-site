@@ -1,7 +1,7 @@
 const LOCKED = [
 	{ key: "personas", title: "Je suis" },
 	{ key: "practicalGuides", title: "Fiches pratiques" },
-	{ key: "courses", title: "Formations" },
+	{ key: "courses", title: "Me former" },
 ];
 
 describe("Admin — main menu", () => {

@@ -24,9 +24,9 @@ export const LOCKED_MENU_ITEMS: LockedMenuItem[] = [
 	},
 	{
 		key: "courses",
-		title: "Formations",
-		href: "/formations",
-		activePaths: ["/formations"],
+		title: "Me former",
+		href: "/se-former",
+		activePaths: ["/se-former", "/formations"],
 	},
 ];
 
