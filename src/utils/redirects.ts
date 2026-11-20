@@ -5,5 +5,5 @@
 export const SECTION_FALLBACKS: Array<[prefix: string, target: string]> = [
 	["/fiches-pratiques-autisme", "/fiches-pratiques"],
 	["/accueil-se-former-tnd", "/formations"],
-	["/accueil", "/filiere-tnd"],
+	["/accueil", "/reseau-tnd"],
 ];
