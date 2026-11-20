@@ -49,7 +49,6 @@ export const validateRequiredHttpUrl: TextFieldSingleValidation = (
 	return validateHttpUrl(value, options);
 };
 
-/** Lien interne (`/formations`) ou URL externe en http(s). */
 export const validateHttpOrInternalUrl: TextFieldSingleValidation = (
 	value,
 	options,
