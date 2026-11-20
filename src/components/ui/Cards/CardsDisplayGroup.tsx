@@ -1,5 +1,6 @@
 import type { AugmentedPracticalGuide } from "~/server/api/routers/practical-guides";
 import type { AugmentedCourse } from "~/server/api/routers/courses";
+import type { PageCard } from "~/server/api/routers/pages";
 import { courseFormatLabel } from "~/utils/courses";
 
 import { buildCourseRedirect } from "~/utils/tools";
@@ -8,15 +9,17 @@ import CardDisplay from "./CardDisplay";
 type Props = {
 	guides?: AugmentedPracticalGuide[];
 	courses?: AugmentedCourse[];
+	pages?: PageCard[];
 	className?: string;
 	titleAs?: "h2" | "h3" | "h4" | "h5" | "h6" | undefined;
-	kind: "guides" | "courses";
+	kind: "guides" | "courses" | "pages";
 	from?: string;
 };
 
 export default function CardsDisplayGroup({
 	guides,
 	courses,
+	pages,
 	kind,
 	className,
 	titleAs,
@@ -71,6 +74,29 @@ export default function CardsDisplayGroup({
 									conditions={guide.conditions ?? []}
 									themes={guide.themes}
 									redirect={buildGuideRedirect(guide.slug)}
+									titleAs={titleAs}
+								/>
+							</div>
+						))}
+					</>
+				);
+			case "pages":
+				return (
+					<>
+						{pages?.map((page) => (
+							<div
+								key={page.id}
+								className={className}
+								style={{ display: "flex" }}
+							>
+								<CardDisplay
+									title={page.title}
+									description={page.description ?? undefined}
+									imageUrl={page.imageUrl ?? undefined}
+									imageAlt=""
+									conditions={[]}
+									themes={[]}
+									redirect={page.href}
 									titleAs={titleAs}
 								/>
 							</div>

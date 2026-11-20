@@ -124,6 +124,7 @@ const afterChangePracticalGuide: CollectionAfterChangeHook = async ({
 				draft: false,
 				depth: 0,
 				select: { _status: true },
+				req,
 			});
 			// A published version still exists — keep its vectors intact
 			if (publishedDoc?._status === "published") {

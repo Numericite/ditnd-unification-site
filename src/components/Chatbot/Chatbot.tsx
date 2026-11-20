@@ -1,6 +1,6 @@
 import { fr } from "@codegouvfr/react-dsfr";
 import Button from "@codegouvfr/react-dsfr/Button";
-import { useState, useRef, useEffect, useCallback } from "react";
+import { Fragment, useState, useRef, useEffect, useCallback } from "react";
 import { tss } from "tss-react/dsfr";
 import { Input } from "@codegouvfr/react-dsfr/Input";
 import { trackEvent } from "~/components/Matomo/Matomo";
@@ -9,13 +9,16 @@ import { chatbotOpenStore } from "~/state/store";
 import { useSelector } from "@legendapp/state/react";
 import type { AugmentedPracticalGuide } from "~/server/api/routers/practical-guides";
 import type { AugmentedCourse } from "~/server/api/routers/courses";
+import type { PageCard } from "~/server/api/routers/pages";
+import type { RagSource } from "~/payload/services/queryExpansion";
 import Markdown from "./Markdown";
 
 type ChatResponse = {
 	content: string;
 	guides: AugmentedPracticalGuide[];
 	courses: AugmentedCourse[];
-	primarySource: "guides" | "courses";
+	pages: PageCard[];
+	primarySource: RagSource;
 };
 
 // Reject inputs longer than this without calling the LLM. Sized for a few-sentence question;
@@ -164,6 +167,7 @@ const ChatBot = () => {
 					"Votre question est un peu longue pour moi. Pourriez-vous la reformuler en quelques phrases ?",
 				guides: [],
 				courses: [],
+				pages: [],
 				primarySource: "guides",
 			});
 			return;
@@ -382,15 +386,53 @@ const ChatBot = () => {
 											</div>
 										);
 
-										return response.primarySource === "courses" ? (
+										const pagesSection = response.pages.length > 0 && (
+											<div className={cx(classes.sourcesSection)}>
+												<p className={cx(classes.sourcesLabel)}>
+													<i
+														className="fr-icon-file-text-line"
+														aria-hidden="true"
+													/>
+													Consultez les pages du site
+												</p>
+												<ul className={cx(classes.resourcesList)}>
+													{response.pages.map(({ id, title, href }) => (
+														<li key={id}>
+															<a
+																className={cx(classes.sourceCard)}
+																href={href}
+																target="_blank"
+																rel="noopener noreferrer"
+																aria-label={`${title}, nouvelle fenêtre`}
+																title={`${title}, nouvelle fenêtre`}
+															>
+																<span className={cx(classes.sourceCardTitle)}>
+																	{title}
+																</span>
+															</a>
+														</li>
+													))}
+												</ul>
+											</div>
+										);
+
+										const sections = {
+											guides: guidesSection,
+											courses: coursesSection,
+											pages: pagesSection,
+										};
+										const order: RagSource[] = [
+											response.primarySource,
+											...(["guides", "courses", "pages"] as const).filter(
+												(source) => source !== response.primarySource,
+											),
+										];
+
+										return (
 											<>
-												{coursesSection}
-												{guidesSection}
-											</>
-										) : (
-											<>
-												{guidesSection}
-												{coursesSection}
+												{order.map((source) => (
+													<Fragment key={source}>{sections[source]}</Fragment>
+												))}
 											</>
 										);
 									})()}

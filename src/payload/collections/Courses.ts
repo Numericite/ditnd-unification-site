@@ -104,6 +104,9 @@ const afterChangeCourse: CollectionAfterChangeHook = async ({ doc, req }) => {
 				collection: "courses",
 				id: doc.id,
 				draft: false,
+				depth: 0,
+				select: { _status: true },
+				req,
 			});
 			// A published version still exists — keep its vectors intact
 			if (publishedDoc?._status === "published") {
