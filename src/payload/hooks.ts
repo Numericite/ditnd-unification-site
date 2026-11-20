@@ -80,3 +80,34 @@ export const addCoursesTableVector: PostgresAdapter["afterSchemaInit"][number] =
 
 		return schema;
 	};
+
+export const addPagesTable: PostgresAdapter["beforeSchemaInit"][number] = ({
+	schema,
+}) => {
+	return {
+		...schema,
+		tables: {
+			...schema.tables,
+			pages_search_vectors: pgTable("pages_search_vectors", {
+				doc_id: text("doc_id").primaryKey(),
+				text: text("text").notNull(),
+			}),
+		},
+	};
+};
+
+export const addPagesTableVector: PostgresAdapter["afterSchemaInit"][number] =
+	({ schema, extendTable }) => {
+		const pagesVectorsTable = schema.tables.pages_search_vectors;
+
+		if (!pagesVectorsTable) return schema;
+
+		extendTable({
+			table: pagesVectorsTable,
+			columns: {
+				embedding: vector("embedding", { dimensions: 1024 }).notNull(),
+			},
+		});
+
+		return schema;
+	};

@@ -6,6 +6,12 @@ import type { AugmentedPracticalGuide } from "./practical-guides";
 import type { AugmentedCourse } from "./courses";
 import type { Glossary } from "~/payload/payload-types";
 import { practicalGuideCardSelect } from "~/payload/collections/PracticalGuides";
+import { findPublishedPageCards, type PageCard } from "./pages";
+
+// The site has only a handful of pages: without a cap, the top 30 would list
+// them all for any query. Calibrated on bge-m3: related pages sit around
+// 0.45-0.55 in cosine distance, unrelated ones from 0.58 up.
+const PAGE_MAX_DISTANCE = 0.55;
 
 export type GlossaryMatch = Pick<
 	Glossary,
@@ -15,6 +21,7 @@ export type GlossaryMatch = Pick<
 export type GlobalSearchResult = {
 	guides: AugmentedPracticalGuide[];
 	courses: AugmentedCourse[];
+	pages: PageCard[];
 	glossary: GlossaryMatch | null;
 };
 
@@ -37,7 +44,7 @@ export const searchRouter = createTRPCRouter({
 			const trimmedText = input.text.trim();
 
 			if (!trimmedText) {
-				return { guides: [], courses: [], glossary: null };
+				return { guides: [], courses: [], pages: [], glossary: null };
 			}
 
 			const glossaryKey = normalizeGlossaryKey(trimmedText);
@@ -69,37 +76,52 @@ export const searchRouter = createTRPCRouter({
 
 			let guideIds: number[] = [];
 			let courseIds: number[] = [];
+			let pageIds: number[] = [];
 
-			// Generate embedding once for both searches
+			// Generate embedding once for all searches
 			try {
 				const queryEmbedding = await generateEmbedding(trimmedText);
 				const embeddingJson = JSON.stringify(queryEmbedding);
 
-				// Query both vector tables in parallel
+				// Query all vector tables in parallel
 				// eslint-disable-next-line @typescript-eslint/no-explicit-any
 				const drizzle = (ctx.payload.db as any).drizzle;
 
-				const [guideVectorResults, courseVectorResults] = await Promise.all([
-					drizzle.execute(sql`
+				const [guideVectorResults, courseVectorResults, pageVectorResults] =
+					await Promise.all([
+						drizzle.execute(sql`
             SELECT doc_id
             FROM practical_guide_search_vectors
             WHERE doc_id IN (SELECT id::text FROM practical_guides WHERE _status = 'published')
             ORDER BY embedding <=> ${embeddingJson}::vector
             LIMIT 30
           `),
-					drizzle.execute(sql`
+						drizzle.execute(sql`
             SELECT doc_id
             FROM courses_search_vectors
+            WHERE doc_id IN (SELECT id::text FROM courses WHERE _status = 'published')
             ORDER BY embedding <=> ${embeddingJson}::vector
             LIMIT 30
           `),
-				]);
+						drizzle.execute(sql`
+            SELECT doc_id
+            FROM pages_search_vectors
+            WHERE doc_id IN (SELECT id::text FROM pages WHERE _status = 'published')
+              AND embedding <=> ${embeddingJson}::vector <= ${PAGE_MAX_DISTANCE}
+            ORDER BY embedding <=> ${embeddingJson}::vector
+            LIMIT 30
+          `),
+					]);
 
 				guideIds = (guideVectorResults.rows as { doc_id: string }[])
 					.map((row) => parseInt(row.doc_id, 10))
 					.filter((id) => !Number.isNaN(id));
 
 				courseIds = (courseVectorResults.rows as { doc_id: string }[])
+					.map((row) => parseInt(row.doc_id, 10))
+					.filter((id) => !Number.isNaN(id));
+
+				pageIds = (pageVectorResults.rows as { doc_id: string }[])
 					.map((row) => parseInt(row.doc_id, 10))
 					.filter((id) => !Number.isNaN(id));
 			} catch (err) {
@@ -155,8 +177,26 @@ export const searchRouter = createTRPCRouter({
 				courseIds = keywordResult.docs.map((doc) => doc.id);
 			}
 
+			if (pageIds.length === 0) {
+				const keywordResult = await ctx.payload.find({
+					collection: "pages",
+					limit: 0,
+					depth: 0,
+					draft: false,
+					select: { slug: true },
+					where: {
+						_status: { equals: "published" },
+						or: [
+							{ title: { contains: trimmedText } },
+							{ "meta.description": { contains: trimmedText } },
+						],
+					},
+				});
+				pageIds = keywordResult.docs.map((doc) => doc.id);
+			}
+
 			// Fetch actual documents in parallel
-			const [guidesResult, coursesResult] = await Promise.all([
+			const [guidesResult, coursesResult, pages] = await Promise.all([
 				guideIds.length > 0
 					? ctx.payload.find({
 							collection: "practical-guides",
@@ -185,6 +225,7 @@ export const searchRouter = createTRPCRouter({
 							},
 						})
 					: Promise.resolve({ docs: [] }),
+				findPublishedPageCards(ctx.payload, pageIds),
 			]);
 
 			// Preserve vector similarity order
@@ -210,6 +251,7 @@ export const searchRouter = createTRPCRouter({
 			return {
 				guides: sortedGuides as AugmentedPracticalGuide[],
 				courses: sortedCourses as AugmentedCourse[],
+				pages,
 				glossary,
 			};
 		}),
