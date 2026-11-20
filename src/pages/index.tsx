@@ -141,10 +141,10 @@ export default function Home({
 						<div className={classes.heroTitleRow}>
 							<img
 								className={classes.heroLogo}
-								src="/filiere-tnd-logo.png"
+								src="/reseau-tnd-logo.png"
 								alt=""
 								width={165}
-								height={173}
+								height={182}
 							/>
 							<h1 className={cx(fr.cx("fr-mb-0"), classes.heroTitle)}>
 								{homeCMS.header.title.split(/\r?\n/).map((line, index) => (
