@@ -158,7 +158,7 @@ export default function MainNavigation() {
 					operatorLogo={{
 						orientation: "horizontal",
 						imgUrl: "/tnd-logo.png",
-						alt: "Site national d'information sur l'autisme et ses troubles associés",
+						alt: "Site national d'informations sur l'autisme et ses troubles associés",
 					}}
 					classes={{
 						brandTop: classes.brandTop,
