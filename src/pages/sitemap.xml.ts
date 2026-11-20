@@ -12,6 +12,7 @@ import { pagePath, sectionPath } from "~/utils/pages";
 const STATIC_PATHS = [
 	"/",
 	"/fiches-pratiques",
+	"/se-former",
 	"/formations",
 	"/glossaire",
 	"/accessibilite",

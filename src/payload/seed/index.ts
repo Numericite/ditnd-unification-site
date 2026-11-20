@@ -10,6 +10,7 @@ import homeTask from "./tasks/home";
 import footerTask from "./tasks/footer";
 import menuTask from "./tasks/menu";
 import aboutTask from "./tasks/about";
+import coursesPageTask from "./tasks/courses-page";
 import contactTask from "./tasks/contact";
 import { seedPersonas } from "./tasks/personas";
 import { seedNews } from "./tasks/news";
@@ -49,6 +50,7 @@ const seedData = async () => {
 		await seedThemes(payload);
 		await seedMedia(payload);
 		await aboutTask(payload);
+		await coursesPageTask(payload);
 		await contactTask(payload);
 		await seedConditions(payload);
 		await seedPersonas(payload);

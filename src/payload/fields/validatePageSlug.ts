@@ -29,6 +29,7 @@ export const RESERVED_SLUGS = new Set([
 	"parcours",
 	"plan-du-site",
 	"recherche",
+	"se-former",
 	// Pages d'erreur Next
 	"404",
 	"500",

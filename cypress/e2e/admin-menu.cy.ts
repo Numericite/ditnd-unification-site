@@ -1,7 +1,6 @@
 const LOCKED = [
 	{ key: "personas", title: "Je suis" },
 	{ key: "practicalGuides", title: "Fiches pratiques" },
-	{ key: "courses", title: "Formations" },
 ];
 
 describe("Admin — main menu", () => {
@@ -26,7 +25,8 @@ describe("Admin — main menu", () => {
 		cy.get('[id^="items-row-"]')
 			.first()
 			.find(".array-field__row-header")
-			.should("have.text", "Annuaire");
+			.first()
+			.should("have.text", "Me former");
 	});
 
 	it("lets editors rename and hide the locked items", () => {

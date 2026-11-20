@@ -68,6 +68,8 @@ import * as migration_20261119_124621_courses_short_title from './20261119_12462
 import * as migration_20261119_142533_page_sections_collection from './20261119_142533_page_sections_collection';
 import * as migration_20261119_164644_glossary_url from './20261119_164644_glossary_url';
 import * as migration_20261119_174744_contact_pages from './20261119_174744_contact_pages';
+import * as migration_20261120_100101_courses_page from './20261120_100101_courses_page';
+import * as migration_20261120_105408_courses_menu_submenu from './20261120_105408_courses_menu_submenu';
 
 export const migrations = [
   {
@@ -418,6 +420,16 @@ export const migrations = [
   {
     up: migration_20261119_174744_contact_pages.up,
     down: migration_20261119_174744_contact_pages.down,
-    name: '20261119_174744_contact_pages'
+    name: '20261119_174744_contact_pages',
+  },
+  {
+    up: migration_20261120_100101_courses_page.up,
+    down: migration_20261120_100101_courses_page.down,
+    name: '20261120_100101_courses_page',
+  },
+  {
+    up: migration_20261120_105408_courses_menu_submenu.up,
+    down: migration_20261120_105408_courses_menu_submenu.down,
+    name: '20261120_105408_courses_menu_submenu'
   },
 ];
