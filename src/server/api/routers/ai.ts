@@ -15,6 +15,7 @@ import type { Condition } from "~/payload/payload-types";
 import { practicalGuideCardSelect } from "~/payload/collections/PracticalGuides";
 import type { AugmentedPracticalGuide } from "./practical-guides";
 import type { AugmentedCourse } from "./courses";
+import { findPublishedPageCards } from "./pages";
 
 // RAG tuning constants.
 // Pull a wide candidate set per source via ANN, then rerank with a cross-encoder.
@@ -54,6 +55,12 @@ type RetrievedChunk = {
 };
 
 type RerankedChunk = RetrievedChunk & { rerankScore: number };
+
+const SOURCE_LABELS: Record<Source, string> = {
+	guides: "Fiche pratique",
+	courses: "Formation",
+	pages: "Page du site",
+};
 
 // Filter reranked candidates by absolute floor AND relative gap, capped at top-K.
 function applyRelevanceGate(reranked: RerankedChunk[]): RerankedChunk[] {
@@ -127,42 +134,51 @@ export const aiRouter = createTRPCRouter({
 			const embedding = await generateEmbedding(retrievalQuery);
 			const embeddingJson = JSON.stringify(embedding);
 
-			// 2. Pull a wide candidate set from both vector tables (ANN recall).
-			const [retrieveGuideEmbeddings, retrieveCourseEmbeddings] =
-				await Promise.all([
-					ctx.payload.db.drizzle.execute(sql`
+			// 2. Pull a wide candidate set from every vector table (ANN recall).
+			const [
+				retrieveGuideEmbeddings,
+				retrieveCourseEmbeddings,
+				retrievePageEmbeddings,
+			] = await Promise.all([
+				ctx.payload.db.drizzle.execute(sql`
 						SELECT doc_id, text, embedding <=> ${embeddingJson}::vector as similarity_score
 						FROM practical_guide_search_vectors
 						WHERE doc_id IN (SELECT id::text FROM practical_guides WHERE _status = 'published')
 						ORDER BY embedding <=> ${embeddingJson}::vector
 						LIMIT ${ANN_CANDIDATES_PER_SOURCE}
 					`),
-					ctx.payload.db.drizzle.execute(sql`
+				ctx.payload.db.drizzle.execute(sql`
 						SELECT doc_id, text, embedding <=> ${embeddingJson}::vector as similarity_score
 						FROM courses_search_vectors
 						ORDER BY embedding <=> ${embeddingJson}::vector
 						LIMIT ${ANN_CANDIDATES_PER_SOURCE}
 					`),
-				]);
+				ctx.payload.db.drizzle.execute(sql`
+						SELECT doc_id, text, embedding <=> ${embeddingJson}::vector as similarity_score
+						FROM pages_search_vectors
+						WHERE doc_id IN (SELECT id::text FROM pages WHERE _status = 'published')
+						ORDER BY embedding <=> ${embeddingJson}::vector
+						LIMIT ${ANN_CANDIDATES_PER_SOURCE}
+					`),
+			]);
 
-			const guideCandidates: RetrievedChunk[] = (
-				retrieveGuideEmbeddings.rows as VectorRow[]
-			).map((row) => ({
-				docId: row.doc_id,
-				source: "guides",
-				text: row.text,
-				similarityScore: row.similarity_score,
-			}));
-			const courseCandidates: RetrievedChunk[] = (
-				retrieveCourseEmbeddings.rows as VectorRow[]
-			).map((row) => ({
-				docId: row.doc_id,
-				source: "courses",
-				text: row.text,
-				similarityScore: row.similarity_score,
-			}));
+			const toCandidates = (
+				rows: unknown[],
+				source: Source,
+			): RetrievedChunk[] =>
+				(rows as VectorRow[]).map((row) => ({
+					docId: row.doc_id,
+					source,
+					text: row.text,
+					similarityScore: row.similarity_score,
+				}));
+			const candidatesBySource: Record<Source, RetrievedChunk[]> = {
+				guides: toCandidates(retrieveGuideEmbeddings.rows, "guides"),
+				courses: toCandidates(retrieveCourseEmbeddings.rows, "courses"),
+				pages: toCandidates(retrievePageEmbeddings.rows, "pages"),
+			};
 
-			const mergedCandidates = [...guideCandidates, ...courseCandidates];
+			const mergedCandidates = Object.values(candidatesBySource).flat();
 
 			// 3. Rerank with bge-reranker-v2-m3, then apply absolute floor + relative gap.
 			//    On failure: log + fallback to cosine top-N per source so the chatbot stays available.
@@ -193,8 +209,12 @@ export const aiRouter = createTRPCRouter({
 					// Courses have less text than guides and reliably score lower in absolute
 					// terms — so when the user explicitly wants courses, we also force-surface
 					// the top-1 course (and vice versa) even if it didn't pass the gate.
+					// Site pages are general information: they pass on relevance alone,
+					// whatever the detected intent, and are forced only when targeted.
 					const gated = applyRelevanceGate(rerankedChunks);
-					const filtered = gated.filter((c) => intent.has(c.source));
+					const filtered = gated.filter(
+						(c) => c.source === "pages" || intent.has(c.source),
+					);
 
 					for (const source of targetSources) {
 						const hasSource = filtered.some((c) => c.source === source);
@@ -214,18 +234,9 @@ export const aiRouter = createTRPCRouter({
 						"[RAG] Rerank call failed, falling back to cosine-ranked candidates:",
 						err instanceof Error ? err.message : String(err),
 					);
-					const fallback: RetrievedChunk[] = [];
-					if (intent.has("guides")) {
-						fallback.push(
-							...guideCandidates.slice(0, FALLBACK_TOP_K_PER_SOURCE),
-						);
-					}
-					if (intent.has("courses")) {
-						fallback.push(
-							...courseCandidates.slice(0, FALLBACK_TOP_K_PER_SOURCE),
-						);
-					}
-					selectedChunks = fallback;
+					selectedChunks = targetSources.flatMap((source) =>
+						candidatesBySource[source].slice(0, FALLBACK_TOP_K_PER_SOURCE),
+					);
 					primarySource = targetSources[0] ?? "guides";
 				}
 			}
@@ -246,7 +257,15 @@ export const aiRouter = createTRPCRouter({
 				),
 			);
 
-			const [practicalGuides, courses] = await Promise.all([
+			const surfacedPageIds = Array.from(
+				new Set(
+					selectedChunks
+						.filter((c) => c.source === "pages")
+						.map((c) => c.docId),
+				),
+			);
+
+			const [practicalGuides, courses, pages] = await Promise.all([
 				surfacedGuideIds.length > 0
 					? ctx.payload.find({
 							collection: "practical-guides",
@@ -269,6 +288,7 @@ export const aiRouter = createTRPCRouter({
 							depth: 1,
 						})
 					: Promise.resolve({ docs: [] }),
+				findPublishedPageCards(ctx.payload, surfacedPageIds),
 			]);
 
 			const tmpPracticalGuides = (await Promise.all(
@@ -305,13 +325,9 @@ export const aiRouter = createTRPCRouter({
 			//    answer "no info found" per the system prompt.
 			const contextChunks =
 				selectedChunks.length === 0
-					? "(Aucune information pertinente trouvée dans les guides ou formations.)"
+					? "(Aucune information pertinente trouvée dans les fiches pratiques, formations ou pages du site.)"
 					: selectedChunks
-							.map((c) => {
-								const label =
-									c.source === "guides" ? "Fiche pratique" : "Formation";
-								return `[Source: ${label}]\n${c.text}`;
-							})
+							.map((c) => `[Source: ${SOURCE_LABELS[c.source]}]\n${c.text}`)
 							.join("\n\n---\n\n");
 
 			// 6. Load the chatbot system prompt.
@@ -335,7 +351,7 @@ export const aiRouter = createTRPCRouter({
 					{ role: "system", content: systemPrompt },
 					{
 						role: "user",
-						content: `Question : ${userMessage}\n\nInformations issues des guides pratiques et formations :\n\n${contextChunks}`,
+						content: `Question : ${userMessage}\n\nInformations issues des fiches pratiques, formations et pages du site :\n\n${contextChunks}`,
 					},
 				],
 				temperature: 0.1,
@@ -379,6 +395,7 @@ export const aiRouter = createTRPCRouter({
 				content: parsed.data.content,
 				guides: tmpPracticalGuides,
 				courses: tmpCourses,
+				pages,
 				primarySource,
 			};
 		}),

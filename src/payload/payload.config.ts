@@ -40,6 +40,8 @@ import {
 	addPracticalGuidesTableVector,
 	addCoursesTable,
 	addCoursesTableVector,
+	addPagesTable,
+	addPagesTableVector,
 	hideForNonAdmin,
 	isAdmin,
 } from "./hooks";
@@ -189,8 +191,12 @@ export default buildConfig({
 	},
 	db: postgresAdapter({
 		extensions: ["vector"],
-		beforeSchemaInit: [addPracticalGuidesTable, addCoursesTable],
-		afterSchemaInit: [addPracticalGuidesTableVector, addCoursesTableVector],
+		beforeSchemaInit: [addPracticalGuidesTable, addCoursesTable, addPagesTable],
+		afterSchemaInit: [
+			addPracticalGuidesTableVector,
+			addCoursesTableVector,
+			addPagesTableVector,
+		],
 		// Par défaut l'adaptateur pousse le schéma dès que NODE_ENV n'est pas
 		// "production" — ce qui inclut les `payload run` des scripts seed, qui ne
 		// positionnent aucun NODE_ENV et synchronisaient donc silencieusement toute

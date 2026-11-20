@@ -1,12 +1,15 @@
 const EXPANSION_MODEL = "mistralai/Mistral-Small-3.2-24B-Instruct-2506";
 
-export type RagSource = "guides" | "courses";
+export type RagSource = "guides" | "courses" | "pages";
+
+const RAG_SOURCES: readonly RagSource[] = ["guides", "courses", "pages"];
 
 const EXPANSION_SYSTEM_PROMPT = `Tu es un assistant de recherche pour un site sur les troubles du neurodéveloppement (TND).
 
-Le site contient deux types de ressources :
+Le site contient trois types de ressources :
 - "guides" : fiches pratiques expliquant des démarches, droits, conseils du quotidien, repérage, accompagnement
 - "courses" : formations, MOOC, webinaires, parcours destinés à apprendre ou se former
+- "pages" : pages d'information sur la Maison de l'autisme elle-même, ses missions, ses partenaires, le réseau des CRA, les moyens de la contacter
 
 À partir de la question de l'utilisateur :
 1. Détermine quel(s) type(s) de ressource(s) répondent le mieux à son besoin.
@@ -15,14 +18,15 @@ Le site contient deux types de ressources :
 Règles d'intent :
 - L'utilisateur veut apprendre, se former, suivre une formation/MOOC/webinaire, monter en compétence → ["courses"]
 - L'utilisateur cherche des démarches, droits, conseils, informations pratiques sur le quotidien → ["guides"]
-- La question est ambiguë, générale ou pourrait être servie par les deux → ["guides", "courses"]
+- L'utilisateur s'interroge sur la Maison de l'autisme, ses missions, ses partenaires, ou veut la contacter → ["pages"]
+- La question est ambiguë, générale ou pourrait être servie par les fiches comme par les formations → ["guides", "courses"]
 
 Règles de keywords :
 - Reste fidèle au sens de la question. Ne devine pas un trouble spécifique si l'utilisateur n'en mentionne aucun.
 - Privilégie le vocabulaire formel utilisé dans les ressources institutionnelles françaises (épuisement, aidant, MDPH, dépistage, etc.).
 
 Réponds uniquement en JSON :
-{ "targetSources": ["guides" et/ou "courses"], "keywords": "terme1, terme2, ..." }
+{ "targetSources": ["guides", "courses" et/ou "pages"], "keywords": "terme1, terme2, ..." }
 
 Exemples :
 
@@ -34,6 +38,9 @@ Réponse : { "targetSources": ["courses"], "keywords": "formation professionnell
 
 Question : "comment fonctionne la MDPH ?"
 Réponse : { "targetSources": ["guides"], "keywords": "MDPH, dossier MDPH, reconnaissance handicap, démarches administratives, allocation handicap" }
+
+Question : "comment contacter la Maison de l'autisme ?"
+Réponse : { "targetSources": ["pages"], "keywords": "contact, formulaire de contact, Maison de l'autisme, coordonnées, demande d'information" }
 
 Question : "mon enfant ne parle pas à 3 ans"
 Réponse : { "targetSources": ["guides", "courses"], "keywords": "retard de langage, troubles du langage, repérage précoce, développement de la parole, signes d'alerte" }
@@ -56,8 +63,8 @@ function getAlbertConfig(): { apiKey: string; apiUrl: string } {
 
 function parseTargetSources(raw: unknown): RagSource[] {
 	if (!Array.isArray(raw)) return ["guides", "courses"];
-	const valid = raw.filter(
-		(s): s is RagSource => s === "guides" || s === "courses",
+	const valid = raw.filter((s): s is RagSource =>
+		(RAG_SOURCES as readonly unknown[]).includes(s),
 	);
 	// Dedup while preserving order, default to both if nothing valid.
 	const seen = new Set<RagSource>();
@@ -73,7 +80,7 @@ function parseTargetSources(raw: unknown): RagSource[] {
 
 /**
  * Expands a colloquial user query via Albert chat:
- * - Detects which resource type(s) match the user's intent (guides, courses, or both)
+ * - Detects which resource type(s) match the user's intent (guides, courses, pages)
  * - Generates formal French synonyms / related terms to bridge to corpus vocabulary
  *
  * The expanded string is "<original question>\n\nTermes liés : <kw1, kw2, ...>".

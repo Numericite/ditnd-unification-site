@@ -22,6 +22,7 @@
 		"seed:glossary": "PAYLOAD_CONFIG_PATH=./src/payload/payload.config.ts payload run ./src/payload/seed/glossary.ts",
 		"seed:cartography": "PAYLOAD_CONFIG_PATH=./src/payload/payload.config.ts payload run ./src/payload/seed/cartography.ts",
 		"reindex:courses": "PAYLOAD_CONFIG_PATH=./src/payload/payload.config.ts payload run ./src/payload/seed/reindex-courses.ts",
+		"reindex:pages": "PAYLOAD_CONFIG_PATH=./src/payload/payload.config.ts payload run ./src/payload/seed/reindex-pages.ts",
 		"seed:menu": "PAYLOAD_CONFIG_PATH=./src/payload/payload.config.ts payload run ./src/payload/seed/menu.ts",
 		"test-chatbot:ab": "payload run tests/chabot/eval.ts -- --ab",
 		"test-chatbot:prompt": "payload run tests/chabot/eval.ts -- --prompt=",
