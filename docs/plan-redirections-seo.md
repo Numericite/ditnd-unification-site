@@ -86,7 +86,6 @@ Les URLs d'origine sont **préservées à l'identique** — aucune redirection �
 **Bascule et contrôles**
 - [ ] Bascule DNS de `maisondelautisme.gouv.fr` vers l'app Clever Cloud de la recette, qui devient la production avec sa base (redirections déjà en base, migrations appliquées au déploiement) ; certificat TLS du domaine actif
 - [ ] `BASE_URL=https://maisondelautisme.gouv.fr yarn smoke:redirects` : 0 échec
-- [ ] `yarn reindex:courses` sur la base de production, après le redéploiement (donc après `payload migrate`) : toutes les formations réindexées, 0 échec. Les migrations qui réécrivent les formations en SQL (ex. `20261023_123734`, « Type de ressource » → « Format » + « Durée ») ne passent pas par le hook d'indexation : sans ce script, une recherche « distanciel » ou « entre 1 et 3j » ne remonte rien. Vérifier ensuite une de ces recherches sur le site.
 - [ ] Un PDF `/app/uploads/...` s'ouvre
 - [ ] Absence de l'en-tête `X-Robots-Tag: noindex` et de la basic auth
 - [ ] Canonical et `robots.txt` sur le nouveau domaine
