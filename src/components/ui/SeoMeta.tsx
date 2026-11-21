@@ -33,7 +33,9 @@ export default function SeoMeta({
 		? rawImage
 		: `${SITE_URL}${rawImage}`;
 
-	const url = pathname ? `${SITE_URL}${pathname}` : undefined;
+	// URL canonique : sans query string ni ancre (filtres, pagination,
+	// paramètres de campagne), pour ne pas indexer une variante par combinaison.
+	const url = pathname ? `${SITE_URL}${pathname.split(/[?#]/)[0]}` : undefined;
 
 	return (
 		<Head>
@@ -56,6 +58,8 @@ export default function SeoMeta({
 			<meta key="og:site_name" property="og:site_name" content={SITE_NAME} />
 			<meta key="og:locale" property="og:locale" content="fr_FR" />
 			<meta key="og:image" property="og:image" content={finalImage} />
+			{/* Absolue uniquement : sans NEXT_PUBLIC_SITE_URL, pas de canonical. */}
+			{url && SITE_URL && <link key="canonical" rel="canonical" href={url} />}
 			{url && <meta key="og:url" property="og:url" content={url} />}
 			<meta
 				key="twitter:card"
