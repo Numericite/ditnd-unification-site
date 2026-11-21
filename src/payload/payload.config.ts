@@ -57,6 +57,7 @@ import { CMSHome } from "./globals/cms/Home";
 import { CMSFooter } from "./globals/cms/Footer";
 import { CMSMenu } from "./globals/cms/Menu";
 import { PracticalGuideViews } from "./collections/PracticalGuidesViews";
+import { withSafeLinkFeature } from "./features/link/safeLinkFeature";
 import { SimplifiedContentGenerator } from "./globals/SimplifiedContentGenerator";
 import {
 	type SectionRef,
@@ -171,7 +172,9 @@ export default buildConfig({
 		Users,
 	],
 	globals: [CMSMenu, CMSHome, CMSFooter, SimplifiedContentGenerator],
-	editor: lexicalEditor(),
+	editor: lexicalEditor({
+		features: ({ defaultFeatures }) => withSafeLinkFeature(defaultFeatures),
+	}),
 	i18n: {
 		supportedLanguages: { en, fr },
 		translations: {
