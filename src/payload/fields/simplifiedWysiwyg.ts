@@ -7,12 +7,13 @@ import {
 } from "@payloadcms/richtext-lexical";
 import type { Block } from "payload";
 import { DuplicateBlockFeature } from "../features/duplicateBlock/server";
+import { withSafeLinkFeature } from "../features/link/safeLinkFeature";
 
 const restrictedFeatures = (
 	defaultFeatures: FeatureProviderServer[],
 	fixedToolbar: boolean,
 ) => [
-	...defaultFeatures.filter(
+	...withSafeLinkFeature(defaultFeatures).filter(
 		(feature) =>
 			![
 				"align",
