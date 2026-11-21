@@ -15,7 +15,9 @@ export const getServerSideProps: GetServerSideProps = async ({ res }) => {
 	const body =
 		process.env.NEXT_PUBLIC_NOINDEX === "true"
 			? "User-agent: *\nDisallow: /\n"
-			: `User-agent: *\nDisallow: /admin\nDisallow: /api\nDisallow: /draft\n\nSitemap: ${siteUrl}/sitemap.xml\n`;
+			: // Les médias Payload sont servis sous /api/medias/file/ : on les
+				// laisse crawlables (Google Images, rendu des pages, PDF).
+				`User-agent: *\nAllow: /api/medias/file/\nDisallow: /admin\nDisallow: /api\nDisallow: /draft\n\nSitemap: ${siteUrl}/sitemap.xml\n`;
 
 	res.setHeader("Content-Type", "text/plain");
 	res.setHeader("Cache-Control", "public, s-maxage=3600");

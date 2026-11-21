@@ -57,7 +57,7 @@ Les URLs d'origine sont **préservées à l'identique** — aucune redirection �
 - [x] Upload `legacy-uploads/` vers S3 (préfixe `legacy/`) + bucket policy publique sur `legacy/*` (fait le 10/06/2026)
 - [x] Rewrite `/app/uploads/:path*` vers le bucket (next.config.js) — testé en dev
 - [x] `sitemap.xml` dynamique généré depuis Payload (`src/pages/sitemap.xml.ts` : fiches publiées, formations, parcours persona×condition, pages statiques). Liste statique à maintenir à chaque ajout ou renommage de page.
-- [x] `robots.txt` dynamique (`src/pages/robots.txt.ts`) : sitemap référencé, `Disallow: /admin /api /draft` ; `Disallow: /` intégral si `NEXT_PUBLIC_NOINDEX=true`
+- [x] `robots.txt` dynamique (`src/pages/robots.txt.ts`) : sitemap référencé, `Disallow: /admin /api /draft` (sauf `Allow: /api/medias/file/`, pour que les médias Payload restent crawlables) ; `Disallow: /` intégral si `NEXT_PUBLIC_NOINDEX=true`
 - [x] Sitemaps Yoast de l'ancien site (`/sitemap_index.xml`, `/page-sitemap.xml`, `/wp-sitemap.xml`) redirigés en 301 vers `/sitemap.xml` dans `next.config.js`.
 - [x] Couverture du sitemap Yoast vérifiée : ses 74 URLs sont toutes dans le CSV ou servies au même chemin.
 - [x] Cible de `/fiches-pratiques-autisme/communication-autisme` saisie dans l'admin (seule URL du sitemap Yoast sans cible dans le CSV)
@@ -86,17 +86,18 @@ Les URLs d'origine sont **préservées à l'identique** — aucune redirection �
 **Bascule et contrôles**
 - [ ] Bascule DNS de `maisondelautisme.gouv.fr` vers l'app Clever Cloud de la recette, qui devient la production avec sa base (redirections déjà en base, migrations appliquées au déploiement) ; certificat TLS du domaine actif
 - [ ] `BASE_URL=https://maisondelautisme.gouv.fr yarn smoke:redirects` : 0 échec
-- [ ] `yarn reindex:courses` sur la base de production, après le redéploiement (donc après `payload migrate`) : toutes les formations réindexées, 0 échec. Les migrations qui réécrivent les formations en SQL (ex. `20261023_123734`, « Type de ressource » → « Format » + « Durée ») ne passent pas par le hook d'indexation : sans ce script, une recherche « distanciel » ou « entre 1 et 3j » ne remonte rien. Vérifier ensuite une de ces recherches sur le site.
 - [ ] Un PDF `/app/uploads/...` s'ouvre
 - [ ] Absence de l'en-tête `X-Robots-Tag: noindex` et de la basic auth
 - [ ] Canonical et `robots.txt` sur le nouveau domaine
 - [ ] Connexion à `/admin`, envoi des deux formulaires de contact
 - [ ] Search Console : propriété toujours validée, retirer l'ancien sitemap Yoast, soumettre `/sitemap.xml`
+- [ ] Search Console : soumettre aussi `/sitemap-anciennes-urls.xml` (`src/pages/sitemap-anciennes-urls.xml.ts`, anciennes URLs de la collection `redirects` avec slash final et `<lastmod>` à la date de bascule) pour accélérer le recrawl des 301. Si la bascule n'a pas lieu le 23/11/2026, mettre à jour `LAUNCH_DATE` avant. Les alertes « URL avec redirection » sur ce sitemap sont attendues.
 
 ### Après le lancement (4 à 12 semaines)
 
 - [ ] Hebdo : rapport « Couverture / Pages » de Search Console — les anciennes URLs doivent passer en « Page avec redirection »
 - [ ] Hebdo : 404 crawlées par Google → ajouter les redirections manquantes dans Payload
+- [ ] Après 4 à 8 semaines, quand les anciennes URLs sont en « Page avec redirection » : retirer `/sitemap-anciennes-urls.xml` de la Search Console (la route peut rester)
 - [ ] Surveiller les positions sur les requêtes principales (fiches pratiques surtout : 38 des 74 pages)
 - [ ] Ne pas toucher aux cibles des 301 sans raison forte (stabilité = confiance Google)
 - [ ] À J+90 : revue finale, décider du sort des URLs jamais mappées (laisser en 404 ou 410)
