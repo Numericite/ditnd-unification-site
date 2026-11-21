@@ -18,6 +18,7 @@ import {
 	slugify,
 } from "./tools";
 import type { Condition, Media, Theme } from "~/payload/payload-types";
+import { internalDocToHref } from "./internalLinks";
 import type { AugmentedCourse } from "~/server/api/routers/courses";
 import CardDisplay from "~/components/ui/Cards/CardDisplay";
 import CardsCarousel from "~/components/ui/Cards/CardsCarousel";
@@ -193,25 +194,6 @@ export const tableConverter: JSXConverter<any> = ({
 	return <Table data={[...data]} headers={headers} />;
 };
 
-const internalDocToHref = (doc: {
-	relationTo: string;
-	value: unknown;
-}): string | undefined => {
-	const value = doc.value;
-	if (!value || typeof value !== "object") return undefined;
-
-	switch (doc.relationTo) {
-		case "practical-guides": {
-			const { slug } = value as { slug?: string | null };
-			return slug ? `/fiches-pratiques/${slug}` : undefined;
-		}
-		case "medias":
-			return (value as { url?: string | null }).url ?? undefined;
-		default:
-			return undefined;
-	}
-};
-
 export const linkConverter: JSXConverters<DefaultNodeTypes>["link"] = (
 	args,
 ) => {
@@ -226,6 +208,9 @@ export const linkConverter: JSXConverters<DefaultNodeTypes>["link"] = (
 		nodes: node.children ?? [],
 		converters,
 	});
+
+	// Cible introuvable : texte simple plutôt qu'un faux lien sans href.
+	if (!href) return <>{childrenJSX}</>;
 
 	if (node.fields.newTab) {
 		const linkText = lexicalToText(node.children ?? []);
