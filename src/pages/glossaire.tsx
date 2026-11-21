@@ -11,6 +11,11 @@ import payloadConfig from "~/payload/payload.config";
 import type { Glossary } from "~/payload/payload-types";
 import AlphabetNav from "~/components/ui/Glossary/AlphabetNav";
 import PageContent from "~/components/ui/PageContent";
+import {
+	OTHER_LETTER,
+	glossaryInitial,
+	normalizeGlossaryText,
+} from "~/utils/glossary";
 
 type Term = Pick<Glossary, "id" | "name" | "description" | "link">;
 
@@ -18,20 +23,8 @@ type Props = {
 	terms: Term[];
 };
 
-const OTHER_LETTER = "#";
-
-function normalize(text: string): string {
-	return text
-		.normalize("NFD")
-		.replace(/\p{Diacritic}/gu, "")
-		.toLowerCase()
-		.trim();
-}
-
-function getInitial(name: string): string {
-	const letter = normalize(name).charAt(0).toUpperCase();
-	return /[A-Z]/.test(letter) ? letter : OTHER_LETTER;
-}
+const normalize = normalizeGlossaryText;
+const getInitial = glossaryInitial;
 
 export default function GlossairePage({ terms }: Props) {
 	const { classes, cx } = useStyles();
