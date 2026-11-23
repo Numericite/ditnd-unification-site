@@ -27,6 +27,12 @@ const config = {
 	},
 	async redirects() {
 		return [
+			{
+				source: "/:path*",
+				has: [{ type: "host", value: "www\\.maisondelautisme\\.gouv\\.fr" }],
+				destination: "https://maisondelautisme.gouv.fr/:path*",
+				permanent: true,
+			},
 			...PAGE_REDIRECTS.map((redirect) => ({ ...redirect, permanent: true })),
 			// Sitemaps Yoast de l'ancien site WordPress.
 			...["/sitemap_index.xml", "/page-sitemap.xml", "/wp-sitemap.xml"].map(
