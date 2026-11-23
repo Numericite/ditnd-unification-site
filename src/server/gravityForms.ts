@@ -93,6 +93,7 @@ const FIELDS = {
 	message: "27",
 	lastName: "28",
 	firstName: "29",
+	mda: "31",
 } as const;
 
 // Only the labels spelled differently in the Gravity Forms select.
@@ -148,6 +149,8 @@ export function toGravityFormsEntry(
 		[FIELDS.message]: input.message,
 		[`${FIELDS.consent}.1`]: "1",
 		[`${FIELDS.consent}.2`]: CONSENT_LABEL,
+		// Lets the WP admin tell the entries coming from the Maison de l'autisme site apart.
+		[FIELDS.mda]: "true",
 	};
 
 	if (input.civility) entry[FIELDS.civility] = input.civility;

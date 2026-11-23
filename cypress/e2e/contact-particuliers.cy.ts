@@ -56,6 +56,7 @@ describe("Contact particuliers form", () => {
 				"15": "Diagnostic",
 				"16": "Usager concerné",
 				"24.1": "1",
+				"31": "true",
 			});
 			expect(entry).not.to.have.any.keys("1", "6", "17", "18", "23.1");
 
