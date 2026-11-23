@@ -32,8 +32,9 @@ const FIXED_PAGES: PlanLink[] = [
 
 /**
  * Plan du site calqué sur le menu principal : un groupe par élément du menu,
- * dans le même ordre. Un lien vers une rubrique liste ses pages. Les contenus
- * absents du menu suivent, pour que le plan reste exhaustif.
+ * dans le même ordre. Un lien vers une rubrique liste ses pages. Les pages
+ * absentes du menu rejoignent le sous-menu qui liste déjà des pages de leur
+ * rubrique, sinon elles suivent, pour que le plan reste exhaustif.
  */
 export const buildSitePlan = ({
 	lockedMenu,
@@ -104,11 +105,31 @@ export const buildSitePlan = ({
 		),
 	];
 
+	const internalHrefs = (item: SitePlanEntry): string[] => [
+		...(item.href && !item.external ? [normalizePath(item.href)] : []),
+		...item.children.flatMap(internalHrefs),
+	];
+
+	const submenuOf = (href: string) => {
+		const prefix = `${normalizePath(href)}/`;
+		return menuEntries.find(
+			(group) =>
+				!group.href &&
+				internalHrefs(group).some((path) => path.startsWith(prefix)),
+		);
+	};
+
 	const sectionEntries = sections.flatMap(({ section, links }) => {
 		const href = sectionPath(section.slug);
 		if (isListed(href)) return [];
 		const remaining = links.filter((link) => !isListed(link.href));
-		return remaining.length ? [entry(section.title, href)] : [];
+		if (!remaining.length) return [];
+		const submenu = submenuOf(href);
+		if (!submenu) return [entry(section.title, href)];
+		submenu.children.push(
+			...remaining.map((link) => entry(link.title, link.href)),
+		);
+		return [];
 	});
 
 	const otherPages = [...FIXED_PAGES, ...rootPages]

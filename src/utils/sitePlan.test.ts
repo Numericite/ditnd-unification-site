@@ -91,14 +91,27 @@ describe("buildSitePlan", () => {
 		]);
 	});
 
-	it("ajoute les rubriques absentes du menu, sans les pages déjà listées", () => {
-		assert.deepEqual(titles(plan).slice(7), [
-			"À propos",
-			"Aides",
-			"Autres pages",
+	it("rattache les pages oubliées au sous-menu de leur rubrique", () => {
+		assert.deepEqual(titles(find(plan, "À propos").children), [
+			"CRA",
+			"Glossaire",
+			"GNCRA",
 		]);
-		assert.deepEqual(titles(plan[7]?.children ?? []), ["GNCRA"]);
-		assert.equal(plan[7]?.href, "/a-propos");
+		assert.equal(plan.filter((e) => e.title === "À propos").length, 1);
+	});
+
+	it("ajoute les rubriques absentes du menu", () => {
+		assert.deepEqual(titles(plan).slice(7), ["Aides", "Autres pages"]);
+		assert.equal(find(plan, "Aides").href, "/aides");
+	});
+
+	it("ne range pas de pages sous un lien de premier niveau", () => {
+		const plan = buildSitePlan({
+			...input,
+			menu: [{ title: "CRA", href: "/a-propos/cra", external: false }],
+		});
+		assert.deepEqual(find(plan, "CRA").children, []);
+		assert.deepEqual(titles(find(plan, "À propos").children), ["GNCRA"]);
 	});
 
 	it("regroupe les pages restantes sans doublon", () => {
