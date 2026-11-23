@@ -147,6 +147,8 @@ export const DEPARTEMENT_VALUES = [
 ] as const;
 export type Departement = (typeof DEPARTEMENT_VALUES)[number];
 
+export const MESSAGE_MAX_LENGTH = 100_000;
+
 export const NEWSLETTER_LABEL =
 	"J'accepte de recevoir la newsletter Maison de l'autisme.";
 
@@ -182,7 +184,10 @@ export const contactParticuliersSchema = z.object({
 		.string()
 		.trim()
 		.min(15, "Votre message doit comporter au moins 15 caractères.")
-		.max(2000, "Votre message ne doit pas dépasser 2000 caractères.")
+		.max(
+			MESSAGE_MAX_LENGTH,
+			`Votre message ne doit pas dépasser ${MESSAGE_MAX_LENGTH.toLocaleString("fr-FR")} caractères.`,
+		)
 		.refine((val) => !INVALID_MESSAGE_REGEX.test(val), {
 			message: "Votre message contient des caractères spéciaux non autorisés.",
 		}),

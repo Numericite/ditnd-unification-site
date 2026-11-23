@@ -23,6 +23,7 @@ import {
 	contactParticuliersSchema,
 	DEPARTEMENT_VALUES,
 	type Departement,
+	MESSAGE_MAX_LENGTH,
 	NEWSLETTER_LABEL,
 	OBJET_VALUES,
 	type Objet,
@@ -64,8 +65,8 @@ const initialValues: FormShape = {
 
 const MESSAGE_HINT = (
 	<>
-		Votre message doit comporter entre 15 et 2000 caractères maximum. Certains
-		caractères spéciaux ne sont pas acceptés.
+		Votre message doit comporter au moins 15 caractères. Certains caractères
+		spéciaux ne sont pas acceptés.
 		<br />
 		Attention à vos données ! Si nous vous encourageons à nous donner votre
 		avis, nous vous demandons de ne pas nous transmettre d&apos;informations
@@ -407,7 +408,7 @@ export default function ContactParticuliersForm() {
 							onBlur: field.handleBlur,
 							required: true,
 							rows: 6,
-							maxLength: 2000,
+							maxLength: MESSAGE_MAX_LENGTH,
 							placeholder: "Votre message",
 							name: field.name,
 						}}
