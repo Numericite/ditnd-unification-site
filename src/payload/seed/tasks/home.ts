@@ -85,7 +85,7 @@ export default async function homeTask(payload: BasePayload) {
 					visible: true,
 					title: "Abonnez-vous à la lettre d'information",
 					description:
-						"Chaque mois, l'essentiel sur l'autisme et les troubles du neurodéveloppement : évolution de vos droits, démarches administratives, nouvelles ressources et événements de la Maison de l'autisme.",
+						"Chaque mois, l'essentiel sur l'autisme et ses troubles associés : évolution de vos droits, démarches administratives, nouvelles ressources et événements de la Maison de l'autisme.",
 					consentHint:
 						"En renseignant votre adresse électronique, vous acceptez de recevoir la lettre d'information de la Maison de l'autisme. Votre adresse sert uniquement à cet envoi et n'est transmise à aucun tiers. Vous pouvez vous désinscrire à tout moment grâce au lien présent en bas de chaque courriel.",
 					socialTitle: null,

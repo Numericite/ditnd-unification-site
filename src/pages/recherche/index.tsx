@@ -75,7 +75,7 @@ export default function Recherche({ initialQuery, initialData }: Props) {
 				</title>
 				<meta
 					name="description"
-					content="Recherchez parmi les fiches pratiques, formations et pages d'information sur l'autisme et les troubles du neurodéveloppement."
+					content="Recherchez parmi les fiches pratiques, formations et pages d'information sur l'autisme et ses troubles associés."
 				/>
 			</Head>
 			<div className={fr.cx("fr-container", "fr-pb-8w")}>

@@ -131,6 +131,7 @@ export default function Home({
 			<Head>
 				<title>Maison de l'autisme - Accueil</title>
 				<meta
+					key="description"
 					name="description"
 					content="Maison de l'autisme : site national d'informations pour toutes les personnes concernées par l'autisme et ses troubles associés. Retrouvez des ressources, diagnostics et formations."
 				/>

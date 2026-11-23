@@ -28,7 +28,7 @@ export default function PlanDuSite({ sections, rootPages }: Props) {
 				<title>Plan du site - Maison de l'autisme</title>
 				<meta
 					name="description"
-					content="Plan du site de la Maison de l'autisme : retrouvez l'ensemble des pages et rubriques du site national d'informations sur l'autisme et les troubles du neurodéveloppement."
+					content="Plan du site de la Maison de l'autisme : retrouvez l'ensemble des pages et rubriques du site national d'informations sur l'autisme et ses troubles associés."
 				/>
 			</Head>
 			<div className={fr.cx("fr-container", "fr-pb-10v")}>
@@ -91,8 +91,8 @@ export default function PlanDuSite({ sections, rootPages }: Props) {
 						<section className={cx(classes.section)}>
 							<h2>S'informer</h2>
 							<p className={fr.cx("fr-text--sm", "fr-mb-2w")}>
-								Ressources et informations sur l'autisme et les troubles du
-								neurodéveloppement
+								Ressources et informations sur l'autisme et ses troubles
+								associés
 							</p>
 							<ul className={cx(classes.sitemapList)}>
 								<li>

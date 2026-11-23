@@ -3,7 +3,7 @@ import Head from "next/head";
 const SITE_NAME = "Maison de l'autisme";
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? "";
 const DEFAULT_DESCRIPTION =
-	"Site national d'informations sur l'autisme et les troubles du neurodéveloppement.";
+	"Site national d'informations sur l'autisme et ses troubles associés.";
 const DEFAULT_IMAGE = "/main-logo.png";
 const NOINDEX = process.env.NEXT_PUBLIC_NOINDEX === "true";
 

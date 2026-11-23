@@ -112,8 +112,8 @@ function App({ Component, pageProps }: AppPropsWithGlobal) {
 	return (
 		<>
 			<SeoMeta
-				title="Maison de l'autisme - Informations sur l'autisme et les troubles du neurodéveloppement"
-				description="Site national d'informations pour toutes les personnes concernées par l'autisme et les troubles du neurodéveloppement. Retrouvez des ressources, diagnostics et formations."
+				title="Maison de l'autisme - Informations sur l'autisme et ses troubles associés"
+				description="Site national d'informations pour toutes les personnes concernées par l'autisme et ses troubles associés. Retrouvez des ressources, diagnostics et formations."
 				pathname={router.asPath}
 			/>
 			<ConsentBannerAndConsentManagement />
