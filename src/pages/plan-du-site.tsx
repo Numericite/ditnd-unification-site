@@ -3,13 +3,18 @@ import Breadcrumb from "@codegouvfr/react-dsfr/Breadcrumb";
 import Head from "next/head";
 import { tss } from "tss-react/dsfr";
 import PageContent from "~/components/ui/PageContent";
-import { personStore, tdhStore } from "~/state/store";
+import {
+	lockedMenuStore,
+	menuStore,
+	personStore,
+	tdhStore,
+} from "~/state/store";
 import { personsAndProTiles } from "~/utils/pictograms";
 import type { GetServerSideProps } from "next";
 import { createCaller } from "~/server/api/root";
 import { createTRPCContext } from "~/server/api/trpc";
 import type { SectionLink } from "~/server/pages";
-import { sectionPath } from "~/utils/pages";
+import { type SitePlanEntry, buildSitePlan } from "~/utils/sitePlan";
 
 type Props = {
 	sections: Awaited<ReturnType<typeof getSitemap>>["sections"];
@@ -19,8 +24,17 @@ type Props = {
 export default function PlanDuSite({ sections, rootPages }: Props) {
 	const { classes, cx } = useStyles();
 
-	const personas = personsAndProTiles(personStore.get());
-	const conditions = tdhStore.get();
+	const plan = buildSitePlan({
+		lockedMenu: lockedMenuStore.get(),
+		menu: menuStore.get(),
+		personas: personsAndProTiles(personStore.get()),
+		conditions: tdhStore.get(),
+		sections: sections.map(({ section, links }) => ({
+			section: { slug: section.slug, title: section.title },
+			links,
+		})),
+		rootPages,
+	});
 
 	return (
 		<>
@@ -41,111 +55,15 @@ export default function PlanDuSite({ sections, rootPages }: Props) {
 					<h1>Plan du site</h1>
 
 					<nav aria-label="Plan du site">
-						<section className={cx(classes.section)}>
-							<h2>Accueil</h2>
-							<ul className={cx(classes.sitemapList)}>
-								<li>
-									<a className={fr.cx("fr-link")} href="/">
-										Page d'accueil
-									</a>
-								</li>
-							</ul>
-						</section>
-
-						<section className={cx(classes.section)}>
-							<h2>Mon parcours</h2>
-							<p className={fr.cx("fr-text--sm", "fr-mb-2w")}>
-								Trouvez les ressources adaptées à votre profil
-							</p>
-							{personas.length > 0 && (
-								<ul className={cx(classes.sitemapList)}>
-									{personas.map((persona) => (
-										<li key={persona.slug}>
-											<a
-												className={fr.cx("fr-link")}
-												href={`/parcours/${persona.slug}`}
-											>
-												{persona.name}
-											</a>
-											{conditions && conditions.length > 0 && (
-												<ul className={cx(classes.sitemapList)}>
-													{conditions.map((condition) => (
-														<li key={`${persona.slug}-${condition.slug}`}>
-															<a
-																className={fr.cx("fr-link")}
-																href={`/parcours/${persona.slug}/${condition.slug.toLowerCase()}`}
-																title={`${persona.name} par le ${condition.acronym || condition.name}`}
-															>
-																par le {condition.acronym || condition.name}
-															</a>
-														</li>
-													))}
-												</ul>
-											)}
-										</li>
-									))}
-								</ul>
-							)}
-						</section>
-
-						<section className={cx(classes.section)}>
-							<h2>S'informer</h2>
-							<p className={fr.cx("fr-text--sm", "fr-mb-2w")}>
-								Ressources et informations sur l'autisme et ses troubles
-								associés
-							</p>
-							<ul className={cx(classes.sitemapList)}>
-								<li>
-									<a className={fr.cx("fr-link")} href="/fiches-pratiques">
-										Fiches pratiques
-									</a>
-								</li>
-								<li>
-									<a className={fr.cx("fr-link")} href="/formations">
-										Formations
-									</a>
-								</li>
-								<li>
-									<a className={fr.cx("fr-link")} href="/glossaire">
-										Glossaire
-									</a>
-								</li>
-							</ul>
-						</section>
-
-						{sections.map(({ section, links }) => (
-							<section key={section.id} className={cx(classes.section)}>
-								<h2>
-									<a href={sectionPath(section.slug)}>{section.title}</a>
-								</h2>
-								{links.length > 0 && (
-									<ul className={cx(classes.sitemapList)}>
-										{links.map((link) => (
-											<li key={link.href}>
-												<a className={fr.cx("fr-link")} href={link.href}>
-													{link.title}
-												</a>
-											</li>
-										))}
-									</ul>
-								)}
+						{plan.map((group, index) => (
+							<section
+								key={`${group.title}-${index}`}
+								className={cx(classes.section)}
+							>
+								<h2>{group.href ? <PlanLink entry={group} /> : group.title}</h2>
+								<PlanList entries={group.children} />
 							</section>
 						))}
-
-						{rootPages.length > 0 && (
-							<section className={cx(classes.section)}>
-								<h2>Autres pages</h2>
-								<ul className={cx(classes.sitemapList)}>
-									{rootPages.map((link) => (
-										<li key={link.href}>
-											<a className={fr.cx("fr-link")} href={link.href}>
-												{link.title}
-											</a>
-										</li>
-									))}
-								</ul>
-							</section>
-						)}
 
 						<section className={cx(classes.section)}>
 							<h2>Informations et obligations légales</h2>
@@ -171,6 +89,49 @@ export default function PlanDuSite({ sections, rootPages }: Props) {
 				</PageContent>
 			</div>
 		</>
+	);
+}
+
+function PlanLink({
+	entry,
+	className,
+}: {
+	entry: SitePlanEntry;
+	className?: string;
+}) {
+	return entry.external ? (
+		<a
+			className={className}
+			href={entry.href}
+			target="_blank"
+			rel="noopener noreferrer"
+			title={`${entry.title}, nouvelle fenêtre`}
+		>
+			{entry.title}
+		</a>
+	) : (
+		<a className={className} href={entry.href} title={entry.linkTitle}>
+			{entry.title}
+		</a>
+	);
+}
+
+function PlanList({ entries }: { entries: SitePlanEntry[] }) {
+	const { classes } = useStyles();
+	if (entries.length === 0) return null;
+	return (
+		<ul className={classes.sitemapList}>
+			{entries.map((entry, index) => (
+				<li key={`${entry.href ?? entry.title}-${index}`}>
+					{entry.href ? (
+						<PlanLink entry={entry} className={fr.cx("fr-link")} />
+					) : (
+						entry.title
+					)}
+					<PlanList entries={entry.children} />
+				</li>
+			))}
+		</ul>
 	);
 }
 
