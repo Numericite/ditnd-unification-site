@@ -24,7 +24,7 @@ export default function Accessibility({ title, content }: Props) {
 				<title>Accessibilité - Maison de l'autisme</title>
 				<meta
 					name="description"
-					content="Déclaration d'accessibilité du site Maison de l'autisme, site national d'informations sur l'autisme et les troubles du neurodéveloppement."
+					content="Déclaration d'accessibilité du site Maison de l'autisme, site national d'informations sur l'autisme et ses troubles associés."
 				/>
 			</Head>
 			<div className={fr.cx("fr-container", "fr-pb-10v")}>

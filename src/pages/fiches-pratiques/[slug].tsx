@@ -125,7 +125,7 @@ export default function PracticalGuidePage(props: Props) {
 	const metaDescription =
 		guide.meta?.description?.trim() ||
 		guide.description?.trim() ||
-		`${guide.title} : fiche pratique sur l'autisme et les troubles du neurodéveloppement.`;
+		`${guide.title} : fiche pratique sur l'autisme et ses troubles associés.`;
 	const metaImage =
 		metaImageObj?.url ||
 		guide.imageBanner?.url ||

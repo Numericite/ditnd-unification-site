@@ -105,12 +105,12 @@ export default function GlossairePage({ terms }: Props) {
 				<title>Glossaire - Maison de l'autisme</title>
 				<meta
 					name="description"
-					content="Glossaire des acronymes et termes utilisés dans le champ de l'autisme et des troubles du neurodéveloppement."
+					content="Glossaire des acronymes et termes utilisés dans le champ de l'autisme et de ses troubles associés."
 				/>
 				<meta property="og:title" content="Glossaire - Maison de l'autisme" />
 				<meta
 					property="og:description"
-					content="Glossaire des acronymes et termes utilisés dans le champ de l'autisme et des troubles du neurodéveloppement."
+					content="Glossaire des acronymes et termes utilisés dans le champ de l'autisme et de ses troubles associés."
 				/>
 				<meta property="og:type" content="article" />
 			</Head>
@@ -124,7 +124,7 @@ export default function GlossairePage({ terms }: Props) {
 					<h1>Glossaire</h1>
 					<p className={fr.cx("fr-text--lead")}>
 						Retrouvez les acronymes et termes utilisés dans le champ de
-						l'autisme et des troubles du neurodéveloppement.
+						l'autisme et de ses troubles associés.
 					</p>
 
 					<div className={fr.cx("fr-grid-row", "fr-mb-3w")}>

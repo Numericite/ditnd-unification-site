@@ -40,12 +40,12 @@ export default function Courses({
 		<>
 			<Head>
 				<title>
-					Formations sur l'autisme et les troubles du neurodéveloppement -
-					Maison de l'autisme
+					Formations sur l'autisme et ses troubles associés - Maison de
+					l'autisme
 				</title>
 				<meta
 					name="description"
-					content="Découvrez les formations sur l'autisme et les troubles du neurodéveloppement : sensibilisation, accompagnement, pratiques professionnelles."
+					content="Découvrez les formations sur l'autisme et ses troubles associés : sensibilisation, accompagnement, pratiques professionnelles."
 				/>
 			</Head>
 			<div className={fr.cx("fr-container", "fr-pb-8w")}>

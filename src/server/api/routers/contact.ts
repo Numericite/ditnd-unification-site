@@ -1,5 +1,11 @@
 import { TRPCError } from "@trpc/server";
 import { createTRPCRouter, publicProcedure } from "~/server/api/trpc";
+import {
+	createGravityFormsEntry,
+	getGravityFormsConfig,
+	sendGravityFormsNotifications,
+	toGravityFormsEntry,
+} from "~/server/gravityForms";
 import { contactParticuliersSchema } from "~/utils/contactParticuliers";
 import {
 	contactProsCraSchema,
@@ -106,77 +112,54 @@ export const contactRouter = createTRPCRouter({
 				return { ok: true };
 			}
 
-			const recipient = process.env.CONTACT_PARTICULIERS_RECIPIENT;
+			const config = getGravityFormsConfig();
 
-			if (!recipient) {
+			if (!config) {
 				ctx.payload.logger.error(
-					"CONTACT_PARTICULIERS_RECIPIENT env var is not set; cannot send contact email",
+					"GRAVITY_FORMS_* env vars are not set; cannot send contact-particuliers entry",
 				);
 				throw new TRPCError({
 					code: "INTERNAL_SERVER_ERROR",
-					message: "Email recipient not configured.",
+					message: "Gravity Forms not configured.",
 				});
 			}
 
-			const civility = input.civility ?? "Non renseigné";
-			const departement = input.departement?.trim()
-				? input.departement
-				: "Non renseigné";
-			const sexe = input.sexe ?? "Non renseigné";
-			const ageRange = input.ageRange ?? "Non renseigné";
-			const newsletter = input.newsletter ? "Oui" : "Non";
-
-			const subject = `[Contact particuliers] ${input.firstName} ${input.lastName} — ${input.objet}`;
-
-			const text = [
-				`Civilité : ${civility}`,
-				`Nom : ${input.firstName} ${input.lastName}`,
-				`Email : ${input.email}`,
-				`Département : ${departement}`,
-				`Objet de la demande : ${input.objet}`,
-				`Classification : ${input.classification}`,
-				`Sexe de la personne concernée : ${sexe}`,
-				`Tranche d'âge : ${ageRange}`,
-				`Inscription à la newsletter : ${newsletter}`,
-				"",
-				"Message :",
-				input.message,
-			].join("\n");
-
-			const html = `
-				<h2>Nouveau message du formulaire de contact particuliers</h2>
-				<ul>
-					<li><strong>Civilité :</strong> ${escapeHtml(civility)}</li>
-					<li><strong>Nom :</strong> ${escapeHtml(input.firstName)} ${escapeHtml(input.lastName)}</li>
-					<li><strong>Email :</strong> <a href="mailto:${escapeHtml(input.email)}">${escapeHtml(input.email)}</a></li>
-					<li><strong>Département :</strong> ${escapeHtml(departement)}</li>
-					<li><strong>Objet de la demande :</strong> ${escapeHtml(input.objet)}</li>
-					<li><strong>Classification :</strong> ${escapeHtml(input.classification)}</li>
-					<li><strong>Sexe de la personne concernée :</strong> ${escapeHtml(sexe)}</li>
-					<li><strong>Tranche d'âge :</strong> ${escapeHtml(ageRange)}</li>
-					<li><strong>Inscription à la newsletter :</strong> ${escapeHtml(newsletter)}</li>
-				</ul>
-				<h3>Message</h3>
-				<p>${escapeHtml(input.message).replace(/\n/g, "<br />")}</p>
-			`;
-
+			let entryId: number | undefined;
 			try {
-				await ctx.payload.sendEmail({
-					to: recipient,
-					replyTo: input.email,
-					subject,
-					text,
-					html,
-				});
+				entryId = await createGravityFormsEntry(
+					config,
+					toGravityFormsEntry(input),
+				);
+				ctx.payload.logger.info(
+					{ entryId },
+					"Contact particuliers: Gravity Forms entry created",
+				);
 			} catch (err) {
 				ctx.payload.logger.error(
 					{ err },
-					"Failed to send contact-particuliers email",
+					"Failed to create contact-particuliers Gravity Forms entry",
 				);
 				throw new TRPCError({
 					code: "INTERNAL_SERVER_ERROR",
-					message: "Failed to send email.",
+					message: "Failed to send message.",
 				});
+			}
+
+			if (entryId === undefined) {
+				ctx.payload.logger.error(
+					"Contact particuliers: Gravity Forms returned no entry id, notifications not sent",
+				);
+				return { ok: true };
+			}
+
+			// The entry is already saved in the WP back-office, so a notification failure must not report the message as lost.
+			try {
+				await sendGravityFormsNotifications(config, entryId);
+			} catch (err) {
+				ctx.payload.logger.error(
+					{ err, entryId },
+					"Failed to send contact-particuliers Gravity Forms notifications",
+				);
 			}
 
 			return { ok: true };

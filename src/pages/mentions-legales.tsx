@@ -24,7 +24,7 @@ export default function LegalNotice({ title, content }: Props) {
 				<title>Mentions légales - Maison de l'autisme</title>
 				<meta
 					name="description"
-					content="Mentions légales du site Maison de l'autisme, site national d'informations sur l'autisme et les troubles du neurodéveloppement."
+					content="Mentions légales du site Maison de l'autisme, site national d'informations sur l'autisme et ses troubles associés."
 				/>
 			</Head>
 			<div className={fr.cx("fr-container", "fr-pb-10v")}>

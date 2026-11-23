@@ -12,16 +12,19 @@ import { trackEvent } from "~/components/Matomo/Matomo";
 import Honeypot from "~/components/ui/Honeypot";
 import { api } from "~/utils/api";
 import { zodValidator } from "~/utils/contactForm";
-import { NEWSLETTER_ENABLED } from "~/utils/newsletter";
 import {
 	AGE_RANGE_VALUES,
 	type AgeRange,
 	CIVILITY_VALUES,
 	type Civility,
 	CLASSIFICATION_VALUES,
+	CONSENT_LABEL,
 	type Classification,
 	contactParticuliersSchema,
 	DEPARTEMENT_VALUES,
+	type Departement,
+	MESSAGE_MAX_LENGTH,
+	NEWSLETTER_LABEL,
 	OBJET_VALUES,
 	type Objet,
 	SEXE_VALUES,
@@ -33,7 +36,7 @@ type FormShape = {
 	lastName: string;
 	firstName: string;
 	email: string;
-	departement: string;
+	departement: Departement | "";
 	objet: Objet | "";
 	classification: Classification | "";
 	sexe: Sexe | "";
@@ -62,8 +65,8 @@ const initialValues: FormShape = {
 
 const MESSAGE_HINT = (
 	<>
-		Votre message doit comporter entre 15 et 2000 caractères maximum. Certains
-		caractères spéciaux ne sont pas acceptés.
+		Votre message doit comporter au moins 15 caractères. Certains caractères
+		spéciaux ne sont pas acceptés.
 		<br />
 		Attention à vos données ! Si nous vous encourageons à nous donner votre
 		avis, nous vous demandons de ne pas nous transmettre d&apos;informations
@@ -267,7 +270,8 @@ export default function ContactParticuliersForm() {
 						label="Département (optionnel)"
 						nativeSelectProps={{
 							value: field.state.value,
-							onChange: (e) => field.handleChange(e.target.value),
+							onChange: (e) =>
+								field.handleChange(e.target.value as Departement | ""),
 							onBlur: field.handleBlur,
 							name: field.name,
 						}}
@@ -404,7 +408,7 @@ export default function ContactParticuliersForm() {
 							onBlur: field.handleBlur,
 							required: true,
 							rows: 6,
-							maxLength: 2000,
+							maxLength: MESSAGE_MAX_LENGTH,
 							placeholder: "Votre message",
 							name: field.name,
 						}}
@@ -412,25 +416,22 @@ export default function ContactParticuliersForm() {
 				)}
 			</form.Field>
 
-			{NEWSLETTER_ENABLED && (
-				<form.Field name="newsletter">
-					{(field) => (
-						<Checkbox
-							options={[
-								{
-									label:
-										"J'accepte de recevoir la newsletter Maison de l'autisme.",
-									nativeInputProps: {
-										name: field.name,
-										checked: field.state.value,
-										onChange: (e) => field.handleChange(e.target.checked),
-									},
+			<form.Field name="newsletter">
+				{(field) => (
+					<Checkbox
+						options={[
+							{
+								label: NEWSLETTER_LABEL,
+								nativeInputProps: {
+									name: field.name,
+									checked: field.state.value,
+									onChange: (e) => field.handleChange(e.target.checked),
 								},
-							]}
-						/>
-					)}
-				</form.Field>
-			)}
+							},
+						]}
+					/>
+				)}
+			</form.Field>
 
 			<form.Field name="website">
 				{(field) => (
@@ -449,8 +450,7 @@ export default function ContactParticuliersForm() {
 						stateRelatedMessage={firstErrorMessage(field.state.meta.errors)}
 						options={[
 							{
-								label:
-									"En soumettant ce formulaire j'accepte que les informations saisies soient exploitées pour permettre de me recontacter.",
+								label: CONSENT_LABEL,
 								nativeInputProps: {
 									name: field.name,
 									checked: field.state.value,

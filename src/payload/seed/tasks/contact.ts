@@ -8,7 +8,7 @@ const contactPages = [
 		module: "contact-particuliers",
 		content: legalsContent.contactParticuliers,
 		description:
-			"Adressez vos questions sur l'autisme et les troubles du neurodéveloppement à la Maison de l'autisme.",
+			"Adressez vos questions sur l'autisme et ses troubles associés à la Maison de l'autisme.",
 	},
 	{
 		slug: "professionnels",

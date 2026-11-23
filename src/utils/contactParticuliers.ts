@@ -40,9 +40,6 @@ export const CLASSIFICATION_VALUES = [
 	"Professionnel encadrant",
 	"Enseignant",
 	"Membre associatif",
-	"Journaliste",
-	"Partenaire",
-	"Autre",
 ] as const;
 export type Classification = (typeof CLASSIFICATION_VALUES)[number];
 
@@ -146,8 +143,17 @@ export const DEPARTEMENT_VALUES = [
 	"972 - Martinique",
 	"973 - Guyane",
 	"974 - La Réunion",
-	"975 - Mayotte",
+	"976 - Mayotte",
 ] as const;
+export type Departement = (typeof DEPARTEMENT_VALUES)[number];
+
+export const MESSAGE_MAX_LENGTH = 100_000;
+
+export const NEWSLETTER_LABEL =
+	"J'accepte de recevoir la newsletter Maison de l'autisme.";
+
+export const CONSENT_LABEL =
+	"En soumettant ce formulaire j'accepte que les informations saisies soient exploitées pour permettre de me recontacter.";
 
 export const contactParticuliersSchema = z.object({
 	civility: optionalEnum(CIVILITY_VALUES),
@@ -165,7 +171,7 @@ export const contactParticuliersSchema = z.object({
 			"Veuillez renseigner une adresse email valide, par exemple : prenom.nom@exemple.fr.",
 		)
 		.max(254),
-	departement: z.string().trim().max(255).optional(),
+	departement: optionalEnum(DEPARTEMENT_VALUES),
 	objet: z.enum(OBJET_VALUES, {
 		error: "Veuillez sélectionner l'objet de votre demande.",
 	}),
@@ -178,7 +184,10 @@ export const contactParticuliersSchema = z.object({
 		.string()
 		.trim()
 		.min(15, "Votre message doit comporter au moins 15 caractères.")
-		.max(2000, "Votre message ne doit pas dépasser 2000 caractères.")
+		.max(
+			MESSAGE_MAX_LENGTH,
+			`Votre message ne doit pas dépasser ${MESSAGE_MAX_LENGTH.toLocaleString("fr-FR")} caractères.`,
+		)
 		.refine((val) => !INVALID_MESSAGE_REGEX.test(val), {
 			message: "Votre message contient des caractères spéciaux non autorisés.",
 		}),
