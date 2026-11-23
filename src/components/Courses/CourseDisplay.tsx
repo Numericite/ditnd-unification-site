@@ -55,18 +55,18 @@ export default function CourseDisplay({ course }: Props) {
 				<dl className={classes.infosList}>
 					{practicalInfos.map((info) => (
 						<div key={info.label} className={classes.infoItem}>
-							<span
-								className={cx(fr.cx(info.iconId), classes.infoIcon)}
-								aria-hidden="true"
-							/>
-							<div>
-								<dt className={classes.infoLabel}>{info.label}</dt>
-								{info.values.map((value) => (
-									<dd key={value} className={classes.infoValue}>
-										{value}
-									</dd>
-								))}
-							</div>
+							<dt className={classes.infoLabel}>
+								<span
+									className={cx(fr.cx(info.iconId), classes.infoIcon)}
+									aria-hidden="true"
+								/>
+								{info.label}
+							</dt>
+							{info.values.map((value) => (
+								<dd key={value} className={classes.infoValue}>
+									{value}
+								</dd>
+							))}
 						</div>
 					))}
 				</dl>
@@ -240,13 +240,13 @@ const useStyles = tss.withName({ CourseDisplay }).create(() => ({
 		padding: 0,
 	},
 	infoItem: {
-		display: "flex",
-		alignItems: "flex-start",
-		gap: fr.spacing("3v"),
+		position: "relative",
+		paddingLeft: `calc(1.5rem + ${fr.spacing("3v")})`,
 	},
 	infoIcon: {
-		flexShrink: 0,
-		marginTop: fr.spacing("3v"),
+		position: "absolute",
+		top: fr.spacing("3v"),
+		left: 0,
 		color: fr.colors.decisions.text.actionHigh.blueFrance.default,
 	},
 	infoLabel: {
