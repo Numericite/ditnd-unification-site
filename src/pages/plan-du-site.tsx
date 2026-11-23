@@ -116,7 +116,7 @@ function PlanLink({
 			{entry.title}
 		</a>
 	) : (
-		<a className={className} href={entry.href}>
+		<a className={className} href={entry.href} title={entry.linkTitle}>
 			{entry.title}
 		</a>
 	);

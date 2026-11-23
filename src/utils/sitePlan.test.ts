@@ -77,6 +77,7 @@ describe("buildSitePlan", () => {
 		assert.deepEqual(persona?.children[0], {
 			title: "par le TSA",
 			href: "/parcours/parent/tsa",
+			linkTitle: "Je suis parent par le TSA",
 			children: [],
 		});
 	});
@@ -100,6 +101,49 @@ describe("buildSitePlan", () => {
 		assert.equal(plan.filter((e) => e.title === "À propos").length, 1);
 	});
 
+	it("lie la page de la rubrique au sous-menu qui porte son nom", () => {
+		assert.equal(find(plan, "À propos").href, "/a-propos");
+	});
+
+	it("ajoute la page de la rubrique au sous-menu qui ne porte pas son nom", () => {
+		const plan = buildSitePlan({
+			...input,
+			menu: [
+				{
+					title: "Qui sommes-nous",
+					children: [{ title: "CRA", href: "/a-propos/cra", external: false }],
+				},
+			],
+		});
+		const submenu = find(plan, "Qui sommes-nous");
+		assert.equal(submenu.href, undefined);
+		assert.deepEqual(
+			submenu.children.map((e) => e.href),
+			["/a-propos/cra", "/a-propos", "/a-propos/gncra"],
+		);
+	});
+
+	it("ne reprend pas sous une rubrique une page liée plus loin dans le menu", () => {
+		const plan = buildSitePlan({
+			...input,
+			menu: [
+				{ title: "Nous contacter", href: "/contact", external: false },
+				{
+					title: "Aide",
+					children: [
+						{
+							title: "Particuliers",
+							href: "/contact/particuliers",
+							external: false,
+						},
+					],
+				},
+			],
+		});
+		assert.deepEqual(find(plan, "Nous contacter").children, []);
+		assert.deepEqual(titles(find(plan, "Aide").children), ["Particuliers"]);
+	});
+
 	it("ajoute les rubriques absentes du menu", () => {
 		assert.deepEqual(titles(plan).slice(7), ["Aides", "Autres pages"]);
 		assert.equal(find(plan, "Aides").href, "/aides");
@@ -118,7 +162,7 @@ describe("buildSitePlan", () => {
 		assert.deepEqual(titles(find(plan, "Autres pages").children), ["Charte"]);
 	});
 
-	it("omet les rubriques entièrement couvertes par le menu", () => {
+	it("garde la page d'une rubrique entièrement couverte par le menu", () => {
 		const plan = buildSitePlan({
 			...input,
 			sections: [
@@ -129,6 +173,7 @@ describe("buildSitePlan", () => {
 			],
 		});
 		assert.equal(plan.filter((e) => e.title === "À propos").length, 1);
+		assert.equal(find(plan, "À propos").href, "/a-propos");
 	});
 
 	it("range un élément fixe masqué dans les autres pages", () => {

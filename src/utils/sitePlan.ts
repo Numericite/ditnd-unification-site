@@ -6,6 +6,7 @@ export type SitePlanEntry = {
 	title: string;
 	href?: string;
 	external?: boolean;
+	linkTitle?: string;
 	children: SitePlanEntry[];
 };
 
@@ -34,7 +35,8 @@ const FIXED_PAGES: PlanLink[] = [
  * Plan du site calqué sur le menu principal : un groupe par élément du menu,
  * dans le même ordre. Un lien vers une rubrique liste ses pages. Les pages
  * absentes du menu rejoignent le sous-menu qui liste déjà des pages de leur
- * rubrique, sinon elles suivent, pour que le plan reste exhaustif.
+ * rubrique, sinon elles suivent, pour que le plan reste exhaustif. Une page
+ * n'est listée qu'une fois, sauf si le menu lui-même la répète.
  */
 export const buildSitePlan = ({
 	lockedMenu,
@@ -53,6 +55,20 @@ export const buildSitePlan = ({
 	);
 	const isListed = (href: string) => listed.has(normalizePath(href));
 
+	// Liens explicites du menu : une rubrique ne les reprend pas sous son lien.
+	const menuPaths = new Set(
+		[
+			...lockedMenu.flatMap((item) => (item.href ? [item.href] : [])),
+			...menu.flatMap((item) =>
+				"children" in item
+					? item.children.filter((c) => !c.external).map((c) => c.href)
+					: item.external
+						? []
+						: [item.href],
+			),
+		].map(normalizePath),
+	);
+
 	const entry = (
 		title: string,
 		href: string,
@@ -66,7 +82,10 @@ export const buildSitePlan = ({
 			title,
 			href,
 			children: (section?.links ?? [])
-				.filter((link) => !isListed(link.href))
+				.filter(
+					(link) =>
+						!isListed(link.href) && !menuPaths.has(normalizePath(link.href)),
+				)
 				.map((link) => entry(link.title, link.href)),
 		};
 	};
@@ -78,11 +97,15 @@ export const buildSitePlan = ({
 			return {
 				title: persona.name,
 				href,
-				children: conditions.map((condition) => ({
-					title: `par le ${condition.acronym || condition.name}`,
-					href: `${href}/${condition.slug.toLowerCase()}`,
-					children: [],
-				})),
+				children: conditions.map((condition) => {
+					const title = `par le ${condition.acronym || condition.name}`;
+					return {
+						title,
+						href: `${href}/${condition.slug.toLowerCase()}`,
+						linkTitle: `${persona.name} ${title}`,
+						children: [],
+					};
+				}),
 			};
 		});
 
@@ -110,22 +133,30 @@ export const buildSitePlan = ({
 		...item.children.flatMap(internalHrefs),
 	];
 
+	const submenus = menuEntries.filter((group) => !group.href);
 	const submenuOf = (href: string) => {
 		const prefix = `${normalizePath(href)}/`;
-		return menuEntries.find(
-			(group) =>
-				!group.href &&
-				internalHrefs(group).some((path) => path.startsWith(prefix)),
+		return submenus.find((group) =>
+			internalHrefs(group).some((path) => path.startsWith(prefix)),
 		);
 	};
+	const sameTitle = (a: string, b: string) =>
+		a.trim().toLowerCase() === b.trim().toLowerCase();
 
 	const sectionEntries = sections.flatMap(({ section, links }) => {
 		const href = sectionPath(section.slug);
 		if (isListed(href)) return [];
-		const remaining = links.filter((link) => !isListed(link.href));
-		if (!remaining.length) return [];
 		const submenu = submenuOf(href);
 		if (!submenu) return [entry(section.title, href)];
+		const remaining = links.filter((link) => !isListed(link.href));
+		// La page de la rubrique devient le titre du sous-menu qui porte son nom,
+		// sinon un lien du sous-menu.
+		listed.add(normalizePath(href));
+		if (!submenu.href && sameTitle(submenu.title, section.title)) {
+			submenu.href = href;
+		} else {
+			submenu.children.push({ title: section.title, href, children: [] });
+		}
 		submenu.children.push(
 			...remaining.map((link) => entry(link.title, link.href)),
 		);
