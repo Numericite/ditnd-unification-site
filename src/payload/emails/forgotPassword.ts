@@ -17,7 +17,8 @@ export const forgotPasswordEmailHTML = (args?: {
 	req?: PayloadRequest;
 	token?: string;
 }) => {
-	const url = `${siteOrigin(args?.req)}/admin/reset/${args?.token}`;
+	const origin = siteOrigin(args?.req);
+	const url = `${origin}/admin/reset/${args?.token}`;
 
 	return `<!doctype html>
 <html lang="fr">
@@ -33,8 +34,17 @@ export const forgotPasswordEmailHTML = (args?: {
 					<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="max-width:600px;background-color:#ffffff;border-top:4px solid #000091;">
 						<tr>
 							<td style="padding:24px 32px;border-bottom:1px solid #dddddd;">
-								<p style="margin:0;font-size:20px;font-weight:bold;color:#000091;">Maison de l'autisme</p>
-								<p style="margin:4px 0 0;font-size:14px;color:#666666;">Espace d'administration</p>
+								<table role="presentation" cellpadding="0" cellspacing="0">
+									<tr>
+										<td style="padding-right:16px;vertical-align:middle;">
+											<img src="${origin}/reseau-tnd-logo.png" alt="Réseau TND" width="60" height="66" style="display:block;border:0;" />
+										</td>
+										<td style="vertical-align:middle;">
+											<p style="margin:0;font-size:20px;font-weight:bold;color:#000091;">Maison de l'autisme</p>
+											<p style="margin:4px 0 0;font-size:14px;color:#666666;">Espace d'administration</p>
+										</td>
+									</tr>
+								</table>
 							</td>
 						</tr>
 						<tr>

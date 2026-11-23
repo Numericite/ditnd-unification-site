@@ -62,7 +62,8 @@ export function middleware(request: NextRequest) {
 
 export const config = {
 	// Périmètre de la basic auth. Les redirections de l'ancien site sont
-	// résolues dans les pages (src/server/redirects.ts).
+	// résolues dans les pages (src/server/redirects.ts). Le logo est exclu
+	// pour s'afficher dans les e-mails, que les clients mail chargent sans identifiants.
 	matcher:
-		"/((?!api|_next/static|_next/image|favicon.ico|sitemap.xml|sitemap-anciennes-urls.xml|robots.txt|placeholder.16x9.png).*)",
+		"/((?!api|_next/static|_next/image|favicon.ico|sitemap.xml|sitemap-anciennes-urls.xml|robots.txt|placeholder.16x9.png|reseau-tnd-logo.png).*)",
 };
