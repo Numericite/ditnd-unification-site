@@ -60,13 +60,7 @@ export default function PlanDuSite({ sections, rootPages }: Props) {
 								key={`${group.title}-${index}`}
 								className={cx(classes.section)}
 							>
-								<h2>
-									{group.href ? (
-										<PlanLink entry={group} className="" />
-									) : (
-										group.title
-									)}
-								</h2>
+								<h2>{group.href ? <PlanLink entry={group} /> : group.title}</h2>
 								<PlanList entries={group.children} />
 							</section>
 						))}
@@ -100,7 +94,7 @@ export default function PlanDuSite({ sections, rootPages }: Props) {
 
 function PlanLink({
 	entry,
-	className = fr.cx("fr-link"),
+	className,
 }: {
 	entry: SitePlanEntry;
 	className?: string;
@@ -129,7 +123,11 @@ function PlanList({ entries }: { entries: SitePlanEntry[] }) {
 		<ul className={classes.sitemapList}>
 			{entries.map((entry, index) => (
 				<li key={`${entry.href ?? entry.title}-${index}`}>
-					{entry.href ? <PlanLink entry={entry} /> : entry.title}
+					{entry.href ? (
+						<PlanLink entry={entry} className={fr.cx("fr-link")} />
+					) : (
+						entry.title
+					)}
 					<PlanList entries={entry.children} />
 				</li>
 			))}

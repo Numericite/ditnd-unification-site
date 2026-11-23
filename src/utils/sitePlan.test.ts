@@ -144,6 +144,77 @@ describe("buildSitePlan", () => {
 		assert.deepEqual(titles(find(plan, "Aide").children), ["Particuliers"]);
 	});
 
+	it("rattache les pages oubliées au sous-menu qui liste le plus de pages de la rubrique", () => {
+		const sections: SitePlanInput["sections"] = [
+			{
+				section: { slug: "a-propos", title: "À propos" },
+				links: [
+					{ title: "CRA", href: "/a-propos/cra" },
+					{ title: "GNCRA", href: "/a-propos/gncra" },
+					{ title: "Équipe", href: "/a-propos/equipe" },
+					{ title: "Histoire", href: "/a-propos/histoire" },
+				],
+			},
+		];
+		const plan = buildSitePlan({
+			...input,
+			sections,
+			menu: [
+				{
+					title: "Nous contacter",
+					children: [{ title: "CRA", href: "/a-propos/cra", external: false }],
+				},
+				{
+					title: "Qui sommes-nous",
+					children: [
+						{ title: "GNCRA", href: "/a-propos/gncra", external: false },
+						{ title: "Équipe", href: "/a-propos/equipe", external: false },
+					],
+				},
+			],
+		});
+		assert.deepEqual(titles(find(plan, "Nous contacter").children), ["CRA"]);
+		assert.deepEqual(titles(find(plan, "Qui sommes-nous").children), [
+			"GNCRA",
+			"Équipe",
+			"À propos",
+			"Histoire",
+		]);
+	});
+
+	it("préfère le sous-menu qui porte le nom de la rubrique", () => {
+		const plan = buildSitePlan({
+			...input,
+			sections: [
+				{
+					section: { slug: "a-propos", title: "À propos" },
+					links: [
+						{ title: "CRA", href: "/a-propos/cra" },
+						{ title: "GNCRA", href: "/a-propos/gncra" },
+						{ title: "Équipe", href: "/a-propos/equipe" },
+					],
+				},
+			],
+			menu: [
+				{
+					title: "Réseau",
+					children: [
+						{ title: "CRA", href: "/a-propos/cra", external: false },
+						{ title: "GNCRA", href: "/a-propos/gncra", external: false },
+					],
+				},
+				{
+					title: "À propos",
+					children: [
+						{ title: "Équipe", href: "/a-propos/equipe", external: false },
+					],
+				},
+			],
+		});
+		assert.deepEqual(titles(find(plan, "Réseau").children), ["CRA", "GNCRA"]);
+		assert.equal(find(plan, "À propos").href, "/a-propos");
+	});
+
 	it("ajoute les rubriques absentes du menu", () => {
 		assert.deepEqual(titles(plan).slice(7), ["Aides", "Autres pages"]);
 		assert.equal(find(plan, "Aides").href, "/aides");

@@ -1,5 +1,5 @@
 import { normalizePath } from "./links";
-import type { LockedMenuItem, NavItem } from "./menu";
+import { LOCKED_MENU_ITEMS, type LockedMenuItem, type NavItem } from "./menu";
 import { sectionPath } from "./pages";
 
 export type SitePlanEntry = {
@@ -26,8 +26,9 @@ export type SitePlanInput = {
 
 // Pages hors CMS que le menu peut ne pas lister.
 const FIXED_PAGES: PlanLink[] = [
-	{ title: "Fiches pratiques", href: "/fiches-pratiques" },
-	{ title: "Formations", href: "/formations" },
+	...LOCKED_MENU_ITEMS.flatMap(({ title, href }) =>
+		href ? [{ title, href }] : [],
+	),
 	{ title: "Glossaire", href: "/glossaire" },
 ];
 
@@ -133,20 +134,31 @@ export const buildSitePlan = ({
 		...item.children.flatMap(internalHrefs),
 	];
 
-	const submenus = menuEntries.filter((group) => !group.href);
-	const submenuOf = (href: string) => {
-		const prefix = `${normalizePath(href)}/`;
-		return submenus.find((group) =>
-			internalHrefs(group).some((path) => path.startsWith(prefix)),
-		);
-	};
 	const sameTitle = (a: string, b: string) =>
 		a.trim().toLowerCase() === b.trim().toLowerCase();
+
+	// Sous-menu qui porte le nom de la rubrique, sinon celui qui liste le plus
+	// de ses pages.
+	const submenus = menuEntries.filter((group) => !group.href);
+	const submenuOf = (href: string, title: string) => {
+		const prefix = `${normalizePath(href)}/`;
+		const candidates = submenus
+			.map((group) => ({
+				group,
+				count: internalHrefs(group).filter((path) => path.startsWith(prefix))
+					.length,
+			}))
+			.filter(({ count }) => count > 0);
+		const mostPages = [...candidates].sort((a, b) => b.count - a.count)[0];
+		return (
+			candidates.find(({ group }) => sameTitle(group.title, title)) ?? mostPages
+		)?.group;
+	};
 
 	const sectionEntries = sections.flatMap(({ section, links }) => {
 		const href = sectionPath(section.slug);
 		if (isListed(href)) return [];
-		const submenu = submenuOf(href);
+		const submenu = submenuOf(href, section.title);
 		if (!submenu) return [entry(section.title, href)];
 		const remaining = links.filter((link) => !isListed(link.href));
 		// La page de la rubrique devient le titre du sous-menu qui porte son nom,
