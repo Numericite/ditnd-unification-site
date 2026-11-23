@@ -10,8 +10,15 @@ import {
 	type JSXConverter,
 	type JSXConverters,
 } from "@payloadcms/richtext-lexical/react";
-import { extractYouTubeId, ImageSizes, lexicalToText, slugify } from "./tools";
+import {
+	buildCourseRedirect,
+	extractYouTubeId,
+	ImageSizes,
+	lexicalToText,
+	slugify,
+} from "./tools";
 import type { Condition, Media, Theme } from "~/payload/payload-types";
+import { internalDocToHref } from "./internalLinks";
 import type { AugmentedCourse } from "~/server/api/routers/courses";
 import CardDisplay from "~/components/ui/Cards/CardDisplay";
 import CardsCarousel from "~/components/ui/Cards/CardsCarousel";
@@ -187,25 +194,6 @@ export const tableConverter: JSXConverter<any> = ({
 	return <Table data={[...data]} headers={headers} />;
 };
 
-const internalDocToHref = (doc: {
-	relationTo: string;
-	value: unknown;
-}): string | undefined => {
-	const value = doc.value;
-	if (!value || typeof value !== "object") return undefined;
-
-	switch (doc.relationTo) {
-		case "practical-guides": {
-			const { slug } = value as { slug?: string | null };
-			return slug ? `/fiches-pratiques/${slug}` : undefined;
-		}
-		case "medias":
-			return (value as { url?: string | null }).url ?? undefined;
-		default:
-			return undefined;
-	}
-};
-
 export const linkConverter: JSXConverters<DefaultNodeTypes>["link"] = (
 	args,
 ) => {
@@ -220,6 +208,9 @@ export const linkConverter: JSXConverters<DefaultNodeTypes>["link"] = (
 		nodes: node.children ?? [],
 		converters,
 	});
+
+	// Cible introuvable : texte simple plutôt qu'un faux lien sans href.
+	if (!href) return <>{childrenJSX}</>;
 
 	if (node.fields.newTab) {
 		const linkText = lexicalToText(node.children ?? []);
@@ -354,7 +345,7 @@ export const customImageSizeConverter: JSXConverter<SerializedBlockNode> = ({
 }) => {
 	const value = node.fields;
 
-	if (!value?.image) return null;
+	if (typeof value?.image !== "object" || !value.image?.url) return null;
 
 	const image = value.image;
 	const size = value.size;
@@ -521,16 +512,15 @@ const relationCard = (
 
 		return (
 			<CardDisplay
-				title={course.title}
+				title={course.simplifiedTitle || course.title}
 				description={horizontal ? (course.description ?? undefined) : undefined}
 				imageUrl={course.image?.url ?? course.imageBanner?.url ?? undefined}
 				imageAlt=""
 				conditions={populated<Condition>(course.conditions)}
 				themes={populated<Theme>(course.themes)}
-				redirect={course.slug ? `/formations/${course.slug}` : course.link}
+				redirect={buildCourseRedirect(course)}
 				titleAs={titleAs}
 				horizontal={horizontal}
-				kind="courses"
 			/>
 		);
 	}

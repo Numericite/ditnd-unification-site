@@ -1,8 +1,8 @@
 describe("Page loads", () => {
 	const pages = [
 		{ path: "/", titleIncludes: "Maison de l'autisme" },
-		{ path: "/contact-pros-cra", titleIncludes: "Maison de l'autisme" },
-		{ path: "/contact-particuliers", titleIncludes: "Maison de l'autisme" },
+		{ path: "/contact/professionnels", titleIncludes: "Maison de l'autisme" },
+		{ path: "/contact/particuliers", titleIncludes: "Maison de l'autisme" },
 		{ path: "/accessibilite", titleIncludes: "Accessibilité" },
 		{ path: "/mentions-legales", titleIncludes: "Maison de l'autisme" },
 		{ path: "/plan-du-site", titleIncludes: "Maison de l'autisme" },
@@ -25,7 +25,7 @@ describe("Page loads", () => {
 		},
 		{ path: "/a-propos/gncra", titleIncludes: "GNCRA" },
 		{ path: "/a-propos/cra", titleIncludes: "CRA" },
-		{ path: "/a-propos/glossaire", titleIncludes: "Glossaire" },
+		{ path: "/glossaire", titleIncludes: "Glossaire" },
 		{ path: "/recherche?search=autisme", titleIncludes: "Maison de l'autisme" },
 	];
 

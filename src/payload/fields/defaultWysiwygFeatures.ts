@@ -8,6 +8,7 @@ import {
 } from "@payloadcms/richtext-lexical";
 import type { Block } from "payload";
 import { DuplicateBlockFeature } from "../features/duplicateBlock/server";
+import { withSafeLinkFeature } from "../features/link/safeLinkFeature";
 import { LangBlock } from "../plugins/blocks/LangBlock";
 
 export const defaultWysiwygFeatures = ({
@@ -18,7 +19,7 @@ export const defaultWysiwygFeatures = ({
 	blocks?: Block[];
 }) => {
 	return [
-		...defaultFeatures.filter(
+		...withSafeLinkFeature(defaultFeatures).filter(
 			(feature) =>
 				feature.key !== "checklist" &&
 				feature.key !== "inlineCode" &&

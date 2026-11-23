@@ -31,6 +31,7 @@ import { MapMarkers } from "./collections/MapMarkers";
 import { Maps } from "./collections/Maps";
 import { News } from "./collections/News";
 import { Pages } from "./collections/Pages";
+import { PageSections } from "./collections/PageSections";
 import { en } from "@payloadcms/translations/languages/en";
 import { fr } from "@payloadcms/translations/languages/fr";
 
@@ -39,6 +40,8 @@ import {
 	addPracticalGuidesTableVector,
 	addCoursesTable,
 	addCoursesTableVector,
+	addPagesTable,
+	addPagesTableVector,
 	hideForNonAdmin,
 	isAdmin,
 } from "./hooks";
@@ -52,10 +55,15 @@ const hasAwsCreds = Boolean(
 );
 import { CMSHome } from "./globals/cms/Home";
 import { CMSFooter } from "./globals/cms/Footer";
-import { CMSAbout } from "./globals/cms/About";
-import { CMSNewsletter } from "./globals/cms/Newsletter";
+import { CMSMenu } from "./globals/cms/Menu";
 import { PracticalGuideViews } from "./collections/PracticalGuidesViews";
+import { withSafeLinkFeature } from "./features/link/safeLinkFeature";
 import { SimplifiedContentGenerator } from "./globals/SimplifiedContentGenerator";
+import {
+	type SectionRef,
+	documentPath,
+	withPopulatedSection,
+} from "~/utils/pages";
 
 const filename = fileURLToPath(import.meta.url);
 const dirname = path.dirname(filename);
@@ -102,14 +110,14 @@ export default buildConfig({
 			},
 		},
 		livePreview: {
-			url: ({ data, collectionConfig }) => {
+			url: async ({ data, collectionConfig, req }) => {
 				if (!data) return;
 
 				if (collectionConfig?.slug === "pages") {
 					const basePath =
 						data._status === "draft"
 							? `/draft/${data.slug}?collection=pages`
-							: `/${data.slug}`;
+							: documentPath("pages", await withPopulatedSection(req, data));
 					return `${basePath}${data._status !== "draft" ? `?v=${data.updatedAt}` : `&v=${data.updatedAt}`}`;
 				}
 
@@ -117,7 +125,7 @@ export default buildConfig({
 					const basePath =
 						data._status === "draft"
 							? `/draft/${data.slug}`
-							: `/fiches-pratiques/${data.slug}`;
+							: documentPath("practical-guides", data);
 					return `${basePath}?v=${data.updatedAt}`;
 				}
 			},
@@ -147,6 +155,7 @@ export default buildConfig({
 	collections: [
 		Medias,
 		Pages,
+		PageSections,
 		PracticalGuides,
 		Courses,
 		News,
@@ -162,14 +171,10 @@ export default buildConfig({
 		Themes,
 		Users,
 	],
-	globals: [
-		CMSHome,
-		CMSFooter,
-		CMSAbout,
-		CMSNewsletter,
-		SimplifiedContentGenerator,
-	],
-	editor: lexicalEditor(),
+	globals: [CMSMenu, CMSHome, CMSFooter, SimplifiedContentGenerator],
+	editor: lexicalEditor({
+		features: ({ defaultFeatures }) => withSafeLinkFeature(defaultFeatures),
+	}),
 	i18n: {
 		supportedLanguages: { en, fr },
 		translations: {
@@ -189,8 +194,12 @@ export default buildConfig({
 	},
 	db: postgresAdapter({
 		extensions: ["vector"],
-		beforeSchemaInit: [addPracticalGuidesTable, addCoursesTable],
-		afterSchemaInit: [addPracticalGuidesTableVector, addCoursesTableVector],
+		beforeSchemaInit: [addPracticalGuidesTable, addCoursesTable, addPagesTable],
+		afterSchemaInit: [
+			addPracticalGuidesTableVector,
+			addCoursesTableVector,
+			addPagesTableVector,
+		],
 		// Par défaut l'adaptateur pousse le schéma dès que NODE_ENV n'est pas
 		// "production" — ce qui inclut les `payload run` des scripts seed, qui ne
 		// positionnent aucun NODE_ENV et synchronisaient donc silencieusement toute
@@ -289,17 +298,15 @@ export default buildConfig({
 
 				return "";
 			},
-			generateURL: ({ doc, collectionConfig }) => {
-				const slug = (doc as Record<string, unknown>)?.slug;
-				const basePath =
-					collectionConfig?.slug === "courses"
-						? "formations"
-						: collectionConfig?.slug === "pages"
-							? ""
-							: "fiches-pratiques";
-				return typeof slug === "string"
-					? `${process.env.NEXT_PUBLIC_SITE_URL || ""}/${basePath ? `${basePath}/` : ""}${slug}`
-					: "";
+			generateURL: async ({ doc, collectionConfig, req }) => {
+				const path = documentPath(
+					collectionConfig?.slug,
+					await withPopulatedSection(
+						req,
+						(doc ?? {}) as { slug?: string | null; section?: SectionRef },
+					),
+				);
+				return path ? `${process.env.NEXT_PUBLIC_SITE_URL || ""}${path}` : "";
 			},
 		}),
 		s3Storage({

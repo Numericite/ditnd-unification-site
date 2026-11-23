@@ -13,7 +13,7 @@ export const newsRouter = createTRPCRouter({
 	getAll: publicProcedure.query(async ({ ctx }) => {
 		const result = await ctx.payload.find({
 			collection: "news",
-			limit: 3,
+			pagination: false,
 			depth: 1,
 			where: { _status: { equals: "published" } },
 			select: {

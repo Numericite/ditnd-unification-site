@@ -1,6 +1,7 @@
 import type { GlobalConfig } from "payload";
 import { hideForNonAdmin, isAdmin } from "~/payload/hooks";
 import { standardFields } from "~/payload/fields/standards";
+import { homeSectionsField } from "./homeSections";
 
 export const CMSHome: GlobalConfig = {
 	slug: "home",
@@ -20,31 +21,24 @@ export const CMSHome: GlobalConfig = {
 				{
 					label: "En-tête",
 					name: "header",
-					fields: [standardFields.title, standardFields.longDescription],
-				},
-
-				{
-					label: "Persona",
-					name: "tiles",
 					fields: [
 						{
-							name: "persona",
-							label: "Choix du profil",
-							type: "group",
-							fields: [standardFields.title, standardFields.longDescription],
+							...standardFields.title,
+							type: "textarea",
+							admin: {
+								description: "Les retours à la ligne sont conservés.",
+							},
 						},
 						{
-							name: "condition",
-							label: "Choix du trouble",
-							type: "group",
-							fields: [standardFields.title, standardFields.longDescription],
+							name: "description",
+							label: "Description",
+							type: "textarea",
 						},
 					],
 				},
 				{
-					label: "Fiches pratiques les plus lues",
-					name: "mostViewedGuides",
-					fields: [standardFields.title, standardFields.longDescription],
+					label: "Sections",
+					fields: [homeSectionsField],
 				},
 			],
 		},

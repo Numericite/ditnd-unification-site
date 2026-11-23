@@ -1,0 +1,64 @@
+import { fr } from "@codegouvfr/react-dsfr";
+import Breadcrumb from "@codegouvfr/react-dsfr/Breadcrumb";
+import type { GetServerSideProps } from "next";
+import Head from "next/head";
+import { getPayload } from "payload";
+import type { DefaultTypedEditorState } from "@payloadcms/richtext-lexical";
+import CmsPageLayout from "~/components/ui/CmsPage/CmsPageLayout";
+import { EmptyScreenZone } from "~/components/ui/EmptyScreenZone";
+import PageContent from "~/components/ui/PageContent";
+import payloadConfig from "~/payload/payload.config";
+import type { Footer } from "~/payload/payload-types";
+
+type Props = {
+	title: string;
+	content: DefaultTypedEditorState;
+};
+
+export default function CookiesManagement({ title, content }: Props) {
+	if (!content) return <EmptyScreenZone>Contenu manquant</EmptyScreenZone>;
+
+	return (
+		<>
+			<Head>
+				<title>{`${title} - Maison de l'autisme`}</title>
+				<meta
+					name="description"
+					content="Informations sur les cookies utilisés par le site Maison de l'autisme et gestion de vos préférences."
+				/>
+			</Head>
+			<div className={fr.cx("fr-container", "fr-pb-10v")}>
+				<Breadcrumb
+					currentPageLabel={title}
+					homeLinkProps={{ href: "/" }}
+					segments={[]}
+				/>
+				<PageContent>
+					<CmsPageLayout title={title} content={content}>
+						<button
+							type="button"
+							className={fr.cx("fr-btn", "fr-mt-2w")}
+							aria-controls="fr-consent-modal"
+							data-fr-opened={false}
+						>
+							Gérer mes préférences de cookies
+						</button>
+					</CmsPageLayout>
+				</PageContent>
+			</div>
+		</>
+	);
+}
+
+export const getServerSideProps: GetServerSideProps<Props> = async () => {
+	const payload = await getPayload({ config: payloadConfig });
+	const footer = (await payload.findGlobal({ slug: "footer" })) as Footer;
+
+	return {
+		props: {
+			title: footer.personalData.title,
+			content: footer.personalData
+				.content as unknown as DefaultTypedEditorState,
+		},
+	};
+};

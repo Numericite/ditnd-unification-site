@@ -1,6 +1,4 @@
-import Breadcrumb from "@codegouvfr/react-dsfr/Breadcrumb";
 import { TRPCError } from "@trpc/server";
-import { fr } from "@codegouvfr/react-dsfr";
 import Head from "next/head";
 import type { GetServerSideProps } from "next";
 import { createCaller } from "~/server/api/root";
@@ -9,7 +7,6 @@ import { legacyRedirect } from "~/server/redirects";
 import type { AugmentedCourse } from "~/server/api/routers/courses";
 import type { Media } from "~/payload/payload-types";
 import SeoMeta from "~/components/ui/SeoMeta";
-import PageContent from "~/components/ui/PageContent";
 import CourseDisplay from "~/components/Courses/CourseDisplay";
 import ErrorPage from "~/components/ui/ErrorPage/ErrorPage";
 
@@ -59,21 +56,7 @@ export default function CoursePage(props: Props) {
 				type="article"
 				pathname={`/formations/${course.slug}`}
 			/>
-			<div className={fr.cx("fr-container", "fr-pb-8w")}>
-				<Breadcrumb
-					currentPageLabel={course.title}
-					homeLinkProps={{ href: "/" }}
-					segments={[
-						{
-							label: "Formations",
-							linkProps: { href: "/formations" },
-						},
-					]}
-				/>
-				<PageContent>
-					<CourseDisplay course={course} />
-				</PageContent>
-			</div>
+			<CourseDisplay course={course} />
 		</>
 	);
 }

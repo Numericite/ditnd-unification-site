@@ -5,8 +5,18 @@ import { tss } from "tss-react/dsfr";
 import PageContent from "~/components/ui/PageContent";
 import { personStore, tdhStore } from "~/state/store";
 import { personsAndProTiles } from "~/utils/pictograms";
+import type { GetServerSideProps } from "next";
+import { createCaller } from "~/server/api/root";
+import { createTRPCContext } from "~/server/api/trpc";
+import type { SectionLink } from "~/server/pages";
+import { sectionPath } from "~/utils/pages";
 
-export default function PlanDuSite() {
+type Props = {
+	sections: Awaited<ReturnType<typeof getSitemap>>["sections"];
+	rootPages: SectionLink[];
+};
+
+export default function PlanDuSite({ sections, rootPages }: Props) {
 	const { classes, cx } = useStyles();
 
 	const personas = personsAndProTiles(personStore.get());
@@ -95,37 +105,47 @@ export default function PlanDuSite() {
 										Formations
 									</a>
 								</li>
-							</ul>
-						</section>
-
-						<section className={cx(classes.section)}>
-							<h2>À propos</h2>
-							<ul className={cx(classes.sitemapList)}>
 								<li>
-									<a
-										className={fr.cx("fr-link")}
-										href="/a-propos/maison-de-l-autisme"
-									>
-										Maison de l'autisme
-									</a>
-								</li>
-								<li>
-									<a className={fr.cx("fr-link")} href="/a-propos/gncra">
-										GNCRA
-									</a>
-								</li>
-								<li>
-									<a className={fr.cx("fr-link")} href="/a-propos/cra">
-										CRA
-									</a>
-								</li>
-								<li>
-									<a className={fr.cx("fr-link")} href="/a-propos/glossaire">
+									<a className={fr.cx("fr-link")} href="/glossaire">
 										Glossaire
 									</a>
 								</li>
 							</ul>
 						</section>
+
+						{sections.map(({ section, links }) => (
+							<section key={section.id} className={cx(classes.section)}>
+								<h2>
+									<a href={sectionPath(section.slug)}>{section.title}</a>
+								</h2>
+								{links.length > 0 && (
+									<ul className={cx(classes.sitemapList)}>
+										{links.map((link) => (
+											<li key={link.href}>
+												<a className={fr.cx("fr-link")} href={link.href}>
+													{link.title}
+												</a>
+											</li>
+										))}
+									</ul>
+								)}
+							</section>
+						))}
+
+						{rootPages.length > 0 && (
+							<section className={cx(classes.section)}>
+								<h2>Autres pages</h2>
+								<ul className={cx(classes.sitemapList)}>
+									{rootPages.map((link) => (
+										<li key={link.href}>
+											<a className={fr.cx("fr-link")} href={link.href}>
+												{link.title}
+											</a>
+										</li>
+									))}
+								</ul>
+							</section>
+						)}
 
 						<section className={cx(classes.section)}>
 							<h2>Informations et obligations légales</h2>
@@ -141,13 +161,8 @@ export default function PlanDuSite() {
 									</a>
 								</li>
 								<li>
-									<a className={fr.cx("fr-link")} href="/contact-particuliers">
-										Contact particuliers
-									</a>
-								</li>
-								<li>
-									<a className={fr.cx("fr-link")} href="/contact-pros-cra">
-										Contact professionnels
+									<a className={fr.cx("fr-link")} href="/donnees-personnelles">
+										Données personnelles
 									</a>
 								</li>
 							</ul>
@@ -158,6 +173,19 @@ export default function PlanDuSite() {
 		</>
 	);
 }
+
+const getSitemap = async () => {
+	const caller = createCaller(await createTRPCContext());
+	const [sections, rootPages] = await Promise.all([
+		caller.page.listSections(),
+		caller.page.listRootPages(),
+	]);
+	return { sections, rootPages };
+};
+
+export const getServerSideProps: GetServerSideProps<Props> = async () => ({
+	props: await getSitemap(),
+});
 
 const useStyles = tss.withName({ PlanDuSite }).create({
 	section: {

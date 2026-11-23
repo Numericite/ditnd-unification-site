@@ -9,11 +9,13 @@ import { tss } from "tss-react/dsfr";
 
 type Props = {
 	label: string;
+	/** Clé de l'URL qui porte les valeurs cochées de ce filtre. */
+	collection: string;
 	value: FilterItem[];
 	handleOnChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
 };
 
-export const Filter = ({ label, value, handleOnChange }: Props) => {
+export const Filter = ({ label, collection, value, handleOnChange }: Props) => {
 	const { breakpointsValues } = useBreakpointsValuesPx();
 
 	const [expand, setExpand] = useState<boolean>(true);
@@ -26,14 +28,10 @@ export const Filter = ({ label, value, handleOnChange }: Props) => {
 	}, []);
 
 	const router = useRouter();
-	const { conditions, themes, personas, type } = router.query;
 	const { classes } = useStyles();
 
 	const isChecked = (slug: string) =>
-		deserialize(conditions).includes(slug) ||
-		deserialize(themes).includes(slug) ||
-		deserialize(personas).includes(slug) ||
-		deserialize(type).includes(slug);
+		deserialize(router.query[collection]).includes(slug);
 
 	return (
 		<Accordion

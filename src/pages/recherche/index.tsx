@@ -1,7 +1,6 @@
 import { fr } from "@codegouvfr/react-dsfr";
 import Head from "next/head";
 import Breadcrumb from "@codegouvfr/react-dsfr/Breadcrumb";
-import { CallOut } from "@codegouvfr/react-dsfr/CallOut";
 import SearchBar from "@codegouvfr/react-dsfr/SearchBar";
 import Tabs from "@codegouvfr/react-dsfr/Tabs";
 import { useRouter } from "next/router";
@@ -52,7 +51,8 @@ export default function Recherche({ initialQuery, initialData }: Props) {
 
 	const guidesCount = data?.guides.length ?? 0;
 	const coursesCount = data?.courses.length ?? 0;
-	const totalCount = guidesCount + coursesCount;
+	const pagesCount = data?.pages.length ?? 0;
+	const totalCount = guidesCount + coursesCount + pagesCount;
 
 	const handleSearch = (value: string) => {
 		const trimmed = value.trim();
@@ -75,7 +75,7 @@ export default function Recherche({ initialQuery, initialData }: Props) {
 				</title>
 				<meta
 					name="description"
-					content="Recherchez parmi les fiches pratiques et formations sur l'autisme et les troubles du neurodéveloppement."
+					content="Recherchez parmi les fiches pratiques, formations et pages d'information sur l'autisme et les troubles du neurodéveloppement."
 				/>
 			</Head>
 			<div className={fr.cx("fr-container", "fr-pb-8w")}>
@@ -133,25 +133,24 @@ export default function Recherche({ initialQuery, initialData }: Props) {
 									)}
 								>
 									{data?.glossary && (
-										<div className={fr.cx("fr-col-12")}>
-											<CallOut
-												className={fr.cx("fr-mb-0")}
-												title={data.glossary.name}
-												buttonProps={
-													data.glossary.link
-														? {
-																children: "Consulter la source",
-																linkProps: {
-																	href: data.glossary.link,
-																	target: "_blank",
-																	rel: "noopener noreferrer",
-																},
-															}
-														: undefined
-												}
-											>
-												{data.glossary.description}
-											</CallOut>
+										<div className={fr.cx("fr-col-12", "fr-mb-3w")}>
+											<div className={fr.cx("fr-highlight", "fr-ml-0")}>
+												<p className={fr.cx("fr-text--sm", "fr-mb-1v")}>
+													<strong>{data.glossary.name}</strong> :{" "}
+													{data.glossary.description}
+												</p>
+												{data.glossary.link && (
+													<a
+														href={data.glossary.link}
+														target="_blank"
+														rel="noopener noreferrer"
+														className={fr.cx("fr-link", "fr-link--sm")}
+														title={`Consulter la source : ${data.glossary.name}, nouvelle fenêtre`}
+													>
+														Consulter la source
+													</a>
+												)}
+											</div>
 										</div>
 									)}
 									{totalCount === 0 ? (
@@ -234,6 +233,41 @@ export default function Recherche({ initialQuery, initialData }: Props) {
 																	</div>
 																</section>
 															)}
+
+															{pagesCount > 0 && (
+																<section
+																	aria-labelledby="section-pages-all"
+																	className={cx(
+																		guidesCount + coursesCount > 0
+																			? classes.sectionSpacing
+																			: "",
+																	)}
+																>
+																	<h2
+																		id="section-pages-all"
+																		className={fr.cx("fr-h4", "fr-mb-2w")}
+																	>
+																		Pages du site ({pagesCount})
+																	</h2>
+																	<div
+																		className={fr.cx(
+																			"fr-grid-row",
+																			"fr-grid-row--gutters",
+																		)}
+																	>
+																		<CardsDisplayGroup
+																			className={fr.cx(
+																				"fr-col-12",
+																				"fr-col-sm-6",
+																				"fr-col-lg-4",
+																			)}
+																			pages={data?.pages}
+																			kind="pages"
+																			titleAs="h3"
+																		/>
+																	</div>
+																</section>
+															)}
 														</div>
 													),
 												},
@@ -293,6 +327,35 @@ export default function Recherche({ initialQuery, initialData }: Props) {
 														) : (
 															<p className={fr.cx("fr-mt-2w")}>
 																Aucune formation trouvée pour cette recherche.
+															</p>
+														),
+												},
+												{
+													label: `Pages du site (${pagesCount})`,
+													content:
+														pagesCount > 0 ? (
+															<div className={fr.cx("fr-pt-2w")}>
+																<div
+																	className={fr.cx(
+																		"fr-grid-row",
+																		"fr-grid-row--gutters",
+																	)}
+																>
+																	<CardsDisplayGroup
+																		className={fr.cx(
+																			"fr-col-12",
+																			"fr-col-sm-6",
+																			"fr-col-lg-4",
+																		)}
+																		pages={data?.pages}
+																		kind="pages"
+																		titleAs="h3"
+																	/>
+																</div>
+															</div>
+														) : (
+															<p className={fr.cx("fr-mt-2w")}>
+																Aucune page trouvée pour cette recherche.
 															</p>
 														),
 												},

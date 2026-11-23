@@ -92,6 +92,7 @@ jobs:
       GRAVITY_FORMS_CONSUMER_KEY: e2e-mock
       GRAVITY_FORMS_CONSUMER_SECRET: e2e-mock
       GRAVITY_FORMS_FORM_ID: "2"
+      NEXT_PUBLIC_CHATBOT_ENABLED: "true"
       # The temporary preprod basic auth would answer 401 to every Cypress visit.
       BASIC_AUTH_DISABLED: "true"
     steps:

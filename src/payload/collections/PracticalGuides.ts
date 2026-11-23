@@ -13,6 +13,7 @@ import { slugField } from "../fields/slug";
 import { generateEmbedding } from "../services/embedding";
 import { generateSimplifiedContent } from "../services/contentSimplification";
 import type { PracticalGuidesSelect } from "../payload-types";
+import { guideViewCountFields } from "../fields/guideViewCount";
 import { lexicalToText } from "~/utils/tools";
 
 export const practicalGuideCardSelect = {
@@ -123,6 +124,7 @@ const afterChangePracticalGuide: CollectionAfterChangeHook = async ({
 				draft: false,
 				depth: 0,
 				select: { _status: true },
+				req,
 			});
 			// A published version still exists — keep its vectors intact
 			if (publishedDoc?._status === "published") {
@@ -356,6 +358,7 @@ export const PracticalGuides: CollectionConfig = {
 				},
 			},
 		},
+		...guideViewCountFields,
 		{
 			name: "image",
 			type: "upload",

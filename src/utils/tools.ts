@@ -3,6 +3,7 @@ import type { AugmentedCourse } from "~/server/api/routers/courses";
 import type { AugmentedPracticalGuide } from "~/server/api/routers/practical-guides";
 
 import type { DefaultTypedEditorState } from "@payloadcms/richtext-lexical";
+import { CHATBOT_ENABLED } from "~/utils/chatbot";
 
 export type Link = {
 	text: string;
@@ -129,6 +130,9 @@ export const deserialize = (value?: string | string[]) => {
 	return sanitizeArray(typeof value === "string" ? value.split(",") : []);
 };
 
+export const buildCourseRedirect = (course: AugmentedCourse) =>
+	course.slug ? `/formations/${course.slug}` : (course.link ?? "/formations");
+
 export function courseQuery(
 	course: AugmentedCourse,
 	condition: string,
@@ -170,10 +174,14 @@ export const skipLinks: SkipLinkType[] = [
 		anchor: "#search-global",
 		label: "Aller à la recherche",
 	},
-	{
-		anchor: "#chatbot",
-		label: "Aller à l'assistant conversationnel",
-	},
+	...(CHATBOT_ENABLED
+		? [
+				{
+					anchor: "#chatbot",
+					label: "Aller à l'assistant conversationnel",
+				},
+			]
+		: []),
 ];
 
 const HEX_COLOR_REGEX = /^#([0-9a-f]{3}|[0-9a-f]{6})$/i;
