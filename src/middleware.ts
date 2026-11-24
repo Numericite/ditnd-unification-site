@@ -21,14 +21,11 @@ export const isAuthorized = (authHeader: string | null): boolean => {
 };
 
 const requiresBasicAuth = (request: NextRequest): boolean => {
-	const { pathname } = request.nextUrl;
-	const isFromAdmin = request.headers.get("referer")?.includes("/admin");
-
-	if (
-		pathname.startsWith("/admin") ||
-		(isFromAdmin && pathname.startsWith("/api"))
-	)
-		return false;
+	// L'optimiseur de next/image relit les médias par une requête interne sans
+	// en-têtes : l'exiger casserait toutes les images (/_next/image reste protégé).
+	if (request.nextUrl.pathname.startsWith("/api/medias/file/")) return false;
+	// Le logo des e-mails est chargé par les clients mail, sans identifiants.
+	if (request.nextUrl.pathname === "/reseau-tnd-logo.png") return false;
 
 	if (
 		BASIC_AUTH_DISABLED ||
@@ -42,7 +39,7 @@ const requiresBasicAuth = (request: NextRequest): boolean => {
 
 export function middleware(request: NextRequest) {
 	if (requiresBasicAuth(request)) {
-		return new Response("Auth Required", {
+		return new Response(null, {
 			status: 401,
 			headers: { "WWW-Authenticate": 'Basic realm="Secure Area"' },
 		});
@@ -59,10 +56,3 @@ export function middleware(request: NextRequest) {
 
 	return NextResponse.next();
 }
-
-export const config = {
-	// Périmètre de la basic auth. Les redirections de l'ancien site sont
-	// résolues dans les pages (src/server/redirects.ts).
-	matcher:
-		"/((?!api|_next/static|_next/image|favicon.ico|sitemap.xml|sitemap-anciennes-urls.xml|robots.txt|placeholder.16x9.png).*)",
-};
