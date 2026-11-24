@@ -609,6 +609,7 @@ export default function MapDisplay({ map, height }: Props) {
 						<Placeholder
 							className={classes.mapContainer}
 							style={{ height }}
+							titleAs="span"
 							title="Cartographie"
 							description="Ce contenu est bloqué car vous n'avez pas autorisé les cookies liés à la cartographie."
 							onGranted={() => assumeConsent("cartographie")}

@@ -27,6 +27,7 @@ export default function LiteYouTube({
 	if (!hasYoutubeConsent) {
 		return (
 			<Placeholder
+				titleAs="span"
 				title="Vidéo YouTube"
 				description="Ce contenu est bloqué car vous n'avez pas autorisé les cookies déposés par YouTube."
 				onGranted={() => assumeConsent("youtube")}
