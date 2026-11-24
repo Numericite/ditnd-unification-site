@@ -1,8 +1,8 @@
 import { fr } from "@codegouvfr/react-dsfr";
-import { Placeholder } from "@codegouvfr/react-dsfr/consentManagement/Placeholder";
 import { useEffect, useRef, useState } from "react";
 import { tss } from "tss-react/dsfr";
 import { useConsent, useFinalityConsent } from "~/utils/consentManagement";
+import ConsentPlaceholder from "./ConsentPlaceholder";
 
 const YOUTUBE_THUMBNAILS = ["maxresdefault", "sddefault", "hqdefault"];
 
@@ -26,10 +26,10 @@ export default function LiteYouTube({
 
 	if (!hasYoutubeConsent) {
 		return (
-			<Placeholder
-				titleAs="span"
+			<ConsentPlaceholder
 				title="Vidéo YouTube"
 				description="Ce contenu est bloqué car vous n'avez pas autorisé les cookies déposés par YouTube."
+				grantLabel="les cookies YouTube"
 				onGranted={() => assumeConsent("youtube")}
 			/>
 		);

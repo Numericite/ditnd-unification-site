@@ -23,6 +23,7 @@ import MapFilterDrawer, {
 import ActiveFilterTags from "./ActiveFilterTags";
 import MapSearch from "./MapSearch";
 import MarkerCustomFields from "./MarkerCustomFields";
+import ConsentPlaceholder from "./ConsentPlaceholder";
 import type {
 	MapCategorySummary,
 	MapMarkerSummary,
@@ -32,7 +33,6 @@ import Button from "@codegouvfr/react-dsfr/Button";
 import { SegmentedControl } from "@codegouvfr/react-dsfr/SegmentedControl";
 import { Table } from "@codegouvfr/react-dsfr/Table";
 import Pagination from "@codegouvfr/react-dsfr/Pagination";
-import { Placeholder } from "@codegouvfr/react-dsfr/consentManagement/Placeholder";
 import { useConsent, useFinalityConsent } from "~/utils/consentManagement";
 
 const FRANCE_CENTER = { latitude: 46.6, longitude: 2.3, zoom: 5 };
@@ -606,12 +606,12 @@ export default function MapDisplay({ map, height }: Props) {
 			{viewMode === "map" ? (
 				<div className={classes.mapWrapper}>
 					{!hasMapConsent ? (
-						<Placeholder
+						<ConsentPlaceholder
 							className={classes.mapContainer}
 							style={{ height }}
-							titleAs="span"
 							title="Cartographie"
 							description="Ce contenu est bloqué car vous n'avez pas autorisé les cookies liés à la cartographie."
+							grantLabel="les cookies de la cartographie"
 							onGranted={() => assumeConsent("cartographie")}
 						/>
 					) : (
