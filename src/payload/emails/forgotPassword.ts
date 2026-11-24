@@ -3,10 +3,18 @@ import type { PayloadRequest } from "payload";
 // Without serverURL, Payload's default email falls back to a relative link that mail clients cannot open.
 const siteOrigin = (req?: PayloadRequest) => {
 	if (process.env.NEXT_PUBLIC_SITE_URL) return process.env.NEXT_PUBLIC_SITE_URL;
-	const host = req?.headers.get("x-forwarded-host") ?? req?.headers.get("host");
+	// Host, not x-forwarded-host: the load balancer routes on Host, so a forged value never reaches the app.
+	const host = req?.headers.get("host");
+	const forwardedProto = req?.headers
+		.get("x-forwarded-proto")
+		?.split(",")[0]
+		?.trim();
 	const protocol =
-		req?.headers.get("x-forwarded-proto") ??
-		(req?.url ? new URL(req.url).protocol.replace(":", "") : "https");
+		forwardedProto === "http" || forwardedProto === "https"
+			? forwardedProto
+			: req?.url
+				? new URL(req.url).protocol.replace(":", "")
+				: "https";
 	return `${protocol}://${host}`;
 };
 
