@@ -24,6 +24,8 @@ const requiresBasicAuth = (request: NextRequest): boolean => {
 	// L'optimiseur de next/image relit les médias par une requête interne sans
 	// en-têtes : l'exiger casserait toutes les images (/_next/image reste protégé).
 	if (request.nextUrl.pathname.startsWith("/api/medias/file/")) return false;
+	// Le logo des e-mails est chargé par les clients mail, sans identifiants.
+	if (request.nextUrl.pathname === "/reseau-tnd-logo.png") return false;
 
 	if (
 		BASIC_AUTH_DISABLED ||

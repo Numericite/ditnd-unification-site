@@ -1,4 +1,8 @@
 import type { CollectionConfig } from "payload";
+import {
+	forgotPasswordEmailHTML,
+	forgotPasswordEmailSubject,
+} from "../emails/forgotPassword";
 import { hideForNonAdmin, isAdmin } from "../hooks";
 
 export const Users: CollectionConfig = {
@@ -18,7 +22,12 @@ export const Users: CollectionConfig = {
 		update: isAdmin,
 		delete: isAdmin,
 	},
-	auth: true,
+	auth: {
+		forgotPassword: {
+			generateEmailSubject: forgotPasswordEmailSubject,
+			generateEmailHTML: forgotPasswordEmailHTML,
+		},
+	},
 	fields: [
 		{ type: "text", name: "firstName", label: { fr: "Prénom" } },
 		{ type: "text", name: "lastName", label: { fr: "Nom" } },
