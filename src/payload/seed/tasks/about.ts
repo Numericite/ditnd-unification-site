@@ -122,7 +122,7 @@ const aboutPages = [
 		imageBanner: 7,
 		content: maisonDeLAutismeContent,
 		description:
-			"Maison de l'autisme : découvrez la Maison de l'autisme, site national d'informations sur l'autisme et les troubles du neurodéveloppement.",
+			"Maison de l'autisme : découvrez la Maison de l'autisme, site national d'informations sur l'autisme et ses troubles associés.",
 	},
 	{
 		slug: "gncra",

@@ -134,7 +134,7 @@ export default function MainNavigation() {
 				<a href="tel:+33800714040" className={classes.alertLink}>
 					0 800 71 40 40
 				</a>{" "}
-				<span className={classes.mention}>— appel gratuit et anonyme</span>
+				<span className={classes.mention}>— appel gratuit</span>
 				<span aria-hidden="true" className={classes.separator}>
 					·
 				</span>
