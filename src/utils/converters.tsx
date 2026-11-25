@@ -12,6 +12,7 @@ import {
 } from "@payloadcms/richtext-lexical/react";
 import {
 	buildCourseRedirect,
+	populated,
 	extractYouTubeId,
 	ImageSizes,
 	lexicalToText,
@@ -474,11 +475,6 @@ export const youtubeConverter: JSXConverter<SerializedBlockNode> = ({
 		</div>
 	);
 };
-
-const populated = <T,>(docs: (T | number)[] | null | undefined): T[] =>
-	(docs ?? []).filter(
-		(doc): doc is T => doc !== null && typeof doc === "object",
-	);
 
 const relationCard = (
 	relationTo: string,

@@ -128,6 +128,14 @@ export default buildConfig({
 							: documentPath("practical-guides", data);
 					return `${basePath}?v=${data.updatedAt}`;
 				}
+
+				if (collectionConfig?.slug === "courses") {
+					const basePath =
+						data._status === "draft"
+							? `/draft/${data.slug}?collection=courses`
+							: documentPath("courses", data);
+					return `${basePath}${data._status !== "draft" ? `?v=${data.updatedAt}` : `&v=${data.updatedAt}`}`;
+				}
 			},
 			breakpoints: [
 				{
@@ -149,7 +157,7 @@ export default buildConfig({
 					height: 900,
 				},
 			],
-			collections: ["practical-guides", "pages"],
+			collections: ["practical-guides", "pages", "courses"],
 		},
 	},
 	collections: [
