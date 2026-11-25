@@ -527,6 +527,10 @@ export interface Course {
 	 * Non affiché sur le site pour l'instant.
 	 */
 	certifying?: ("yes" | "no") | null;
+	/**
+	 * Non affiché sur le site pour l'instant.
+	 */
+	compliantWithGuidelines?: boolean | null;
 	content?: {
 		root: {
 			type: string;
@@ -1321,6 +1325,7 @@ export interface CoursesSelect<T extends boolean = true> {
 	format?: T;
 	duration?: T;
 	certifying?: T;
+	compliantWithGuidelines?: T;
 	content?: T;
 	meta?:
 		| T

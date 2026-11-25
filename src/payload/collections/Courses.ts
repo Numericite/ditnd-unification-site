@@ -279,6 +279,15 @@ export const Courses: CollectionConfig = {
 							],
 						},
 						{
+							name: "compliantWithGuidelines",
+							type: "checkbox",
+							defaultValue: false,
+							label: { fr: "Conforme aux repères" },
+							admin: {
+								description: "Non affiché sur le site pour l'instant.",
+							},
+						},
+						{
 							...standardFields.wysiwyg,
 							required: false,
 						},
