@@ -1,6 +1,7 @@
 import Breadcrumb from "@codegouvfr/react-dsfr/Breadcrumb";
 import Head from "next/head";
 import PracticalGuidesDisplay from "~/components/PracticalGuides/PracticalGuidesDisplay";
+import CourseDisplay from "~/components/Courses/CourseDisplay";
 import PageView from "~/components/Pages/PageView";
 import { fr } from "@codegouvfr/react-dsfr";
 import PageContent from "~/components/ui/PageContent";
@@ -10,13 +11,15 @@ import payloadConfig from "~/payload/payload.config";
 import { onlyPublished, resolveRelations } from "~/server/api/trpc";
 import type { AugmentedPracticalGuide } from "~/server/api/routers/practical-guides";
 import type { AugmentedPage } from "~/server/api/routers/pages";
+import type { AugmentedCourse } from "~/server/api/routers/courses";
 import type { Media } from "~/payload/payload-types";
 import ErrorPage from "~/components/ui/ErrorPage/ErrorPage";
 
 type Props =
 	| { isNotFound: true }
 	| { isNotFound?: false; kind: "guide"; guide: AugmentedPracticalGuide }
-	| { isNotFound?: false; kind: "page"; page: AugmentedPage };
+	| { isNotFound?: false; kind: "page"; page: AugmentedPage }
+	| { isNotFound?: false; kind: "course"; course: AugmentedCourse };
 
 export default function DraftPage(props: Props) {
 	if (props.isNotFound) {
@@ -54,6 +57,19 @@ export default function DraftPage(props: Props) {
 						<PracticalGuidesDisplay guide={guide} />
 					</PageContent>
 				</div>
+			</>
+		);
+	}
+
+	if (props.kind === "course") {
+		const { course } = props;
+		return (
+			<>
+				<Head>
+					<title>{course.title} (brouillon) - Maison de l'autisme</title>
+					<meta name="robots" content="noindex" />
+				</Head>
+				<CourseDisplay course={course} />
 			</>
 		);
 	}
@@ -126,6 +142,31 @@ export const getServerSideProps: GetServerSideProps<Props> = async (ctx) => {
 						},
 					} as AugmentedPage,
 				},
+			};
+		} catch {
+			ctx.res.statusCode = 404;
+			return { props: { isNotFound: true } };
+		}
+	}
+
+	if (collection === "courses") {
+		try {
+			const result = await payload.find({
+				collection: "courses",
+				limit: 1,
+				depth: 2,
+				draft: true,
+				where: { slug: { equals: slug } },
+			});
+
+			const course = result.docs[0];
+			if (!course) {
+				ctx.res.statusCode = 404;
+				return { props: { isNotFound: true } };
+			}
+
+			return {
+				props: { kind: "course", course: course as AugmentedCourse },
 			};
 		} catch {
 			ctx.res.statusCode = 404;
