@@ -521,7 +521,7 @@ export interface Course {
 	 * Facultatif. Laissez vide quand la formation est proposée par plusieurs organismes : leurs liens vont dans le contenu.
 	 */
 	link?: string | null;
-	format: "pres" | "dist";
+	format: "pres" | "dist" | "mixte";
 	duration?: ("lt1j" | "1-3j" | "gt3j") | null;
 	/**
 	 * Non affiché sur le site pour l'instant.

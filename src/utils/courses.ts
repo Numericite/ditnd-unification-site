@@ -5,6 +5,7 @@
 export const COURSE_FORMATS = [
 	{ label: "Présentiel", value: "pres" },
 	{ label: "Distanciel", value: "dist" },
+	{ label: "Mixte", value: "mixte" },
 ] as const;
 
 export type CourseFormat = (typeof COURSE_FORMATS)[number]["value"];
