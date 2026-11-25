@@ -521,12 +521,16 @@ export interface Course {
 	 * Facultatif. Laissez vide quand la formation est proposée par plusieurs organismes : leurs liens vont dans le contenu.
 	 */
 	link?: string | null;
-	format: "pres" | "dist";
+	format: "pres" | "dist" | "mixte";
 	duration?: ("lt1j" | "1-3j" | "gt3j") | null;
 	/**
 	 * Non affiché sur le site pour l'instant.
 	 */
 	certifying?: ("yes" | "no") | null;
+	/**
+	 * Non affiché sur le site pour l'instant.
+	 */
+	compliantWithGuidelines?: boolean | null;
 	content?: {
 		root: {
 			type: string;
@@ -1321,6 +1325,7 @@ export interface CoursesSelect<T extends boolean = true> {
 	format?: T;
 	duration?: T;
 	certifying?: T;
+	compliantWithGuidelines?: T;
 	content?: T;
 	meta?:
 		| T

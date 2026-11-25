@@ -69,6 +69,8 @@ import * as migration_20261119_142533_page_sections_collection from './20261119_
 import * as migration_20261119_164644_glossary_url from './20261119_164644_glossary_url';
 import * as migration_20261119_174744_contact_pages from './20261119_174744_contact_pages';
 import * as migration_20261120_115517_pages_search_vectors from './20261120_115517_pages_search_vectors';
+import * as migration_20261125_081850_courses_compliant_with_guidelines from './20261125_081850_courses_compliant_with_guidelines';
+import * as migration_20261125_083215_courses_format_mixte from './20261125_083215_courses_format_mixte';
 
 export const migrations = [
   {
@@ -424,6 +426,16 @@ export const migrations = [
   {
     up: migration_20261120_115517_pages_search_vectors.up,
     down: migration_20261120_115517_pages_search_vectors.down,
-    name: '20261120_115517_pages_search_vectors'
+    name: '20261120_115517_pages_search_vectors',
+  },
+  {
+    up: migration_20261125_081850_courses_compliant_with_guidelines.up,
+    down: migration_20261125_081850_courses_compliant_with_guidelines.down,
+    name: '20261125_081850_courses_compliant_with_guidelines',
+  },
+  {
+    up: migration_20261125_083215_courses_format_mixte.up,
+    down: migration_20261125_083215_courses_format_mixte.down,
+    name: '20261125_083215_courses_format_mixte'
   },
 ];
