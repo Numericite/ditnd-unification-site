@@ -12,7 +12,8 @@ import { onlyPublished, resolveRelations } from "~/server/api/trpc";
 import type { AugmentedPracticalGuide } from "~/server/api/routers/practical-guides";
 import type { AugmentedPage } from "~/server/api/routers/pages";
 import type { AugmentedCourse } from "~/server/api/routers/courses";
-import type { Media } from "~/payload/payload-types";
+import type { Condition, Media, Persona, Theme } from "~/payload/payload-types";
+import { populated } from "~/utils/tools";
 import ErrorPage from "~/components/ui/ErrorPage/ErrorPage";
 
 type Props =
@@ -101,7 +102,8 @@ export const getServerSideProps: GetServerSideProps<Props> = async (ctx) => {
 
 	const { payload, user } = await getAuthenticatedPayloadUser(ctx);
 
-	if (!user || (user as { role?: string }).role !== "admin") {
+	const role = (user as { role?: string } | null)?.role;
+	if (role !== "admin" && role !== "editor") {
 		ctx.res.statusCode = 404;
 		return { props: { isNotFound: true } };
 	}
@@ -166,7 +168,15 @@ export const getServerSideProps: GetServerSideProps<Props> = async (ctx) => {
 			}
 
 			return {
-				props: { kind: "course", course: course as AugmentedCourse },
+				props: {
+					kind: "course",
+					course: {
+						...course,
+						conditions: populated<Condition>(course.conditions),
+						persona: populated<Persona>(course.persona),
+						themes: populated<Theme>(course.themes),
+					} as AugmentedCourse,
+				},
 			};
 		} catch {
 			ctx.res.statusCode = 404;
