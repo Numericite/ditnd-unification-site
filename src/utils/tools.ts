@@ -130,6 +130,11 @@ export const deserialize = (value?: string | string[]) => {
 	return sanitizeArray(typeof value === "string" ? value.split(",") : []);
 };
 
+export const populated = <T>(docs: (T | number)[] | null | undefined): T[] =>
+	(docs ?? []).filter(
+		(doc): doc is T => doc !== null && typeof doc === "object",
+	);
+
 export const buildCourseRedirect = (course: AugmentedCourse) =>
 	course.slug ? `/formations/${course.slug}` : (course.link ?? "/formations");
 
